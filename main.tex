@@ -1,0 +1,78 @@
+%=======================================================================
+% Bachelorarbeit Frontend
+% Design and Development of a Multi-Role E-Commerce and Services Marketplace
+%=======================================================================
+\documentclass[
+        11pt,
+        a4paper, 
+        oneside,
+        toc=listofnumbered,
+        toc=bibliography, 
+        toftofoc,
+        headings=small,
+        headings=twolineappendix
+]{scrbook}
+\usepackage[utf8]{inputenc}
+%=======================================================================
+\newif\ifdraft
+\draftfalse
+%=======================================================================
+\input{Meta/praeampel}
+%=======================================================================
+\newcommand{\documenttitle}{Design and Development of a Multi-Role E-Commerce and Services Marketplace}
+\newcommand{\documentname}{Roudy Mouhammad}
+\newcommand{\documentmanr}{70473916}
+\newcommand{\documentmodul}{}
+\newcommand{\documentstudiengang}{Informatik}
+\newcommand{\documentachievement}{zur Erlangung des akademischen Grades:\\Bachelor of Science\\}
+\newcommand{\documentbetreuer}{Prof.~Dr.\ Kai Gutenschwager}
+\newcommand{\documentbetreuerzwei}{M. Sc. Steinke, Jonas Gernot }
+\newcommand{\documentsemester}{2026}
+\newcounter{documentfakultaet}
+\setcounter{documentfakultaet}{1}
+%=======================================================================
+\begin{document}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \input{Kapitel/0_0_Deckblatt}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \frontmatter
+    \pagenumbering{Roman}
+    \ifnum\value{documentfakultaet}=1
+        \input{Kapitel/0_erklaerung}
+        \markboth{Erklärung}{}
+    \fi
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \input{Kapitel/0_Kurzfassung}
+    \input{Kapitel/0_Abstract}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \fancyhead[L]{\chaptermark}
+    \fancyhead[RO]{\chaptermark}
+    \tableofcontents
+    \listoffigures
+    \listoftables
+    \lstlistoflistings
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \input{Kapitel/0_Abkuerzungsverzeichnis}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \mainmatter
+    \fancyhf{}
+    \rhead{\nouppercase\rightmark}
+    \lhead{\nouppercase\leftmark}
+    \fancypagestyle{plain}{}
+    \fancyfoot[RO]{\thepage}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \acresetall
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    % Kapitel einfügen
+    \input{Kapitel/1_Einleitung}
+    \input{Kapitel/2_Theoretischer_Hintergrund}
+    \input{Kapitel/3_Ist_Analyse}
+    \input{Kapitel/4_Konzept}
+    \input{Kapitel/5_Prototypische_Umsetzung}
+    \input{Kapitel/6_Testen_und_Bewertung}
+    \input{Kapitel/7_Fazit_und_Ausblick}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+    \bibliographystyle{dinat}
+    \bibliography{literatur}
+    % = = = = = = = = = = = = = = = = = = = = = = = =
+\end{document}

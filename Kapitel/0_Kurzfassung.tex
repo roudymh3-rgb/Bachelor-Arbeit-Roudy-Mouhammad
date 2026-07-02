@@ -1,0 +1,29 @@
+\chapter*{Kurzfassung}
+
+Diese Bachelorarbeit beschreibt den Entwurf und die prototypische 
+Entwicklung des Frontends der Webanwendung \textit{Bazar.io}, 
+einer Multi-Rollen-Plattform, die E-Commerce und 
+Dienstleistungsbuchungen in einem einheitlichen System vereint.
+
+Das entwickelte Frontend basiert auf einer rollenbasierten 
+Single-Page-Application-Architektur und bedient vier 
+Nutzergruppen: Käufer, Verkäufer,
+Dienstleister und Administratoren. React bildet das Kernframework, React Router übernimmt das
+clientseitige Routing mit rollenbasiertem Seitenschutz und
+Zustand verwaltet den globalen Zustand für Authentifizierung,
+Nutzerrolle und Warenkorb. Die Zahlungsabwicklung erfolgt
+über Stripe, die Authentifizierung erfolgt tokenbasiert über
+Laravel Sanctum mit Bearer Tokens.
+
+Neben klassischen E-Commerce-Funktionen wie Produktkatalog, 
+Warenkorb und Checkout umfasst \textit{Bazar.io} ein 
+Buchungssystem für Dienstleistungen, ein integriertes 
+Messaging-System sowie ein Werbe- und Ankündigungsmodul. 
+Die Qualität der Umsetzung wird durch Unit-, Integrations- 
+und End-to-End-Tests abgesichert und anhand von 
+Usability-Kriterien bewertet.
+
+\textbf{Schlüsselwörter:} E-Commerce, Marktplatz,
+Multi-Rollen-System, React, Single-Page Application,
+Zustand, Stripe, Laravel Sanctum, Rollenbasierte
+Zugriffskontrolle, Frontend-Entwicklung

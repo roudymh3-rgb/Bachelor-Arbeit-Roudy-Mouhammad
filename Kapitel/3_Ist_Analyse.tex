@@ -1,0 +1,332 @@
+\chapter{Ist-Analyse}
+\label{chap:ist_analyse}
+
+\section{Beschreibung des Gesamtsystems}
+\label{sec:gesamtsystem}
+
+Die Plattform \textit{Bazar.io} ist ein webbasierter
+Multi-Rollen-Marktplatz, der im Rahmen eines Praxisprojekts
+bei SahemTech entwickelt wird. Das Gesamtsystem folgt einer
+klaren Trennung zwischen Präsentationsschicht, Geschäftslogik
+und Datenhaltung. Die Kommunikation zwischen Frontend und
+Backend erfolgt über REST-basierte HTTP-Schnittstellen,
+die Echtzeitkommunikation des Chat-Systems über eine
+WebSocket-Verbindung auf Basis von Pusher.
+
+Das Backend wurde von Nagham Alaatki im Rahmen einer
+begleitenden Bachelorarbeit mit dem Laravel-Framework
+implementiert. Es übernimmt die zentralen Funktionen der
+Plattform, darunter Benutzerverwaltung, rollenbasierte
+Zugriffskontrolle, Buchungsverwaltung, Werbeworkflows
+sowie die Zahlungsintegration über Stripe. Die Datenhaltung
+erfolgt über eine relationale MySQL-Datenbank, die
+Authentifizierung über Laravel Sanctum mit tokenbasierter
+API-Authentifizierung. Die vorliegende Arbeit beschränkt
+sich auf die Entwicklung des Frontends, das die vom Backend
+bereitgestellten API-Endpunkte konsumiert und alle
+Funktionsbereiche der Plattform als rollenbasierte
+Single-Page Application darstellt.
+
+
+\section{Anforderungsanalyse}
+\label{sec:anforderungsanalyse}
+
+\subsection{Funktionale Anforderungen}
+\label{subsec:funktionale-anforderungen}
+
+Die funktionalen Anforderungen an das Frontend wurden in
+enger Abstimmung mit den im Backend definierten
+Geschäftsprozessen erarbeitet und gliedern sich nach den
+vier Nutzerrollen der Plattform.
+
+Alle Nutzer müssen sich registrieren, anmelden und abmelden
+können. Die Registrierung erfolgt mit der Standardrolle
+Customer. Nutzer können einen Antrag auf Rollenwechsel zu
+Seller oder ServiceProvider stellen, indem sie ein Formular
+ausfüllen und notwendige Dokumente hochladen. Der
+Antragsstatus ist für den Nutzer jederzeit einsehbar.
+Zusätzlich unterstützt die Plattform eine
+Passwort-Zurücksetzen-Funktion auf Basis eines
+OTP-Verfahrens, das vom Backend bereitgestellt wird.
+
+Käufer müssen Produkte und Dienstleistungen durchsuchen,
+filtern und in einer Detailansicht einsehen können. Produkte
+und Dienstleistungen können in einen gemeinsamen Warenkorb
+gelegt werden. Der Checkout-Prozess umfasst die
+Zahlungsabwicklung über Stripe sowie eine
+Bestellbestätigungsseite. Bestellhistorie und
+Buchungsübersicht müssen einsehbar und stornierbar sein.
+Für Dienstleistungen müssen verfügbare Zeitfenster des
+jeweiligen Anbieters angezeigt und buchbar sein.
+
+Verkäufer benötigen ein Dashboard zur Verwaltung ihrer
+Produkte einschließlich Bildupload sowie eine Übersicht
+über eingegangene Bestellungen und deren Statusverwaltung.
+Dienstleister müssen ihre Dienstleistungen, Arbeitszeiten
+und Abwesenheiten verwalten sowie Buchungsanfragen
+bestätigen oder ablehnen können. Beide Rollen können
+Werbeanzeigen erstellen, die einem administrativen
+Genehmigungsprozess unterliegen, und sich über
+Stripe Connect für Auszahlungen registrieren.
+
+Administratoren benötigen Ansichten zur Prüfung und
+Entscheidung über Rollenwechselanträge sowie zur Freigabe
+oder Ablehnung von Werbeanzeigen. Darüber hinaus müssen
+Plattformgebühren konfigurierbar und Auszahlungen an
+Anbieter auslösbar sein. Alle Nutzer können Konversationen
+starten und in Echtzeit Nachrichten austauschen. Die Inbox
+zeigt alle aktiven Konversationen mit Ungelesen-Zähler an.
+
+Tabelle~\ref{tab:funktionale-anforderungen} fasst die
+funktionalen Anforderungen je Rolle zusammen.
+
+\begin{table}[h]
+\centering
+\caption{Funktionale Anforderungen je Nutzerrolle}
+\label{tab:funktionale-anforderungen}
+\begin{tabular}{|p{3cm}|p{9.5cm}|}
+\hline
+\textbf{Rolle} & \textbf{Funktionale Anforderungen} \\
+\hline
+Alle Nutzer & Registrierung, Login, Logout,
+Passwort zurücksetzen, Messaging, Rollenwechselantrag \\
+\hline
+Customer & Produktsuche und Filterung, Produktdetail,
+Warenkorb, Checkout mit Stripe, Bestellhistorie,
+Buchungsübersicht, Stornierung \\
+\hline
+Seller & Produktverwaltung (CRUD), Bildupload,
+Bestellübersicht, Statusverwaltung, Werbeanzeigen erstellen,
+Stripe-Connect-Onboarding \\
+\hline
+ServiceProvider & Dienstleistungsverwaltung, Arbeitszeiten
+und Abwesenheiten definieren, Buchungskalender,
+Buchungsanfragen verwalten, Werbeanzeigen erstellen,
+Stripe-Connect-Onboarding \\
+\hline
+Admin & Rollenwechselanträge prüfen, Werbeanzeigen
+freigeben oder ablehnen, Plattformgebühren konfigurieren,
+Auszahlungen auslösen \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Nicht-funktionale Anforderungen}
+\label{subsec:nichtfunktionale-anforderungen}
+
+Neben den funktionalen Anforderungen wurden folgende
+nicht-funktionale Anforderungen an das Frontend definiert.
+
+Die Anwendung soll flüssig bedienbar sein. Seitenwechsel
+erfolgen ohne vollständigen Seitenneuladen, Ladezeiten
+werden durch Lazy Loading und effizientes State Management
+minimiert. API-Anfragen werden durch geeignete
+Ladezustände und Fehlermeldungen für den Nutzer transparent
+kommuniziert.
+
+Die Sicherheit wird durch tokenbasierte Authentifizierung
+über Laravel Sanctum, rollenbasierten Seitenschutz über
+geschützte Routen sowie die Nutzung von Stripe Elements
+zur PCI-DSS-konformen Zahlungserfassung gewährleistet.
+Sensible Daten werden zu keiner Zeit im Frontend gespeichert
+oder verarbeitet. Abgelaufene Tokens werden automatisch
+erkannt und der Nutzer wird zur erneuten Anmeldung
+weitergeleitet.
+
+Die Anwendung muss responsiv sein und auf gängigen Desktop-
+und Mobilbrowsern korrekt dargestellt werden. Die
+Benutzeroberfläche orientiert sich an den Richtlinien von
+WCAG~2.1 hinsichtlich Barrierefreiheit, Kontrast und
+Tastaturnavigation. Wartbarkeit und Erweiterbarkeit werden
+durch eine komponentenbasierte Architektur sowie eine
+feature-orientierte Ordnerstruktur sichergestellt.
+
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} gibt
+einen strukturierten Überblick über die nicht-funktionalen
+Anforderungen und deren Umsetzungsmaßnahmen im Frontend.
+
+\begin{table}[H]
+\centering
+\caption{Nicht-funktionale Anforderungen und Maßnahmen}
+\label{tab:nichtfunktionale-anforderungen}
+\begin{tabular}{|p{3cm}|p{5.3cm}|p{5cm}|}
+\hline
+\textbf{Anforderung} & \textbf{Beschreibung} &
+\textbf{Maßnahme im Frontend} \\
+\hline
+Performance & Schnelle Ladezeiten, flüssige Navigation &
+Lazy Loading, optimiertes State Management \\
+\hline
+Sicherheit & Schutz vor unbefugtem Zugriff &
+Laravel Sanctum, geschützte Routen, Stripe Elements \\
+\hline
+Responsivität & Korrekte Darstellung auf allen Geräten &
+Responsive Design, CSS-Breakpoints \\
+\hline
+Barrierefreiheit & WCAG~2.1-Konformität &
+Semantisches HTML, Kontrastverhältnisse \\
+\hline
+Wartbarkeit & Erweiterbare Codestruktur &
+Komponentenarchitektur, feature-basierte Struktur \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Rollenmodell}
+\label{sec:rollenmodell}
+
+Die Plattform \textit{Bazar.io} implementiert ein
+rollenbasiertes Zugriffskontrollmodell mit vier
+Nutzerrollen. Jeder registrierte Nutzer erhält zunächst
+die Rolle Customer. Ein Wechsel zu Seller oder
+ServiceProvider ist durch einen Rollenwechselantrag
+möglich, der durch einen Administrator genehmigt werden
+muss. Der Ablauf dieses Prozesses basiert auf dem im Backend
+implementierten RBAC-Konzept. Das Frontend stellt dem
+Nutzer ein Formular zum Einreichen des Antrags sowie
+eine Statusanzeige bereit und passt die
+Navigationselemente nach erfolgter Rollenzuweisung
+dynamisch an.
+
+Ein Nutzer kann dabei mehrere Rollen gleichzeitig
+besitzen. So kann ein Nutzer beispielsweise sowohl als
+Customer einkaufen als auch als Seller Produkte anbieten.
+Das Frontend passt die Navigationselemente und verfügbaren
+Funktionsbereiche dynamisch an die aktiven Rollen des
+eingeloggten Nutzers an. Tabelle~\ref{tab:rollenmodell}
+gibt einen Überblick über die Rollen und ihre jeweiligen
+Funktionsbereiche im Frontend.
+
+\begin{table}[h]
+\centering
+\caption{Rollenmodell der Plattform Bazar.io}
+\label{tab:rollenmodell}
+\begin{tabular}{|p{3cm}|p{9.5cm}|}
+\hline
+\textbf{Rolle} & \textbf{Funktionsbereiche im Frontend} \\
+\hline
+Customer & Produktsuche, Warenkorb, Checkout,
+Bestellhistorie, Buchungsübersicht, Messaging,
+Rollenwechselantrag \\
+\hline
+Seller & Produktverwaltung, Bestellübersicht,
+Statusverwaltung, Werbeanzeigen,
+Stripe-Connect-Onboarding \\
+\hline
+ServiceProvider & Dienstleistungsverwaltung, Arbeitszeiten,
+Abwesenheiten, Buchungskalender, Werbeanzeigen,
+Stripe-Connect-Onboarding \\
+\hline
+Admin & Rollenwechselanträge prüfen, Werbeanzeigen
+freigeben, Plattformgebühren konfigurieren,
+Auszahlungen auslösen \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\section{Technologieauswahl und Begründung}
+\label{sec:technologieauswahl}
+
+Die Auswahl des Technologiestacks für das Frontend von
+\textit{Bazar.io} erfolgte auf Basis der funktionalen
+und nicht-funktionalen Anforderungen sowie unter
+Berücksichtigung der Kompatibilität mit dem
+Laravel-Backend.
+
+React wurde als Frontend-Framework gewählt, da es die
+komponentenbasierte Entwicklung komplexer, interaktiver
+Benutzeroberflächen effizient unterstützt. Im Vergleich
+zu Angular bietet React eine schlankere Architektur und
+größere Flexibilität bei der Strukturierung der Anwendung.
+Im Vergleich zu Vue.js verfügt React über ein größeres
+Ökosystem und eine breitere Unterstützung durch
+Drittbibliotheken \cite{comparative_spa_frameworks}.
+
+Zustand wurde für das globale State Management gewählt.
+Die Bibliothek basiert auf einem hook-basierten Ansatz
+und lässt sich nahtlos in die React-Komponentenstruktur
+integrieren. Ein Store wird direkt als Hook definiert und
+kann in jeder Komponente ohne zusätzliche Provider-Wrapper
+verwendet werden. Authentifizierungsstatus, Nutzerrolle
+und Warenkorbinhalt werden in eigenständigen
+Zustand-Stores verwaltet und stehen allen Komponenten
+konsistent zur Verfügung \cite{zustand_docs}.
+
+React Router wurde für das clientseitige Routing gewählt.
+Die Bibliothek ermöglicht die deklarative Definition von
+Routen sowie den rollenbasierten Seitenschutz über
+geschützte Routen, sodass Funktionsbereiche nur für Nutzer mit den entsprechenden 
+Berechtigungen zugänglich sind \cite{reactrouter_docs, wieruch_protected_routes}.
+
+Tailwind CSS und shadcn/ui wurden als UI-Bibliotheken
+gewählt. Tailwind CSS ermöglicht eine schnelle und
+konsistente Gestaltung der Benutzeroberfläche durch
+vorgefertigte Hilfsklassen, ohne dass separates CSS
+geschrieben werden muss. Dies spart erheblich
+Entwicklungszeit und sorgt für ein einheitliches
+Erscheinungsbild über alle Ansichten hinweg
+\cite{tailwindcss_docs}. shadcn/ui ergänzt Tailwind CSS
+durch eine Sammlung vorgefertigter, barrierefreier
+React-Komponenten, deren Quellcode direkt ins Projekt
+übernommen und vollständig angepasst werden kann
+\cite{shadcn_docs}.
+
+Stripe wurde als Zahlungsanbieter gewählt, da das Backend
+bereits auf Stripe aufbaut und Stripe mit Stripe Elements
+sowie React Stripe.js eine vollständige,
+PCI-DSS-konforme Frontend-Integration bereitstellt, die
+die Komplexität der Zahlungsabwicklung im Frontend auf
+ein Minimum reduziert
+\cite{stripe_elements_docs, stripe_react_js_docs}.
+
+Laravel Sanctum wird als Authentifizierungsmechanismus
+eingesetzt, da das Backend bereits auf diesem System
+aufbaut. Aus Frontend-Sicht bestimmt Sanctum die
+Handhabung der Bearer Tokens, die nach erfolgreichem
+Login gespeichert und bei jeder API-Anfrage im
+Authorization-Header mitgesendet werden. Abgelaufene
+oder ungültige Tokens werden vom Frontend erkannt
+und der Nutzer wird automatisch zur Anmeldeseite
+weitergeleitet \cite{laravel_sanctum_docs}.
+
+Tabelle~\ref{tab:technologiestack} fasst den gewählten
+Technologiestack und die jeweilige Begründung zusammen.
+
+\begin{table}[H]
+\centering
+\caption{Technologiestack des Frontends von Bazar.io}
+\label{tab:technologiestack}
+\begin{tabular}{|l|l|p{7cm}|}
+\hline
+\textbf{Technologie} & \textbf{Einsatzbereich} &
+\textbf{Begründung} \\
+\hline
+React & UI-Framework &
+Komponentenbasiert, großes Ökosystem, weit verbreitet \\
+\hline
+Zustand & State Management &
+Schlanker hook-basierter Store, kein Boilerplate,
+kein Provider erforderlich \\
+\hline
+React Router & Routing &
+Deklaratives Routing, rollenbasierter Seitenschutz \\
+\hline
+Tailwind CSS & Styling &
+Utility-first, spart Entwicklungszeit,
+konsistentes Erscheinungsbild \\
+\hline
+shadcn/ui & UI-Komponenten &
+Barrierefrei, vollständig anpassbar,
+kein Paket-Lock-in \\
+\hline
+Stripe Elements & Zahlungsabwicklung &
+PCI-DSS-konform, nahtlose React-Integration \\
+\hline
+Laravel Sanctum & Authentifizierung &
+Tokenbasiert, Bearer Tokens, rollenbasierte
+Zugriffskontrolle auf API-Endpunkte \\
+\hline
+\end{tabular}
+\end{table}

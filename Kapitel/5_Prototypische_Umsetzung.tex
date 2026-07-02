@@ -1,0 +1,467 @@
+\chapter{Prototypische Umsetzung}
+\label{chap:umsetzung}
+
+% Dieses Kapitel dokumentiert die tatsächliche Implementierung des
+% Frontends anhand ausgewählter, repräsentativer Beispiele.
+
+% ----------------------------------------------------------------
+\section{Projektstruktur und Entwicklungsumgebung}
+\label{sec:projektstruktur}
+
+% TODO: Verwendete Werkzeuge (Node.js, Vite/CRA, ESLint, Prettier),
+% Ordnerstruktur im Repository, wichtige Konfigurationsdateien.
+
+% ----------------------------------------------------------------
+\section{Authentifizierung und Onboarding}
+\label{sec:impl_auth}
+
+\subsection{Registrierung und Login}
+\label{subsec:impl_registrierung_login}
+
+Die Umsetzung von Registrierung und Login folgt dem in
+Abschnitt~\ref{subsec:auth-onboarding} beschriebenen Konzept:
+Die Registrierung wird als eigenständige Seite realisiert, der
+Login hingegen als Dialog, der von beliebiger Stelle aus geöffnet
+werden kann. Listing~\ref{lst:login-dialog} zeigt den Dialog, der
+seinen geöffneten Zustand sowie die Funktion zum Ändern dieses
+Zustands ausschließlich über Props von der aufrufenden Komponente
+erhält.
+
+\begin{lstlisting}[caption={Aufbau des LoginDialog als gesteuerte Komponente}, label={lst:login-dialog}]
+interface LoginDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Login</DialogTitle>
+        </DialogHeader>
+        <LoginForm onSuccess={() => onOpenChange(false)} />
+      </DialogContent>
+    </Dialog>
+  )
+}
+\end{lstlisting}
+
+Der \texttt{LoginDialog} besitzt selbst keinen eigenen Zustand, sondern
+wird vollständig von außen gesteuert. Die übergeordnete Komponente
+\texttt{AppHeader} hält den Zustand \texttt{isLoginOpen} und übergibt sowohl den
+aktuellen Wert als auch die zugehörige Änderungsfunktion an den
+Dialog. Schließt sich der Dialog, etwa durch einen Klick außerhalb
+des Fensters oder nach einem erfolgreichen Login, wird stets
+dieselbe Funktion aufgerufen, wodurch der Zustand an einer
+einzigen, zentralen Stelle verwaltet wird.
+
+Sowohl das Login- als auch das Registrierungsformular nutzen
+react-hook-form zusammen mit Zod-Schemata zur Validierung der
+Eingaben. Listing~\ref{lst:register-submit} zeigt den
+Absende-Vorgang des Registrierungsformulars.
+
+\begin{lstlisting}[caption={Submit-Flow des Registrierungsformulars}, label={lst:register-submit}]
+const onSubmit = handleSubmit(async (values) => {
+  setServerError(null)
+
+  try {
+    const response = await registerMutation.mutateAsync(values)
+
+    setSession({
+      token: response.result.token,
+      user: response.result.user,
+      roles: response.result.roles,
+    })
+
+    navigate('/')
+  } catch (error) {
+    const fieldErrors = getApiFieldErrors(error)
+    const emailError = fieldErrors?.email?.[0]
+
+    if (emailError) {
+      setError('email', { type: 'server', message: emailError })
+    }
+
+    setServerError(
+      getApiErrorMessage(error, 'Unable to create your account right now.')
+    )
+  }
+})
+\end{lstlisting}
+
+Bevor die eigentliche Submit-Funktion ausgeführt wird, prüft
+\texttt{handleSubmit} automatisch alle Eingaben gegen das hinterlegte
+Zod-Schema. Sind die Eingaben gültig, wird die Registrierungsanfrage
+über \texttt{mutateAsync} an das Backend gesendet. Im Erfolgsfall wird die
+zurückgegebene Session mittels \texttt{setSession} im globalen
+Authentifizierungszustand gespeichert und der Nutzer auf die
+Startseite weitergeleitet. Tritt ein Fehler auf, wird dieser über
+\texttt{getApiFieldErrors} ausgewertet und, sofern er einem bestimmten
+Feld zugeordnet werden kann, direkt unter diesem angezeigt. Für
+nicht feldspezifische Fehler liefert \texttt{getApiErrorMessage} eine
+allgemeine Fehlermeldung. Während die Anfrage bearbeitet wird,
+wird der Absende-Button über die Eigenschaft \texttt{isPending} der
+Mutation deaktiviert, um ein mehrfaches Absenden zu verhindern.
+
+Das Login-Formular ist nach demselben Muster aufgebaut, unterscheidet
+sich jedoch darin, dass nach erfolgreichem Login kein
+Seitenwechsel erfolgt, sondern lediglich der optionale Callback
+\texttt{onSuccess} ausgeführt wird. Dieser wird vom \texttt{LoginDialog}
+verwendet, um sich nach erfolgreicher Anmeldung selbst zu
+schließen, wie bereits in Listing~\ref{lst:login-dialog}
+dargestellt.
+
+\subsection{Token-Verwaltung und Session-Handling}
+\label{subsec:impl_token_session}
+
+\label{subsec:impl_token_session}
+ 
+Grundlage der Token-Verwaltung ist die Typdefinition der Session,
+die festlegt, welche Informationen die Anwendung zu jedem
+Zeitpunkt über einen angemeldeten Nutzer vorhält.
+Listing~\ref{lst:auth-session-type} zeigt diese Definition
+zusammen mit den zugrunde liegenden Rollen.
+ 
+\begin{lstlisting}[caption={Typdefinition der AuthSession}, label={lst:auth-session-type}]
+export type Role = 'customer' | 'seller' | 'service_provider' | 'admin'
+ 
+export interface User {
+  id: number
+  name: string
+  email: string
+  phone: string | null
+  age: number | null
+}
+ 
+export interface AuthSession {
+  token: string
+  user: User
+  roles: Role[]
+}
+\end{lstlisting}
+ 
+Die Eigenschaft \texttt{roles} ist bewusst als Liste modelliert,
+da ein Nutzer mehrere Rollen gleichzeitig besitzen kann, etwa als
+Customer und zugleich als Seller. Damit diese Session an jeder
+Stelle der Anwendung reaktiv zur Verfügung steht, wird sie über
+einen React Context bereitgestellt. Listing~\ref{lst:auth-context}
+zeigt die Definition dieses Contexts.
+ 
+\begin{lstlisting}[caption={Definition des AuthContext}, label={lst:auth-context}]
+export interface AuthContextValue {
+  session: AuthSession | null
+  isAuthenticated: boolean
+  isBootstrapping: boolean
+  setSession: (session: AuthSession) => void
+  clearSession: () => void
+}
+ 
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+\end{lstlisting}
+ 
+Der \texttt{AuthContext} definiert lediglich die Form der
+bereitgestellten Werte, ohne selbst eine Implementierung zu
+enthalten. Die eigentliche Logik, also wie die Session ermittelt,
+gespeichert und bei Bedarf aktualisiert wird, übernimmt der
+\texttt{AuthProvider}, der diesen Context mit konkreten Werten
+befüllt und in den folgenden Abschnitten dieses Kapitels
+schrittweise erläutert wird.
+ 
+Die Speicherung der Session im localStorage des Browsers erfolgt
+über drei Funktionen, die das Lesen, Schreiben und Löschen des
+gespeicherten Werts kapseln. Listing~\ref{lst:auth-storage} zeigt
+diese Implementierung.
+ 
+\begin{lstlisting}[caption={Persistierung der Session im localStorage}, label={lst:auth-storage}]
+const AUTH_SESSION_STORAGE_KEY = 'bazario.auth.session'
+ 
+export function getStoredSession(): AuthSession | null {
+  const rawSession = window.localStorage.getItem(AUTH_SESSION_STORAGE_KEY)
+ 
+  if (!rawSession) {
+    return null
+  }
+ 
+  try {
+    return JSON.parse(rawSession) as AuthSession
+  } catch {
+    window.localStorage.removeItem(AUTH_SESSION_STORAGE_KEY)
+    return null
+  }
+}
+ 
+export function persistSession(session: AuthSession) {
+  window.localStorage.setItem(AUTH_SESSION_STORAGE_KEY, JSON.stringify(session))
+}
+ 
+export function getAuthToken() {
+  return getStoredSession()?.token ?? null
+}
+\end{lstlisting}
+ 
+Da der localStorage ausschließlich Zeichenketten speichern kann,
+wird die Session beim Speichern mittels \texttt{JSON.stringify} in einen
+Text umgewandelt und beim Lesen mittels \texttt{JSON.parse} wieder in ein
+Objekt überführt. Schlägt dieser Vorgang fehl, etwa weil der
+gespeicherte Wert nachträglich verändert oder beschädigt wurde,
+wird der betroffene Eintrag entfernt und \texttt{null} zurückgegeben,
+sodass die Anwendung diesen Zustand wie eine fehlende Anmeldung
+behandelt.
+ 
+Damit der gespeicherte Token nicht bei jeder Anfrage manuell
+mitgegeben werden muss, wird er über einen zentralen Interceptor
+automatisch an jede ausgehende Anfrage angehängt.
+Listing~\ref{lst:http-interceptor} zeigt die Konfiguration der
+verwendeten Axios-Instanz.
+ 
+\begin{lstlisting}[caption={Automatisches Anhängen des Bearer-Tokens über einen Axios-Interceptor}, label={lst:http-interceptor}]
+export const httpClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL ?? DEFAULT_API_BASE_URL,
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  },
+})
+ 
+httpClient.interceptors.request.use((config) => {
+  const token = getAuthToken()
+ 
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+ 
+  return config
+})
+\end{lstlisting}
+ 
+Der Interceptor wird vor jeder über \texttt{httpClient} gesendeten
+Anfrage ausgeführt. Ist ein Token vorhanden, wird der
+\texttt{Authorization}-Header im Format \texttt{Bearer <Token>} ergänzt; ist
+kein Token vorhanden, etwa vor dem ersten Login, bleibt die
+Anfrage unverändert.
+ 
+Damit ein im localStorage gespeicherter Token nicht unkontrolliert
+als gültig angenommen wird, validiert der \texttt{AuthProvider} ihn aktiv
+beim Backend. Hierfür wird beim Vorhandensein eines Tokens eine
+Anfrage an den Endpunkt \texttt{/api/me} gestellt, deren Ergebnis
+über \texttt{useMeQuery} zur Verfügung steht.
+Listing~\ref{lst:auth-provider-session} zeigt, wie aus dem
+gespeicherten Token und der Antwort dieser Anfrage die tatsächlich
+gültige Session abgeleitet wird.
+ 
+\begin{lstlisting}[caption={Ableitung der gültigen Session aus gespeichertem Token und Serverantwort}, label={lst:auth-provider-session}]
+const session = useMemo<AuthSession | null>(() => {
+  if (!storedSession) {
+    return null
+  }
+ 
+  if (meQuery.isError) {
+    return null
+  }
+ 
+  const verifiedUser = meQuery.data?.result.user
+ 
+  if (!verifiedUser) {
+    return storedSession
+  }
+ 
+  return {
+    token: storedSession.token,
+    user: verifiedUser,
+    roles: verifiedUser.roles ?? storedSession.roles,
+  }
+}, [meQuery.data, meQuery.isError, storedSession])
+ 
+const value = {
+  session,
+  isAuthenticated: Boolean(session?.token),
+  isBootstrapping: hasToken && meQuery.isFetching,
+  setSession,
+  clearSession,
+}
+\end{lstlisting}
+ 
+Liefert die Anfrage an \texttt{/api/me} einen Fehler zurück, gilt der
+gespeicherte Token als ungültig und die abgeleitete Session wird
+auf \texttt{null} gesetzt, wodurch der Nutzer automatisch als abgemeldet
+behandelt wird. Liegt noch keine Antwort vor, wird zunächst die
+lokal gespeicherte Session verwendet, um ein sofortiges Anzeigen
+der Oberfläche zu ermöglichen. Trifft die Antwort schließlich ein,
+werden die vom Server zurückgegebenen, aktuellen Nutzerdaten und
+Rollen übernommen. Der Wert \texttt{isBootstrapping} ergibt sich direkt
+aus dieser Logik: Er ist nur dann wahr, wenn ein Token vorhanden
+ist und die Validierungsanfrage noch nicht abgeschlossen ist. Auf
+dieser Grundlage entscheidet die in
+Listing~\ref{lst:protected-route} dargestellte Komponente
+\texttt{ProtectedRoute} über die Anzeige geschützter Inhalte.
+ 
+\begin{lstlisting}[caption={Dreistufige Prüfung in der Komponente ProtectedRoute}, label={lst:protected-route}]
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated, isBootstrapping } = useAuth()
+ 
+  if (isBootstrapping) {
+    return <div>Loading account...</div>
+  }
+ 
+  if (!isAuthenticated) {
+    return <Navigate replace to="/" />
+  }
+ 
+  return children ?? <Outlet />
+}
+\end{lstlisting}
+ 
+Die Reihenfolge der beiden Prüfungen ist hierbei entscheidend: Erst
+wenn der Anmeldestatus zuverlässig bestimmt werden konnte
+(\texttt{isBootstrapping} ist \texttt{false}), wird über \texttt{isAuthenticated}
+entschieden, ob der Nutzer zur Startseite weitergeleitet oder der
+geschützte Inhalt angezeigt wird. Die Eigenschaft \texttt{replace} der
+\texttt{Navigate}-Komponente verhindert dabei, dass die nicht autorisierte
+Route im Browserverlauf verbleibt.
+
+\subsection{Rollen-Upgrade-Antrag}
+\label{subsec:impl_rollen_upgrade}
+
+Wie in Abschnitt~\ref{subsec:auth-onboarding} beschrieben, startet
+jeder Nutzer mit der Rolle Customer und kann über einen
+Antragsprozess zur Rolle Seller oder ServiceProvider wechseln. Die
+\texttt{AccountPage} bildet hierfür den zentralen Einstiegspunkt.
+Listing~\ref{lst:account-upgrades} zeigt, wie die verfügbaren
+Upgrade-Optionen abhängig von den Daten des Backends angezeigt
+werden.
+
+\begin{lstlisting}[caption={Bedingte Anzeige der Upgrade-Optionen auf der AccountPage}, label={lst:account-upgrades}]
+export function AccountPage() {
+  const { session } = useAuth()
+  const meQuery = useMeQuery(true, 5)
+
+  const user = meQuery.data?.result.user ?? session?.user
+
+  return (
+    <Card>
+      <CardContent className="flex flex-wrap gap-3">
+        {user?.available_upgrades?.seller ? (
+          <Button asChild variant="outline">
+            <Link to="/account/upgrade/seller">Upgrade to seller</Link>
+          </Button>
+        ) : null}
+        {user?.available_upgrades?.service_provider ? (
+          <Button asChild variant="outline">
+            <Link to="/account/upgrade/service-provider">
+              Upgrade to service provider
+            </Link>
+          </Button>
+        ) : null}
+      </CardContent>
+    </Card>
+  )
+}
+\end{lstlisting}
+
+Die Anzeige der jeweiligen Schaltfläche wird vollständig durch das
+Backend gesteuert: Nur wenn das Feld \texttt{available\_upgrades} für die
+betreffende Rolle den Wert \texttt{true} liefert, erscheint die
+entsprechende Option. Besitzt ein Nutzer eine Rolle bereits oder
+hat er einen Antrag gestellt, der noch nicht abschließend
+bearbeitet wurde, entfernt das Backend die jeweilige Option
+automatisch, ohne dass diese Logik zusätzlich im Frontend
+nachgebildet werden müsste. Auf diese Weise werden zuerst die
+bevorzugt aktuellen, vom Server validierten Daten verwendet
+(\texttt{meQuery.data}) und nur, solange diese noch nicht vorliegen, auf
+die bereits lokal vorhandene Session zurückgegriffen.
+
+Sobald ein Antrag gestellt wurde, zeigt die \texttt{AccountPage} dessen
+aktuellen Bearbeitungsstatus an. Listing~\ref{lst:account-status}
+zeigt die entsprechende Darstellung für einen Antrag auf die Rolle
+Seller.
+
+\begin{lstlisting}[caption={Anzeige des Antragsstatus auf der AccountPage}, label={lst:account-status}]
+{user?.seller_profile ? (
+  <Card>
+    <CardHeader>
+      <CardTitle>Seller application</CardTitle>
+      <CardDescription>
+        Current seller request status from the backend.
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="text-sm">
+      <p><span className="font-medium">Store:</span> {user.seller_profile.store_name}</p>
+      <p><span className="font-medium">Status:</span> {user.seller_profile.status}</p>
+    </CardContent>
+  </Card>
+) : null}
+\end{lstlisting}
+
+Diese Karte wird nur dann eingeblendet, wenn für den Nutzer
+überhaupt ein \texttt{seller\_profile} vorhanden ist, also ein Antrag
+gestellt wurde. Der darin enthaltene Status, etwa der Wert
+\texttt{pending} für einen noch nicht entschiedenen Antrag,
+stammt direkt vom Backend und wird unverändert dargestellt. Bis
+zur abschließenden Entscheidung durch einen Administrator bleibt
+der Nutzer dabei uneingeschränkt in seiner Rolle als Customer
+aktiv; der Antragsprozess wirkt sich nicht auf die bestehende
+Nutzung der Plattform aus. Für einen Antrag auf die Rolle
+ServiceProvider erfolgt die Darstellung nach demselben Prinzip
+über das Feld \texttt{service\_provider\_profile}.
+
+% ----------------------------------------------------------------
+\section{Katalog und Produktseiten}
+\label{sec:impl_katalog}
+
+\subsection{Produktlisting: Karten, Paginierung}
+% TODO: Implementierung, Datenabruf via API.
+
+\subsection{Produktdetailseite \& Dienstleistungsdetailseite}
+% TODO: Aufbau, Bildergalerie, In-den-Warenkorb-Funktion.
+
+
+% ----------------------------------------------------------------
+\section{Warenkorb, Checkout und Zahlung}
+\label{sec:impl_checkout}
+
+\subsection{Warenkorb-UI: Produkte und Buchungen kombiniert}
+% TODO: Zustandsverwaltung, Mengenänderung, Entfernen von Positionen.
+
+\subsection{Stripe-Integration im Frontend}
+% TODO: Payment Intent, Stripe Elements, Bestätigungsseite.
+
+% ----------------------------------------------------------------
+\section{Verkäufer- und Anbieter-Dashboard}
+\label{sec:impl_seller}
+
+\subsection{Produktverwaltung}
+% TODO: CRUD-Operationen, Bildupload.
+
+\subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
+% TODO: Implementierungsdetails.
+
+\subsection{Buchungskalender und Verfügbarkeitsmanagement}
+% TODO: Kalenderkomponente, Verfügbarkeitslogik.
+
+\subsection{Bestellübersicht und Statusverwaltung}
+% TODO: Statusübergänge, Benachrichtigungen.
+
+% ----------------------------------------------------------------
+\section{Benutzeroberfläche}
+\label{sec:impl_customer}
+
+\subsection{Bestellhistorie und Bestelldetail}
+% TODO: Implementierungsdetails.
+
+\subsection{Buchungsübersicht, Stornierung und Umbuchung}
+% TODO: Implementierungsdetails.
+
+% ----------------------------------------------------------------
+
+\section{Werbung und Ankündigungen}
+\label{sec:impl_werbung}
+
+% TODO: Implementierung der Ankündigungen und Werbemodule je Rolle,
+% Genehmigungsprozess.
+
+% ----------------------------------------------------------------
+\section{Messaging}
+\label{sec:impl_messaging}
+
+% TODO: Inbox-Übersicht, Konversationsliste, Chat-UI (ggf. WebSocket).

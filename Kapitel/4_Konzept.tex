@@ -1,0 +1,575 @@
+\chapter{Konzept für ein Frontend}
+\label{chap:konzept}
+
+% Dieses Kapitel beschreibt das geplante Frontend-Konzept auf Basis
+% der Anforderungen aus Kapitel~\ref{chap:ist_analyse}.
+
+% ----------------------------------------------------------------
+\section{Architekturkonzept}
+\label{sec:architekturkonzept}
+
+\subsection{Komponentenarchitektur und Ordnerstruktur}
+\label{subsec:komponentenarchitektur}
+
+Das Frontend von \textit{Bazar.io} folgt einer
+feature-basierten Ordnerstruktur, bei der
+zusammengehörige Dateien nach fachlichen
+Funktionsbereichen gruppiert werden. Dieses
+Prinzip fördert die Wartbarkeit und
+Skalierbarkeit des Projekts, da neue
+Funktionsbereiche unabhängig voneinander
+entwickelt und erweitert werden können
+\cite{ijlrp_react_components}.
+
+Das Projekt wird mit Vite als Build-Tool
+initialisiert, das eine schnelle
+Entwicklungsumgebung und optimierte
+Produktions-Builds für React-Anwendungen
+bereitstellt \cite{vite_docs}. Die Wurzel
+des Projekts enthält Konfigurationsdateien
+wie \texttt{vite.config.ts},
+\texttt{tsconfig.json},
+\texttt{tsconfig.app.json},
+\texttt{tsconfig.node.json} sowie
+\texttt{package.json} mit allen
+Abhängigkeiten des Projekts. Ergänzend sind
+\texttt{eslint.config.js} für die statische
+Codeanalyse und \texttt{components.json}
+für die shadcn/ui-Konfiguration vorhanden.
+
+Der Quellcode befindet sich vollständig im
+Verzeichnis \texttt{src/}, das in folgende
+Hauptbereiche unterteilt ist. Das Verzeichnis
+\texttt{app/router/} enthält die zentrale
+Routing-Konfiguration in \texttt{index.tsx}.
+Unter \texttt{layouts/} befindet sich die
+Layout-Komponente \texttt{main-layout.tsx},
+die als Wrapper für alle Seiten dient und
+gemeinsame Elemente wie Header und Navigation
+einbindet. Das Verzeichnis \texttt{features/}
+bildet den Kern der Anwendung, in dem jeder
+Funktionsbereich einen eigenen Unterordner
+mit zugehörigen Komponenten, Hooks, Schemas
+und API-Funktionen erhält. Als erster
+Funktionsbereich enthält
+\texttt{features/auth/schemas/} bereits das
+Validierungsschema für den Login-Prozess in
+\texttt{login-schema.ts}. Unter
+\texttt{components/ui/} befinden sich die
+wiederverwendbaren UI-Basiskomponenten aus
+shadcn/ui wie \texttt{button.tsx} und
+\texttt{card.tsx}, deren Quellcode direkt
+ins Projekt kopiert und angepasst wird
+\cite{shadcn_docs}. Das Verzeichnis
+\texttt{assets/} enthält statische
+Ressourcen, während \texttt{lib/}
+gemeinsam genutzte Hilfsfunktionen
+bereitstellt. Die globale CSS-Konfiguration
+in \texttt{index.css} bindet die
+Tailwind-Direktiven sowie die Design-Tokens
+des Designsystems ein \cite{tailwindcss_docs}.
+
+Abbildung~\ref{fig:ordnerstruktur} zeigt die
+initiale Ordnerstruktur des Projekts zu
+Beginn der Implementierung.
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+BAZARIO/
+├── public/
+├── src/
+│   ├── app/
+│   │   └── router/
+│   │       └── index.tsx
+│   ├── assets/
+│   ├── components/
+│   │   └── ui/
+│   │       ├── button.tsx
+│   │       └── card.tsx
+│   ├── features/
+│   │   └── auth/
+│   │       └── schemas/
+│   │           └── login-schema.ts
+│   ├── layouts/
+│   │   └── main-layout.tsx
+│   ├── lib/
+│   ├── App.css
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── components.json
+├── eslint.config.js
+├── index.html
+├── package.json
+├── tsconfig.json
+├── tsconfig.app.json
+├── tsconfig.node.json
+└── vite.config.ts
+\end{verbatim}
+\caption{Initiale Ordnerstruktur des Frontends
+von Bazar.io}
+\label{fig:ordnerstruktur}
+\end{figure}
+
+Im Verlauf der Implementierung wird die
+Ordnerstruktur schrittweise um weitere
+Funktionsbereiche erweitert.
+Tabelle~\ref{tab:geplante-features} gibt
+einen Überblick über die geplanten
+Feature-Ordner und deren Inhalte.
+
+\begin{table}[H]
+\centering
+\caption{Geplante Feature-Ordner des Frontends}
+\label{tab:geplante-features}
+\begin{tabular}{|l|p{9cm}|}
+\hline
+\textbf{Feature-Ordner} & \textbf{Inhalt} \\
+\hline
+\texttt{auth/} & Registrierung, Login,
+Passwort zurücksetzen,
+Rollen-Upgrade-Antrag \\
+\hline
+\texttt{products/} & Produktlisting,
+Produktdetail, Produktverwaltung
+für Verkäufer \\
+\hline
+\texttt{services/} & Dienstleistungslisting,
+Dienstleistungsdetail, Verwaltung
+für Dienstleister \\
+\hline
+\texttt{cart/} & Warenkorb, Checkout,
+Stripe-Integration \\
+\hline
+\texttt{bookings/} & Buchungsübersicht,
+Buchungskalender, Stornierung \\
+\hline
+\texttt{orders/} & Bestellhistorie,
+Bestelldetail, Statusverwaltung \\
+\hline
+\texttt{messaging/} & Inbox,
+Konversationsliste, Chat-UI \\
+\hline
+\texttt{advertising/} & Werbeanzeigen
+erstellen, Genehmigungsprozess \\
+\hline
+\texttt{admin/} & Rollenwechselanträge,
+Werbegenehmigung,
+Plattformgebühren \\
+\hline
+\end{tabular}
+\end{table}
+
+Die finale Ordnerstruktur nach Abschluss
+der Implementierung wird in
+Kapitel~\ref{chap:umsetzung} dokumentiert.
+
+\subsection{Routing-Konzept und
+rollenbasierter Seitenschutz}
+\label{subsec:routing-konzept}
+
+Das Routing von \textit{Bazar.io} basiert
+auf React Router DOM und folgt einem
+hierarchischen Konzept, bei dem alle Routen
+als Kindrouten unter einem gemeinsamen
+Layout-Wrapper organisiert sind
+\cite{reactrouter_docs}. Die zentrale
+Routing-Konfiguration wird in
+\texttt{app/router/index.tsx} definiert
+und über einen \texttt{RouterProvider}
+in der Hauptkomponente \texttt{App.tsx}
+eingebunden. Als oberste Ebene der
+Routenhierarchie dient die Komponente
+\texttt{MainLayout}, die gemeinsame
+Elemente wie Header und Navigation für
+alle Unterseiten bereitstellt. Alle
+seitenspezifischen Komponenten werden
+als \texttt{children} innerhalb dieses
+Layouts gerendert, sodass das gemeinsame
+Layout nur einmal definiert werden muss
+\cite{reactrouter_docs}.
+
+Für den rollenbasierten Seitenschutz
+werden geschützte Routen als
+Wrapper-Komponenten implementiert, die
+vor dem Rendern einer Seite den
+Authentifizierungsstatus sowie die Rolle
+des Nutzers prüfen
+\cite{reactrouter_docs,
+wieruch_protected_routes}. Ist der Nutzer
+nicht authentifiziert oder besitzt nicht
+die erforderliche Rolle, wird er
+automatisch auf die Anmeldeseite
+weitergeleitet. Dieses Konzept basiert
+auf dem RBAC-Prinzip, das den Zugriff
+auf Ressourcen abhängig von der
+zugewiesenen Rolle steuert
+\cite{ferraiolo_rbac_arxiv}.
+
+Tabelle~\ref{tab:routen} gibt einen
+Überblick über die geplanten Routen
+der Plattform, gegliedert nach
+Nutzerrolle.
+
+\begin{table}[H]
+\centering
+\caption{Geplante Routen des Frontends
+von Bazar.io}
+\label{tab:routen}
+\begin{tabular}{|l|l|p{5cm}|}
+\hline
+\textbf{Route} & \textbf{Rolle} &
+\textbf{Beschreibung} \\
+\hline
+\texttt{/} & Alle &
+Startseite mit Produktübersicht \\
+\hline
+\texttt{/login} & Alle & Anmeldeseite \\
+\hline
+\texttt{/register} & Alle &
+Registrierungsseite \\
+\hline
+\texttt{/products} & Alle &
+Produktkatalog \\
+\hline
+\texttt{/products/:id} & Alle &
+Produktdetailseite \\
+\hline
+\texttt{/services} & Alle &
+Dienstleistungskatalog \\
+\hline
+\texttt{/services/:id} & Alle &
+Dienstleistungsdetailseite \\
+\hline
+\texttt{/cart} & Customer & Warenkorb \\
+\hline
+\texttt{/checkout} & Customer &
+Checkout und Zahlung \\
+\hline
+\texttt{/orders} & Customer &
+Bestellhistorie \\
+\hline
+\texttt{/bookings} & Customer &
+Buchungsübersicht \\
+\hline
+\texttt{/seller/dashboard} & Seller &
+Dashboard \\
+\hline
+\texttt{/seller/products} & Seller &
+Produktverwaltung \\
+\hline
+\texttt{/seller/orders} & Seller &
+Bestellübersicht \\
+\hline
+\texttt{/provider/dashboard} &
+ServiceProvider & Dashboard \\
+\hline
+\texttt{/provider/services} &
+ServiceProvider &
+Dienstleistungsverwaltung \\
+\hline
+\texttt{/provider/bookings} &
+ServiceProvider & Buchungskalender \\
+\hline
+\texttt{/admin/requests} & Admin &
+Rollenwechselanträge \\
+\hline
+\texttt{/admin/ads} & Admin &
+Werbegenehmigungen \\
+\hline
+\texttt{/messages} & Alle &
+Messaging-Inbox \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Globales State Management}
+\label{subsec:state-management-konzept}
+
+Für das globale State Management setzt
+\textit{Bazar.io} auf Zustand, eine
+schlanke hook-basierte
+State-Management-Bibliothek für
+React-Anwendungen. Im Unterschied zu
+klassischen State-Management-Lösungen
+benötigt Zustand keine Provider-Wrapper
+und reduziert den Konfigurationsaufwand
+auf ein Minimum, da ein Store direkt als
+Hook definiert und in jeder Komponente
+verwendet werden kann \cite{zustand_docs}.
+
+Die globalen Zustände der Anwendung
+umfassen den Authentifizierungsstatus,
+die aktive Nutzerrolle sowie den
+Warenkorbinhalt. Diese Zustände stehen
+allen Komponenten konsistent zur
+Verfügung und bilden die Grundlage für
+den rollenbasierten Seitenschutz sowie
+die Steuerung der Navigation
+\cite{zustand_docs}.
+% ----------------------------------------------------------------
+\section{UI/UX-Konzept}
+\label{sec:uiux_konzept}
+
+\subsection{Designsystem und Farbschema}
+\label{subsec:designsystem}
+
+Das Designsystem von \textit{Bazar.io} basiert
+auf Tailwind CSS und shadcn/ui und wird zentral
+über die globale Stylesheet-Datei
+\texttt{index.css} konfiguriert
+\cite{tailwindcss_docs, shadcn_docs}. Die Datei
+bindet zunächst die erforderlichen
+Abhängigkeiten ein: Tailwind CSS als
+Styling-Framework, \texttt{tw-animate-css} für
+Animationen, das shadcn/ui-Stylesheet sowie die
+Schriftart \textit{Geist Variable} über das
+Paket \texttt{@fontsource-variable/geist}.
+
+Als Schriftart wird \textit{Geist Variable}
+eingesetzt, die sowohl für Fließtext als auch
+für Überschriften verwendet wird. Die Schriftart
+wird über die CSS-Variablen \texttt{--font-sans}
+und \texttt{--font-heading} im
+\texttt{@theme}-Block definiert und über den
+\texttt{html}-Selektor global auf die gesamte
+Anwendung angewendet.
+
+Alle visuellen Grundelemente werden als
+CSS-Variablen im \texttt{@theme inline}-Block
+definiert und über den \texttt{:root}-Selektor
+mit konkreten Farbwerten belegt. Die Farbwerte
+werden im modernen \texttt{oklch}-Farbraum
+angegeben, der eine präzisere und
+wahrnehmungsgleichmäßigere Farbdefinition
+ermöglicht als klassische Hex- oder
+RGB-Werte \cite{shah_design_system_2023}.
+
+\textit{Bazar.io} unterstützt einen hellen
+und einen dunklen Anzeigemodus. Die Farbwerte
+für den hellen Modus werden im
+\texttt{:root}-Selektor definiert, während
+die Werte für den dunklen Modus unter dem
+\texttt{.dark}-Selektor überschrieben werden.
+Der Wechsel zwischen beiden Modi erfolgt durch
+das Hinzufügen oder Entfernen der Klasse
+\texttt{dark} am Wurzelelement, ohne dass
+Änderungen an einzelnen Komponenten notwendig
+sind \cite{tailwindcss_docs}.
+
+Tabelle~\ref{tab:design-tokens} gibt einen
+Überblick über die zentralen Design-Tokens
+und deren Farbwerte im hellen und dunklen
+Modus.
+
+\begin{table}[H]
+\centering
+\caption{Zentrale Design-Tokens von Bazar.io
+im hellen und dunklen Modus}
+\label{tab:design-tokens}
+\begin{tabular}{|l|p{3.5cm}|p{3.5cm}|}
+\hline
+\textbf{Token} & \textbf{Hell (Light)} &
+\textbf{Dunkel (Dark)} \\
+\hline
+\texttt{--background} &
+oklch(1 0 0) — Weiß &
+oklch(0.145 0 0) — Sehr dunkel \\
+\hline
+\texttt{--foreground} &
+oklch(0.145 0 0) — Fast schwarz &
+oklch(0.985 0 0) — Fast weiß \\
+\hline
+\texttt{--primary} &
+oklch(0.205 0 0) — Dunkelgrau &
+oklch(0.922 0 0) — Hellgrau \\
+\hline
+\texttt{--secondary} &
+oklch(0.97 0 0) — Sehr hell &
+oklch(0.269 0 0) — Dunkel \\
+\hline
+\texttt{--muted} &
+oklch(0.97 0 0) — Sehr hell &
+oklch(0.269 0 0) — Dunkel \\
+\hline
+\texttt{--destructive} &
+oklch(0.577 0.245 27.325) — Rot &
+oklch(0.704 0.191 22.216) — Rot \\
+\hline
+\texttt{--border} &
+oklch(0.922 0 0) — Hellgrau &
+oklch(1 0 0 / 10\%) — Transparent \\
+\hline
+\texttt{--radius} &
+0.625rem & 0.625rem \\
+\hline
+\end{tabular}
+\end{table}
+
+Zusätzlich definiert das Designsystem
+spezifische Tokens für die Sidebar-Komponente
+sowie fünf Chart-Farben
+(\texttt{--chart-1} bis \texttt{--chart-5}),
+die für Datenvisualisierungen im
+Verkäufer- und Administrator-Dashboard
+verwendet werden. Die Border-Radius-Werte
+werden relativ zur Basisvariable
+\texttt{--radius} berechnet und stehen
+in abgestuften Größen von
+\texttt{--radius-sm} bis
+\texttt{--radius-4xl} zur Verfügung.
+
+\subsection{Seitenstruktur und Navigationsprinzip}
+% TODO: Wireframes oder Mockups der wichtigsten Ansichten.
+
+% ----------------------------------------------------------------
+\section{Konzept der einzelnen Funktionsbereiche}
+\subsection{Authentifizierung und Onboarding}
+% TODO: Registrierung, Login, Token-Handling, Rollen-Upgrade-Antrag.
+\label{subsec:auth-onboarding}
+ 
+Beim Entwurf der Login- und Registrierungsfunktion wurden bewusst
+Unterschiede hinsichtlich der Darstellungsform getroffen. Der
+Login erfolgt über einen Dialog, der von jeder beliebigen Stelle
+der Anwendung aus aufgerufen werden kann, ohne dabei die aktuelle
+Seite zu verlassen. Der Vorteil davon besteht insbesondere darin,
+dass ein nicht angemeldeter Nutzer während eines laufenden
+Vorgangs, beispielsweise beim Checkout, nicht durch eine erneute
+Anmeldung unterbrochen wird, sondern sich schnell anmelden kann,
+ohne die bisherige Nutzung zu verlieren. Die Registrierung
+hingegen erfolgt über eine eigene Seite, da sie deutlich mehr
+Eingabefelder benötigt und es sich dabei um eine bewusste,
+eigenständige Handlung des Nutzers handelt, für die entsprechend
+Platz vorhanden sein muss. Abbildung~\ref{fig:login-vs-register}
+stellt diese Entscheidung vergleichend gegenüber.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/abb_login_vs_register.png}
+\caption{Darstellungskonzept von Login und Registrierung im Vergleich}
+\label{fig:login-vs-register}
+\end{figure}
+ 
+Die Eingaben in beiden Formularen, sowohl bei der Login- als auch
+bei der Registrierungsfunktion, werden bereits clientseitig
+validiert, bevor eine Anfrage an das Backend gestellt wird. Auf
+diese Weise werden unnötige Serveranfragen vermieden und der
+Nutzer wird sofort über fehlerhafte Eingaben informiert. Tritt
+dennoch ein Fehler auf, beispielsweise durch die Vergabe einer
+bereits vorhandenen E-Mail-Adresse, wird dieser gezielt dem
+betroffenen Eingabefeld zugeordnet und dort angezeigt, damit der
+Nutzer unmittelbar erkennt, welche Angabe korrigiert werden muss.
+Während der Bearbeitung einer Login- oder Registrierungsanfrage
+wird der Button deaktiviert, um ein versehentliches mehrfaches
+Absenden derselben Anfrage zu verhindern. Der entsprechende Ablauf
+ist in Abbildung~\ref{fig:validierung-fehler} dargestellt.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/abb_validierung_fehler.png}
+\caption{Konzept der Formularvalidierung und Fehlerrückmeldung}
+\label{fig:validierung-fehler}
+\end{figure}
+ 
+Verläuft die Anmeldung oder Registrierung erfolgreich, liefert das
+Backend ein Ergebnis zurück, aus dem die Anwendung das Konzept der
+Session bildet. Diese enthält alle Informationen, die das
+Frontend zu einem gegebenen Zeitpunkt über einen angemeldeten
+Nutzer wissen muss: Zugriffstoken, Nutzerdaten sowie die ihm
+zugewiesenen Rollen. Diese Session wird im localStorage des
+Browsers gespeichert, um den Anmeldestatus nach einem Neuladen
+der Seite oder einem erneuten Besuch der Anwendung zu erhalten und
+den Nutzer nicht bei jeder Interaktion erneut anmelden zu lassen.
+Da der Anmeldestatus an verschiedenen Stellen der Anwendung
+benötigt wird, beispielsweise in der Header-Navigation zur Anzeige
+des Nutzernamens oder beim Zugriff auf geschützte Inhalte, muss er
+reaktiv verfügbar sein. Hierfür wird zunächst die React Context
+API als Übergangslösung verwendet, mit dem Ziel, die
+State-Management-Lösung zu einem späteren Zeitpunkt auf Zustand
+zu migrieren. Abbildung~\ref{fig:session-konzept} veranschaulicht
+den vollständigen Ablauf der Authentifizierung von der Anmeldung
+bis zur Bereitstellung der Session in der Anwendung.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/abb_authentifizierung_ablauf.png}
+\caption{Ablauf der Authentifizierung vom Login zur geschützten Seite}
+\label{fig:session-konzept}
+\end{figure}
+ 
+Der Zugriff auf geschützte Bereiche der Anwendung wird über ein
+dreistufiges Konzept sichergestellt. Zunächst wird geprüft, ob der
+Anmeldestatus bereits zuverlässig bestimmt werden konnte. Ist dies
+noch nicht der Fall, wird dem Nutzer ein neutraler Ladezustand
+angezeigt, um ein kurzfristiges, fehlerhaftes Anzeigen nicht
+autorisierter Inhalte zu vermeiden. Erst danach wird geprüft, ob
+der Nutzer tatsächlich angemeldet ist; ist dies nicht der Fall,
+erfolgt eine Weiterleitung zur Startseite. Sind beide Prüfungen
+erfolgreich verlaufen, wird der eigentliche, geschützte Inhalt der
+Seite angezeigt. Abbildung~\ref{fig:routenschutz} zeigt diesen
+dreistufigen Ablauf im Überblick.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{Bilder/abb_routenschutz.png}
+\caption{Dreistufiges Konzept des rollenbasierten Seitenschutzes}
+\label{fig:routenschutz}
+\end{figure}
+ 
+Um den Nutzer nach erfolgreichem Login nicht bei jeder weiteren
+Anfrage erneut authentifizieren zu lassen, wird der gespeicherte
+Token automatisch an jede Anfrage an das Backend angehängt. Dies
+erfolgt zentral über einen einzigen, wiederverwendbaren
+Mechanismus, sodass der Token nicht bei jeder einzelnen Anfrage
+manuell mitgeschickt werden muss. Zusätzlich wird ein im
+localStorage gespeicherter Token nicht ungeprüft als gültig
+übernommen, sondern aktiv beim Backend validiert. Auf diese Weise
+wird sichergestellt, dass ein abgelaufener oder ungültiger Token
+erkannt und der betroffene Nutzer korrekt abgemeldet wird.
+ 
+Was das Onboarding betrifft, verfolgt die Plattform ein
+zweistufiges Rollenmodell. Jeder registrierte Nutzer erhält
+zunächst nur die Rolle Customer und kann die Plattform in dieser
+Rolle uneingeschränkt nutzen. Ein Wechsel zur Rolle Seller oder
+ServiceProvider ist über einen gesonderten Antragsprozess
+möglich, der von einem Administrator geprüft und freigegeben
+wird. Dieser Vorgang ermöglicht es Nutzern, zunächst Vertrauen in
+die Plattform aufzubauen, bevor sie sich als Anbieter
+registrieren, und stellt zugleich eine kontrollierte Vergabe von
+Verkäufer- und Dienstleisterkonten sicher. Abbildung~\ref{fig:interceptor-rollenmodell}
+fasst sowohl den automatischen Tokenversand als auch das
+Rollen-Upgrade-Modell zusammen.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/abb_interceptor_rollenmodell.png}
+\caption{Automatischer Tokenversand und Rollen-Upgrade-Modell}
+\label{fig:interceptor-rollenmodell}
+\end{figure}
+ 
+
+
+
+\subsection{Katalog- und Detailseiten}
+% TODO: Produktlisting, Paginierung, Sortierung, Detailseiten.
+
+\subsection{Warenkorb, Checkout und Zahlung}
+% TODO: Kombination aus Produkten und Buchungen; Stripe-Flow.
+
+\subsection{Verkäufer- und Anbieter-Dashboard}
+% TODO: Produktverwaltung, Dienstleistungsverwaltung, Buchungskalender,
+% Bestellübersicht.
+
+\subsection{Benutzeroberfläche}
+% TODO: Bestellhistorie, Buchungsübersicht, Stornierung.
+
+\subsection{Dienstleistungsbuchung}
+% TODO: Onboarding-Warteschlange, Inhaltsmoderation, Zahlungsverwaltung.
+
+\subsection{Werbung und Ankündigungen}
+% TODO: Ankündigungen je Rolle, produktspezifische Werbung,
+% Genehmigungsprozesse.
+
+\subsection{Messaging}
+% TODO: Inbox, Konversationsliste, Chat-UI.

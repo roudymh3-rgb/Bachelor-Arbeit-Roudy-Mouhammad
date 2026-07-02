@@ -1,0 +1,467 @@
+\chapter{Theoretischer Hintergrund}
+\label{chap:theoretischer-hintergrund}
+
+\section{Grundlagen von E-Commerce und Online-Marktplätzen}
+\label{sec:grundlagen-ecommerce}
+
+\subsection{Begriffsdefinitionen: E-Commerce, Marktplatz und Multi-Rollen-Modell}
+\label{subsec:begriffe}
+
+E-Commerce bezeichnet den elektronischen Handel mit Waren und
+Dienstleistungen über digitale Netzwerke, insbesondere das Internet.
+Er umfasst sämtliche onlinebasierten Geschäftstransaktionen zwischen
+Unternehmen und Konsumenten (B2C) sowie zwischen Unternehmen
+untereinander (B2B) \cite{turban_ecommerce}. Der Begriff schließt
+dabei nicht nur den reinen Produktverkauf ein, sondern auch die
+digitale Vermittlung von Dienstleistungen und die Abwicklung
+zugehöriger Geschäftsprozesse \cite{wirtz_electronic_business}.
+
+Ein Online-Marktplatz ist eine spezielle Form des E-Commerce, bei
+der eine Plattform als Intermediär zwischen mehreren Anbietern und
+Nachfragern auftritt. Im Unterschied zum klassischen Webshop eines
+einzelnen Händlers bündelt ein Marktplatz das Angebot verschiedener
+Anbieter und stellt die technische sowie organisatorische
+Infrastruktur für deren Interaktion bereit
+\cite{parker_platform_revolution}. Die Plattform übernimmt dabei
+Funktionen wie Authentifizierung, Zahlungsabwicklung,
+Bewertungssysteme und Zugriffskontrolle
+\cite{tiwana_platform_ecosystems}.
+
+Ein Multi-Rollen-Modell erweitert dieses Konzept, indem neben
+Käufern und Verkäufern weitere Akteursgruppen wie Dienstleister
+und Administratoren in das System integriert werden.
+Jede Rolle besitzt spezifische Rechte, Verantwortlichkeiten und
+Interaktionsmöglichkeiten innerhalb der Plattform. Dies erfordert
+eine rollenbasierte Zugriffskontrolle sowie klar definierte
+Workflows, um eine sichere und konsistente Interaktion zwischen
+den Akteuren zu gewährleisten \cite{parker_platform_revolution,
+tiwana_platform_ecosystems}.
+
+\subsection{Marktplatztypen und Geschäftsmodelle}
+\label{subsec:marktplatztypen}
+
+Digitale Marktplätze lassen sich nach verschiedenen Kriterien
+klassifizieren. Eine verbreitete Unterscheidung erfolgt anhand
+der Anzahl der beteiligten Marktseiten. Einseitige Marktplätze
+verbinden einen Anbieter direkt mit Endkunden, während zweiseitige
+Marktplätze zwei voneinander abhängige Nutzergruppen zusammenführen.
+Multi-Sided Plattformen verbinden darüber hinaus mehr als zwei
+Gruppen miteinander und ermöglichen komplexere Interaktionsmuster
+\cite{heinemann_online_handel}.
+
+Eine weitere Klassifikation unterscheidet zwischen vertikalen
+Marktplätzen, die sich auf eine bestimmte Branche spezialisieren,
+und horizontalen Marktplätzen, die branchenübergreifend verschiedene
+Produkte und Dienstleistungen anbieten. \textit{Bazar.io} folgt
+dem horizontalen Modell, da es sowohl Produkte als auch
+Dienstleistungen verschiedener Anbieter in einem einheitlichen
+System zusammenführt \cite{taeuscher_platform_models}.
+
+Hinsichtlich der Geschäftsmodelle lassen sich provisionsbasierte
+Modelle, bei denen die Plattform einen prozentualen Anteil am
+Transaktionswert einbehält, feste Transaktionsgebühren sowie
+hybride Ansätze unterscheiden, die beide Varianten kombinieren.
+Tabelle~\ref{tab:abrechnungsmodelle} stellt die drei verbreiteten 
+Abrechnungsmodelle digitaler Marktplätze vergleichend gegenüber. 
+Die Merkmale wurden auf Basis von \cite{taeuscher_platform_models} 
+und \cite{heinemann_online_handel} erarbeitet und zusammengefasst.
+
+\begin{table}[H]
+\centering
+\caption{Vergleich digitaler Abrechnungsmodelle}
+\label{tab:abrechnungsmodelle}
+\begin{tabular}{|l|p{5.5cm}|p{5.5cm}|}
+\hline
+\textbf{Modell} & \textbf{Vorteile} & \textbf{Nachteile} \\
+\hline
+Provisionsbasiert &
+Automatisch umsatzabhängig, fair für kleine Anbieter &
+Geringere Planbarkeit der Einnahmen \\
+\hline
+Feste Transaktionsgebühr &
+Planbare Einnahmen, einfache Abrechnung &
+Hohe Belastung bei geringwertigen Transaktionen \\
+\hline
+Hybrid &
+Ausgewogene Balance zwischen Stabilität und Flexibilität &
+Höhere Komplexität in der Abrechnung \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsection{Grundlagen der Online-Zahlung}
+\label{subsec:online-zahlung}
+
+Die Zahlungsabwicklung ist ein zentraler Bestandteil jeder
+E-Commerce-Plattform. Moderne Zahlungssysteme basieren häufig
+auf einer intentionsbasierten Architektur, bei der eine Zahlung
+zunächst als sogenannter Payment Intent vorbereitet und autorisiert
+wird, bevor sie final ausgeführt wird. Dieser Ansatz ermöglicht
+eine flexible Kopplung des Zahlungsprozesses an Geschäftsprozesse
+wie Reservierungen, Buchungen oder Bestellbestätigungen
+\cite{stripe_security_guide}.
+
+Für die Integration im Frontend stellt Stripe mit Stripe Elements
+eine Bibliothek vorgefertigter, PCI-DSS-konformer UI-Komponenten
+bereit, die eine sichere Erfassung von Zahlungsdaten direkt im
+Browser ermöglichen, ohne dass sensible Kartendaten den eigenen
+Server passieren \cite{stripe_elements_docs}. Die Einbindung in
+React-basierte Frontends erfolgt über die offizielle
+React Stripe.js-Bibliothek, die Hooks und Komponenten für die
+nahtlose Integration des Stripe-Zahlungsflusses bereitstellt
+\cite{stripe_react_js_docs}.
+
+PCI DSS (Payment Card Industry Data Security Standard) ist ein
+Sicherheitsstandard, der Anforderungen an die sichere Verarbeitung,
+Speicherung und Übertragung von Kartendaten definiert. Durch den
+Einsatz von Stripe Elements werden sensible Zahlungsdaten
+ausschließlich auf den Servern von Stripe verarbeitet, wodurch
+der PCI-DSS-Scope des Betreibers erheblich reduziert wird
+\cite{stripe_security_guide}.
+
+\subsection{Wettbewerbsanalyse bestehender Marktplatzplattformen}
+\label{subsec:wettbewerbsanalyse}
+
+Im deutschen E-Commerce-Markt dominieren sowohl internationale
+als auch lokale Plattformen. Marktführer wie Amazon verbinden
+Käufer, Verkäufer, Logistikpartner und Administratoren in einem
+Multi-Sided-Modell und setzen dabei auf starke Kundenbindung
+sowie eine breite Produktauswahl \cite{parker_platform_revolution}.
+Spezialisierte Plattformen wie Booking.com zeigen, dass auch
+vertikale Marktplätze mit Fokus auf Dienstleistungsbuchungen
+hohe Marktanteile erzielen können.
+
+Tabelle~\ref{tab:wettbewerb} vergleicht ausgewählte bestehende
+Plattformen hinsichtlich ihrer Kernfunktionen und zeigt, wie
+sich \textit{Bazar.io} von diesen abgrenzt.
+
+\begin{table}[h]
+\centering
+\caption{Vergleich bestehender Marktplatzplattformen}
+\label{tab:wettbewerb}
+\begin{tabular}{|p{2.8cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
+\hline
+\textbf{Plattform} & \textbf{Produkte} &
+\textbf{Dienst-leistungen} & \textbf{Multi-Rolle} &
+\textbf{Buchungs-system} \\
+\hline
+Amazon & \checkmark & eingeschränkt & \checkmark & \texttimes \\
+\hline
+Etsy & \checkmark & \texttimes & eingeschränkt & \texttimes \\
+\hline
+Booking.com & \texttimes & \checkmark & eingeschränkt &
+\checkmark \\
+\hline
+Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
+\hline
+\textit{Bazar.io} & \checkmark & \checkmark & \checkmark &
+\checkmark \\
+\hline
+\end{tabular}
+\end{table}
+
+\cite{taeuscher_platform_models, heinemann_online_handel}
+
+\section{Frontend-Architektur für webbasierte Anwendungen}
+\label{sec:frontend-architektur}
+
+\subsection{Single-Page Applications vs.\ Multi-Page Applications}
+\label{subsec:spa-mpa}
+
+Webbasierte Anwendungen lassen sich grundlegend in zwei
+Architekturansätze unterteilen: Multi-Page Applications (MPA)
+und Single-Page Applications (SPA). Bei MPAs wird bei jeder
+Nutzerinteraktion eine vollständige HTML-Seite vom Server geladen
+und im Browser neu gerendert. Dieser Ansatz führt bei komplexen
+Anwendungen zu spürbaren Ladezeiten und einer fragmentierten
+Nutzererfahrung \cite{bhalla_spa_architecture}.
+
+SPAs hingegen laden die Anwendung einmalig und aktualisieren
+anschließend nur die jeweils relevanten Teile der Oberfläche.
+Die Navigation erfolgt clientseitig über JavaScript, wodurch eine
+flüssige, appähnliche Nutzererfahrung entsteht
+\cite{jonathan_react_spa}. Tabelle~\ref{tab:spa-mpa} stellt
+beide Ansätze vergleichend gegenüber.
+
+
+\begin{table}[h]
+\centering
+\caption{Vergleich SPA und MPA}
+\label{tab:spa-mpa}
+\begin{tabular}{|p{3.5cm}|p{4.5cm}|p{4.5cm}|}
+\hline
+\textbf{Kriterium} & \textbf{SPA} & \textbf{MPA} \\
+\hline
+Seitennavigation & Clientseitig, ohne Neuladen &
+Serverseitig, vollständiges Neuladen \\
+\hline
+Performance & Schnelle Interaktion nach initialem Laden &
+Höhere Ladezeiten bei jedem Seitenwechsel \\
+\hline
+SEO & Eingeschränkt ohne SSR & Gut geeignet \\
+\hline
+Komplexität & Höher im Frontend & Höher im Backend \\
+\hline
+Geeignet für & Interaktionsreiche Anwendungen &
+Inhaltsreiche Webseiten \\
+\hline
+\end{tabular}
+\end{table}
+
+Für interaktionsreiche Plattformen wie \textit{Bazar.io}, bei
+denen verschiedene Rollen unterschiedliche Ansichten und Workflows
+erfordern, bietet die SPA-Architektur entscheidende Vorteile
+hinsichtlich Performance und Benutzererfahrung. Da
+\textit{Bazar.io} keinen primären SEO-Fokus verfolgt, wiegen
+die Vorteile der SPA-Architektur die Einschränkungen
+hinsichtlich Suchmaschinenoptimierung deutlich auf.
+
+\subsection{Komponentenbasierte Entwicklung}
+\label{subsec:komponentenbasiert}
+
+Ein zentrales Prinzip moderner Frontend-Entwicklung ist die
+komponentenbasierte Architektur. Die Benutzeroberfläche wird dabei
+in eigenständige, wiederverwendbare Einheiten aufgeteilt, die
+jeweils ihre eigene Logik, ihren Zustand und ihre Darstellung
+kapseln. Dieser Ansatz fördert die Wartbarkeit und
+Wiederverwendbarkeit von Code, da Komponenten unabhängig
+voneinander entwickelt, getestet und ausgetauscht werden können
+\cite{ijlrp_react_components}.
+
+In der Praxis unterscheidet man zwischen Presentational Components, 
+die ausschließlich für die Darstellung zuständig sind, und Container 
+Components, die Geschäftslogik und Datenzugriff kapseln 
+\cite{abramov_presentational_container}. Diese Trennung hält Komponenten überschaubar und
+erleichtert das Testen einzelner Einheiten. Die Qualität
+komponentenbasierter Anwendungen hängt wesentlich von einer
+sauberen Trennung der Verantwortlichkeiten ab. Häufige
+Entwurfsprobleme, sogenannte Code Smells, wie zu große
+Komponenten oder starke Kopplungen, beeinträchtigen die
+Lesbarkeit und Wartbarkeit des Codes
+\cite{ferreira_react_smells}.
+
+\subsection{State Management}
+\label{subsec:state-management}
+
+In komplexen SPAs mit mehreren Nutzerrollen und
+funktionsübergreifenden Daten, wie Authentifizierungsstatus,
+Nutzerrolle und Warenkorbinhalt, reicht lokaler
+Komponentenzustand häufig nicht aus. Globales State
+Management ermöglicht es, Anwendungszustände zentral zu
+verwalten und konsistent über alle Komponenten hinweg
+verfügbar zu machen \cite{bhalla_spa_architecture}.
+
+Zustand ist eine schlanke, hook-basierte
+State-Management-Bibliothek für React-Anwendungen. Ein Store
+wird direkt als Hook definiert und kann in jeder Komponente
+ohne zusätzliche Provider-Wrapper verwendet werden. Dieses
+Konzept reduziert die Komplexität der Zustandsverwaltung
+erheblich und ermöglicht eine schnelle sowie wartbare
+Implementierung \cite{zustand_docs}. Für \textit{Bazar.io}
+verwaltet Zustand zentrale Zustände wie den
+Authentifizierungsstatus, die aktive Nutzerrolle sowie den
+Warenkorbinhalt.
+
+\subsection{Routing in Single-Page Applications}
+\label{subsec:routing}
+
+Da SPAs keine serverseitigen Seitennavigationen durchführen,
+übernimmt clientseitiges Routing die Aufgabe, verschiedene
+Ansichten der Anwendung anhand der URL darzustellen. React
+Router ist die etablierte Lösung für Routing in
+React-Anwendungen und ermöglicht die deklarative Definition
+von Routen sowie die Navigation zwischen Ansichten ohne
+Seitenneuladen \cite{reactrouter_docs}.
+
+Für Multi-Rollen-Plattformen wie \textit{Bazar.io} ist
+rollenbasierter Seitenschutz ein wesentliches
+Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
+Nutzer mit den entsprechenden Berechtigungen zugänglich
+gemacht. Dieses Konzept basiert auf dem Prinzip der
+rollenbasierten Zugriffskontrolle (RBAC), das den Zugriff
+auf Ressourcen und Funktionen abhängig von der zugewiesenen
+Rolle eines Nutzers steuert \cite{ferraiolo_rbac_arxiv}.
+In der Praxis werden solche geschützten Routen als 
+Wrapper-Komponenten implementiert, die den 
+Authentifizierungsstatus und die Rolle des Nutzers prüfen, 
+bevor die eigentliche Ansicht gerendert wird 
+\cite{wieruch_protected_routes}.
+
+
+\section{Technologiestack}
+\label{sec:technologiestack}
+
+\subsection{React als Frontend-Framework}
+\label{subsec:react}
+
+React ist eine JavaScript-Bibliothek zur Entwicklung
+komponentenbasierter Benutzeroberflächen, die von Meta
+entwickelt und gepflegt wird. Sie basiert auf dem Konzept
+des Virtual DOM, wodurch Änderungen im Browser gezielt und
+performant aktualisiert werden können, ohne die gesamte
+Seite neu zu laden. React hat sich als eines der
+meistgenutzten Frontend-Frameworks etabliert
+\cite{comparative_spa_frameworks}.
+
+Im Vergleich zu Angular bietet React eine schlankere
+Architektur und größere Flexibilität bei der Strukturierung
+der Anwendung. Angular verfolgt einen opinionsstarken Ansatz
+mit strikten Konventionen, während React lediglich die
+View-Schicht abdeckt und Entwicklern die Wahl der
+ergänzenden Bibliotheken überlässt. Vue.js liegt konzeptuell
+zwischen beiden Ansätzen, verfügt jedoch über ein kleineres
+Ökosystem und eine geringere Verbreitung in komplexen
+Unternehmensanwendungen \cite{comparative_spa_frameworks}.
+
+Im Vergleich zu Next.js bietet React als reine
+Client-Side-Rendering-Lösung Vorteile in Szenarien, bei
+denen keine serverseitige Vorausführung erforderlich ist.
+Für \textit{Bazar.io} als interaktionsreiche
+Multi-Rollen-Plattform ohne primären SEO-Fokus ist dieser
+Ansatz geeignet \cite{pati_react_nextjs_2025}.
+
+\subsection{UI-Bibliotheken und Designsysteme}
+\label{subsec:ui-bibliotheken}
+
+Ein konsistentes Designsystem bildet die Grundlage für eine
+einheitliche Nutzererfahrung über alle Ansichten und Rollen
+hinweg. Designsysteme definieren wiederverwendbare visuelle
+Grundelemente wie Farben, Typografie, Abstände und
+Komponentenstile und stellen sicher, dass die
+Benutzeroberfläche unabhängig vom jeweiligen Entwickler
+konsistent bleibt.
+
+Tailwind CSS ist ein utility-first CSS-Framework, das
+Entwicklern vorgefertigte CSS-Hilfsklassen bereitstellt,
+die direkt im HTML-Markup verwendet werden. Im Gegensatz
+zu klassischen CSS-Frameworks wie Bootstrap definiert
+Tailwind keine fertigen Komponenten, sondern atomare
+Stilklassen wie Abstände, Farben und Typografie, die
+flexibel kombiniert werden können. Dieser Ansatz
+beschleunigt die Entwicklung erheblich, da kein separates
+CSS geschrieben werden muss und Stile direkt im Markup
+sichtbar sind \cite{tailwindcss_docs}.
+
+shadcn/ui ist eine Sammlung zugänglicher, anpassbarer
+React-Komponenten, die auf Radix UI-Primitives basieren
+und mit Tailwind CSS gestaltet sind. Im Unterschied zu
+klassischen Komponentenbibliotheken wird shadcn/ui nicht
+als Paketabhängigkeit installiert, sondern die
+Komponentenquellcodes werden direkt in das Projekt kopiert.
+Dadurch behalten Entwickler die vollständige Kontrolle
+über den Code und können Komponenten ohne Einschränkungen
+anpassen \cite{shadcn_docs}.
+
+Die Einhaltung von Barrierefreiheitsstandards, insbesondere
+der Web Content Accessibility Guidelines (WCAG~2.1), ist
+dabei ein wesentliches Qualitätsmerkmal moderner
+Webanwendungen. WCAG~2.1 legt unter anderem
+Mindestanforderungen an Kontrastverhältnisse,
+Tastaturnavigation und Screenreader-Unterstützung fest
+\cite{shah_design_system_2023}. Die Einhaltung dieser
+Standards erhöht nicht nur die Zugänglichkeit der
+Plattform für Menschen mit Behinderungen, sondern
+verbessert auch die allgemeine Usability für alle Nutzer.
+
+\subsection{REST-APIs und HTTP-Kommunikation}
+\label{subsec:rest-api}
+
+Die Kommunikation zwischen Frontend und Backend erfolgt in
+\textit{Bazar.io} über REST-basierte HTTP-Schnittstellen.
+REST ist ein Architekturstil für Webschnittstellen, der auf 
+zustandslosen Anfragen, standardisierten HTTP-Methoden und 
+ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
+enthält alle zur Verarbeitung notwendigen Informationen,
+ohne dass der Server einen clientseitigen Sitzungszustand
+speichern muss.
+
+Für die Absicherung der API-Endpunkte setzt
+\textit{Bazar.io} auf tokenbasierte Authentifizierung
+über Laravel Sanctum. Nach erfolgreicher Anmeldung
+erhält der Nutzer einen Bearer Token, der bei jeder
+weiteren API-Anfrage im Authorization-Header übermittelt
+wird. Der Zugriff auf geschützte Endpunkte wird
+serverseitig anhand der Rolle des Nutzers gesteuert,
+sodass nur berechtigte Nutzer auf rollenspezifische
+Funktionen zugreifen können \cite{laravel_sanctum_docs}.
+Neben der REST-basierten Kommunikation setzt
+\textit{Bazar.io} für das Echtzeit-Messaging auf
+WebSockets. WebSockets ermöglichen eine dauerhafte,
+bidirektionale Verbindung zwischen Client und Server,
+über die Nachrichten in Echtzeit übertragen werden,
+ohne dass der Client wiederholt Anfragen stellen muss.
+Die Verwaltung und Verteilung der WebSocket-Verbindungen
+erfolgt über Pusher als externen Broadcast-Dienst.
+Das Frontend abonniert die relevanten Channels über
+die JavaScript-Bibliothek \texttt{pusher-js}, sodass
+neue Nachrichten und Statusänderungen unmittelbar in
+der Benutzeroberfläche dargestellt werden
+\cite{pusher_docs}.
+
+
+\section{Qualitätssicherung in der Frontend-Entwicklung}
+\label{sec:qualitaetssicherung}
+
+\subsection{Teststrategie: Unit-, Integrations- und E2E-Tests}
+\label{subsec:teststrategie}
+
+Eine strukturierte Teststrategie ist ein wesentlicher
+Bestandteil der Qualitätssicherung in der
+Softwareentwicklung. Agile Entwicklungsansätze empfehlen
+eine Kombination aus verschiedenen Testebenen, häufig
+als Testpyramide bezeichnet, um sowohl einzelne
+Komponenten als auch das Zusammenspiel des Gesamtsystems
+abzusichern \cite{cohn_agile}. Die Testpyramide umfasst
+an der Basis zahlreiche schnelle Unit-Tests, darüber
+Integrationstests und an der Spitze eine begrenzte
+Anzahl End-to-End-Tests.
+
+Unit-Tests und Integrationstests werden mit Vitest
+durchgeführt. Vitest ist ein nativer Test-Runner für
+Vite-basierte React-Anwendungen und ist vollständig
+kompatibel mit dem Vite-Build-System ohne zusätzliche
+Konfiguration. Während Unit-Tests einzelne Komponenten
+und Funktionen isoliert prüfen, testen Integrationstests
+das Zusammenspiel mehrerer Komponenten, etwa die
+Interaktion eines Formulars mit dem globalen State
+\cite{vitest_docs}.
+
+End-to-End-Tests simulieren reale Nutzerinteraktionen
+im Browser und prüfen vollständige Anwendungsabläufe.
+Playwright ermöglicht die automatisierte Ausführung
+von Nutzerflows in mehreren Browsern gleichzeitig.
+Für \textit{Bazar.io} mit seinen verschiedenen
+Nutzerrollen bietet Playwright entscheidende Vorteile,
+da rollenspezifische Abläufe wie Buchung, Checkout
+und Adminfreigabe browserübergreifend getestet werden
+können \cite{playwright_docs}.
+
+\subsection{Usability und User Experience}
+\label{subsec:usability}
+
+Neben funktionaler Korrektheit ist die
+Gebrauchstauglichkeit einer Webanwendung ein zentrales
+Qualitätsmerkmal. Heuristische Evaluation ist eine
+etablierte Methode zur Bewertung der Usability, bei der
+Experten die Benutzeroberfläche anhand definierter
+Heuristiken auf Usability-Probleme untersuchen. Im
+Kontext von E-Commerce-Plattformen wurden spezifische
+Heuristiken entwickelt, die auf die besonderen
+Anforderungen digitaler Marktplätze abgestimmt sind,
+darunter Kriterien wie Navigationskonsistenz,
+Transparenz von Preisen und Prozessen sowie die
+Effizienz des Checkout-Vorgangs
+\cite{abdulaziz_heuristic_marketplace}.
+
+User Experience umfasst dabei neben der reinen
+Gebrauchstauglichkeit auch emotionale und
+wahrnehmungsbezogene Aspekte der Nutzung. Für
+E-Commerce-Websites wurden UX-spezifische Heuristiken
+erarbeitet, die Aspekte wie Vertrauen, Orientierung,
+Effizienz des Checkout-Prozesses und visuelle Konsistenz
+berücksichtigen \cite{bonastre_ux_heuristics}. Diese
+Erkenntnisse fließen in die Konzeption und Bewertung
+des Frontends von \textit{Bazar.io} ein und bilden die
+Grundlage für die Usability-Evaluation in
+Kapitel~\ref{chap:testen}.

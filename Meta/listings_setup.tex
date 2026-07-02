@@ -1,0 +1,55 @@
+% =======================================================================
+% Code-Listings Konfiguration für TypeScript / React-Code (TSX)
+% Hinweis: \usepackage{listings} und \usepackage{xcolor} sind in
+% praeampel.tex bereits vorhanden und werden hier NICHT erneut geladen.
+% =======================================================================
+
+% Farben für die Syntax-Hervorhebung
+\definecolor{codebg}{RGB}{246,246,246}
+\definecolor{codeframe}{RGB}{200,200,200}
+\definecolor{codekeyword}{RGB}{0,0,180}
+\definecolor{codecomment}{RGB}{95,140,95}
+\definecolor{codestring}{RGB}{170,40,40}
+
+% Eigene Sprache für TypeScript/TSX, da listings sie nicht direkt kennt
+\lstdefinelanguage{TypeScript}{
+  keywords={
+    const, let, var, function, return, if, else, for, while, switch, case,
+    break, continue, new, this, typeof, instanceof, in, of, class, extends,
+    implements, interface, type, enum, export, import, from, as, default,
+    async, await, try, catch, finally, throw, null, undefined, true, false,
+    void, never, unknown, any, public, private, protected, readonly, static
+  },
+  keywordstyle=\color{codekeyword}\bfseries,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{codecomment}\itshape,
+  string=[b]",
+  string=[b]',
+  string=[b]`,
+  stringstyle=\color{codestring},
+  morestring=[b]",
+  sensitive=true
+}
+
+% Allgemeiner Stil für alle Code-Listings in der Arbeit
+\lstdefinestyle{tsxstyle}{
+  language=TypeScript,
+  backgroundcolor=\color{codebg},
+  rulecolor=\color{codeframe},
+  frame=single,
+  framesep=4pt,
+  basicstyle=\ttfamily\footnotesize,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=8pt,
+  breaklines=true,
+  breakatwhitespace=false,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  xleftmargin=12pt,
+  xrightmargin=4pt
+}
+
+\lstset{style=tsxstyle}
