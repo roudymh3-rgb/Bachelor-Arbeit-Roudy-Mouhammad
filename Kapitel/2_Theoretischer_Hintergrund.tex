@@ -262,6 +262,26 @@ Implementierung \cite{zustand_docs}. Für \textit{Bazar.io}
 verwaltet Zustand zentrale Zustände wie den
 Authentifizierungsstatus, die aktive Nutzerrolle sowie den
 Warenkorbinhalt.
+Neben dem clientseitigen Anwendungszustand, der Informationen
+wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
+eine SPA auch den serverseitigen Datenbestand verwalten, also
+Daten, die über eine API vom Backend abgerufen werden. Diese
+beiden Arten von Zustand unterscheiden sich grundlegend: Während
+clientseitiger Zustand vollständig im Browser entsteht und
+kontrolliert wird, ist serverseitiger Zustand lediglich eine
+zwischengespeicherte Abbildung von Daten, deren eigentliche Quelle
+auf dem Server liegt und die daher veralten kann. TanStack Query
+ist eine Bibliothek, die auf die Verwaltung dieses serverseitigen
+Zustands spezialisiert ist. Sie übernimmt das Abrufen,
+Zwischenspeichern und Synchronisieren von API-Daten und stellt den
+aufrufenden Komponenten zugleich den Zustand jeder Anfrage bereit,
+etwa ob diese noch geladen wird, fehlgeschlagen ist oder
+erfolgreich Daten geliefert hat \cite{tanstack_query_docs}. Für
+\textit{Bazar.io} ergibt sich damit eine klare Aufteilung: Der
+clientseitige Anwendungszustand und der serverseitige
+Datenbestand werden durch getrennte, jeweils spezialisierte
+Mechanismen verwaltet, während TanStack Query durchgängig für
+Letzteren zuständig ist.
 
 \subsection{Routing in Single-Page Applications}
 \label{subsec:routing}
@@ -374,7 +394,15 @@ zustandslosen Anfragen, standardisierten HTTP-Methoden und
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
 enthält alle zur Verarbeitung notwendigen Informationen,
 ohne dass der Server einen clientseitigen Sitzungszustand
-speichern muss.
+speichern muss. Auf der Clientseite werden diese HTTP-Anfragen mithilfe von Axios
+umgesetzt, einem verbreiteten, Promise-basierten HTTP-Client für
+JavaScript-Anwendungen. Axios erlaubt es, eine zentrale Instanz
+mit einer festen Basis-Adresse und einheitlichen
+Standardeinstellungen zu konfigurieren, und stellt sogenannte
+Interceptors bereit, mit denen ausgehende Anfragen und eingehende
+Antworten an einer zentralen Stelle verarbeitet werden können,
+etwa um jeder Anfrage automatisch einen Authentifizierungstoken
+hinzuzufügen \cite{axios_docs}.
 
 Für die Absicherung der API-Endpunkte setzt
 \textit{Bazar.io} auf tokenbasierte Authentifizierung

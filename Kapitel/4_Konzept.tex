@@ -10,7 +10,7 @@
 
 \subsection{Komponentenarchitektur und Ordnerstruktur}
 \label{subsec:komponentenarchitektur}
-
+ 
 Das Frontend von \textit{Bazar.io} folgt einer
 feature-basierten Ordnerstruktur, bei der
 zusammengehörige Dateien nach fachlichen
@@ -20,7 +20,7 @@ Skalierbarkeit des Projekts, da neue
 Funktionsbereiche unabhängig voneinander
 entwickelt und erweitert werden können
 \cite{ijlrp_react_components}.
-
+ 
 Das Projekt wird mit Vite als Build-Tool
 initialisiert, das eine schnelle
 Entwicklungsumgebung und optimierte
@@ -36,139 +36,174 @@ Abhängigkeiten des Projekts. Ergänzend sind
 \texttt{eslint.config.js} für die statische
 Codeanalyse und \texttt{components.json}
 für die shadcn/ui-Konfiguration vorhanden.
-
+ 
 Der Quellcode befindet sich vollständig im
 Verzeichnis \texttt{src/}, das in folgende
 Hauptbereiche unterteilt ist. Das Verzeichnis
-\texttt{app/router/} enthält die zentrale
-Routing-Konfiguration in \texttt{index.tsx}.
-Unter \texttt{layouts/} befindet sich die
+\texttt{app/} enthält zwei Unterordner: In
+\texttt{app/router/} liegt die zentrale
+Routing-Konfiguration in \texttt{index.tsx},
+in \texttt{app/providers/} werden die
+projektweiten Provider-Komponenten
+zusammengeführt, über die zentrale Werte
+und Instanzen für die gesamte Anwendung
+bereitgestellt werden. Unter
+\texttt{layouts/} befindet sich die
 Layout-Komponente \texttt{main-layout.tsx},
 die als Wrapper für alle Seiten dient und
-gemeinsame Elemente wie Header und Navigation
+gemeinsame Elemente wie den Anwendungs-Header
 einbindet. Das Verzeichnis \texttt{features/}
 bildet den Kern der Anwendung, in dem jeder
 Funktionsbereich einen eigenen Unterordner
-mit zugehörigen Komponenten, Hooks, Schemas
-und API-Funktionen erhält. Als erster
-Funktionsbereich enthält
-\texttt{features/auth/schemas/} bereits das
-Validierungsschema für den Login-Prozess in
-\texttt{login-schema.ts}. Unter
-\texttt{components/ui/} befinden sich die
-wiederverwendbaren UI-Basiskomponenten aus
-shadcn/ui wie \texttt{button.tsx} und
-\texttt{card.tsx}, deren Quellcode direkt
-ins Projekt kopiert und angepasst wird
-\cite{shadcn_docs}. Das Verzeichnis
+mit zugehörigen Komponenten, Hooks, Schemas,
+Typdefinitionen und API-Funktionen erhält.
+Unter \texttt{components/ui/} befinden sich
+die wiederverwendbaren UI-Basiskomponenten aus
+shadcn/ui, deren Quellcode direkt ins Projekt
+kopiert und angepasst wird \cite{shadcn_docs},
+während \texttt{components/shared/}
+projektübergreifend genutzte Komponenten wie
+den Anwendungs-Header enthält. Das Verzeichnis
 \texttt{assets/} enthält statische
-Ressourcen, während \texttt{lib/}
-gemeinsam genutzte Hilfsfunktionen
-bereitstellt. Die globale CSS-Konfiguration
-in \texttt{index.css} bindet die
-Tailwind-Direktiven sowie die Design-Tokens
-des Designsystems ein \cite{tailwindcss_docs}.
-
+Ressourcen, während \texttt{lib/} die
+technische Infrastruktur bereitstellt,
+darunter die Anbindung an das Backend und die
+Verwaltung der Authentifizierung. Die globale
+CSS-Konfiguration in \texttt{index.css} bindet
+die Tailwind-Direktiven sowie die
+Design-Tokens des Designsystems ein
+\cite{tailwindcss_docs}.
+ 
 Abbildung~\ref{fig:ordnerstruktur} zeigt die
-initiale Ordnerstruktur des Projekts zu
-Beginn der Implementierung.
-
+Ordnerstruktur des Projekts zum aktuellen
+Stand der Konzeption. Jeder Funktionsbereich
+unter \texttt{features/} folgt intern
+derselben Unterstruktur mit den Ordnern
+\texttt{api/}, \texttt{components/},
+\texttt{hooks/}, \texttt{pages/},
+\texttt{schemas/} und \texttt{types/}; diese
+wird in Kapitel~\ref{chap:umsetzung} am
+Beispiel einzelner Funktionsbereiche im
+Detail gezeigt.
+ 
 \begin{figure}[H]
 \centering
 \begin{verbatim}
 BAZARIO/
-├── public/
-├── src/
-│   ├── app/
-│   │   └── router/
-│   │       └── index.tsx
-│   ├── assets/
-│   ├── components/
-│   │   └── ui/
-│   │       ├── button.tsx
-│   │       └── card.tsx
-│   ├── features/
-│   │   └── auth/
-│   │       └── schemas/
-│   │           └── login-schema.ts
-│   ├── layouts/
-│   │   └── main-layout.tsx
-│   ├── lib/
-│   ├── App.css
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-├── components.json
-├── eslint.config.js
-├── index.html
-├── package.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-└── vite.config.ts
+|-- public/
+|-- src/
+|   |-- app/
+|   |   |-- providers/
+|   |   `-- router/
+|   |-- assets/
+|   |-- components/
+|   |   |-- shared/
+|   |   `-- ui/
+|   |-- features/
+|   |   |-- account/
+|   |   |-- auth/
+|   |   |-- categories/
+|   |   |-- home/
+|   |   |-- products/
+|   |   |-- sellers/
+|   |   |-- service-providers/
+|   |   `-- services/
+|   |-- layouts/
+|   |-- lib/
+|   |   |-- api/
+|   |   `-- auth/
+|   |-- App.tsx
+|   |-- index.css
+|   `-- main.tsx
+|-- components.json
+|-- eslint.config.js
+|-- index.html
+|-- package.json
+|-- tsconfig.json
+|-- tsconfig.app.json
+|-- tsconfig.node.json
+`-- vite.config.ts
 \end{verbatim}
-\caption{Initiale Ordnerstruktur des Frontends
-von Bazar.io}
+\caption{Ordnerstruktur des Frontends von
+Bazar.io zum aktuellen Stand der Konzeption}
 \label{fig:ordnerstruktur}
 \end{figure}
-
-Im Verlauf der Implementierung wird die
-Ordnerstruktur schrittweise um weitere
-Funktionsbereiche erweitert.
-Tabelle~\ref{tab:geplante-features} gibt
-einen Überblick über die geplanten
-Feature-Ordner und deren Inhalte.
-
+ 
+Ein Teil der in Tabelle~\ref{tab:geplante-features}
+aufgeführten Funktionsbereiche ist zum
+gegenwärtigen Zeitpunkt bereits als eigener
+Feature-Ordner umgesetzt, weitere befinden
+sich noch in Planung und werden im weiteren
+Verlauf der Implementierung ergänzt.
+ 
 \begin{table}[H]
 \centering
-\caption{Geplante Feature-Ordner des Frontends}
+\caption{Feature-Ordner des Frontends von
+Bazar.io mit Umsetzungsstand}
 \label{tab:geplante-features}
-\begin{tabular}{|l|p{9cm}|}
+\begin{tabular}{|l|p{7cm}|l|}
 \hline
-\textbf{Feature-Ordner} & \textbf{Inhalt} \\
+\textbf{Feature-Ordner} & \textbf{Inhalt} &
+\textbf{Status} \\
 \hline
-\texttt{auth/} & Registrierung, Login,
-Passwort zurücksetzen,
-Rollen-Upgrade-Antrag \\
+\texttt{auth/} & Registrierung, Login (als
+Dialog im Header) & Umgesetzt \\
+\hline
+\texttt{account/} & Kontoübersicht,
+Rollen-Upgrade-Anträge zum Seller und zum
+ServiceProvider & Umgesetzt \\
+\hline
+\texttt{categories/} & Kategorien für
+Produkte und Dienstleistungen & Umgesetzt \\
+\hline
+\texttt{home/} & Startseite mit Produkt- und
+Dienstleistungsvorschau & Umgesetzt \\
 \hline
 \texttt{products/} & Produktlisting,
-Produktdetail, Produktverwaltung
-für Verkäufer \\
+Produktdetail, Produktverwaltung für
+Verkäufer & Umgesetzt \\
 \hline
-\texttt{services/} & Dienstleistungslisting,
-Dienstleistungsdetail, Verwaltung
-für Dienstleister \\
+\texttt{sellers/} & Verkäuferprofile und
+deren Produktlisting & Umgesetzt \\
+\hline
+\texttt{service-providers/} &
+Dienstleister-Profile und deren
+Angebotsliste & Umgesetzt \\
+\hline
+\texttt{services/} &
+Dienstleistungslisting, Dienstleistungsdetail,
+Verwaltung für Dienstleister & Umgesetzt \\
 \hline
 \texttt{cart/} & Warenkorb, Checkout,
-Stripe-Integration \\
+Stripe-Integration & Geplant \\
 \hline
 \texttt{bookings/} & Buchungsübersicht,
-Buchungskalender, Stornierung \\
+Buchungskalender, Stornierung & Geplant \\
 \hline
 \texttt{orders/} & Bestellhistorie,
-Bestelldetail, Statusverwaltung \\
+Bestelldetail, Statusverwaltung & Geplant \\
 \hline
 \texttt{messaging/} & Inbox,
-Konversationsliste, Chat-UI \\
+Konversationsliste, Chat-UI & Geplant \\
 \hline
 \texttt{advertising/} & Werbeanzeigen
-erstellen, Genehmigungsprozess \\
+erstellen, Genehmigungsprozess & Geplant \\
 \hline
 \texttt{admin/} & Rollenwechselanträge,
-Werbegenehmigung,
-Plattformgebühren \\
+Werbegenehmigung, Plattformgebühren &
+Geplant \\
 \hline
 \end{tabular}
 \end{table}
-
+ 
 Die finale Ordnerstruktur nach Abschluss
 der Implementierung wird in
 Kapitel~\ref{chap:umsetzung} dokumentiert.
-
+ 
 \subsection{Routing-Konzept und
 rollenbasierter Seitenschutz}
 \label{subsec:routing-konzept}
-
+ 
 Das Routing von \textit{Bazar.io} basiert
 auf React Router DOM und folgt einem
 hierarchischen Konzept, bei dem alle Routen
@@ -182,14 +217,14 @@ in der Hauptkomponente \texttt{App.tsx}
 eingebunden. Als oberste Ebene der
 Routenhierarchie dient die Komponente
 \texttt{MainLayout}, die gemeinsame
-Elemente wie Header und Navigation für
+Elemente wie den Anwendungs-Header für
 alle Unterseiten bereitstellt. Alle
 seitenspezifischen Komponenten werden
 als \texttt{children} innerhalb dieses
 Layouts gerendert, sodass das gemeinsame
 Layout nur einmal definiert werden muss
 \cite{reactrouter_docs}.
-
+ 
 Für den rollenbasierten Seitenschutz
 werden geschützte Routen als
 Wrapper-Komponenten implementiert, die
@@ -198,88 +233,112 @@ Authentifizierungsstatus sowie die Rolle
 des Nutzers prüfen
 \cite{reactrouter_docs,
 wieruch_protected_routes}. Ist der Nutzer
-nicht authentifiziert oder besitzt nicht
-die erforderliche Rolle, wird er
-automatisch auf die Anmeldeseite
-weitergeleitet. Dieses Konzept basiert
+nicht authentifiziert, wird er auf die
+Startseite umgeleitet, von der aus die
+Anmeldung über einen Dialog im
+Anwendungs-Header erfolgen kann; besitzt
+er zwar eine gültige Sitzung, aber nicht
+die für die jeweilige Seite erforderliche
+Rolle, erfolgt die Weiterleitung auf die
+Kontoübersicht. Dieses Konzept basiert
 auf dem RBAC-Prinzip, das den Zugriff
 auf Ressourcen abhängig von der
 zugewiesenen Rolle steuert
 \cite{ferraiolo_rbac_arxiv}.
-
+ 
 Tabelle~\ref{tab:routen} gibt einen
-Überblick über die geplanten Routen
-der Plattform, gegliedert nach
-Nutzerrolle.
-
+Überblick über die Routen der Plattform,
+gegliedert nach Nutzerrolle und
+Umsetzungsstand.
+ 
 \begin{table}[H]
 \centering
-\caption{Geplante Routen des Frontends
-von Bazar.io}
+\caption{Routen des Frontends von
+Bazar.io mit Umsetzungsstand}
 \label{tab:routen}
-\begin{tabular}{|l|l|p{5cm}|}
+\begin{tabular}{|l|l|p{4cm}|l|}
 \hline
 \textbf{Route} & \textbf{Rolle} &
-\textbf{Beschreibung} \\
+\textbf{Beschreibung} & \textbf{Status} \\
 \hline
 \texttt{/} & Alle &
-Startseite mit Produktübersicht \\
-\hline
-\texttt{/login} & Alle & Anmeldeseite \\
-\hline
-\texttt{/register} & Alle &
-Registrierungsseite \\
+Startseite mit Produkt- und
+Dienstleistungsvorschau & Umgesetzt \\
 \hline
 \texttt{/products} & Alle &
-Produktkatalog \\
+Produktkatalog & Umgesetzt \\
 \hline
-\texttt{/products/:id} & Alle &
-Produktdetailseite \\
+\texttt{/products/:productId} & Alle &
+Produktdetailseite & Umgesetzt \\
 \hline
 \texttt{/services} & Alle &
-Dienstleistungskatalog \\
+Dienstleistungskatalog & Umgesetzt \\
 \hline
-\texttt{/services/:id} & Alle &
-Dienstleistungsdetailseite \\
+\texttt{/services/:serviceId} & Alle &
+Dienstleistungsdetailseite & Umgesetzt \\
 \hline
-\texttt{/cart} & Customer & Warenkorb \\
+\texttt{/sellers} & Alle &
+Übersicht aller Verkäufer & Umgesetzt \\
+\hline
+\texttt{/sellers/:sellerId/products} &
+Alle & Produkte eines Verkäufers &
+Umgesetzt \\
+\hline
+\texttt{/service-providers} & Alle &
+Übersicht aller Dienstleister &
+Umgesetzt \\
+\hline
+\texttt{/service-providers/:id/services}
+& Alle & Angebote eines Dienstleisters &
+Umgesetzt \\
+\hline
+\texttt{/register} & Alle &
+Registrierungsseite & Umgesetzt \\
+\hline
+\texttt{/account} & Authentifiziert &
+Kontoübersicht & Umgesetzt \\
+\hline
+\texttt{/account/upgrade/seller} &
+Customer & Rollen-Upgrade-Antrag zum
+Seller & Umgesetzt \\
+\hline
+\texttt{/account/upgrade/service-provider}
+& Customer & Rollen-Upgrade-Antrag zum
+ServiceProvider & Umgesetzt \\
+\hline
+\texttt{/cart} & Customer & Warenkorb &
+Geplant \\
 \hline
 \texttt{/checkout} & Customer &
-Checkout und Zahlung \\
+Checkout und Zahlung & Geplant \\
 \hline
 \texttt{/orders} & Customer &
-Bestellhistorie \\
+Bestellhistorie & Geplant \\
 \hline
 \texttt{/bookings} & Customer &
-Buchungsübersicht \\
+Buchungsübersicht & Geplant \\
 \hline
 \texttt{/seller/dashboard} & Seller &
-Dashboard \\
-\hline
-\texttt{/seller/products} & Seller &
-Produktverwaltung \\
+Dashboard & Geplant \\
 \hline
 \texttt{/seller/orders} & Seller &
-Bestellübersicht \\
+Bestellübersicht & Geplant \\
 \hline
 \texttt{/provider/dashboard} &
-ServiceProvider & Dashboard \\
-\hline
-\texttt{/provider/services} &
-ServiceProvider &
-Dienstleistungsverwaltung \\
+ServiceProvider & Dashboard & Geplant \\
 \hline
 \texttt{/provider/bookings} &
-ServiceProvider & Buchungskalender \\
+ServiceProvider & Buchungskalender &
+Geplant \\
 \hline
 \texttt{/admin/requests} & Admin &
-Rollenwechselanträge \\
+Rollenwechselanträge & Geplant \\
 \hline
 \texttt{/admin/ads} & Admin &
-Werbegenehmigungen \\
+Werbegenehmigungen & Geplant \\
 \hline
 \texttt{/messages} & Alle &
-Messaging-Inbox \\
+Messaging-Inbox & Geplant \\
 \hline
 \end{tabular}
 \end{table}
@@ -308,6 +367,81 @@ Verfügung und bilden die Grundlage für
 den rollenbasierten Seitenschutz sowie
 die Steuerung der Navigation
 \cite{zustand_docs}.
+\subsection{Netzwerk- und API-Kommunikation}
+\label{subsec:netzwerk_konzept}
+ 
+Das Frontend von \textit{Bazar.io} kommuniziert über zahlreiche
+Funktionsbereiche hinweg mit dem Backend, etwa zur
+Authentifizierung, zum Abruf von Produkten und Dienstleistungen
+oder zur Verwaltung von Bestellungen. Jede dieser Anfragen folgt
+denselben grundlegenden Anforderungen: Sie richtet sich an einen
+REST-Endpunkt (vgl. Abschnitt~\ref{subsec:rest-api}), muss den
+Authentifizierungstoken übermitteln und erfordert eine
+einheitliche Behandlung von Lade- und Fehlerzuständen. Würde diese
+Logik in jedem Funktionsbereich einzeln umgesetzt, entstünde
+umfangreicher duplizierter Code, der schwer zu warten und
+fehleranfällig wäre. \textit{Bazar.io} kapselt die
+Netzwerkkommunikation daher in einem einheitlichen,
+mehrschichtigen Konzept, das die technische Anbindung von der
+fachlichen Nutzung trennt.
+ 
+Das Konzept gliedert sich in drei aufeinander aufbauende
+Schichten, die in Abbildung~\ref{fig:netzwerk_schichten}
+dargestellt sind. Die unterste Schicht bildet ein zentraler
+HTTP-Client auf Basis von Axios (vgl. Abschnitt~\ref{subsec:rest-api}),
+der die technische Infrastruktur der Kommunikation bereitstellt. Er wird
+einmalig konfiguriert und projektweit wiederverwendet, definiert
+die Basis-Adresse des Servers sowie die Standard-Header und hängt
+den Authentifizierungstoken automatisch an jede ausgehende Anfrage
+an. Darauf setzt die Feature-API-Schicht auf, die für jeden
+Funktionsbereich die verfügbaren Endpunkte und die zugehörigen
+Anfragefunktionen definiert. Sie legt fest, welcher Endpunkt mit
+welcher HTTP-Methode, welchen Parametern und welchem Datenkörper
+aufgerufen wird, und delegiert die eigentliche Übertragung an den
+HTTP-Client. Die oberste Schicht bilden schließlich die
+Query-Hooks, die jede Anfragefunktion mithilfe der Bibliothek
+TanStack Query (vgl. Abschnitt~\ref{subsec:state-management}) kapseln
+und den aufrufenden Komponenten den Zustand der Verbindung
+bereitstellen. Die Query-Hooks greifen dabei auf einen einmalig
+erzeugten, zentralen Cache zurück, der über die gesamte Anwendung
+hinweg geteilt wird. Die
+konkrete Umsetzung dieser drei Schichten wird in
+Kapitel~\ref{chap:umsetzung} beschrieben.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/abb_netzwerk_schichten.png}
+\caption{Drei-Schichten-Modell der Netzwerkkommunikation im
+Frontend von Bazar.io}
+\label{fig:netzwerk_schichten}
+\end{figure}
+ 
+Ein wesentliches Ziel dieses Konzepts ist die einheitliche
+Kontrolle über den Zustand jeder Verbindung. Eine Komponente muss
+zu jedem Zeitpunkt erkennen können, ob eine Anfrage noch
+bearbeitet wird, fehlgeschlagen ist oder erfolgreich Daten
+geliefert hat, um die Benutzeroberfläche entsprechend
+darzustellen, etwa durch Ladeindikatoren oder Fehlermeldungen.
+TanStack Query stellt diese Zustände einheitlich bereit und
+unterscheidet dabei zwischen lesenden Anfragen, die Daten vom
+Server abrufen, und schreibenden Operationen, die Daten auf dem
+Server verändern. Darüber hinaus bietet
+die Bibliothek einen Mechanismus zur Zwischenspeicherung bereits
+abgerufener Daten auf API-Ebene; dessen projektweite Nutzung ist
+einer späteren Ausbaustufe der Anwendung vorbehalten und wird in
+dieser Arbeit nicht weiter vertieft.
+ 
+Das beschriebene Konzept ergänzt das in
+Abschnitt~\ref{subsec:state-management-konzept} dargestellte
+globale State Management, verfolgt jedoch einen anderen Zweck.
+Während die dort eingesetzte Lösung den clientseitigen
+Anwendungszustand verwaltet, etwa die aktive Nutzerrolle oder den
+Inhalt des Warenkorbs, ist TanStack Query für den serverseitigen
+Datenbestand zuständig, der über die beschriebenen Schichten
+abgerufen und synchronisiert wird. Für das Echtzeit-Messaging wird
+diese anfragebasierte Kommunikation zusätzlich um eine dauerhafte
+WebSocket-Verbindung erweitert, wie in
+Abschnitt~\ref{subsec:rest-api} eingeführt.
 % ----------------------------------------------------------------
 \section{UI/UX-Konzept}
 \label{sec:uiux_konzept}
