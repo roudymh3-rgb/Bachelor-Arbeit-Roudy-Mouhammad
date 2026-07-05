@@ -360,36 +360,10 @@ sodass die Anwendung diesen Zustand wie eine fehlende Anmeldung
 behandelt.
  
 Damit der gespeicherte Token nicht bei jeder Anfrage manuell
-mitgegeben werden muss, wird er über einen zentralen Interceptor
-automatisch an jede ausgehende Anfrage angehängt.
-Listing~\ref{lst:http-interceptor} zeigt die Konfiguration der
-verwendeten Axios-Instanz.
- 
-\begin{lstlisting}[caption={Automatisches Anhängen des Bearer-Tokens über einen Axios-Interceptor}, label={lst:http-interceptor}]
-export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? DEFAULT_API_BASE_URL,
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  },
-})
- 
-httpClient.interceptors.request.use((config) => {
-  const token = getAuthToken()
- 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
-  }
- 
-  return config
-})
-\end{lstlisting}
- 
-Der Interceptor wird vor jeder über \texttt{httpClient} gesendeten
-Anfrage ausgeführt. Ist ein Token vorhanden, wird der
-\texttt{Authorization}-Header im Format \texttt{Bearer <Token>} ergänzt; ist
-kein Token vorhanden, etwa vor dem ersten Login, bleibt die
-Anfrage unverändert.
+mitgegeben werden muss, hängt der in
+Abschnitt~\ref{subsec:impl_httpclient} beschriebene \texttt{httpClient}
+ihn über einen zentralen Interceptor automatisch an jede
+ausgehende Anfrage an.
  
 Damit ein im localStorage gespeicherter Token nicht unkontrolliert
 als gültig angenommen wird, validiert der \texttt{AuthProvider} ihn aktiv
