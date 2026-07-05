@@ -147,11 +147,11 @@ umsetzen lassen. In der Kontoübersicht wird dieses Muster
 vereinfacht eingesetzt: Anstelle einer expliziten Auswertung von
 \texttt{isLoading} und \texttt{isError} greift die Komponente auf
 einen Fallback auf die bereits im Client gespeicherte Sitzung
-zurück, sodass dem Nutzer sofort eine Basisansicht zur Verfügung
-steht, während ergänzende Kennzahlen verzögert nachgeladen werden.
-Für Ansichten ohne einen solchen Fallback ist hingegen eine
-explizite Behandlung der von TanStack Query bereitgestellten
-Zustände erforderlich.
+zurück, sodass dem Nutzer zumindest der Benutzername angezeigt
+werden kann, selbst wenn die Anfrage an das Backend noch nicht
+abgeschlossen ist oder fehlschlägt. Für Ansichten ohne einen
+solchen Fallback ist hingegen eine explizite Behandlung der von
+TanStack Query bereitgestellten Zustände erforderlich.
  
 Die Query-Hooks greifen dabei auf einen einmalig erzeugten,
 zentralen Cache zurück, der über die gesamte Anwendung hinweg
