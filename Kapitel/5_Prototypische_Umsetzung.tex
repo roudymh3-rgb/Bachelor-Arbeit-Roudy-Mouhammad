@@ -12,6 +12,156 @@
 % Ordnerstruktur im Repository, wichtige Konfigurationsdateien.
 
 % ----------------------------------------------------------------
+\section{Netzwerkkommunikation und Server-State}
+\label{sec:impl_netzwerk}
+ 
+Dieser Abschnitt beschreibt die konkrete Umsetzung des in
+Abschnitt~\ref{subsec:netzwerk_konzept} vorgestellten
+Drei-Schichten-Modells: einer zentralen HTTP-Infrastruktur auf
+Basis von Axios, einer feature-spezifischen API-Schicht sowie
+Query-Hooks auf Basis von TanStack Query, die den Verbindungszustand
+für die aufrufenden Komponenten bereitstellen.
+ 
+\subsection{HTTP-Client als Infrastruktur}
+\label{subsec:impl_httpclient}
+ 
+Die technische Infrastruktur der Netzwerkkommunikation wird durch
+eine einzige, projektweit wiederverwendete Axios-Instanz
+bereitgestellt \cite{axios_docs}. Listing~\ref{lst:http-client-infra}
+zeigt deren vollständige Konfiguration. Die Instanz wird mit einer
+festen Basis-Adresse sowie einheitlichen Standard-Headern
+initialisiert; die Basis-Adresse lässt sich über eine
+Umgebungsvariable überschreiben, sodass zwischen verschiedenen
+Backend-Umgebungen gewechselt werden kann, ohne den Quellcode
+anzupassen.
+ 
+\begin{lstlisting}[caption={Zentrale Axios-Instanz mit
+Request-Interceptor (http-client.ts)},
+label={lst:http-client-infra}]
+export const httpClient = axios.create({
+  baseURL: resolveApiBaseUrl(),
+  headers: {
+    Accept: 'application/json',
+    'Accept-Language': 'en',
+    'Content-Type': 'application/json',
+  },
+})
+ 
+httpClient.interceptors.request.use((config) => {
+  const token = getAuthToken()
+ 
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+ 
+  return config
+})
+\end{lstlisting}
+ 
+Über den Request-Interceptor wird der Authentifizierungstoken
+automatisch an jede ausgehende Anfrage angehängt, sofern eine
+gültige Sitzung vorliegt. Dadurch muss sich keine der
+nachfolgend beschriebenen Feature-API-Funktionen selbst um die
+Token-Übermittlung kümmern.
+ 
+\subsection{Feature-API-Schicht}
+\label{subsec:impl_featureapi}
+ 
+Jeder Funktionsbereich definiert eigene API-Funktionen, die
+festlegen, welcher Endpunkt mit welcher HTTP-Methode und welchen
+Parametern angefragt wird. Diese Funktionen greifen ausschließlich
+auf den in Abschnitt~\ref{subsec:impl_httpclient} beschriebenen
+\texttt{httpClient} zurück und sind selbst frei von
+Infrastruktur-Details. Listing~\ref{lst:feature-api-getme} zeigt
+dies am Beispiel der Funktion \texttt{getMe()} aus dem
+Account-Feature, die um optionale Parameter für die Einbindung einer
+Zusammenfassung sowie eine Begrenzung der zurückgegebenen
+Einträge ergänzt ist.
+ 
+\begin{lstlisting}[caption={Feature-API-Funktion getMe
+(account-api.ts)}, label={lst:feature-api-getme}]
+export async function getMe(includeSummary = false, limit?: number) {
+  const params = new URLSearchParams()
+ 
+  if (includeSummary) {
+    params.set('include', 'summary')
+  }
+ 
+  if (typeof limit === 'number') {
+    params.set('limit', String(limit))
+  }
+ 
+  const queryString = params.toString()
+  const path = queryString
+    ? `${accountEndpoints.me}?${queryString}`
+    : accountEndpoints.me
+ 
+  const response = await httpClient.get<ApiSuccessResponse<MeResult>>(path)
+ 
+  return response.data
+}
+\end{lstlisting}
+ 
+Die Funktion baut die Query-Parameter abhängig von den übergebenen
+Argumenten zusammen und gibt ausschließlich die Nutzdaten der
+Antwort zurück. Sie enthält selbst keine Logik zur Behandlung von
+Lade- oder Fehlerzuständen; diese Aufgabe übernimmt die in
+Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene Query-Hook-Schicht.
+ 
+\subsection{Server-State mit TanStack Query}
+\label{subsec:impl_tanstackquery}
+ 
+Die oberste Schicht bilden Query-Hooks, die eine Feature-API-Funktion
+mithilfe von TanStack Query kapseln und den aufrufenden Komponenten
+den Zustand der Verbindung bereitstellen \cite{tanstack_query_docs}.
+Listing~\ref{lst:use-me-query} zeigt den Hook
+\texttt{useMeQuery}, der die zuvor beschriebene Funktion
+\texttt{getMe()} verwendet.
+ 
+\begin{lstlisting}[caption={Query-Hook useMeQuery
+(use-me-query.ts)}, label={lst:use-me-query}]
+export function useMeQuery(includeSummary = false, limit?: number, enabled = true) {
+  return useQuery({
+    queryKey: ['me', { includeSummary, limit }],
+    queryFn: () => getMe(includeSummary, limit),
+    enabled,
+  })
+}
+\end{lstlisting}
+ 
+Der \texttt{queryKey} identifiziert die Anfrage eindeutig im
+projektweiten Cache und setzt sich aus einer festen Bezeichnung
+sowie den übergebenen Parametern zusammen. Ändern sich die
+Parameter, etwa bei einer anderen Seitenzahl innerhalb einer
+Liste, entsteht ein neuer Schlüssel, und TanStack Query löst eine
+neue Anfrage aus; bleibt der Schlüssel unverändert und liegt
+bereits ein aktueller Eintrag im Cache vor, wird dieser ohne
+erneute Serveranfrage zurückgegeben. Der \texttt{enabled}-Parameter
+erlaubt es, die Ausführung der Anfrage an eine Bedingung zu
+knüpfen, etwa das Vorhandensein einer gültigen Sitzung.
+ 
+Der Rückgabewert des Hooks stellt der aufrufenden Komponente die
+Felder \texttt{data}, \texttt{isLoading} und \texttt{isError} zur
+Verfügung, über die sich Ladeindikatoren und Fehlermeldungen
+umsetzen lassen. In der Kontoübersicht wird dieses Muster
+vereinfacht eingesetzt: Anstelle einer expliziten Auswertung von
+\texttt{isLoading} und \texttt{isError} greift die Komponente auf
+einen Fallback auf die bereits im Client gespeicherte Sitzung
+zurück, sodass dem Nutzer sofort eine Basisansicht zur Verfügung
+steht, während ergänzende Kennzahlen verzögert nachgeladen werden.
+Für Ansichten ohne einen solchen Fallback ist hingegen eine
+explizite Behandlung der von TanStack Query bereitgestellten
+Zustände erforderlich.
+ 
+Die Query-Hooks greifen dabei auf einen einmalig erzeugten,
+zentralen Cache zurück, der über die gesamte Anwendung hinweg
+geteilt wird und beim Anwendungsstart über einen Provider
+bereitgestellt wird. Über die Zwischenspeicherung bereits
+abgerufener Daten hinaus bietet TanStack Query weitere
+Mechanismen zur gezielten Invalidierung von Cache-Einträgen; deren
+projektweite Konfiguration ist einer späteren Ausbaustufe der
+Anwendung vorbehalten und wird in dieser Arbeit nicht weiter
+vertieft.
 \section{Authentifizierung und Onboarding}
 \label{sec:impl_auth}
 

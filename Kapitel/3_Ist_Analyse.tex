@@ -259,6 +259,25 @@ Die Bibliothek ermöglicht die deklarative Definition von
 Routen sowie den rollenbasierten Seitenschutz über
 geschützte Routen, sodass Funktionsbereiche nur für Nutzer mit den entsprechenden 
 Berechtigungen zugänglich sind \cite{reactrouter_docs, wieruch_protected_routes}.
+Axios wurde als HTTP-Client für die Kommunikation mit dem
+Backend gewählt. Die Bibliothek ermöglicht die zentrale
+Konfiguration einer wiederverwendbaren Instanz mit fester
+Basis-Adresse und einheitlichen Standard-Headern und stellt
+über sogenannte Interceptors einen Mechanismus bereit, mit
+dem der Authentifizierungstoken automatisch an jede
+ausgehende Anfrage angehängt werden kann, ohne dass jede
+einzelne Anfragefunktion dies eigenständig umsetzen muss
+\cite{axios_docs}.
+
+ 
+TanStack Query wurde für die Verwaltung des serverseitigen
+Datenbestands gewählt. Anstelle einer manuellen Verwaltung
+von Lade- und Fehlerzuständen übernimmt die Bibliothek das
+Abrufen, Zwischenspeichern und Synchronisieren von
+API-Daten und stellt den aufrufenden Komponenten
+einheitlich den Zustand jeder Anfrage bereit, etwa ob diese
+noch geladen wird, fehlgeschlagen ist oder erfolgreich
+Daten geliefert hat \cite{tanstack_query_docs}.
 
 Tailwind CSS und shadcn/ui wurden als UI-Bibliotheken
 gewählt. Tailwind CSS ermöglicht eine schnelle und
@@ -313,6 +332,14 @@ kein Provider erforderlich \\
 React Router & Routing &
 Deklaratives Routing, rollenbasierter Seitenschutz \\
 \hline
+Axios & HTTP-Kommunikation &
+Zentrale, wiederverwendbare Instanz mit Interceptors,
+automatische Token-Anbindung \\
+\hline
+TanStack Query & Server-State-Management &
+Einheitliche Verwaltung von Ladezuständen sowie Caching
+serverseitiger Daten \\
+\hline
 Tailwind CSS & Styling &
 Utility-first, spart Entwicklungszeit,
 konsistentes Erscheinungsbild \\
@@ -328,5 +355,6 @@ Laravel Sanctum & Authentifizierung &
 Tokenbasiert, Bearer Tokens, rollenbasierte
 Zugriffskontrolle auf API-Endpunkte \\
 \hline
+
 \end{tabular}
 \end{table}
