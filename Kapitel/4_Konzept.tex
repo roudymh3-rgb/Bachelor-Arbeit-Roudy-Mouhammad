@@ -11,7 +11,7 @@
 \subsection{Komponentenarchitektur und Ordnerstruktur}
 \label{subsec:komponentenarchitektur}
  
-Das Frontend von \textit{Bazar.io} folgt einer
+Das Frontend von \textit{Bazario} folgt einer
 feature-basierten Ordnerstruktur, bei der
 zusammengehörige Dateien nach fachlichen
 Funktionsbereichen gruppiert werden. Dieses
@@ -125,7 +125,7 @@ BAZARIO/
 `-- vite.config.ts
 \end{verbatim}
 \caption{Ordnerstruktur des Frontends von
-Bazar.io zum aktuellen Stand der Konzeption}
+Bazario zum aktuellen Stand der Konzeption}
 \label{fig:ordnerstruktur}
 \end{figure}
  
@@ -139,7 +139,7 @@ Verlauf der Implementierung ergänzt.
 \begin{table}[H]
 \centering
 \caption{Feature-Ordner des Frontends von
-Bazar.io mit Umsetzungsstand}
+Bazario mit Umsetzungsstand}
 \label{tab:geplante-features}
 \begin{tabular}{|l|p{7cm}|l|}
 \hline
@@ -204,7 +204,7 @@ Kapitel~\ref{chap:umsetzung} dokumentiert.
 rollenbasierter Seitenschutz}
 \label{subsec:routing-konzept}
  
-Das Routing von \textit{Bazar.io} basiert
+Das Routing von \textit{Bazario} basiert
 auf React Router DOM und folgt einem
 hierarchischen Konzept, bei dem alle Routen
 als Kindrouten unter einem gemeinsamen
@@ -254,7 +254,7 @@ Umsetzungsstand.
 \begin{table}[H]
 \centering
 \caption{Routen des Frontends von
-Bazar.io mit Umsetzungsstand}
+Bazario mit Umsetzungsstand}
 \label{tab:routen}
 \begin{tabular}{|l|l|p{4cm}|l|}
 \hline
@@ -347,7 +347,7 @@ Messaging-Inbox & Geplant \\
 \label{subsec:state-management-konzept}
 
 Für das globale State Management setzt
-\textit{Bazar.io} auf Zustand, eine
+\textit{Bazario} auf Zustand, eine
 schlanke hook-basierte
 State-Management-Bibliothek für
 React-Anwendungen. Im Unterschied zu
@@ -370,14 +370,14 @@ die Steuerung der Navigation
 \subsection{Netzwerk- und API-Kommunikation}
 \label{subsec:netzwerk_konzept}
 
-Das Frontend von \textit{Bazar.io} kommuniziert über zahlreiche
+Das Frontend von \textit{Bazario} kommuniziert über zahlreiche
 Funktionsbereiche hinweg mit dem Backend, etwa zur
 Authentifizierung, zum Abruf von Produkten und Dienstleistungen
 oder zur Verwaltung von Bestellungen. Ohne eine zentrale
 HTTP-Client-Instanz kann dabei keine Anfrage das Frontend
 verlassen; diese Instanz wird daher als Infrastruktur-Klasse der
 Netzwerkkommunikation verstanden, auf der jede weitere Anfrage im
-Projekt aufbaut. \textit{Bazar.io} kapselt die
+Projekt aufbaut. \textit{Bazario} kapselt die
 Netzwerkkommunikation daher in einem einheitlichen,
 mehrschichtigen Konzept, das die technische Anbindung von der
 fachlichen Nutzung trennt.
@@ -409,7 +409,7 @@ Kapitel~\ref{chap:umsetzung} beschrieben.
 \centering
 \includegraphics[width=0.85\textwidth]{Bilder/abb_netzwerk_schichten.png}
 \caption{Drei-Schichten-Modell der Netzwerkkommunikation im
-Frontend von Bazar.io}
+Frontend von Bazario}
 \label{fig:netzwerk_schichten}
 \end{figure}
 

@@ -52,7 +52,7 @@ Gruppen miteinander und ermöglichen komplexere Interaktionsmuster
 Eine weitere Klassifikation unterscheidet zwischen vertikalen
 Marktplätzen, die sich auf eine bestimmte Branche spezialisieren,
 und horizontalen Marktplätzen, die branchenübergreifend verschiedene
-Produkte und Dienstleistungen anbieten. \textit{Bazar.io} folgt
+Produkte und Dienstleistungen anbieten. \textit{Bazario} folgt
 dem horizontalen Modell, da es sowohl Produkte als auch
 Dienstleistungen verschiedener Anbieter in einem einheitlichen
 System zusammenführt \cite{taeuscher_platform_models}.
@@ -134,7 +134,7 @@ hohe Marktanteile erzielen können.
 
 Tabelle~\ref{tab:wettbewerb} vergleicht ausgewählte bestehende
 Plattformen hinsichtlich ihrer Kernfunktionen und zeigt, wie
-sich \textit{Bazar.io} von diesen abgrenzt.
+sich \textit{Bazario} von diesen abgrenzt.
 
 \begin{table}[h]
 \centering
@@ -155,7 +155,7 @@ Booking.com & \texttimes & \checkmark & eingeschränkt &
 \hline
 Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \hline
-\textit{Bazar.io} & \checkmark & \checkmark & \checkmark &
+\textit{Bazario} & \checkmark & \checkmark & \checkmark &
 \checkmark \\
 \hline
 \end{tabular}
@@ -209,11 +209,11 @@ Inhaltsreiche Webseiten \\
 \end{tabular}
 \end{table}
 
-Für interaktionsreiche Plattformen wie \textit{Bazar.io}, bei
+Für interaktionsreiche Plattformen wie \textit{Bazario}, bei
 denen verschiedene Rollen unterschiedliche Ansichten und Workflows
 erfordern, bietet die SPA-Architektur entscheidende Vorteile
 hinsichtlich Performance und Benutzererfahrung. Da
-\textit{Bazar.io} keinen primären SEO-Fokus verfolgt, wiegen
+\textit{Bazario} keinen primären SEO-Fokus verfolgt, wiegen
 die Vorteile der SPA-Architektur die Einschränkungen
 hinsichtlich Suchmaschinenoptimierung deutlich auf.
 
@@ -258,7 +258,7 @@ wird direkt als Hook definiert und kann in jeder Komponente
 ohne zusätzliche Provider-Wrapper verwendet werden. Dieses
 Konzept reduziert die Komplexität der Zustandsverwaltung
 erheblich und ermöglicht eine schnelle sowie wartbare
-Implementierung \cite{zustand_docs}. Für \textit{Bazar.io}
+Implementierung \cite{zustand_docs}. Für \textit{Bazario}
 verwaltet Zustand zentrale Zustände wie den
 Authentifizierungsstatus, die aktive Nutzerrolle sowie den
 Warenkorbinhalt.
@@ -277,7 +277,7 @@ Zwischenspeichern und Synchronisieren von API-Daten und stellt den
 aufrufenden Komponenten zugleich den Zustand jeder Anfrage bereit,
 etwa ob diese noch geladen wird, fehlgeschlagen ist oder
 erfolgreich Daten geliefert hat \cite{tanstack_query_docs}. Für
-\textit{Bazar.io} ergibt sich damit eine klare Aufteilung: Der
+\textit{Bazario} ergibt sich damit eine klare Aufteilung: Der
 clientseitige Anwendungszustand und der serverseitige
 Datenbestand werden durch getrennte, jeweils spezialisierte
 Mechanismen verwaltet, während TanStack Query durchgängig für
@@ -294,7 +294,7 @@ React-Anwendungen und ermöglicht die deklarative Definition
 von Routen sowie die Navigation zwischen Ansichten ohne
 Seitenneuladen \cite{reactrouter_docs}.
 
-Für Multi-Rollen-Plattformen wie \textit{Bazar.io} ist
+Für Multi-Rollen-Plattformen wie \textit{Bazario} ist
 rollenbasierter Seitenschutz ein wesentliches
 Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
 Nutzer mit den entsprechenden Berechtigungen zugänglich
@@ -337,7 +337,7 @@ Unternehmensanwendungen \cite{comparative_spa_frameworks}.
 Im Vergleich zu Next.js bietet React als reine
 Client-Side-Rendering-Lösung Vorteile in Szenarien, bei
 denen keine serverseitige Vorausführung erforderlich ist.
-Für \textit{Bazar.io} als interaktionsreiche
+Für \textit{Bazario} als interaktionsreiche
 Multi-Rollen-Plattform ohne primären SEO-Fokus ist dieser
 Ansatz geeignet \cite{pati_react_nextjs_2025}.
 
@@ -388,7 +388,7 @@ verbessert auch die allgemeine Usability für alle Nutzer.
 \label{subsec:rest-api}
 
 Die Kommunikation zwischen Frontend und Backend erfolgt in
-\textit{Bazar.io} über REST-basierte HTTP-Schnittstellen.
+\textit{Bazario} über REST-basierte HTTP-Schnittstellen.
 REST ist ein Architekturstil für Webschnittstellen, der auf 
 zustandslosen Anfragen, standardisierten HTTP-Methoden und 
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
@@ -405,7 +405,7 @@ etwa um jeder Anfrage automatisch einen Authentifizierungstoken
 hinzuzufügen \cite{axios_docs}.
 
 Für die Absicherung der API-Endpunkte setzt
-\textit{Bazar.io} auf tokenbasierte Authentifizierung
+\textit{Bazario} auf tokenbasierte Authentifizierung
 über Laravel Sanctum. Nach erfolgreicher Anmeldung
 erhält der Nutzer einen Bearer Token, der bei jeder
 weiteren API-Anfrage im Authorization-Header übermittelt
@@ -414,7 +414,7 @@ serverseitig anhand der Rolle des Nutzers gesteuert,
 sodass nur berechtigte Nutzer auf rollenspezifische
 Funktionen zugreifen können \cite{laravel_sanctum_docs}.
 Neben der REST-basierten Kommunikation setzt
-\textit{Bazar.io} für das Echtzeit-Messaging auf
+\textit{Bazario} für das Echtzeit-Messaging auf
 WebSockets. WebSockets ermöglichen eine dauerhafte,
 bidirektionale Verbindung zwischen Client und Server,
 über die Nachrichten in Echtzeit übertragen werden,
@@ -459,7 +459,7 @@ End-to-End-Tests simulieren reale Nutzerinteraktionen
 im Browser und prüfen vollständige Anwendungsabläufe.
 Playwright ermöglicht die automatisierte Ausführung
 von Nutzerflows in mehreren Browsern gleichzeitig.
-Für \textit{Bazar.io} mit seinen verschiedenen
+Für \textit{Bazario} mit seinen verschiedenen
 Nutzerrollen bietet Playwright entscheidende Vorteile,
 da rollenspezifische Abläufe wie Buchung, Checkout
 und Adminfreigabe browserübergreifend getestet werden
@@ -490,6 +490,6 @@ erarbeitet, die Aspekte wie Vertrauen, Orientierung,
 Effizienz des Checkout-Prozesses und visuelle Konsistenz
 berücksichtigen \cite{bonastre_ux_heuristics}. Diese
 Erkenntnisse fließen in die Konzeption und Bewertung
-des Frontends von \textit{Bazar.io} ein und bilden die
+des Frontends von \textit{Bazario} ein und bilden die
 Grundlage für die Usability-Evaluation in
 Kapitel~\ref{chap:testen}.
