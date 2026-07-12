@@ -129,77 +129,21 @@ Bazario zum aktuellen Stand der Konzeption}
 \label{fig:ordnerstruktur}
 \end{figure}
  
-Ein Teil der in Tabelle~\ref{tab:geplante-features}
-aufgeführten Funktionsbereiche ist zum
-gegenwärtigen Zeitpunkt bereits als eigener
-Feature-Ordner umgesetzt, weitere befinden
-sich noch in Planung und werden im weiteren
-Verlauf der Implementierung ergänzt.
- 
-\begin{table}[H]
-\centering
-\caption{Feature-Ordner des Frontends von
-Bazario mit Umsetzungsstand}
-\label{tab:geplante-features}
-\begin{tabular}{|l|p{7cm}|l|}
-\hline
-\textbf{Feature-Ordner} & \textbf{Inhalt} &
-\textbf{Status} \\
-\hline
-\texttt{auth/} & Registrierung, Login (als
-Dialog im Header) & Umgesetzt \\
-\hline
-\texttt{account/} & Kontoübersicht,
-Rollen-Upgrade-Anträge zum Seller und zum
-ServiceProvider & Umgesetzt \\
-\hline
-\texttt{categories/} & Kategorien für
-Produkte und Dienstleistungen & Umgesetzt \\
-\hline
-\texttt{home/} & Startseite mit Produkt- und
-Dienstleistungsvorschau & Umgesetzt \\
-\hline
-\texttt{products/} & Produktlisting,
-Produktdetail, Produktverwaltung für
-Verkäufer & Umgesetzt \\
-\hline
-\texttt{sellers/} & Verkäuferprofile und
-deren Produktlisting & Umgesetzt \\
-\hline
-\texttt{service-providers/} &
-Dienstleister-Profile und deren
-Angebotsliste & Umgesetzt \\
-\hline
-\texttt{services/} &
-Dienstleistungslisting, Dienstleistungsdetail,
-Verwaltung für Dienstleister & Umgesetzt \\
-\hline
-\texttt{cart/} & Warenkorb, Checkout,
-Stripe-Integration & Geplant \\
-\hline
-\texttt{bookings/} & Buchungsübersicht,
-Buchungskalender, Stornierung & Geplant \\
-\hline
-\texttt{orders/} & Bestellhistorie,
-Bestelldetail, Statusverwaltung & Geplant \\
-\hline
-\texttt{messaging/} & Inbox,
-Konversationsliste, Chat-UI & Geplant \\
-\hline
-\texttt{advertising/} & Werbeanzeigen
-erstellen, Genehmigungsprozess & Geplant \\
-\hline
-\texttt{admin/} & Rollenwechselanträge,
-Werbegenehmigung, Plattformgebühren &
-Geplant \\
-\hline
-\end{tabular}
-\end{table}
- 
-Die finale Ordnerstruktur nach Abschluss
-der Implementierung wird in
-Kapitel~\ref{chap:umsetzung} dokumentiert.
- 
+Das Verzeichnis \texttt{features/} enthält
+die Funktionsbereiche \texttt{auth/},
+\texttt{account/}, \texttt{categories/},
+\texttt{home/}, \texttt{products/},
+\texttt{sellers/}, \texttt{service-providers/}
+und \texttt{services/}, die Authentifizierung,
+Kontoverwaltung, Produkt- und
+Dienstleistungskategorien, die Startseite
+sowie den Produkt- und Dienstleistungskatalog
+inklusive der öffentlichen Verkäufer- und
+Dienstleister-Profile abbilden. Für Warenkorb
+und Checkout, Bestellabwicklung, Messaging,
+Werbeanzeigen sowie die Administration sind
+weitere Funktionsbereiche vorgesehen.
+
 \subsection{Routing-Konzept und
 rollenbasierter Seitenschutz}
 \label{subsec:routing-konzept}
@@ -245,102 +189,16 @@ dem in Abschnitt~\ref{subsec:routing}
 vorgestellten Prinzip der
 rollenbasierten Zugriffskontrolle.
  
-Tabelle~\ref{tab:routen} gibt einen
-Überblick über die Routen der Plattform,
-gegliedert nach Nutzerrolle und
-Umsetzungsstand.
- 
-\begin{table}[H]
-\centering
-\caption{Routen des Frontends von
-Bazario mit Umsetzungsstand}
-\label{tab:routen}
-\begin{tabular}{|l|l|p{4cm}|l|}
-\hline
-\textbf{Route} & \textbf{Rolle} &
-\textbf{Beschreibung} & \textbf{Status} \\
-\hline
-\texttt{/} & Alle &
-Startseite mit Produkt- und
-Dienstleistungsvorschau & Umgesetzt \\
-\hline
-\texttt{/products} & Alle &
-Produktkatalog & Umgesetzt \\
-\hline
-\texttt{/products/:productId} & Alle &
-Produktdetailseite & Umgesetzt \\
-\hline
-\texttt{/services} & Alle &
-Dienstleistungskatalog & Umgesetzt \\
-\hline
-\texttt{/services/:serviceId} & Alle &
-Dienstleistungsdetailseite & Umgesetzt \\
-\hline
-\texttt{/sellers} & Alle &
-Übersicht aller Verkäufer & Umgesetzt \\
-\hline
-\texttt{/sellers/:sellerId/products} &
-Alle & Produkte eines Verkäufers &
-Umgesetzt \\
-\hline
-\texttt{/service-providers} & Alle &
-Übersicht aller Dienstleister &
-Umgesetzt \\
-\hline
-\texttt{/service-providers/:id/services}
-& Alle & Angebote eines Dienstleisters &
-Umgesetzt \\
-\hline
-\texttt{/register} & Alle &
-Registrierungsseite & Umgesetzt \\
-\hline
-\texttt{/account} & Authentifiziert &
-Kontoübersicht & Umgesetzt \\
-\hline
-\texttt{/account/upgrade/seller} &
-Customer & Rollen-Upgrade-Antrag zum
-Seller & Umgesetzt \\
-\hline
-\texttt{/account/upgrade/service-provider}
-& Customer & Rollen-Upgrade-Antrag zum
-ServiceProvider & Umgesetzt \\
-\hline
-\texttt{/cart} & Customer & Warenkorb &
-Geplant \\
-\hline
-\texttt{/checkout} & Customer &
-Checkout und Zahlung & Geplant \\
-\hline
-\texttt{/orders} & Customer &
-Bestellhistorie & Geplant \\
-\hline
-\texttt{/bookings} & Customer &
-Buchungsübersicht & Geplant \\
-\hline
-\texttt{/seller/dashboard} & Seller &
-Dashboard & Geplant \\
-\hline
-\texttt{/seller/orders} & Seller &
-Bestellübersicht & Geplant \\
-\hline
-\texttt{/provider/dashboard} &
-ServiceProvider & Dashboard & Geplant \\
-\hline
-\texttt{/provider/bookings} &
-ServiceProvider & Buchungskalender &
-Geplant \\
-\hline
-\texttt{/admin/requests} & Admin &
-Rollenwechselanträge & Geplant \\
-\hline
-\texttt{/admin/ads} & Admin &
-Werbegenehmigungen & Geplant \\
-\hline
-\texttt{/messages} & Alle &
-Messaging-Inbox & Geplant \\
-\hline
-\end{tabular}
-\end{table}
+Öffentlich zugängliche Routen wie
+\texttt{/products} oder
+\texttt{/services} stehen allen
+Nutzern offen, während geschützte
+Routen wie \texttt{/account} eine
+gültige Sitzung voraussetzen und
+Routen wie
+\texttt{/account/upgrade/seller}
+zusätzlich an die Rolle Customer
+gebunden sind.
 
 \subsection{Globales State Management}
 \label{subsec:state-management-konzept}
@@ -376,25 +234,6 @@ umfassen den Authentifizierungsstatus,
 die aktive Nutzerrolle sowie
 perspektivisch den Warenkorbinhalt.
 
-Von Redux als Alternative wird bewusst
-abgesehen. Redux ist für Anwendungen
-mit umfangreichem, verzweigtem Zustand
-ausgelegt, bei denen einzelne
-Teilbereiche unabhängig voneinander
-aktualisiert werden müssen; dies ist
-insbesondere bei sehr großen Projekten
-mit vielen Funktionsbereichen und
-umfangreicher Kommunikation mit dem
-Backend der Fall. Der Zustand von
-\textit{Bazario} beschränkt sich
-dagegen auf einfache Werte wie den
-Authentifizierungstoken, den
-Warenkorbinhalt und Nachrichten, ohne
-komplexe, verschachtelte
-Objektstrukturen, sodass der
-zusätzliche Konfigurationsaufwand von
-Redux nicht erforderlich ist.
-
 % TODO (Roudy): Sobald die endgueltige
 % Entscheidung Zustand vs. React Context
 % im Rahmen der Warenkorb-Umsetzung
@@ -416,8 +255,7 @@ mehrschichtigen Konzept, das die technische Anbindung von der
 fachlichen Nutzung trennt.
 
 Das Konzept gliedert sich in drei aufeinander aufbauende
-Schichten, die in Abbildung~\ref{fig:netzwerk_schichten}
-dargestellt sind. Die unterste Schicht bildet ein zentraler
+Schichten. Die unterste Schicht bildet ein zentraler
 HTTP-Client auf Basis von Axios (vgl. Abschnitt~\ref{subsec:rest-api}),
 der die technische Infrastruktur der Kommunikation bereitstellt. Er wird
 einmalig konfiguriert und projektweit wiederverwendet, definiert
@@ -438,13 +276,7 @@ hinweg geteilt wird. Die
 konkrete Umsetzung dieser drei Schichten wird in
 Kapitel~\ref{chap:umsetzung} beschrieben.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{Bilder/abb_netzwerk_schichten.png}
-\caption{Drei-Schichten-Modell der Netzwerkkommunikation im
-Frontend von Bazario}
-\label{fig:netzwerk_schichten}
-\end{figure}
+
 
 Ein wesentliches Ziel dieses Konzepts ist die einheitliche
 Kontrolle über den Zustand jeder Verbindung. Jede Anfrage wird
@@ -464,17 +296,12 @@ bereits abgerufener Daten auf API-Ebene; dessen projektweite
 Nutzung ist einer späteren Ausbaustufe der Anwendung vorbehalten
 und wird in dieser Arbeit nicht weiter vertieft.
 
-Das beschriebene Konzept ergänzt das in
-Abschnitt~\ref{subsec:state-management-konzept} dargestellte
-globale State Management, verfolgt jedoch einen anderen Zweck.
-Während die dort eingesetzte Lösung den clientseitigen
-Anwendungszustand verwaltet, etwa die aktive Nutzerrolle oder den
-Inhalt des Warenkorbs, ist TanStack Query für den serverseitigen
-Datenbestand zuständig, der über die beschriebenen Schichten
-abgerufen und synchronisiert wird. Für das Echtzeit-Messaging wird
-diese anfragebasierte Kommunikation zusätzlich um eine dauerhafte
-WebSocket-Verbindung erweitert, wie in
-Abschnitt~\ref{subsec:rest-api} eingeführt.
+
+% TODO (Roudy): Absatz zur Abgrenzung Client-State (State
+% Management, Abschnitt 4.1.3) vs. Server-State (TanStack Query)
+% hier wieder ergaenzen, sobald die Zustand-vs-Context-Entscheidung
+% final ist. Inhaltlich bereits fertig, siehe fruehere Version im
+% Chat-Verlauf.
 
 
 \section{UI/UX-Konzept}
@@ -491,124 +318,94 @@ Abschnitt~\ref{subsec:rest-api} eingeführt.
 % ----------------------------------------------------------------
 \section{Konzept der einzelnen Funktionsbereiche}
 \subsection{Authentifizierung und Onboarding}
-% TODO: Registrierung, Login, Token-Handling, Rollen-Upgrade-Antrag.
 \label{subsec:auth-onboarding}
- 
-Beim Entwurf der Login- und Registrierungsfunktion wurden bewusst
-Unterschiede hinsichtlich der Darstellungsform getroffen. Der
-Login erfolgt über einen Dialog, der von jeder beliebigen Stelle
-der Anwendung aus aufgerufen werden kann, ohne dabei die aktuelle
-Seite zu verlassen. Der Vorteil davon besteht insbesondere darin,
-dass ein nicht angemeldeter Nutzer während eines laufenden
-Vorgangs, beispielsweise beim Checkout, nicht durch eine erneute
-Anmeldung unterbrochen wird, sondern sich schnell anmelden kann,
-ohne die bisherige Nutzung zu verlieren. Die Registrierung
-hingegen erfolgt über eine eigene Seite, da sie deutlich mehr
-Eingabefelder benötigt und es sich dabei um eine bewusste,
-eigenständige Handlung des Nutzers handelt, für die entsprechend
-Platz vorhanden sein muss. Abbildung~\ref{fig:login-vs-register}
-stellt diese Entscheidung vergleichend gegenüber.
- 
+
+Der Login erfolgt über einen Dialog, der von
+jeder Stelle der Anwendung aus aufgerufen werden
+kann, ohne die aktuelle Seite zu verlassen,
+sodass ein Nutzer etwa während des Checkouts
+nicht unterbrochen wird. Die Registrierung
+erfolgt dagegen über eine eigene Seite, da sie
+mehr Eingabefelder benötigt und eine
+eigenständige Handlung darstellt. Beide
+Formulare validieren ihre Eingaben clientseitig,
+bevor eine Anfrage gestellt wird; serverseitige
+Fehler werden gezielt dem betroffenen Feld
+zugeordnet, und der Absende-Button wird während
+der Bearbeitung deaktiviert. Abbildung~\ref{fig:login-vs-register}
+und Abbildung~\ref{fig:validierung-fehler}
+stellen beide Konzepte gegenüber.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Bilder/abb_login_vs_register.png}
-\caption{Darstellungskonzept von Login und Registrierung im Vergleich}
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{Bilder/abb_login_vs_register.png}
+\caption{Login und Registrierung im Vergleich}
 \label{fig:login-vs-register}
-\end{figure}
- 
-Die Eingaben in beiden Formularen, sowohl bei der Login- als auch
-bei der Registrierungsfunktion, werden bereits clientseitig
-validiert, bevor eine Anfrage an das Backend gestellt wird. Auf
-diese Weise werden unnötige Serveranfragen vermieden und der
-Nutzer wird sofort über fehlerhafte Eingaben informiert. Tritt
-dennoch ein Fehler auf, beispielsweise durch die Vergabe einer
-bereits vorhandenen E-Mail-Adresse, wird dieser gezielt dem
-betroffenen Eingabefeld zugeordnet und dort angezeigt, damit der
-Nutzer unmittelbar erkennt, welche Angabe korrigiert werden muss.
-Während der Bearbeitung einer Login- oder Registrierungsanfrage
-wird der Button deaktiviert, um ein versehentliches mehrfaches
-Absenden derselben Anfrage zu verhindern. Der entsprechende Ablauf
-ist in Abbildung~\ref{fig:validierung-fehler} dargestellt.
- 
-\begin{figure}[H]
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
 \centering
-\includegraphics[width=0.85\textwidth]{Bilder/abb_validierung_fehler.png}
-\caption{Konzept der Formularvalidierung und Fehlerrückmeldung}
+\includegraphics[width=\linewidth]{Bilder/abb_validierung_fehler.png}
+\caption{Formularvalidierung und Fehlerrückmeldung}
 \label{fig:validierung-fehler}
+\end{minipage}
 \end{figure}
- 
-Verläuft die Anmeldung oder Registrierung erfolgreich, liefert das
-Backend ein Ergebnis zurück, aus dem die Anwendung das Konzept der
-Session bildet. Diese enthält alle Informationen, die das
-Frontend zu einem gegebenen Zeitpunkt über einen angemeldeten
-Nutzer wissen muss: Zugriffstoken, Nutzerdaten sowie die ihm
-zugewiesenen Rollen. Diese Session wird im localStorage des
-Browsers gespeichert, um den Anmeldestatus nach einem Neuladen
-der Seite oder einem erneuten Besuch der Anwendung zu erhalten und
-den Nutzer nicht bei jeder Interaktion erneut anmelden zu lassen.
-Da der Anmeldestatus an verschiedenen Stellen der Anwendung
-benötigt wird, beispielsweise in der Header-Navigation zur Anzeige
-des Nutzernamens oder beim Zugriff auf geschützte Inhalte, muss er
-reaktiv verfügbar sein. Hierfür wird die
-React Context API als Ausgangslösung verwendet (vgl.
+
+Verläuft Anmeldung oder Registrierung
+erfolgreich, bildet die Anwendung aus der
+Backend-Antwort das Konzept der Session mit
+Zugriffstoken, Nutzerdaten und Rollen. Diese wird
+im localStorage gespeichert, um den Anmeldestatus
+über Neuladen und erneute Besuche hinweg zu
+erhalten, und reaktiv über die React Context API
+bereitgestellt (vgl.
 Abschnitt~\ref{subsec:state-management-konzept}).
-Abbildung~\ref{fig:session-konzept} veranschaulicht
-den vollständigen Ablauf der Authentifizierung von der Anmeldung
-bis zur Bereitstellung der Session in der Anwendung.
- 
+Der Zugriff auf geschützte Bereiche wird über ein
+dreistufiges Konzept sichergestellt: Zunächst
+wird geprüft, ob der Anmeldestatus bereits
+bestimmt ist (Ladezustand), dann ob der Nutzer
+angemeldet ist (sonst Weiterleitung), und erst
+danach wird der geschützte Inhalt angezeigt.
+Abbildung~\ref{fig:session-konzept} und
+Abbildung~\ref{fig:routenschutz} zeigen beide
+Abläufe.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Bilder/abb_authentifizierung_ablauf.png}
-\caption{Ablauf der Authentifizierung vom Login zur geschützten Seite}
+\begin{minipage}{0.48\linewidth}
+\centering
+\includegraphics[width=\linewidth]{Bilder/abb_authentifizierung_ablauf.png}
+\caption{Ablauf der Authentifizierung}
 \label{fig:session-konzept}
-\end{figure}
- 
-Der Zugriff auf geschützte Bereiche der Anwendung wird über ein
-dreistufiges Konzept sichergestellt. Zunächst wird geprüft, ob der
-Anmeldestatus bereits zuverlässig bestimmt werden konnte. Ist dies
-noch nicht der Fall, wird dem Nutzer ein neutraler Ladezustand
-angezeigt, um ein kurzfristiges, fehlerhaftes Anzeigen nicht
-autorisierter Inhalte zu vermeiden. Erst danach wird geprüft, ob
-der Nutzer tatsächlich angemeldet ist; ist dies nicht der Fall,
-erfolgt eine Weiterleitung zur Startseite. Sind beide Prüfungen
-erfolgreich verlaufen, wird der eigentliche, geschützte Inhalt der
-Seite angezeigt. Abbildung~\ref{fig:routenschutz} zeigt diesen
-dreistufigen Ablauf im Überblick.
- 
-\begin{figure}[H]
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\linewidth}
 \centering
-\includegraphics[width=0.8\textwidth]{Bilder/abb_routenschutz.png}
-\caption{Dreistufiges Konzept des rollenbasierten Seitenschutzes}
+\includegraphics[width=\linewidth]{Bilder/abb_routenschutz.png}
+\caption{Dreistufiger rollenbasierter Seitenschutz}
 \label{fig:routenschutz}
+\end{minipage}
 \end{figure}
- 
-Um den Nutzer nach erfolgreichem Login nicht bei jeder weiteren
-Anfrage erneut authentifizieren zu lassen, wird der gespeicherte
-Token automatisch an jede Anfrage an das Backend angehängt. Dies
-erfolgt zentral über einen einzigen, wiederverwendbaren
-Mechanismus, sodass der Token nicht bei jeder einzelnen Anfrage
-manuell mitgeschickt werden muss. Zusätzlich wird ein im
-localStorage gespeicherter Token nicht ungeprüft als gültig
-übernommen, sondern aktiv beim Backend validiert. Auf diese Weise
-wird sichergestellt, dass ein abgelaufener oder ungültiger Token
-erkannt und der betroffene Nutzer korrekt abgemeldet wird.
- 
-Was das Onboarding betrifft, verfolgt die Plattform ein
-zweistufiges Rollenmodell. Jeder registrierte Nutzer erhält
-zunächst nur die Rolle Customer und kann die Plattform in dieser
-Rolle uneingeschränkt nutzen. Ein Wechsel zur Rolle Seller oder
-ServiceProvider ist über einen gesonderten Antragsprozess
-möglich, der von einem Administrator geprüft und freigegeben
-wird. Dieser Vorgang ermöglicht es Nutzern, zunächst Vertrauen in
-die Plattform aufzubauen, bevor sie sich als Anbieter
-registrieren, und stellt zugleich eine kontrollierte Vergabe von
-Verkäufer- und Dienstleisterkonten sicher. Abbildung~\ref{fig:interceptor-rollenmodell}
-fasst sowohl den automatischen Tokenversand als auch das
-Rollen-Upgrade-Modell zusammen.
- 
+
+Der gespeicherte Token wird automatisch über
+einen zentralen, wiederverwendbaren Mechanismus
+an jede Anfrage angehängt und zusätzlich aktiv
+beim Backend validiert, sodass ein abgelaufener
+oder ungültiger Token erkannt und der Nutzer
+korrekt abgemeldet wird. Für das Onboarding
+verfolgt die Plattform ein zweistufiges
+Rollenmodell: Jeder Nutzer erhält zunächst die
+Rolle Customer, ein Wechsel zu Seller oder
+ServiceProvider erfolgt über einen von einem
+Administrator geprüften Antragsprozess.
+Abbildung~\ref{fig:interceptor-rollenmodell}
+fasst Tokenversand und Rollen-Upgrade zusammen.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{Bilder/abb_interceptor_rollenmodell.png}
+\includegraphics[width=0.55\textwidth]{Bilder/abb_interceptor_rollenmodell.png}
 \caption{Automatischer Tokenversand und Rollen-Upgrade-Modell}
 \label{fig:interceptor-rollenmodell}
 \end{figure}
