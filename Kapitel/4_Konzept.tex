@@ -315,26 +315,7 @@ Formulare validieren ihre Eingaben clientseitig,
 bevor eine Anfrage gestellt wird; serverseitige
 Fehler werden gezielt dem betroffenen Feld
 zugeordnet, und der Absende-Button wird während
-der Bearbeitung deaktiviert. Abbildung~\ref{fig:login-vs-register}
-und Abbildung~\ref{fig:validierung-fehler}
-stellen beide Konzepte gegenüber.
-
-\begin{figure}[H]
-\centering
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{Bilder/abb_login_vs_register.png}
-\caption{Login und Registrierung im Vergleich}
-\label{fig:login-vs-register}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{Bilder/abb_validierung_fehler.png}
-\caption{Formularvalidierung und Fehlerrückmeldung}
-\label{fig:validierung-fehler}
-\end{minipage}
-\end{figure}
+der Bearbeitung deaktiviert.
 
 Verläuft Anmeldung oder Registrierung
 erfolgreich, bildet die Anwendung aus der
@@ -351,26 +332,6 @@ wird geprüft, ob der Anmeldestatus bereits
 bestimmt ist (Ladezustand), dann ob der Nutzer
 angemeldet ist (sonst Weiterleitung), und erst
 danach wird der geschützte Inhalt angezeigt.
-Abbildung~\ref{fig:session-konzept} und
-Abbildung~\ref{fig:routenschutz} zeigen beide
-Abläufe.
-
-\begin{figure}[H]
-\centering
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{Bilder/abb_authentifizierung_ablauf.png}
-\caption{Ablauf der Authentifizierung}
-\label{fig:session-konzept}
-\end{minipage}
-\hfill
-\begin{minipage}{0.48\linewidth}
-\centering
-\includegraphics[width=\linewidth]{Bilder/abb_routenschutz.png}
-\caption{Dreistufiger rollenbasierter Seitenschutz}
-\label{fig:routenschutz}
-\end{minipage}
-\end{figure}
 
 Der gespeicherte Token wird automatisch über
 einen zentralen, wiederverwendbaren Mechanismus
@@ -383,15 +344,6 @@ Rollenmodell: Jeder Nutzer erhält zunächst die
 Rolle Customer, ein Wechsel zu Seller oder
 ServiceProvider erfolgt über einen von einem
 Administrator geprüften Antragsprozess.
-Abbildung~\ref{fig:interceptor-rollenmodell}
-fasst Tokenversand und Rollen-Upgrade zusammen.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.55\textwidth]{Bilder/abb_interceptor_rollenmodell.png}
-\caption{Automatischer Tokenversand und Rollen-Upgrade-Modell}
-\label{fig:interceptor-rollenmodell}
-\end{figure}
  
 
 
