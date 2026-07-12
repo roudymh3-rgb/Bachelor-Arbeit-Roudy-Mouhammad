@@ -229,249 +229,54 @@ rollenspezifische Seiten zur Verfügung.
 Dieser Abschnitt beschreibt die Umsetzung der in
 Abschnitt~\ref{subsec:katalog_konzept} vorgestellten Startseite
 sowie das wiederverwendbare Kartenprinzip, das dort zum Einsatz
-kommt.
-
-\textbf{Startseite: gebündelte Anfrage.}
-
-Die Startseite ruft ihre Daten über eine einzelne Anfrage an den
-Endpunkt \texttt{/api/home} ab. Dieser liefert Produkte,
-Dienstleistungen und perspektivisch Anzeigen in einer gemeinsamen
-Antwort, anstatt für jeden Bereich eine eigene Anfrage zu
-stellen.
-
-\begin{lstlisting}[caption={Feature-API-Funktion getHome
-(home-api.ts)}, label={lst:get-home}]
-export async function getHome(params: GetHomeParams = {}) {
-  const response = await httpClient.get<ApiSuccessResponse<HomeResult>>(homeEndpoints.show, {
-    params: {
-      latest_limit: params.latestLimit,
-    },
-  })
-
-  return response.data
-}
-\end{lstlisting}
-
-\begin{lstlisting}[caption={Query-Hook useHomeQuery
-(use-home-query.ts)}, label={lst:use-home-query}]
-export function useHomeQuery(options: UseHomeQueryOptions = {}) {
-  return useQuery({
-    queryKey: ['home', options],
-    queryFn: () => getHome(options),
-  })
-}
-\end{lstlisting}
-
-Die \texttt{HomePage} wertet die drei möglichen Zustände der
-Anfrage explizit aus: Während des Ladens wird ein
-Platzhalter-Raster angezeigt, im Fehlerfall eine Fehlermeldung,
-und andernfalls werden die Vorschau-Bereiche für Produkte und
-Dienstleistungen gerendert. Im Unterschied zur Kontoübersicht
-(vgl. Abschnitt~\ref{subsec:impl_tanstackquery}) steht hier keine
-lokal gespeicherte Alternative zur Verfügung, sodass eine
-explizite Behandlung von \texttt{isLoading} und \texttt{isError}
-erforderlich ist.
-
-\begin{lstlisting}[caption={Explizite Zustandsbehandlung in der
-HomePage (home-page.tsx)}, label={lst:home-page-states}]
-{homeQuery.isLoading ? <HomePreviewGridSkeleton /> : null}
-
-{!homeQuery.isLoading && homeQuery.isError ? (
-  <Card>
-    <CardContent className="py-6 text-sm text-destructive">
-      {getApiErrorMessage(
-        homeQuery.error,
-        "Unable to load the home page right now.",
-      )}
-    </CardContent>
-  </Card>
-) : null}
-\end{lstlisting}
-
-Erst wenn weder \texttt{isLoading} noch \texttt{isError}
-zutrifft, werden die beiden Vorschau-Bereiche mit den
-tatsächlichen Daten gerendert.
-
-\textbf{Wiederverwendbare Vorschau-Sektion.}
+kommt. Die Startseite ruft ihre Daten über eine einzelne, an den
+Endpunkt \texttt{/api/home} gerichtete Anfrage ab, die Produkte
+und Dienstleistungen gemeinsam liefert. Der Aufbau der
+Anfragefunktion und des zugehörigen Query-Hooks folgt dabei
+demselben Prinzip, das bereits in
+Abschnitt~\ref{sec:impl_netzwerk} eingeführt wurde. Während des
+Ladens wird ein Platzhalter-Raster angezeigt, im Fehlerfall eine
+Fehlermeldung; im Unterschied zur Kontoübersicht (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}) steht hier keine
+lokal gespeicherte Alternative zur Verfügung, sodass diese
+Zustände explizit behandelt werden.
 
 Sowohl der Produkt- als auch der Dienstleistungsbereich der
-Startseite nutzen dieselbe Komponente
-\texttt{HomePreviewSection}. Sie erhält Titel und
-Leer-Zustand-Nachricht als Parameter sowie den eigentlichen
-Karteninhalt über \texttt{children}, sodass dieselbe Struktur für
-beide Datenarten wiederverwendet werden kann.
-
-\begin{lstlisting}[caption={Wiederverwendbare Vorschau-Sektion
-(home-preview-section.tsx)}, label={lst:home-preview-section}]
-export function HomePreviewSection({
-  title,
-  description,
-  emptyMessage,
-  children,
-}: HomePreviewSectionProps) {
-  return (
-    <section className="space-y-4">
-      <div className="space-y-1">
-        <h2 className="font-heading text-2xl font-semibold text-foreground">
-          {title}
-        </h2>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
-      </div>
-
-      {children ? (
-        children
-      ) : (
-        <Card>
-          <CardContent className="py-6 text-sm text-muted-foreground">
-            {emptyMessage}
-          </CardContent>
-        </Card>
-      )}
-    </section>
-  )
-}
-\end{lstlisting}
-
-Übergibt die \texttt{HomePage} keine \texttt{children} (weil die
-jeweilige Liste leer ist), zeigt die Komponente stattdessen die
-\texttt{emptyMessage} an.
-
-\textbf{Produktkarte.}
-
-Jedes Produkt wird über die Komponente \texttt{ProductPreviewCard}
-dargestellt. Sie löst den Bildpfad auf, formatiert den Preis und
-zeigt bei kürzlich hinzugefügten Produkten eine
-Kennzeichnung an.
-
-\begin{lstlisting}[caption={Bildpfad-Auflösung
-(asset-url.ts)}, label={lst:build-asset-url}]
-export function buildAssetUrl(path: string | null | undefined) {
-  if (!path) {
-    return null
-  }
-
-  if (/^https?:\/\//i.test(path)) {
-    return path
-  }
-
-  const apiBaseUrl = resolveApiBaseUrl()
-  const origin = new URL(apiBaseUrl).origin
-
-  return path.startsWith('/') ? `${origin}${path}` : `${origin}/${path}`
-}
-\end{lstlisting}
-
-Das Backend liefert für Produktbilder keinen vollständigen Pfad.
-\texttt{buildAssetUrl} prüft daher zunächst, ob der übergebene
-Pfad bereits mit \texttt{http} beginnt; ist das nicht der Fall,
-wird er um die Basis-Adresse des Backends ergänzt. Ist kein Pfad
-vorhanden, zeigt die Karte anstelle eines Bildes einen
-Platzhalter mit dem Hinweis \glqq No image\grqq{} an, damit sich
-die Abmessungen der Karte unabhängig vom Vorhandensein eines
-Bildes nicht verändern.
-
-Der Preis wird über die integrierte
-\texttt{Intl.NumberFormat}-Schnittstelle formatiert, sodass er in
-der jeweiligen Währung mit korrekter Nachkommastellen-Notation
-dargestellt wird, anstatt die vom Backend gelieferte Zahl
-unformatiert anzuzeigen. Ob ein Produkt als neu gekennzeichnet
-wird, entscheidet ein vom Backend geliefertes Attribut; die
-Karte wertet dieses Attribut lediglich aus und zeigt bei
-Zutreffen einen entsprechenden Hinweis an.
+Startseite nutzen dieselbe wiederverwendbare
+Vorschau-Komponente, die Titel, Leer-Zustand-Nachricht und den
+eigentlichen Karteninhalt entgegennimmt. Jedes Produkt wird über
+eine Karte dargestellt, die den vom Backend gelieferten,
+unvollständigen Bildpfad um die Basis-Adresse ergänzt, den Preis
+über die integrierte \texttt{Intl.NumberFormat}-Schnittstelle
+formatiert und bei kürzlich hinzugefügten Produkten eine
+entsprechende Kennzeichnung anzeigt.
 
 Auf der Katalogseite für Produkte lassen sich die angezeigten
 Einträge zusätzlich nach Kategorie filtern und seitenweise
-durchblättern. Die gewählte Seite und Kategorie werden als
-Suchparameter in der URL abgebildet, sodass ein bestimmter
-Ausschnitt des Katalogs verlinkt werden kann und beim Neuladen
-der Seite erhalten bleibt.
-
-\begin{lstlisting}[caption={Query-Hook useProductsQuery mit
-Seiten- und Kategorieparametern (use-products-query.ts)},
-label={lst:use-products-query}]
-export function useProductsQuery(options: UseProductsQueryOptions = {}) {
-  return useQuery({
-    queryKey: ['products', options],
-    queryFn: () => getProducts(options),
-  })
-}
-\end{lstlisting}
-
-Da die Parameter Teil des Query Keys sind (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}), führt ein
-Seitenwechsel oder eine geänderte Kategorie zu einer neuen
-Anfrage an das Backend. Die Navigation zwischen den Seiten
-übernimmt die Komponente \texttt{PaginationControls}, die anhand
-der vom Backend gelieferten aktuellen Seite und letzten Seite
-entscheidet, ob und in welche Richtung geblättert werden kann.
-
-% TODO (Roudy): Diese Ergaenzung zu Filter und Paginierung
-% basiert auf dem tatsaechlichen Code, nicht auf einem
-% Mentor-Meeting -- im Meeting wurde dazu bisher nichts gesagt.
-% Mit Mentor abgleichen, sobald dazu ein Meeting stattgefunden hat.
+durchblättern; Seite und Kategorie werden als Suchparameter in
+der URL abgebildet, sodass sich ein bestimmter Ausschnitt des
+Katalogs verlinken lässt. Da diese Parameter Teil des Query Keys
+sind (vgl. Abschnitt~\ref{subsec:impl_tanstackquery}), führt
+sowohl ein Seitenwechsel als auch eine geänderte Kategorie zu
+einer neuen Anfrage an das Backend.
 
 \subsection{Produktdetailseite \& Dienstleistungsdetailseite}
 \label{subsec:impl_produktdetail}
 
 Der Aufruf einer Produktkarte führt, wie in
 Abschnitt~\ref{subsec:katalog_konzept} beschrieben, auf die
-zugehörige Detailseite. Die Produkt-ID wird dabei als
+zugehörige Detailseite; die Produkt-ID wird dabei als validierter
 Routenparameter übergeben (vgl.
-Abschnitt~\ref{subsec:routing-konzept}).
+Abschnitt~\ref{subsec:routing-konzept}) und an den zugehörigen
+Query-Hook weitergereicht. Die Seite unterscheidet vier
+Zustände: eine ungültige Produkt-ID, den Ladezustand, einen
+Fehler bei der Anfrage sowie den Fall, dass kein Produkt zu der
+angefragten ID existiert. Liegen die Produktdaten vor, werden sie
+in einer Bildergalerie, die auf dieselbe Bildpfad-Auflösung
+zurückgreift wie die Produktkarte, sowie einer Übersicht mit
+Preis, Kategorie und Verkäuferinformationen dargestellt.
 
-\begin{lstlisting}[caption={Validierung der Produkt-ID
-(product-details-page.tsx)}, label={lst:parse-product-id}]
-function parseProductId(value: string | undefined) {
-  const parsed = Number(value)
-
-  if (!Number.isInteger(parsed) || parsed < 1) {
-    return null
-  }
-
-  return parsed
-}
-\end{lstlisting}
-
-Der Routenparameter wird zunächst validiert, bevor er an den
-Query-Hook \texttt{useProductQuery} übergeben wird. Ist der
-Parameter kein gültiger, positiver Ganzzahlwert, wird die
-Anfrage über den \texttt{enabled}-Parameter des Hooks gar nicht
-erst ausgelöst.
-
-\begin{lstlisting}[caption={Query-Hook useProductQuery
-(use-product-query.ts)}, label={lst:use-product-query}]
-export function useProductQuery(productId: number, enabled = true) {
-  return useQuery({
-    queryKey: ['product', productId],
-    queryFn: () => getProduct(productId),
-    enabled,
-  })
-}
-\end{lstlisting}
-
-Die Detailseite unterscheidet vier Zustände: eine ungültige
-Produkt-ID, den Ladezustand, einen Fehler bei der Anfrage sowie
-den Fall, dass die Anfrage erfolgreich verläuft, aber kein
-Produkt zu der angefragten ID existiert. Für jeden dieser
-Zustände wird eine eigene Meldung beziehungsweise, im
-Ladezustand, ein Platzhalter angezeigt.
-
-Liegen die Produktdaten vor, werden sie in zwei Bereichen
-dargestellt: einer Bildergalerie, die auf dieselbe
-Bildpfad-Auflösung zurückgreift wie die Produktkarte (vgl.
-Abschnitt~\ref{subsec:impl_produktlisting}), sowie einer
-Übersicht mit Preis, Kategorie und Verkäuferinformationen. Die
-Übersicht nutzt dieselben wiederverwendbaren
-Card-Komponenten, die bereits bei der Produktkarte zum Einsatz
-kommen.
-
-% TODO (Roudy): Diese Beschreibung basiert auf dem tatsaechlichen
-% Code, nicht auf einem Mentor-Meeting -- im Meeting wurde nur der
-% Klick-Uebergang von der Karte zur Detailseite besprochen, nicht
-% der Aufbau der Detailseite selbst. Mit Mentor abgleichen, sobald
-% dazu ein Meeting stattgefunden hat.
+% ----------------------------------------------------------------
 
 
 % ----------------------------------------------------------------
