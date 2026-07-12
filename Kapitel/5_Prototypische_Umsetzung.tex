@@ -534,7 +534,162 @@ ServiceProvider erfolgt die Darstellung nach demselben Prinzip
 \label{sec:impl_katalog}
 
 \subsection{Produktlisting: Karten, Paginierung}
-% TODO: Implementierung, Datenabruf via API.
+\label{subsec:impl_produktlisting}
+
+Dieser Abschnitt beschreibt die Umsetzung der in
+Abschnitt~\ref{subsec:katalog_konzept} vorgestellten Startseite
+sowie das wiederverwendbare Kartenprinzip, das dort zum Einsatz
+kommt.
+
+\textbf{Startseite: gebündelte Anfrage.}
+
+Die Startseite ruft ihre Daten über eine einzelne Anfrage an den
+Endpunkt \texttt{/api/home} ab. Dieser liefert Produkte,
+Dienstleistungen und perspektivisch Anzeigen in einer gemeinsamen
+Antwort, anstatt für jeden Bereich eine eigene Anfrage zu
+stellen.
+
+\begin{lstlisting}[caption={Feature-API-Funktion getHome
+(home-api.ts)}, label={lst:get-home}]
+export async function getHome(params: GetHomeParams = {}) {
+  const response = await httpClient.get<ApiSuccessResponse<HomeResult>>(homeEndpoints.show, {
+    params: {
+      latest_limit: params.latestLimit,
+    },
+  })
+
+  return response.data
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Query-Hook useHomeQuery
+(use-home-query.ts)}, label={lst:use-home-query}]
+export function useHomeQuery(options: UseHomeQueryOptions = {}) {
+  return useQuery({
+    queryKey: ['home', options],
+    queryFn: () => getHome(options),
+  })
+}
+\end{lstlisting}
+
+Die \texttt{HomePage} wertet die drei möglichen Zustände der
+Anfrage explizit aus: Während des Ladens wird ein
+Platzhalter-Raster angezeigt, im Fehlerfall eine Fehlermeldung,
+und andernfalls werden die Vorschau-Bereiche für Produkte und
+Dienstleistungen gerendert. Im Unterschied zur Kontoübersicht
+(vgl. Abschnitt~\ref{subsec:impl_tanstackquery}) steht hier keine
+lokal gespeicherte Alternative zur Verfügung, sodass eine
+explizite Behandlung von \texttt{isLoading} und \texttt{isError}
+erforderlich ist.
+
+\begin{lstlisting}[caption={Explizite Zustandsbehandlung in der
+HomePage (home-page.tsx)}, label={lst:home-page-states}]
+{homeQuery.isLoading ? <HomePreviewGridSkeleton /> : null}
+
+{!homeQuery.isLoading && homeQuery.isError ? (
+  <Card>
+    <CardContent className="py-6 text-sm text-destructive">
+      {getApiErrorMessage(
+        homeQuery.error,
+        "Unable to load the home page right now.",
+      )}
+    </CardContent>
+  </Card>
+) : null}
+\end{lstlisting}
+
+Erst wenn weder \texttt{isLoading} noch \texttt{isError}
+zutrifft, werden die beiden Vorschau-Bereiche mit den
+tatsächlichen Daten gerendert.
+
+\textbf{Wiederverwendbare Vorschau-Sektion.}
+
+Sowohl der Produkt- als auch der Dienstleistungsbereich der
+Startseite nutzen dieselbe Komponente
+\texttt{HomePreviewSection}. Sie erhält Titel und
+Leer-Zustand-Nachricht als Parameter sowie den eigentlichen
+Karteninhalt über \texttt{children}, sodass dieselbe Struktur für
+beide Datenarten wiederverwendet werden kann.
+
+\begin{lstlisting}[caption={Wiederverwendbare Vorschau-Sektion
+(home-preview-section.tsx)}, label={lst:home-preview-section}]
+export function HomePreviewSection({
+  title,
+  description,
+  emptyMessage,
+  children,
+}: HomePreviewSectionProps) {
+  return (
+    <section className="space-y-4">
+      <div className="space-y-1">
+        <h2 className="font-heading text-2xl font-semibold text-foreground">
+          {title}
+        </h2>
+        {description && (
+          <p className="text-sm text-muted-foreground">{description}</p>
+        )}
+      </div>
+
+      {children ? (
+        children
+      ) : (
+        <Card>
+          <CardContent className="py-6 text-sm text-muted-foreground">
+            {emptyMessage}
+          </CardContent>
+        </Card>
+      )}
+    </section>
+  )
+}
+\end{lstlisting}
+
+Übergibt die \texttt{HomePage} keine \texttt{children} (weil die
+jeweilige Liste leer ist), zeigt die Komponente stattdessen die
+\texttt{emptyMessage} an.
+
+\textbf{Produktkarte.}
+
+Jedes Produkt wird über die Komponente \texttt{ProductPreviewCard}
+dargestellt. Sie löst den Bildpfad auf, formatiert den Preis und
+zeigt bei kürzlich hinzugefügten Produkten eine
+Kennzeichnung an.
+
+\begin{lstlisting}[caption={Bildpfad-Auflösung
+(asset-url.ts)}, label={lst:build-asset-url}]
+export function buildAssetUrl(path: string | null | undefined) {
+  if (!path) {
+    return null
+  }
+
+  if (/^https?:\/\//i.test(path)) {
+    return path
+  }
+
+  const apiBaseUrl = resolveApiBaseUrl()
+  const origin = new URL(apiBaseUrl).origin
+
+  return path.startsWith('/') ? `${origin}${path}` : `${origin}/${path}`
+}
+\end{lstlisting}
+
+Das Backend liefert für Produktbilder keinen vollständigen Pfad.
+\texttt{buildAssetUrl} prüft daher zunächst, ob der übergebene
+Pfad bereits mit \texttt{http} beginnt; ist das nicht der Fall,
+wird er um die Basis-Adresse des Backends ergänzt. Ist kein Pfad
+vorhanden, zeigt die Karte anstelle eines Bildes einen
+Platzhalter mit dem Hinweis \glqq No image\grqq{} an, damit sich
+die Abmessungen der Karte unabhängig vom Vorhandensein eines
+Bildes nicht verändern.
+
+Der Preis wird über die integrierte
+\texttt{Intl.NumberFormat}-Schnittstelle formatiert, sodass er in
+der jeweiligen Währung mit korrekter Nachkommastellen-Notation
+dargestellt wird, anstatt die vom Backend gelieferte Zahl
+unformatiert anzuzeigen. Ob ein Produkt als neu gekennzeichnet
+wird, entscheidet ein vom Backend geliefertes Attribut; die
+Karte wertet dieses Attribut lediglich aus und zeigt bei
+Zutreffen einen entsprechenden Hinweis an.
 
 \subsection{Produktdetailseite \& Dienstleistungsdetailseite}
 % TODO: Aufbau, Bildergalerie, In-den-Warenkorb-Funktion.
