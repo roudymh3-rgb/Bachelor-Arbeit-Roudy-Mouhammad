@@ -618,7 +618,59 @@ Rollen-Upgrade-Modell zusammen.
 
 
 \subsection{Katalog- und Detailseiten}
-% TODO: Produktlisting, Paginierung, Sortierung, Detailseiten.
+\label{subsec:katalog_konzept}
+
+Der Katalogbereich von \textit{Bazario}
+umfasst die Startseite, die
+Katalogseiten für Produkte und
+Dienstleistungen sowie die öffentlichen
+Profilseiten einzelner Verkäufer und
+Dienstleister.
+
+Die Startseite zeigt eine Vorschau der
+zuletzt hinzugefügten Produkte und
+Dienstleistungen. Die zugehörigen
+Daten werden über eine einzelne,
+gebündelte Anfrage an das Backend
+abgerufen, die sowohl Produkte als
+auch Dienstleistungen in einer
+Antwort liefert; dieser Ansatz löst
+eine frühere Zwischenlösung ab, bei
+der Produkte und Dienstleistungen
+über zwei getrennte Anfragen geladen
+wurden.
+
+Über eigenständige Katalogseiten
+lassen sich alle Produkte
+beziehungsweise Dienstleistungen der
+Plattform durchsuchen. Zusätzlich
+stellt \textit{Bazario} für jeden
+Verkäufer und jeden Dienstleister eine
+öffentliche Profilseite bereit, auf
+der Kunden ausschließlich die Produkte
+beziehungsweise Dienstleistungen
+dieses einen Anbieters einsehen
+können. Diese öffentlichen
+Profilseiten sind von der internen
+Verwaltungsseite des jeweiligen
+Verkäufers oder Dienstleisters zu
+unterscheiden, die in
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}
+beschrieben wird.
+
+Der Aufruf eines einzelnen Produkts
+oder einer einzelnen Dienstleistung,
+etwa über eine Vorschau-Karte, führt
+jeweils auf eine eigene Detailseite.
+Für die Darstellung der Vorschauen auf
+Startseite und Katalogseiten wird ein
+wiederverwendbares Kartenprinzip
+verfolgt, das für Produkte und
+Dienstleistungen gleichermaßen zum
+Einsatz kommt; liegen für einen
+Bereich keine Einträge vor, wird dem
+Nutzer anstelle einer leeren Fläche
+ein entsprechender Hinweis angezeigt.
 
 \subsection{Warenkorb, Checkout und Zahlung}
 % TODO: Kombination aus Produkten und Buchungen; Stripe-Flow.
