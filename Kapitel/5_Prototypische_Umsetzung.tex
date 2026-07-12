@@ -439,6 +439,90 @@ geschützte Inhalt angezeigt wird. Die Eigenschaft \texttt{replace} der
 \texttt{Navigate}-Komponente verhindert dabei, dass die nicht autorisierte
 Route im Browserverlauf verbleibt.
 % ----------------------------------------------------------------
+\subsection{Rollen-Upgrade-Antrag}
+\label{subsec:impl_rollen_upgrade}
+
+Wie in Abschnitt~\ref{subsec:auth-onboarding} beschrieben, startet
+jeder Nutzer mit der Rolle Customer und kann über einen
+Antragsprozess zur Rolle Seller oder ServiceProvider wechseln. Die
+\texttt{AccountPage} bildet hierfür den zentralen Einstiegspunkt.
+Listing~\ref{lst:account-upgrades} zeigt, wie die verfügbaren
+Upgrade-Optionen abhängig von den Daten des Backends angezeigt
+werden.
+
+\begin{lstlisting}[caption={Bedingte Anzeige der Upgrade-Optionen auf der AccountPage}, label={lst:account-upgrades}]
+export function AccountPage() {
+  const { session } = useAuth()
+  const meQuery = useMeQuery(true, 5)
+
+  const user = meQuery.data?.result.user ?? session?.user
+
+  return (
+    <Card>
+      <CardContent className="flex flex-wrap gap-3">
+        {user?.available_upgrades?.seller ? (
+          <Button asChild variant="outline">
+            <Link to="/account/upgrade/seller">Upgrade to seller</Link>
+          </Button>
+        ) : null}
+        {user?.available_upgrades?.service_provider ? (
+          <Button asChild variant="outline">
+            <Link to="/account/upgrade/service-provider">
+              Upgrade to service provider
+            </Link>
+          </Button>
+        ) : null}
+      </CardContent>
+    </Card>
+  )
+}
+\end{lstlisting}
+
+Die Anzeige der jeweiligen Schaltfläche wird vollständig durch das
+Backend gesteuert: Nur wenn das Feld \texttt{available\_upgrades} für die
+betreffende Rolle den Wert \texttt{true} liefert, erscheint die
+entsprechende Option. Besitzt ein Nutzer eine Rolle bereits oder
+hat er einen Antrag gestellt, der noch nicht abschließend
+bearbeitet wurde, entfernt das Backend die jeweilige Option
+automatisch, ohne dass diese Logik zusätzlich im Frontend
+nachgebildet werden müsste. Auf diese Weise werden zuerst die
+bevorzugt aktuellen, vom Server validierten Daten verwendet
+(\texttt{meQuery.data}) und nur, solange diese noch nicht vorliegen, auf
+die bereits lokal vorhandene Session zurückgegriffen.
+
+Sobald ein Antrag gestellt wurde, zeigt die \texttt{AccountPage} dessen
+aktuellen Bearbeitungsstand an. Listing~\ref{lst:account-status}
+zeigt die entsprechende Darstellung für einen Antrag auf die Rolle
+Seller.
+
+\begin{lstlisting}[caption={Anzeige des Antragsstatus auf der AccountPage}, label={lst:account-status}]
+{user?.seller_profile ? (
+  <Card>
+    <CardHeader>
+      <CardTitle>Seller application</CardTitle>
+      <CardDescription>
+        Current seller request status from the backend.
+      </CardDescription>
+    </CardHeader>
+    <CardContent className="text-sm">
+      <p><span className="font-medium">Store:</span> {user.seller_profile.store_name}</p>
+      <p><span className="font-medium">Status:</span> {user.seller_profile.status}</p>
+    </CardContent>
+  </Card>
+) : null}
+\end{lstlisting}
+
+Diese Karte wird nur dann eingeblendet, wenn für den Nutzer
+überhaupt ein \texttt{seller\_profile} vorhanden ist, also ein Antrag
+gestellt wurde. Der darin enthaltene Status, etwa der Wert
+\texttt{pending} für einen noch nicht entschiedenen Antrag,
+stammt direkt vom Backend und wird unverändert dargestellt. Bis
+zur abschließenden Entscheidung durch einen Administrator bleibt
+der Nutzer dabei uneingeschränkt in seiner Rolle als Customer
+aktiv; der Antragsprozess wirkt sich nicht auf die bestehende
+Nutzung der Plattform aus. Für einen Antrag auf die Rolle
+ServiceProvider erfolgt die Darstellung nach demselben Prinzip
+über das Feld \texttt{service\_provider\_profile}.
 \section{Katalog und Produktseiten}
 \label{sec:impl_katalog}
 
