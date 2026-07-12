@@ -347,26 +347,60 @@ Messaging-Inbox & Geplant \\
 \label{subsec:state-management-konzept}
 
 Für das globale State Management setzt
-\textit{Bazario} auf Zustand, eine
-schlanke hook-basierte
-State-Management-Bibliothek für
-React-Anwendungen. Im Unterschied zu
-klassischen State-Management-Lösungen
-benötigt Zustand keine Provider-Wrapper
-und reduziert den Konfigurationsaufwand
-auf ein Minimum, da ein Store direkt als
-Hook definiert und in jeder Komponente
-verwendet werden kann \cite{zustand_docs}.
+\textit{Bazario} zum jetzigen Zeitpunkt
+auf React Context als Ausgangslösung.
+Zustand, eine schlanke,
+hook-basierte State-Management-Bibliothek
+für React-Anwendungen, wird parallel
+dazu in Betracht gezogen; im
+Unterschied zu klassischen
+State-Management-Lösungen benötigt sie
+keine Provider-Wrapper und reduziert
+den Konfigurationsaufwand, da ein Store
+direkt als Hook definiert und in jeder
+Komponente verwendet werden kann
+\cite{zustand_docs}. Die endgültige
+Festlegung auf eine der beiden Lösungen
+ist derzeit noch nicht getroffen und
+erfolgt im Rahmen der Umsetzung des
+Warenkorbs, da dort erstmals ein
+Zustandsszenario entsteht, das über
+mehrere Komponenten und einen längeren
+Zeitraum hinweg konsistent gehalten
+werden muss, etwa wenn Artikel in den
+Warenkorb gelegt werden, ohne dass der
+Checkout-Vorgang unmittelbar
+abgeschlossen wird.
 
 Die globalen Zustände der Anwendung
 umfassen den Authentifizierungsstatus,
-die aktive Nutzerrolle sowie den
-Warenkorbinhalt. Diese Zustände stehen
-allen Komponenten konsistent zur
-Verfügung und bilden die Grundlage für
-den rollenbasierten Seitenschutz sowie
-die Steuerung der Navigation
-\cite{zustand_docs}.
+die aktive Nutzerrolle sowie
+perspektivisch den Warenkorbinhalt.
+
+Von Redux als Alternative wird bewusst
+abgesehen. Redux ist für Anwendungen
+mit umfangreichem, verzweigtem Zustand
+ausgelegt, bei denen einzelne
+Teilbereiche unabhängig voneinander
+aktualisiert werden müssen; dies ist
+insbesondere bei sehr großen Projekten
+mit vielen Funktionsbereichen und
+umfangreicher Kommunikation mit dem
+Backend der Fall. Der Zustand von
+\textit{Bazario} beschränkt sich
+dagegen auf einfache Werte wie den
+Authentifizierungstoken, den
+Warenkorbinhalt und Nachrichten, ohne
+komplexe, verschachtelte
+Objektstrukturen, sodass der
+zusätzliche Konfigurationsaufwand von
+Redux nicht erforderlich ist.
+
+% TODO (Roudy): Sobald die endgueltige
+% Entscheidung Zustand vs. React Context
+% im Rahmen der Warenkorb-Umsetzung
+% gefallen ist, diesen Abschnitt
+% entsprechend konkretisieren.
 \subsection{Netzwerk- und API-Kommunikation}
 \label{subsec:netzwerk_konzept}
 
