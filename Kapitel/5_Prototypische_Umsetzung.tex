@@ -129,16 +129,13 @@ export function useMeQuery(includeSummary = false, limit?: number, enabled = tru
 }
 \end{lstlisting}
  
-Der \texttt{queryKey} identifiziert die Anfrage eindeutig im
-projektweiten Cache und setzt sich aus einer festen Bezeichnung
-sowie den übergebenen Parametern zusammen. Ändern sich die
-Parameter, etwa bei einer anderen Seitenzahl innerhalb einer
-Liste, entsteht ein neuer Schlüssel, und TanStack Query löst eine
-neue Anfrage aus; bleibt der Schlüssel unverändert und liegt
-bereits ein aktueller Eintrag im Cache vor, wird dieser ohne
-erneute Serveranfrage zurückgegeben. Der \texttt{enabled}-Parameter
-erlaubt es, die Ausführung der Anfrage an eine Bedingung zu
-knüpfen, etwa das Vorhandensein einer gültigen Sitzung.
+Der \texttt{queryKey} setzt sich, wie in
+Abschnitt~\ref{subsec:netzwerk_konzept} beschrieben, aus einer
+festen Bezeichnung und den übergebenen Parametern zusammen und
+identifiziert die Anfrage eindeutig im projektweiten Cache. Der
+\texttt{enabled}-Parameter erlaubt es zusätzlich, die Ausführung
+der Anfrage an eine Bedingung zu knüpfen, etwa das Vorhandensein
+einer gültigen Sitzung.
  
 Der Rückgabewert des Hooks stellt der aufrufenden Komponente die
 Felder \texttt{data}, \texttt{isLoading} und \texttt{isError} zur
@@ -263,8 +260,6 @@ schließen, wie bereits in Listing~\ref{lst:login-dialog}
 dargestellt.
 
 \subsection{Token-Verwaltung und Session-Handling}
-\label{subsec:impl_token_session}
-
 \label{subsec:impl_token_session}
  
 Grundlage der Token-Verwaltung ist die Typdefinition der Session,
@@ -443,92 +438,6 @@ entschieden, ob der Nutzer zur Startseite weitergeleitet oder der
 geschützte Inhalt angezeigt wird. Die Eigenschaft \texttt{replace} der
 \texttt{Navigate}-Komponente verhindert dabei, dass die nicht autorisierte
 Route im Browserverlauf verbleibt.
-
-\subsection{Rollen-Upgrade-Antrag}
-\label{subsec:impl_rollen_upgrade}
-
-Wie in Abschnitt~\ref{subsec:auth-onboarding} beschrieben, startet
-jeder Nutzer mit der Rolle Customer und kann über einen
-Antragsprozess zur Rolle Seller oder ServiceProvider wechseln. Die
-\texttt{AccountPage} bildet hierfür den zentralen Einstiegspunkt.
-Listing~\ref{lst:account-upgrades} zeigt, wie die verfügbaren
-Upgrade-Optionen abhängig von den Daten des Backends angezeigt
-werden.
-
-\begin{lstlisting}[caption={Bedingte Anzeige der Upgrade-Optionen auf der AccountPage}, label={lst:account-upgrades}]
-export function AccountPage() {
-  const { session } = useAuth()
-  const meQuery = useMeQuery(true, 5)
-
-  const user = meQuery.data?.result.user ?? session?.user
-
-  return (
-    <Card>
-      <CardContent className="flex flex-wrap gap-3">
-        {user?.available_upgrades?.seller ? (
-          <Button asChild variant="outline">
-            <Link to="/account/upgrade/seller">Upgrade to seller</Link>
-          </Button>
-        ) : null}
-        {user?.available_upgrades?.service_provider ? (
-          <Button asChild variant="outline">
-            <Link to="/account/upgrade/service-provider">
-              Upgrade to service provider
-            </Link>
-          </Button>
-        ) : null}
-      </CardContent>
-    </Card>
-  )
-}
-\end{lstlisting}
-
-Die Anzeige der jeweiligen Schaltfläche wird vollständig durch das
-Backend gesteuert: Nur wenn das Feld \texttt{available\_upgrades} für die
-betreffende Rolle den Wert \texttt{true} liefert, erscheint die
-entsprechende Option. Besitzt ein Nutzer eine Rolle bereits oder
-hat er einen Antrag gestellt, der noch nicht abschließend
-bearbeitet wurde, entfernt das Backend die jeweilige Option
-automatisch, ohne dass diese Logik zusätzlich im Frontend
-nachgebildet werden müsste. Auf diese Weise werden zuerst die
-bevorzugt aktuellen, vom Server validierten Daten verwendet
-(\texttt{meQuery.data}) und nur, solange diese noch nicht vorliegen, auf
-die bereits lokal vorhandene Session zurückgegriffen.
-
-Sobald ein Antrag gestellt wurde, zeigt die \texttt{AccountPage} dessen
-aktuellen Bearbeitungsstatus an. Listing~\ref{lst:account-status}
-zeigt die entsprechende Darstellung für einen Antrag auf die Rolle
-Seller.
-
-\begin{lstlisting}[caption={Anzeige des Antragsstatus auf der AccountPage}, label={lst:account-status}]
-{user?.seller_profile ? (
-  <Card>
-    <CardHeader>
-      <CardTitle>Seller application</CardTitle>
-      <CardDescription>
-        Current seller request status from the backend.
-      </CardDescription>
-    </CardHeader>
-    <CardContent className="text-sm">
-      <p><span className="font-medium">Store:</span> {user.seller_profile.store_name}</p>
-      <p><span className="font-medium">Status:</span> {user.seller_profile.status}</p>
-    </CardContent>
-  </Card>
-) : null}
-\end{lstlisting}
-
-Diese Karte wird nur dann eingeblendet, wenn für den Nutzer
-überhaupt ein \texttt{seller\_profile} vorhanden ist, also ein Antrag
-gestellt wurde. Der darin enthaltene Status, etwa der Wert
-\texttt{pending} für einen noch nicht entschiedenen Antrag,
-stammt direkt vom Backend und wird unverändert dargestellt. Bis
-zur abschließenden Entscheidung durch einen Administrator bleibt
-der Nutzer dabei uneingeschränkt in seiner Rolle als Customer
-aktiv; der Antragsprozess wirkt sich nicht auf die bestehende
-Nutzung der Plattform aus. Für einen Antrag auf die Rolle
-ServiceProvider erfolgt die Darstellung nach demselben Prinzip
-über das Feld \texttt{service\_provider\_profile}.
-
 % ----------------------------------------------------------------
 \section{Katalog und Produktseiten}
 \label{sec:impl_katalog}
@@ -690,6 +599,37 @@ unformatiert anzuzeigen. Ob ein Produkt als neu gekennzeichnet
 wird, entscheidet ein vom Backend geliefertes Attribut; die
 Karte wertet dieses Attribut lediglich aus und zeigt bei
 Zutreffen einen entsprechenden Hinweis an.
+
+Auf der Katalogseite für Produkte lassen sich die angezeigten
+Einträge zusätzlich nach Kategorie filtern und seitenweise
+durchblättern. Die gewählte Seite und Kategorie werden als
+Suchparameter in der URL abgebildet, sodass ein bestimmter
+Ausschnitt des Katalogs verlinkt werden kann und beim Neuladen
+der Seite erhalten bleibt.
+
+\begin{lstlisting}[caption={Query-Hook useProductsQuery mit
+Seiten- und Kategorieparametern (use-products-query.ts)},
+label={lst:use-products-query}]
+export function useProductsQuery(options: UseProductsQueryOptions = {}) {
+  return useQuery({
+    queryKey: ['products', options],
+    queryFn: () => getProducts(options),
+  })
+}
+\end{lstlisting}
+
+Da die Parameter Teil des Query Keys sind (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}), führt ein
+Seitenwechsel oder eine geänderte Kategorie zu einer neuen
+Anfrage an das Backend. Die Navigation zwischen den Seiten
+übernimmt die Komponente \texttt{PaginationControls}, die anhand
+der vom Backend gelieferten aktuellen Seite und letzten Seite
+entscheidet, ob und in welche Richtung geblättert werden kann.
+
+% TODO (Roudy): Diese Ergaenzung zu Filter und Paginierung
+% basiert auf dem tatsaechlichen Code, nicht auf einem
+% Mentor-Meeting -- im Meeting wurde dazu bisher nichts gesagt.
+% Mit Mentor abgleichen, sobald dazu ein Meeting stattgefunden hat.
 
 \subsection{Produktdetailseite \& Dienstleistungsdetailseite}
 \label{subsec:impl_produktdetail}

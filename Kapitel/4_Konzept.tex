@@ -240,11 +240,10 @@ Anwendungs-Header erfolgen kann; besitzt
 er zwar eine gültige Sitzung, aber nicht
 die für die jeweilige Seite erforderliche
 Rolle, erfolgt die Weiterleitung auf die
-Kontoübersicht. Dieses Konzept basiert
-auf dem RBAC-Prinzip, das den Zugriff
-auf Ressourcen abhängig von der
-zugewiesenen Rolle steuert
-\cite{ferraiolo_rbac_arxiv}.
+Kontoübersicht. Dieses Konzept folgt
+dem in Abschnitt~\ref{subsec:routing}
+vorgestellten Prinzip der
+rollenbasierten Zugriffskontrolle.
  
 Tabelle~\ref{tab:routen} gibt einen
 Überblick über die Routen der Plattform,
@@ -550,10 +549,10 @@ den Nutzer nicht bei jeder Interaktion erneut anmelden zu lassen.
 Da der Anmeldestatus an verschiedenen Stellen der Anwendung
 benötigt wird, beispielsweise in der Header-Navigation zur Anzeige
 des Nutzernamens oder beim Zugriff auf geschützte Inhalte, muss er
-reaktiv verfügbar sein. Hierfür wird zunächst die React Context
-API als Übergangslösung verwendet, mit dem Ziel, die
-State-Management-Lösung zu einem späteren Zeitpunkt auf Zustand
-zu migrieren. Abbildung~\ref{fig:session-konzept} veranschaulicht
+reaktiv verfügbar sein. Hierfür wird die
+React Context API als Ausgangslösung verwendet (vgl.
+Abschnitt~\ref{subsec:state-management-konzept}).
+Abbildung~\ref{fig:session-konzept} veranschaulicht
 den vollständigen Ablauf der Authentifizierung von der Anmeldung
 bis zur Bereitstellung der Session in der Anwendung.
  
@@ -639,7 +638,8 @@ Antwort liefert.
 Über eigenständige Katalogseiten
 lassen sich alle Produkte
 beziehungsweise Dienstleistungen der
-Plattform durchsuchen. Zusätzlich
+Plattform einsehen und nach Kategorie
+filtern. Zusätzlich
 stellt \textit{Bazario} für jeden
 Verkäufer und jeden Dienstleister eine
 öffentliche Profilseite bereit, auf
