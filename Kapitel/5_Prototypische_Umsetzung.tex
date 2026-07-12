@@ -692,7 +692,65 @@ Karte wertet dieses Attribut lediglich aus und zeigt bei
 Zutreffen einen entsprechenden Hinweis an.
 
 \subsection{Produktdetailseite \& Dienstleistungsdetailseite}
-% TODO: Aufbau, Bildergalerie, In-den-Warenkorb-Funktion.
+\label{subsec:impl_produktdetail}
+
+Der Aufruf einer Produktkarte führt, wie in
+Abschnitt~\ref{subsec:katalog_konzept} beschrieben, auf die
+zugehörige Detailseite. Die Produkt-ID wird dabei als
+Routenparameter übergeben (vgl.
+Abschnitt~\ref{subsec:routing-konzept}).
+
+\begin{lstlisting}[caption={Validierung der Produkt-ID
+(product-details-page.tsx)}, label={lst:parse-product-id}]
+function parseProductId(value: string | undefined) {
+  const parsed = Number(value)
+
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    return null
+  }
+
+  return parsed
+}
+\end{lstlisting}
+
+Der Routenparameter wird zunächst validiert, bevor er an den
+Query-Hook \texttt{useProductQuery} übergeben wird. Ist der
+Parameter kein gültiger, positiver Ganzzahlwert, wird die
+Anfrage über den \texttt{enabled}-Parameter des Hooks gar nicht
+erst ausgelöst.
+
+\begin{lstlisting}[caption={Query-Hook useProductQuery
+(use-product-query.ts)}, label={lst:use-product-query}]
+export function useProductQuery(productId: number, enabled = true) {
+  return useQuery({
+    queryKey: ['product', productId],
+    queryFn: () => getProduct(productId),
+    enabled,
+  })
+}
+\end{lstlisting}
+
+Die Detailseite unterscheidet vier Zustände: eine ungültige
+Produkt-ID, den Ladezustand, einen Fehler bei der Anfrage sowie
+den Fall, dass die Anfrage erfolgreich verläuft, aber kein
+Produkt zu der angefragten ID existiert. Für jeden dieser
+Zustände wird eine eigene Meldung beziehungsweise, im
+Ladezustand, ein Platzhalter angezeigt.
+
+Liegen die Produktdaten vor, werden sie in zwei Bereichen
+dargestellt: einer Bildergalerie, die auf dieselbe
+Bildpfad-Auflösung zurückgreift wie die Produktkarte (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}), sowie einer
+Übersicht mit Preis, Kategorie und Verkäuferinformationen. Die
+Übersicht nutzt dieselben wiederverwendbaren
+Card-Komponenten, die bereits bei der Produktkarte zum Einsatz
+kommen.
+
+% TODO (Roudy): Diese Beschreibung basiert auf dem tatsaechlichen
+% Code, nicht auf einem Mentor-Meeting -- im Meeting wurde nur der
+% Klick-Uebergang von der Karte zur Detailseite besprochen, nicht
+% der Aufbau der Detailseite selbst. Mit Mentor abgleichen, sobald
+% dazu ein Meeting stattgefunden hat.
 
 
 % ----------------------------------------------------------------
