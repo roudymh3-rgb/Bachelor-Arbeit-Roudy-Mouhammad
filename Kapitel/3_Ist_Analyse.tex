@@ -259,29 +259,19 @@ Die Bibliothek ermöglicht die deklarative Definition von
 Routen sowie den rollenbasierten Seitenschutz über
 geschützte Routen, sodass Funktionsbereiche nur für Nutzer mit den entsprechenden 
 Berechtigungen zugänglich sind \cite{reactrouter_docs, wieruch_protected_routes}.
-% TODO (Roudy): Begruendung fuer Axios und TanStack Query ist NICHT
-% aus einem Mentor-Meeting oder Transkript belegt -- anders als die
-% uebrigen Eintraege in diesem Abschnitt. Mit Mentor klaeren und
-% Begruendung in eigenen Worten ergaenzen/ersetzen, sobald geklaert.
 Axios wurde als HTTP-Client für die Kommunikation mit dem
-Backend gewählt. Die Bibliothek ermöglicht die zentrale
-Konfiguration einer wiederverwendbaren Instanz mit fester
-Basis-Adresse und einheitlichen Standard-Headern und stellt
-über sogenannte Interceptors einen Mechanismus bereit, mit
-dem der Authentifizierungstoken automatisch an jede
-ausgehende Anfrage angehängt werden kann, ohne dass jede
-einzelne Anfragefunktion dies eigenständig umsetzen muss
-\cite{axios_docs}.
+Backend gewählt, ohne dass dabei ein einzelner, entscheidender
+Grund ausschlaggebend war. Die Bibliothek stellt die
+grundlegende Infrastruktur für die HTTP-Kommunikation bereit
+und ist die im Ökosystem am weitesten verbreitete und am
+längsten bewährte Lösung für diesen Zweck; nennenswerte
+Alternativen sind kaum vorhanden \cite{axios_docs}.
 
- 
 TanStack Query wurde für die Verwaltung des serverseitigen
-Datenbestands gewählt. Anstelle einer manuellen Verwaltung
-von Lade- und Fehlerzuständen übernimmt die Bibliothek das
-Abrufen, Zwischenspeichern und Synchronisieren von
-API-Daten und stellt den aufrufenden Komponenten
-einheitlich den Zustand jeder Anfrage bereit, etwa ob diese
-noch geladen wird, fehlgeschlagen ist oder erfolgreich
-Daten geliefert hat \cite{tanstack_query_docs}.
+Datenbestands gewählt, weil die Bibliothek eine gezielte
+Kontrolle über den Zustand jeder Verbindung ermöglicht, etwa
+ob eine Anfrage gerade lädt, sowie über die Zwischenspeicherung
+bereits abgerufener Daten \cite{tanstack_query_docs}.
 
 Tailwind CSS und shadcn/ui wurden als UI-Bibliotheken
 gewählt. Tailwind CSS ermöglicht eine schnelle und

@@ -204,41 +204,21 @@ gebunden sind.
 \label{subsec:state-management-konzept}
 
 Für das globale State Management setzt
-\textit{Bazario} zum jetzigen Zeitpunkt
-auf React Context als Ausgangslösung.
-Zustand, eine schlanke,
-hook-basierte State-Management-Bibliothek
-für React-Anwendungen, wird parallel
-dazu in Betracht gezogen; im
-Unterschied zu klassischen
-State-Management-Lösungen benötigt sie
-keine Provider-Wrapper und reduziert
-den Konfigurationsaufwand, da ein Store
-direkt als Hook definiert und in jeder
-Komponente verwendet werden kann
-\cite{zustand_docs}. Die endgültige
-Festlegung auf eine der beiden Lösungen
-ist derzeit noch nicht getroffen und
-erfolgt im Rahmen der Umsetzung des
-Warenkorbs, da dort erstmals ein
-Zustandsszenario entsteht, das über
-mehrere Komponenten und einen längeren
-Zeitraum hinweg konsistent gehalten
-werden muss, etwa wenn Artikel in den
-Warenkorb gelegt werden, ohne dass der
-Checkout-Vorgang unmittelbar
-abgeschlossen wird.
+\textit{Bazario} auf Zustand, eine
+schlanke, hook-basierte
+State-Management-Bibliothek für
+React-Anwendungen. Im Unterschied zu
+klassischen State-Management-Lösungen
+benötigt sie keine Provider-Wrapper und
+reduziert den Konfigurationsaufwand, da
+ein Store direkt als Hook definiert und
+in jeder Komponente verwendet werden
+kann \cite{zustand_docs}.
 
 Die globalen Zustände der Anwendung
 umfassen den Authentifizierungsstatus,
-die aktive Nutzerrolle sowie
-perspektivisch den Warenkorbinhalt.
-
-% TODO (Roudy): Sobald die endgueltige
-% Entscheidung Zustand vs. React Context
-% im Rahmen der Warenkorb-Umsetzung
-% gefallen ist, diesen Abschnitt
-% entsprechend konkretisieren.
+die aktive Nutzerrolle sowie den
+Warenkorbinhalt.
 \subsection{Netzwerk- und API-Kommunikation}
 \label{subsec:netzwerk_konzept}
 
@@ -297,11 +277,14 @@ Nutzung ist einer späteren Ausbaustufe der Anwendung vorbehalten
 und wird in dieser Arbeit nicht weiter vertieft.
 
 
-% TODO (Roudy): Absatz zur Abgrenzung Client-State (State
-% Management, Abschnitt 4.1.3) vs. Server-State (TanStack Query)
-% hier wieder ergaenzen, sobald die Zustand-vs-Context-Entscheidung
-% final ist. Inhaltlich bereits fertig, siehe fruehere Version im
-% Chat-Verlauf.
+Das beschriebene Konzept ergänzt das in
+Abschnitt~\ref{subsec:state-management-konzept} dargestellte
+globale State Management, verfolgt jedoch einen anderen Zweck.
+Während Zustand den clientseitigen Anwendungszustand verwaltet,
+etwa die aktive Nutzerrolle oder den Inhalt des Warenkorbs, ist
+TanStack Query für den serverseitigen Datenbestand zuständig, der
+über die beschriebenen Schichten abgerufen und synchronisiert
+wird.
 
 
 \section{UI/UX-Konzept}
