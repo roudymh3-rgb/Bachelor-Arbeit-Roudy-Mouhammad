@@ -1,15 +1,13 @@
-\chapter{Einleitung}
-\label{chap:einleitung}
-
 \section{Motivation und Problemstellung}
 \label{sec:motivation}
 
 Der digitale Handel hat sich in den vergangenen Jahren zu einem
 zentralen Bestandteil des wirtschaftlichen Lebens entwickelt.
 Laut dem Bundesverband E-Commerce und Versandhandel Deutschland 
-erzielte der deutsche E-Commerce-Markt im Jahr 2023 einen 
-Bruttoumsatz von rund 79,7 Milliarden Euro \cite{bevh_2024} 
-und zählt damit zu den größten Online-Märkten Europas. Trotz dieses Wachstums konzentriert sich
+erzielte der deutsche E-Commerce-Markt im Jahr 2024 einen 
+Bruttoumsatz von rund 80,6 Milliarden Euro \cite{bevh_2025} 
+und gilt damit als einer der umsatzstärksten E-Commerce-Märkte
+Europas \cite{trade_gov_germany_ecommerce}. Trotz dieses Wachstums konzentriert sich
 der Markt auf wenige große Plattformen wie Amazon oder Otto, die
 über erhebliche technische und finanzielle Ressourcen verfügen.
 
@@ -43,77 +41,3 @@ Funktionsbereichen und Zugriffsrechten. Gleichzeitig soll die
 Oberfläche konsistent, intuitiv und performant sein. Die
 Entwicklung eines solchen Multi-Rollen-Frontends bildet den
 Kern dieser Arbeit.
-
-\section{Ziel der Arbeit}
-\label{sec:ziel}
-
-Ziel dieser Bachelorarbeit ist der Entwurf und die prototypische
-Entwicklung des Frontends der Webanwendung \textit{Bazario},
-einer Multi-Rollen-Plattform, die E-Commerce und
-Dienstleistungsbuchungen in einem einheitlichen System
-zusammenführt. Im Fokus steht die Konzeption einer rollenbasierten
-Single-Page Application, die alle relevanten Funktionsbereiche
-der Plattform abdeckt und eine konsistente, benutzerfreundliche
-Oberfläche für alle vier Nutzerrollen bereitstellt.
-
-Das Frontend kommuniziert vollständig über die vom Backend
-bereitgestellten REST-API-Schnittstellen und setzt dabei moderne Webtechnologien wie React, Zustand, React Router,
-Tailwind CSS und Stripe ein.
-Die gewonnenen Erkenntnisse münden in einen lauffähigen
-Prototypen, der die zentralen Nutzerflows aller vier Rollen
-vollständig abbildet und anhand funktionaler sowie
-nicht-funktionaler Kriterien bewertet wird.
-
-\section{Abgrenzung}
-\label{sec:abgrenzung}
-
-Die vorliegende Arbeit beschränkt sich ausschließlich auf die
-Entwicklung des Frontends von \textit{Bazario}. Das zugehörige
-Backend wurde im Rahmen einer begleitenden Bachelorarbeit von
-Nagham Alaatki konzipiert und umgesetzt. Es basiert auf dem
-Laravel-Framework, verwendet eine relationale MySQL-Datenbank,
-setzt Laravel Sanctum zur tokenbasierten Authentifizierung ein
-und nutzt Pusher als WebSocket-Dienst für die
-Echtzeitkommunikation. Die Zahlungsabwicklung erfolgt
-serverseitig über Stripe einschließlich Webhook-Verarbeitung.
-
-Serverseitige Logik, Datenbankstruktur, Deployment und Hosting
-sind damit explizit nicht Gegenstand dieser Arbeit. Die
-Frontend-Implementierung baut auf den definierten
-REST-API-Schnittstellen des Backends auf und setzt deren
-korrekte Funktionsweise voraus. Ebenso sind Aspekte wie
-Suchmaschinenoptimierung, serverseitiges Rendering sowie
-die Entwicklung einer mobilen nativen Anwendung nicht Teil
-dieser Arbeit.
-
-Die vom Backend bereitgestellten Inhalte sind auf Arabisch,
-Englisch und Deutsch verfügbar; das Frontend übernimmt dabei
-keine eigene Übersetzung, sondern zeigt die vom Backend bereits
-in der jeweiligen Sprache gelieferten Daten an. Der bestehende
-Prototyp fragt die Inhalte durchgängig auf Englisch an; eine
-Umschaltung zwischen den verfügbaren Sprachen ist nicht Teil
-dieser Arbeit.
-
-\section{Aufbau der Arbeit}
-\label{sec:aufbau}
-
-Die Arbeit gliedert sich in sieben Kapitel. Nach dieser
-Einleitung vermittelt Kapitel~\ref{chap:theoretischer-hintergrund}
-die theoretischen Grundlagen zu E-Commerce, Marktplatzmodellen,
-Frontend-Architektur und dem eingesetzten Technologiestack.
-Kapitel~\ref{chap:ist_analyse} analysiert den Ausgangszustand
-des Projekts, beschreibt die gegebenen API-Schnittstellen und
-leitet die funktionalen sowie nicht-funktionalen Anforderungen
-an das Frontend ab.
-
-Kapitel~\ref{chap:konzept} stellt das erarbeitete
-Frontend-Konzept vor, einschließlich Architekturprinzipien,
-UI/UX-Konzept und der Planung der einzelnen Funktionsbereiche.
-Die konkrete Umsetzung ausgewählter Komponenten und Module
-wird in Kapitel~\ref{chap:umsetzung} anhand repräsentativer
-Implementierungsbeispiele dokumentiert. Kapitel~\ref{chap:testen}
-beschreibt die angewandte Teststrategie und bewertet die
-Ergebnisse anhand funktionaler und nicht-funktionaler Kriterien.
-Abschließend fasst Kapitel~\ref{chap:fazit} die wichtigsten
-Erkenntnisse zusammen und gibt einen Ausblick auf mögliche
-Erweiterungen und technische Weiterentwicklungen der Plattform.

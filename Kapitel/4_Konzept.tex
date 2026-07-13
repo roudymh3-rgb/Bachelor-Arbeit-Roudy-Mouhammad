@@ -235,26 +235,22 @@ mehrschichtigen Konzept, das die technische Anbindung von der
 fachlichen Nutzung trennt.
 
 Das Konzept gliedert sich in drei aufeinander aufbauende
-Schichten. Die unterste Schicht bildet ein zentraler
-HTTP-Client auf Basis von Axios (vgl. Abschnitt~\ref{subsec:rest-api}),
-der die technische Infrastruktur der Kommunikation bereitstellt. Er wird
-einmalig konfiguriert und projektweit wiederverwendet, definiert
-die Basis-Adresse des Servers sowie die Standard-Header und hängt
-den Authentifizierungstoken automatisch an jede ausgehende Anfrage
-an. Darauf setzt die Feature-API-Schicht auf, die für jeden
-Funktionsbereich die verfügbaren Endpunkte und die zugehörigen
-Anfragefunktionen definiert. Sie legt fest, welcher Endpunkt mit
-welcher HTTP-Methode, welchen Parametern und welchem Datenkörper
-aufgerufen wird, und delegiert die eigentliche Übertragung an den
-HTTP-Client. Die oberste Schicht bilden schließlich die
-Query-Hooks, die jede Anfragefunktion mithilfe der Bibliothek
-TanStack Query (vgl. Abschnitt~\ref{subsec:state-management}) kapseln
-und den aufrufenden Komponenten den Zustand der Verbindung
-bereitstellen. Die Query-Hooks greifen dabei auf einen einmalig
-erzeugten, zentralen Cache zurück, der über die gesamte Anwendung
-hinweg geteilt wird. Die
-konkrete Umsetzung dieser drei Schichten wird in
-Kapitel~\ref{chap:umsetzung} beschrieben.
+Schichten, die in Abbildung~\ref{fig:netzwerk_schichten}
+dargestellt sind: einen zentralen HTTP-Client auf Basis von Axios
+(vgl. Abschnitt~\ref{subsec:rest-api}), eine
+Feature-API-Schicht, die für jeden Funktionsbereich Endpunkt,
+Parameter und HTTP-Methode festlegt, sowie Query-Hooks auf Basis
+von TanStack Query (vgl. Abschnitt~\ref{subsec:state-management}),
+die den aufrufenden Komponenten den Zustand der Verbindung
+bereitstellen. Die konkrete Umsetzung dieser drei Schichten wird
+in Kapitel~\ref{chap:umsetzung} beschrieben.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{Bilder/abb_netzwerk_schichten.png}
+\caption{Drei-Schichten-Modell der Netzwerkkommunikation im Frontend von Bazario}
+\label{fig:netzwerk_schichten}
+\end{figure}
 
 
 
