@@ -296,13 +296,7 @@ ein Minimum reduziert
 
 Laravel Sanctum wird als Authentifizierungsmechanismus
 eingesetzt, da das Backend bereits auf diesem System
-aufbaut. Aus Frontend-Sicht bestimmt Sanctum die
-Handhabung der Bearer Tokens, die nach erfolgreichem
-Login gespeichert und bei jeder API-Anfrage im
-Authorization-Header mitgesendet werden. Abgelaufene
-oder ungültige Tokens werden vom Frontend erkannt
-und der Nutzer wird automatisch zur Anmeldeseite
-weitergeleitet \cite{laravel_sanctum_docs}.
+aufbaut. Aus Frontend-Sicht bestimmt Sanctum die Handhabung der Bearer Tokens, die nach erfolgreichem Login gespeichert und bei jeder API-Anfrage im Authorization-Header mitgesendet werden  \cite{laravel_sanctum_docs}. Abgelaufene oder ungültige Tokens werden vom Frontend erkannt und die zugehörige Sitzung automatisch verworfen.
 
 Tabelle~\ref{tab:technologiestack} fasst den gewählten
 Technologiestack und die jeweilige Begründung zusammen.
