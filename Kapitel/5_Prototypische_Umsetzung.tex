@@ -188,21 +188,24 @@ Weiterleitung auf die Startseite.
 Die Session der Anwendung ist als eigenes Modell definiert, das
 Zugriffstoken, Nutzerdaten und die zugewiesenen Rollen als Liste
 enthält, da ein Nutzer mehrere Rollen gleichzeitig besitzen kann.
-Sie wird über einen React Context reaktiv bereitgestellt und im
-localStorage des Browsers gespeichert, um den Anmeldestatus über
-Neuladen und erneute Besuche hinweg zu erhalten.
+Sie wird über einen zentralen Zustand-Store reaktiv bereitgestellt
+und im localStorage des Browsers gespeichert, um den Anmeldestatus
+über Neuladen und erneute Besuche hinweg zu erhalten.
 
 Ein gespeicherter Token wird nicht ungeprüft als gültig
-angenommen: Der \texttt{AuthProvider} validiert ihn aktiv beim
+angenommen: Eine Bootstrap-Komponente validiert ihn aktiv beim
 Backend über \texttt{useMeQuery} (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Liefert diese Anfrage
-einen Fehler, gilt der Token als ungültig und der Nutzer wird
-automatisch abgemeldet; liegt noch keine Antwort vor, wird
-zunächst die lokal gespeicherte Session verwendet, damit die
-Oberfläche sofort angezeigt werden kann. Auf dieser Grundlage
-entscheidet eine geschützte Routenkomponente, ob der
-Anmeldestatus noch ermittelt wird, der Nutzer zur Startseite
-weitergeleitet oder der geschützte Inhalt angezeigt wird.
+einen Fehler, gilt der Token als ungültig und die Session wird
+über den Store verworfen; liefert sie hingegen aktualisierte
+Nutzerdaten, werden diese im Store synchronisiert, sodass lokal
+gespeicherte und serverseitig bestätigte Daten konsistent
+bleiben. Liegt noch keine Antwort vor, wird zunächst die lokal
+gespeicherte Session verwendet, damit die Oberfläche sofort
+angezeigt werden kann. Auf dieser Grundlage entscheidet eine
+geschützte Routenkomponente, ob der Anmeldestatus noch ermittelt
+wird, der Nutzer zur Startseite weitergeleitet oder der
+geschützte Inhalt angezeigt wird.
 
 \subsection{Rollen-Upgrade-Antrag}
 \label{subsec:impl_rollen_upgrade}
