@@ -103,7 +103,7 @@ wie Reservierungen, Buchungen oder Bestellbestätigungen
 \cite{stripe_security_guide}.
 
 Für die Integration im Frontend stellt Stripe mit Stripe Elements
-eine Bibliothek vorgefertigter, PCI-DSS-konformer UI-Komponenten
+eine Bibliothek vorgefertigter, \ac{PCI-DSS}-konformer UI-Komponenten
 bereit, die eine sichere Erfassung von Zahlungsdaten direkt im
 Browser ermöglichen, ohne dass sensible Kartendaten den eigenen
 Server passieren \cite{stripe_elements_docs}. Die Einbindung in
@@ -174,7 +174,7 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 
 Webbasierte Anwendungen lassen sich grundlegend in zwei
 Architekturansätze unterteilen: Multi-Page Applications (MPA)
-und Single-Page Applications (SPA). Bei MPAs wird bei jeder
+und Single-Page Applications (\ac{SPA}). Bei MPAs wird bei jeder
 Nutzerinteraktion eine vollständige HTML-Seite vom Server geladen
 und im Browser neu gerendert. Dieser Ansatz führt bei komplexen
 Anwendungen zu spürbaren Ladezeiten und einer fragmentierten
@@ -268,7 +268,7 @@ Warenkorbinhalt.
 Neben dem clientseitigen Anwendungszustand, der Informationen
 wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
 eine SPA auch den serverseitigen Datenbestand verwalten, also
-Daten, die über eine API vom Backend abgerufen werden. Diese
+Daten, die über eine \ac{API} vom Backend abgerufen werden. Diese
 beiden Arten von Zustand unterscheiden sich grundlegend: Während
 clientseitiger Zustand vollständig im Browser entsteht und
 kontrolliert wird, ist serverseitiger Zustand lediglich eine
@@ -291,7 +291,7 @@ Letzteren zuständig ist.
 
 Da SPAs keine serverseitigen Seitennavigationen durchführen,
 übernimmt clientseitiges Routing die Aufgabe, verschiedene
-Ansichten der Anwendung anhand der URL darzustellen. React
+Ansichten der Anwendung anhand der \ac{URL} darzustellen. React
 Router ist die etablierte Lösung für Routing in
 React-Anwendungen und ermöglicht die deklarative Definition
 von Routen sowie die Navigation zwischen Ansichten ohne
@@ -302,7 +302,7 @@ rollenbasierter Seitenschutz ein wesentliches
 Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
 Nutzer mit den entsprechenden Berechtigungen zugänglich
 gemacht. Dieses Konzept basiert auf dem Prinzip der
-rollenbasierten Zugriffskontrolle (RBAC), das den Zugriff
+rollenbasierten Zugriffskontrolle (\ac{RBAC}), das den Zugriff
 auf Ressourcen und Funktionen abhängig von der zugewiesenen
 Rolle eines Nutzers steuert \cite{ferraiolo_rbac_arxiv}.
 In der Praxis werden solche geschützten Routen als 
@@ -377,7 +377,7 @@ Dadurch behalten Entwickler die vollständige Kontrolle
 anpassen \cite{shadcn_docs}.
 
 Die Einhaltung von Barrierefreiheitsstandards, insbesondere
-der Web Content Accessibility Guidelines (WCAG~2.1), ist
+der Web Content Accessibility Guidelines (\ac{WCAG}~2.1), ist
 dabei ein wesentliches Qualitätsmerkmal moderner
 Webanwendungen. WCAG~2.1 legt unter anderem
 Mindestanforderungen an Kontrastverhältnisse,
@@ -391,8 +391,8 @@ verbessert auch die allgemeine Usability für alle Nutzer.
 \label{subsec:rest-api}
 
 Die Kommunikation zwischen Frontend und Backend erfolgt in
-\textit{Bazario} über REST-basierte HTTP-Schnittstellen.
-REST ist ein Architekturstil für Webschnittstellen, der auf 
+\textit{Bazario} über REST-basierte \ac{HTTP}-Schnittstellen.
+\ac{REST} ist ein Architekturstil für Webschnittstellen, der auf 
 zustandslosen Anfragen, standardisierten HTTP-Methoden und 
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
 enthält alle zur Verarbeitung notwendigen Informationen,
