@@ -191,6 +191,26 @@ enthält, da ein Nutzer mehrere Rollen gleichzeitig besitzen kann.
 Sie wird über einen zentralen Zustand-Store reaktiv bereitgestellt
 und im localStorage des Browsers gespeichert, um den Anmeldestatus
 über Neuladen und erneute Besuche hinweg zu erhalten.
+Listing~\ref{lst:auth-store-state} zeigt die Struktur dieses
+Stores sowie dessen Erzeugung über die \texttt{create}-Funktion
+der Bibliothek Zustand.
+
+\begin{lstlisting}[caption={Struktur und Erzeugung des Auth-Stores (auth-store.ts)}, label={lst:auth-store-state}]
+import { create } from 'zustand'
+
+interface AuthStoreState {
+  session: AuthSession | null
+  isAuthenticated: boolean
+  isBootstrapping: boolean
+  setSession: (session: AuthSession) => void
+  syncVerifiedUser: (user: User) => void
+  clearSession: () => void
+}
+
+export const useAuthStore = create<AuthStoreState>((set, get) => ({
+  // ...
+}))
+\end{lstlisting}
 
 Ein gespeicherter Token wird nicht ungeprüft als gültig
 angenommen: Eine Bootstrap-Komponente validiert ihn aktiv beim
