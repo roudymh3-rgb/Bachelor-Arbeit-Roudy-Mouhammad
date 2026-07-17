@@ -410,8 +410,45 @@ ein entsprechender Hinweis angezeigt.
 
 \subsection{Verkäufer- und Anbieter-Dashboard}
 \label{subsec:verkaeufer_dashboard_konzept}
-% TODO: Produktverwaltung, Dienstleistungsverwaltung, Buchungskalender,
-% Bestellübersicht.
+
+Der Zugang zum Dashboard erfolgt über die Kontoübersicht (vgl.
+Abschnitt~\ref{subsec:auth-onboarding}), die zusätzlich zu den
+dort beschriebenen Auth-bezogenen Inhalten zusammenfassende
+Kennzahlen zu Bestellungen und Buchungen sowie Verweise auf die
+Dienstleistungs- und Verfügbarkeitsverwaltung bereitstellt.
+
+Dienstleister verwalten ihre Verfügbarkeit über feste
+Arbeitszeiten sowie einzelne Abwesenheitszeiträume. Für jeden
+Abwesenheitszeitraum werden Beginn und Ende sowie optional ein
+Grund erfasst; zusätzlich lässt sich kennzeichnen, ob es sich um
+einen offiziellen Feiertag oder eine persönliche Abwesenheit
+handelt, damit Kunden bei der Buchung den Unterschied
+nachvollziehen können. Da Dienstleister in unterschiedlichen
+Zeitzonen tätig sein können, wird die Zeitzone des jeweiligen
+Anbieters bei der Darstellung der Abwesenheitszeiten
+berücksichtigt, sodass Zeitangaben nicht in der Zeitzone des
+Endgeräts, sondern in der des Anbieters angezeigt werden.
+Zusätzlich zu den einzelnen Abwesenheitszeiträumen legen
+Dienstleister ein wiederkehrendes Wochenschema mit mehreren
+Zeitfenstern je Wochentag fest, das die grundsätzliche
+Erreichbarkeit unabhängig von einzelnen Abwesenheiten definiert.
+
+Ihre einzelnen Dienstleistungsangebote verwalten Dienstleister
+über eine Kartenübersicht, die für jede Dienstleistung Kategorie,
+Preis, Dauer und Status anzeigt und das Anlegen, Bearbeiten und
+Löschen einzelner Einträge ermöglicht. Titel und Beschreibung
+einer Dienstleistung werden dabei jeweils auf Englisch und
+Arabisch erfasst, und es lassen sich bis zu fünf Bilder je
+Dienstleistung hochladen. Neben diesen Basisdaten legt ein
+Dienstleister beim Anlegen oder Bearbeiten einer Dienstleistung
+zusätzlich die Regeln für deren spätere Buchung fest: das
+Zeitraster, in dem einzelne Termine gebucht werden können, die
+maximale Anzahl gleichzeitiger Buchungen, den Ort der
+Leistungserbringung sowie getrennte Fristen und Regelungen für
+die Stornierung und die Änderung einer bereits bestätigten
+Buchung durch den Kunden.
+
+% TODO: Produktverwaltung, Buchungskalender, Bestellübersicht.
 
 \subsection{Benutzeroberfläche}
 % TODO: Bestellhistorie, Buchungsübersicht, Stornierung.

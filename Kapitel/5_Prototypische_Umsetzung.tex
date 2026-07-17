@@ -320,7 +320,103 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 % TODO: CRUD-Operationen, Bildupload.
 
 \subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
-% TODO: Implementierungsdetails.
+\label{subsec:impl_dienstleistungsverwaltung}
+
+Dieser Abschnitt beschreibt sowohl die Verwaltung einzelner
+Dienstleistungsangebote als auch die Verwaltung der
+Verfügbarkeit, die als eigener Funktionsbereich
+\texttt{provider-availability/} umgesetzt ist und derselben
+internen Struktur wie die übrigen Funktionsbereiche folgt (vgl.
+Abschnitt~\ref{subsec:komponentenarchitektur}).
+
+% TODO (Roudy): Hier kommt der Screenshot von "My services"
+% hin (Kartenuebersicht der eigenen Dienstleistungen). Screenshots
+% werden erst kurz vor Abgabe final gemacht, siehe Meeting
+% vom 17.07.2026.
+
+Die eigenen Dienstleistungen werden über
+\texttt{useMyServicesQuery} abgerufen und seitenweise
+dargestellt; Seite und Ergebnisse pro Seite sind, wie bereits
+beim Produktlisting beschrieben (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}), Teil des Query
+Keys. Das Löschen einer Dienstleistung invalidiert dabei
+mehrere zusammenhängende Cache-Einträge zugleich.
+
+\begin{lstlisting}[caption={Mutation zum Löschen einer Dienstleistung (use-delete-service-mutation.ts)}, label={lst:delete-service}]
+export function useDeleteServiceMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (serviceId: number) => deleteService(serviceId),
+    onSuccess: (_result, serviceId) => {
+      queryClient.invalidateQueries({ queryKey: ['my-services'] })
+      queryClient.invalidateQueries({ queryKey: ['services'] })
+      queryClient.invalidateQueries({ queryKey: ['service', serviceId] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
+    },
+  })
+}
+\end{lstlisting}
+
+Da eine gelöschte Dienstleistung sowohl aus der eigenen Übersicht
+als auch aus dem öffentlichen Dienstleistungskatalog und der
+Startseite verschwinden muss, werden die jeweiligen Cache-Einträge
+aller drei Bereiche gezielt invalidiert, anstatt sich auf deren
+automatisches Ablaufen zu verlassen.
+
+% TODO (Roudy): Hier kommt der Screenshot vom "Edit service"-
+% Formular hin.
+
+Beim Anlegen und Bearbeiten einer Dienstleistung werden neben
+Titel und Beschreibung, die jeweils auf Englisch und Arabisch
+erfasst werden, auch die Regeln für deren spätere Buchung
+festgelegt, darunter das Buchungsraster, die maximale Anzahl
+gleichzeitiger Buchungen sowie getrennte Fristen und Regelungen
+für Stornierung und Änderung durch den Kunden.
+
+Die festen Arbeitszeiten werden je Wochentag über die
+wiederverwendbare Komponente \texttt{WorkingHoursEditor}
+dargestellt, die für jeden Wochentag beliebig viele Zeitintervalle
+mit Start- und Endzeit entgegennimmt und es erlaubt, einzelne
+Intervalle hinzuzufügen oder zu entfernen.
+
+Das zugehörige Formular \texttt{TimeOffForm} für einzelne
+Abwesenheitszeiträume ist als eigene Komponente ausgelagert, da
+es an mehreren Stellen innerhalb des Funktionsbereichs
+wiederverwendet wird. Die Eingaben werden über ein Zod-Schema
+validiert, bevor sie an das Backend übertragen werden.
+
+\begin{lstlisting}[caption={Validierungsschema für Abwesenheitszeiträume (time-off-form.schema.ts)}, label={lst:time-off-schema}]
+export const timeOffFormSchema = z.object({
+  starts_at: z.string().min(1, 'Start date and time are required.'),
+  ends_at: z.string().min(1, 'End date and time are required.'),
+  is_holiday: z.boolean(),
+  reason: z.string().trim().max(255, 'Maximum 255 characters.'),
+})
+\end{lstlisting}
+
+Das Schema stimmt dabei bewusst mit den Validierungsregeln des
+Backends überein, sodass ein Nutzer, der die
+Formularvalidierung durch eine direkte Manipulation der
+Benutzeroberfläche umgeht, spätestens bei der serverseitigen
+Prüfung denselben Regeln unterliegt.
+
+Der Abruf der Verfügbarkeitsdaten erfolgt über
+\texttt{useProviderAvailabilityQuery}, das Hinzufügen eines neuen
+Abwesenheitszeitraums über eine Mutation, die den zugehörigen
+Cache-Eintrag im Erfolgsfall invalidiert (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}), sodass die Liste
+automatisch aktualisiert wird. Die Liste der bereits
+eingetragenen Abwesenheitszeiträume wird vor der Anzeige
+chronologisch nach ihrem Beginn sortiert und für jeden Eintrag
+der Zeitpunkt anhand der beim Anbieter hinterlegten Zeitzone
+formatiert, anstatt die Zeitzone des aufrufenden Endgeräts zu
+verwenden, damit Kunden die Verfügbarkeit unabhängig vom eigenen
+Standort korrekt einschätzen können.
+
+% TODO (Roudy): Hier kommt der Screenshot von der kompletten
+% Availability-Seite hin (Provider schedule, TimeOffForm und
+% TimeOffList in einem Bild).
 
 \subsection{Buchungskalender und Verfügbarkeitsmanagement}
 % TODO: Kalenderkomponente, Verfügbarkeitslogik.
