@@ -155,10 +155,18 @@ zentralen Cache zurück, der über die gesamte Anwendung hinweg
 geteilt wird und beim Anwendungsstart über einen Provider
 bereitgestellt wird. Über die Zwischenspeicherung bereits
 abgerufener Daten hinaus bietet TanStack Query weitere
-Mechanismen zur gezielten Invalidierung von Cache-Einträgen; deren
-projektweite Konfiguration ist einer späteren Ausbaustufe der
+Mechanismen zur gezielten Invalidierung von Cache-Einträgen; projektweite Konfiguration ist einer späteren Ausbaustufe der
 Anwendung vorbehalten und wird in dieser Arbeit nicht weiter
 vertieft.
+% TODO (Roudy): Diesen Satz ("...spaeteren Ausbaustufe...")
+% nach dem Mentor-Gespraech zur Caching-Strategie ggf.
+% anpassen/konkretisieren -- der folgende Bruecken-Satz
+% (Query-Key/Cache-Mechanismus) bleibt davon unberuehrt und
+% muss nicht mehr geaendert werden.
+Dieses Muster aus Query Key, Cache und einheitlichen
+Verbindungszuständen kommt bei sämtlichen weiteren Datenabrufen
+der Anwendung in gleicher Form zum Einsatz und wird in den
+folgenden Abschnitten jeweils nur noch kurz referenziert.
 \section{Authentifizierung und Onboarding}
 \label{sec:impl_auth}
 
@@ -375,7 +383,7 @@ gleichzeitiger Buchungen sowie getrennte Fristen und Regelungen
 für Stornierung und Änderung durch den Kunden.
 
 Die festen Arbeitszeiten werden je Wochentag über die
-wiederverwendbare Komponente \texttt{WorkingHoursEditor}
+wiederverwendbare Komponente \texttt{\small WorkingHoursEditor}
 dargestellt, die für jeden Wochentag beliebig viele Zeitintervalle
 mit Start- und Endzeit entgegennimmt und es erlaubt, einzelne
 Intervalle hinzuzufügen oder zu entfernen.
@@ -407,12 +415,12 @@ Abwesenheitszeitraums über eine Mutation, die den zugehörigen
 Cache-Eintrag im Erfolgsfall invalidiert (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}), sodass die Liste
 automatisch aktualisiert wird. Die Liste der bereits
-eingetragenen Abwesenheitszeiträume wird vor der Anzeige
-chronologisch nach ihrem Beginn sortiert und für jeden Eintrag
-der Zeitpunkt anhand der beim Anbieter hinterlegten Zeitzone
-formatiert, anstatt die Zeitzone des aufrufenden Endgeräts zu
-verwenden, damit Kunden die Verfügbarkeit unabhängig vom eigenen
-Standort korrekt einschätzen können.
+eingetragenen Abwesenheitszeiträume wird nach ihrem Beginn
+sortiert angezeigt. Jeder Zeitpunkt wird dabei anhand der beim
+Anbieter hinterlegten Zeitzone formatiert, nicht anhand der
+Zeitzone des aufrufenden Endgeräts, damit Kunden die
+Verfügbarkeit unabhängig vom eigenen Standort korrekt
+einschätzen können.
 
 % TODO (Roudy): Hier kommt der Screenshot von der kompletten
 % Availability-Seite hin (Provider schedule, TimeOffForm und
