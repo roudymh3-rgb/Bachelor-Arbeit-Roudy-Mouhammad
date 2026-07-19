@@ -321,7 +321,47 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 \label{sec:impl_seller}
 
 \subsection{Produktverwaltung}
-% TODO: CRUD-Operationen, Bildupload.
+\label{subsec:impl_produktverwaltung}
+
+Die Produktverwaltung folgt strukturell demselben Muster wie die
+in Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}
+beschriebene Dienstleistungsverwaltung, ist jedoch einfacher, da
+Produkte im Gegensatz zu Dienstleistungen keine Buchungsregeln
+benötigen.
+
+% TODO (Roudy): Hier kommt der Screenshot von "My products"
+% hin (Kartenuebersicht der eigenen Produkte).
+
+Die eigenen Produkte werden über \texttt{useMyProductsQuery}
+abgerufen und in derselben Kartenansicht dargestellt, die auch
+auf der öffentlichen Katalogseite verwendet wird (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}). Das Löschen eines
+Produkts invalidiert dabei, analog zur Dienstleistungsverwaltung,
+mehrere zusammenhängende Cache-Einträge zugleich.
+
+\begin{lstlisting}[caption={Mutation zum Löschen eines Produkts (use-delete-product-mutation.ts)}, label={lst:delete-product}]
+export function useDeleteProductMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (productId: number) => deleteProduct(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-products'] })
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['seller-products'] })
+    },
+  })
+}
+\end{lstlisting}
+
+% TODO (Roudy): Hier kommt der Screenshot vom "Edit product"-
+% Formular hin.
+
+Beim Anlegen und Bearbeiten eines Produkts werden, wie bei
+Dienstleistungen, Titel und Beschreibung jeweils auf Englisch und
+Arabisch erfasst, dazu Kategorie, Preis und bis zu fünf Bilder;
+Buchungsspezifische Felder wie Zeitraster oder Stornofristen
+entfallen hier vollständig.
 
 \subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
 \label{subsec:impl_dienstleistungsverwaltung}
