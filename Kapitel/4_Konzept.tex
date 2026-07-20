@@ -406,7 +406,27 @@ Nutzer anstelle einer leeren Fläche
 ein entsprechender Hinweis angezeigt.
 
 \subsection{Warenkorb, Checkout und Zahlung}
-% TODO: Kombination aus Produkten und Buchungen; Stripe-Flow.
+\label{subsec:warenkorb_konzept}
+
+Der Warenkorb bildet Produkte und Dienstleistungsbuchungen in
+einem gemeinsamen Modell ab, das für beide Positionstypen eine
+gemeinsame Basis aus Titel, Bild, Preis und Kategorie sowie
+typspezifische Zusatzdaten vorsieht; eine Dienstleistungsbuchung
+enthält zusätzlich Beginn, Ende, Zeitzone und Ort der
+Leistungserbringung. Der Warenkorb bleibt über einen erneuten
+Aufruf der Anwendung hinweg erhalten, sodass bereits
+hinzugefügte Positionen auch nach einem Neuladen der Seite
+bestehen bleiben. Wird ein bereits enthaltenes Produkt erneut
+hinzugefügt, erhöht sich lediglich dessen Menge; eine identische
+Dienstleistungsbuchung kann dagegen nicht doppelt hinzugefügt
+werden. Die Warenkorbseite gliedert sich in eine Übersicht der
+enthaltenen Positionen, getrennt nach Produkten und
+Dienstleistungen, sowie eine Zusammenfassung mit Anzahl je
+Positionstyp und Zwischensumme.
+
+% TODO: Checkout-Ablauf und Stripe-Integration folgen nach dem
+% naechsten Mentor-Meeting.
+
 
 \subsection{Anbieter- und Verkäufer-Dashboard}
 \label{subsec:verkaeufer_dashboard_konzept}

@@ -311,7 +311,54 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 \label{sec:impl_checkout}
 
 \subsection{Warenkorb-UI: Produkte und Buchungen kombiniert}
-% TODO: Zustandsverwaltung, Mengenänderung, Entfernen von Positionen.
+\label{subsec:impl_warenkorb}
+
+Der Warenkorb wird über einen zentralen Zustand-Store verwaltet,
+dessen Inhalt im Cache gehalten wird. Jede Änderung, etwa das
+Hinzufügen eines Elements, wird dabei im Cache abgelegt. Da der
+Cache jedoch nur besteht, solange die Seite geöffnet ist, muss
+der Inhalt des Warenkorbs zusätzlich dauerhaft gesichert werden,
+damit er einen Seitenwechsel, ein erneutes Laden oder ein
+Schließen der Anwendung übersteht. Der Grund dafür liegt in der
+Nutzererfahrung: Legt ein Nutzer Artikel in den Warenkorb, kann
+den Checkout jedoch nicht sofort abschließen, etwa weil er die
+Anwendung verlassen muss, wäre es eine schlechte
+Nutzererfahrung, wenn diese Artikel beim erneuten Öffnen der
+Anwendung verschwunden wären. Aus diesem Grund wird der
+Warenkorbinhalt zusätzlich im localStorage des Browsers
+gespeichert.
+
+Darüber hinaus muss jede Änderung am Warenkorb unmittelbar an
+allen Stellen der Anwendung sichtbar werden, an denen sie
+relevant ist, etwa der Positionsanzahl im Header oder der
+Zusammenfassung auf der Warenkorbseite selbst. Innerhalb der
+Komponentenstruktur von React muss eine Änderung, die an einer
+Stelle vorgenommen wird, ohne Verzögerung an eine andere Stelle
+weitergegeben werden, ohne dass die betroffenen Komponenten
+direkt miteinander verbunden sind. Diese unmittelbare,
+anwendungsweite Aktualisierung wird durch die Bibliothek Zustand
+ermöglicht, wofür ein eigener Store für den Warenkorb definiert
+wurde.
+
+Die Funktionen des Warenkorbs wurden dabei bewusst nicht in den
+bereits bestehenden UI-Store aufgenommen, sondern in einem
+eigenständigen Store zusammengefasst. Diese Trennung folgt dem
+Prinzip der Separation of Concerns: Der Auth-Store ist
+ausschließlich für die Authentifizierung zuständig, der UI-Store
+ausschließlich für rein darstellungsbezogene Zustände wie das
+Ein- und Ausblenden von Dialogen, während alle Funktionen mit
+Bezug zum Warenkorb in einem eigenen Store gebündelt sind.
+Dadurch lässt sich jeder Store unabhängig von den übrigen
+bearbeiten und erweitern, ohne dass sich Änderungen an einer
+Stelle auf andere Bereiche der Anwendung auswirken.
+
+% TODO (Roudy): Absicht laut Meeting vom 19.07.2026 -- Cart-Code
+% bewusst nicht Zeile fuer Zeile erklaeren, sondern nur die drei
+% oben stehenden Punkte (Cache/localStorage-Begruendung,
+% State-Management-Reaktivitaet, Separation of Concerns).
+% Ausserdem selbst geaeussert: eventuell erst nach Fertigstellung
+% der Stripe-Integration ausfuehrlicher schreiben, da Cart und
+% Checkout inhaltlich zusammengehoeren.
 
 \subsection{Stripe-Integration im Frontend}
 % TODO: Payment Intent, Stripe Elements, Bestätigungsseite.
