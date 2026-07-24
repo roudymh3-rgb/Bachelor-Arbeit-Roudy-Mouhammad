@@ -264,7 +264,19 @@ erheblich und ermöglicht eine schnelle sowie wartbare
 Implementierung \cite{zustand_docs}. Für \textit{Bazario}
 verwaltet Zustand zentrale Zustände wie den
 Authentifizierungsstatus, die aktive Nutzerrolle sowie den
-Warenkorbinhalt.
+Warenkorbinhalt. Diese Zustände werden dabei nicht in einem
+einzigen, gemeinsamen Store zusammengefasst, sondern nach dem
+Prinzip der Separation of Concerns auf mehrere, fachlich
+abgegrenzte Stores verteilt, von denen jeder ausschließlich
+für einen bestimmten Bereich der Anwendung zuständig ist. Das
+Prinzip geht auf Dijkstra zurück, der es als Technik zur
+Beherrschung von Komplexität beschreibt, bei der verschiedene
+Aspekte eines Systems bewusst getrennt und jeweils in sich
+konsistent betrachtet werden \cite{dijkstra_separation_of_concerns}.
+In modernen React-Anwendungen wird dieses Prinzip unter anderem
+auf die Aufteilung des globalen Zustands in fachlich
+abgegrenzte, unabhängig wartbare Einheiten übertragen
+\cite{cheesecakelabs_react_soc}.
 Neben dem clientseitigen Anwendungszustand, der Informationen
 wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
 eine SPA auch den serverseitigen Datenbestand verwalten, also
