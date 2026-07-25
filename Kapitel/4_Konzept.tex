@@ -56,9 +56,9 @@ einbindet. Das Verzeichnis \texttt{features/}
 bildet den Kern der Anwendung, in dem jeder
 Funktionsbereich einen eigenen Unterordner
 mit zugehörigen Komponenten, Hooks, Schemas,
-Typdefinitionen und API-Funktionen erhält.
+Typdefinitionen und \acs{API}-Funktionen erhält.
 Unter \texttt{components/ui/} befinden sich
-die wiederverwendbaren UI-Basiskomponenten aus
+die wiederverwendbaren \acs{UI}-Basiskomponenten aus
 shadcn/ui (vgl. Abschnitt~\ref{subsec:ui-bibliotheken}),
 während \texttt{components/shared/}
 projektübergreifend genutzte Komponenten wie
@@ -72,7 +72,7 @@ Verzeichnis \texttt{stores/} sind die
 globalen Zustand-Stores gebündelt (vgl.
 Abschnitt~\ref{subsec:state-management-konzept}).
 Die globale
-CSS-Konfiguration in \texttt{index.css} bindet
+\acs{CSS}-Konfiguration in \texttt{index.css} bindet
 die Tailwind-Direktiven sowie die
 Design-Tokens des Designsystems ein
 \cite{tailwindcss_docs}.
@@ -230,7 +230,7 @@ Das Frontend von \textit{Bazario} kommuniziert über zahlreiche
 Funktionsbereiche hinweg mit dem Backend, etwa zur
 Authentifizierung, zum Abruf von Produkten und Dienstleistungen
 oder zur Verwaltung von Bestellungen. Ohne eine zentrale
-HTTP-Client-Instanz kann dabei keine Anfrage das Frontend
+\acs{HTTP}-Client-Instanz kann dabei keine Anfrage das Frontend
 verlassen; diese Instanz wird daher als Infrastruktur-Klasse der
 Netzwerkkommunikation verstanden, auf der jede weitere Anfrage im
 Projekt aufbaut. \textit{Bazario} kapselt die
@@ -240,10 +240,10 @@ fachlichen Nutzung trennt.
 
 Das Konzept gliedert sich in drei aufeinander aufbauende
 Schichten, die in Abbildung~\ref{fig:netzwerk_schichten}
-dargestellt sind: einen zentralen HTTP-Client auf Basis von Axios
+dargestellt sind: einen zentralen \acs{HTTP}-Client auf Basis von Axios
 (vgl. Abschnitt~\ref{subsec:rest-api}), eine
 Feature-API-Schicht, die für jeden Funktionsbereich Endpunkt,
-Parameter und HTTP-Methode festlegt, sowie Query-Hooks auf Basis
+Parameter und \acs{HTTP}-Methode festlegt, sowie Query-Hooks auf Basis
 von TanStack Query (vgl. Abschnitt~\ref{subsec:state-management}),
 die den aufrufenden Komponenten den Zustand der Verbindung
 bereitstellen. Die konkrete Umsetzung dieser drei Schichten wird

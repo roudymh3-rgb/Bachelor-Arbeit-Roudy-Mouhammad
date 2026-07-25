@@ -178,6 +178,10 @@
 
 % Abkürzungsverzeichnis
 \usepackage[printonlyused]{acronym}
+% Erstnennung: nur Kurzform im Text, Eintrag im Verzeichnis bleibt
+% verlinkt (blau). Verwendung: \acfirst{API} bei der ersten Nennung,
+% danach \acs{API}.
+\newcommand{\acfirst}[1]{\phantomsection\label{acro:#1}\acused{#1}\acs{#1}}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -191,4 +195,3 @@
 % Testtexte
 \usepackage{lipsum}
 \input{Meta/listings_setup}
-

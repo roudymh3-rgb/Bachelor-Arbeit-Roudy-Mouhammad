@@ -17,8 +17,8 @@
  
 Dieser Abschnitt beschreibt die konkrete Umsetzung des in
 Abschnitt~\ref{subsec:netzwerk_konzept} vorgestellten
-Drei-Schichten-Modells: einer zentralen HTTP-Infrastruktur auf
-Basis von Axios, einer feature-spezifischen API-Schicht sowie
+Drei-Schichten-Modells: einer zentralen \acs{HTTP}-Infrastruktur auf
+Basis von Axios, einer feature-spezifischen \acs{API}-Schicht sowie
 Query-Hooks auf Basis von TanStack Query, die den Verbindungszustand
 für die aufrufenden Komponenten bereitstellen.
  
@@ -67,8 +67,8 @@ Token-Übermittlung kümmern.
 \subsection{Feature-API-Schicht}
 \label{subsec:impl_featureapi}
  
-Jeder Funktionsbereich definiert eigene API-Funktionen, die
-festlegen, welcher Endpunkt mit welcher HTTP-Methode und welchen
+Jeder Funktionsbereich definiert eigene \acs{API}-Funktionen, die
+festlegen, welcher Endpunkt mit welcher \acs{HTTP}-Methode und welchen
 Parametern angefragt wird. Diese Funktionen greifen ausschließlich
 auf den in Abschnitt~\ref{subsec:impl_httpclient} beschriebenen
 \texttt{httpClient} zurück und sind selbst frei von
@@ -281,7 +281,7 @@ entsprechende Kennzeichnung anzeigt.
 Auf der Katalogseite für Produkte lassen sich die angezeigten
 Einträge zusätzlich nach Kategorie filtern und seitenweise
 durchblättern; Seite und Kategorie werden als Suchparameter in
-der URL abgebildet, sodass sich ein bestimmter Ausschnitt des
+der \acs{URL} abgebildet, sodass sich ein bestimmter Ausschnitt des
 Katalogs verlinken lässt. Da diese Parameter Teil des Query Keys
 sind (vgl. Abschnitt~\ref{subsec:impl_tanstackquery}), führt
 sowohl ein Seitenwechsel als auch eine geänderte Kategorie zu
@@ -341,11 +341,11 @@ ermöglicht, wofür ein eigener Store für den Warenkorb definiert
 wurde.
 
 Die Funktionen des Warenkorbs wurden dabei bewusst nicht in den
-bereits bestehenden UI-Store aufgenommen, sondern in einem
+bereits bestehenden \acs{UI}-Store aufgenommen, sondern in einem
 eigenständigen Store zusammengefasst. Diese Trennung folgt dem
 bereits in Abschnitt~\ref{subsec:state-management} eingeführten
 Prinzip der Separation of Concerns: Der Auth-Store ist
-ausschließlich für die Authentifizierung zuständig, der UI-Store
+ausschließlich für die Authentifizierung zuständig, der \acs{UI}-Store
 ausschließlich für rein darstellungsbezogene Zustände wie das
 Ein- und Ausblenden von Dialogen, während alle Funktionen mit
 Bezug zum Warenkorb in einem eigenen Store gebündelt sind.

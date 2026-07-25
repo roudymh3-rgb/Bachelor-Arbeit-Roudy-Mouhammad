@@ -10,8 +10,8 @@
 E-Commerce bezeichnet den elektronischen Handel mit Waren und
 Dienstleistungen über digitale Netzwerke, insbesondere das Internet.
 Er umfasst sämtliche onlinebasierten Geschäftstransaktionen zwischen
-Unternehmen und Konsumenten, \acs{B2C}, sowie zwischen Unternehmen
-untereinander, \acs{B2B} \cite{turban_ecommerce}. Der Begriff schließt
+Unternehmen und Konsumenten (\acfirst{B2C}) sowie zwischen Unternehmen
+untereinander (\acfirst{B2B}) \cite{turban_ecommerce}. Der Begriff schließt
 dabei nicht nur den reinen Produktverkauf ein, sondern auch die
 digitale Vermittlung von Dienstleistungen und die Abwicklung
 zugehöriger Geschäftsprozesse \cite{wirtz_electronic_business}.
@@ -103,7 +103,7 @@ wie Reservierungen, Buchungen oder Bestellbestätigungen
 \cite{stripe_security_guide}.
 
 Für die Integration im Frontend stellt Stripe mit Stripe Elements
-eine Bibliothek vorgefertigter, \acs{PCI-DSS}-konformer UI-Komponenten
+eine Bibliothek vorgefertigter, \acs{PCI-DSS}-konformer \acs{UI}-Komponenten
 bereit, die eine sichere Erfassung von Zahlungsdaten direkt im
 Browser ermöglichen, ohne dass sensible Kartendaten den eigenen
 Server passieren \cite{stripe_elements_docs}. Die Einbindung in
@@ -112,12 +112,12 @@ React Stripe.js-Bibliothek, die Hooks und Komponenten für die
 nahtlose Integration des Stripe-Zahlungsflusses bereitstellt
 \cite{stripe_react_js_docs}.
 
-PCI DSS (Payment Card Industry Data Security Standard) ist ein
+Der \acfirst{PCI-DSS} ist ein
 Sicherheitsstandard, der Anforderungen an die sichere Verarbeitung,
 Speicherung und Übertragung von Kartendaten definiert. Durch den
 Einsatz von Stripe Elements werden sensible Zahlungsdaten
 ausschließlich auf den Servern von Stripe verarbeitet, wodurch
-der PCI-DSS-Scope des Betreibers erheblich reduziert wird
+der \acs{PCI-DSS}-Scope des Betreibers erheblich reduziert wird
 \cite{stripe_security_guide}.
 
 \subsection{Wettbewerbsanalyse bestehender Marktplatzplattformen}
@@ -173,14 +173,14 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \label{subsec:spa-mpa}
 
 Webbasierte Anwendungen lassen sich grundlegend in zwei
-Architekturansätze unterteilen: Multi-Page Applications (\acs{MPA})
-und Single-Page Applications (\acs{SPA}). Bei MPAs wird bei jeder
-Nutzerinteraktion eine vollständige HTML-Seite vom Server geladen
+Architekturansätze unterteilen: Multi-Page Applications
+(\acfirst{MPA}) und Single-Page Applications (\acfirst{SPA}). Bei \acs{MPA}s wird bei jeder
+Nutzerinteraktion eine vollständige \acs{HTML}-Seite vom Server geladen
 und im Browser neu gerendert. Dieser Ansatz führt bei komplexen
 Anwendungen zu spürbaren Ladezeiten und einer fragmentierten
 Nutzererfahrung \cite{bhalla_spa_architecture}.
 
-SPAs hingegen laden die Anwendung einmalig und aktualisieren
+\acs{SPA}s hingegen laden die Anwendung einmalig und aktualisieren
 anschließend nur die jeweils relevanten Teile der Oberfläche.
 Die Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
@@ -214,10 +214,10 @@ Inhaltsreiche Webseiten \\
 
 Für interaktionsreiche Plattformen wie \textit{Bazario}, bei
 denen verschiedene Rollen unterschiedliche Ansichten und Workflows
-erfordern, bietet die SPA-Architektur entscheidende Vorteile
+erfordern, bietet die \acs{SPA}-Architektur entscheidende Vorteile
 hinsichtlich Performance und Benutzererfahrung. Da
 \textit{Bazario} keinen primären SEO-Fokus verfolgt, wiegen
-die Vorteile der SPA-Architektur die Einschränkungen
+die Vorteile der \acs{SPA}-Architektur die Einschränkungen
 hinsichtlich Suchmaschinenoptimierung deutlich auf.
 
 \subsection{Komponentenbasierte Entwicklung}
@@ -247,7 +247,7 @@ Lesbarkeit und Wartbarkeit des Codes
 \subsection{State Management}
 \label{subsec:state-management}
 
-In komplexen SPAs mit mehreren Nutzerrollen und
+In komplexen \acs{SPA}s mit mehreren Nutzerrollen und
 funktionsübergreifenden Daten, wie Authentifizierungsstatus,
 Nutzerrolle und Warenkorbinhalt, reicht lokaler
 Komponentenzustand häufig nicht aus. Globales State
@@ -279,8 +279,9 @@ abgegrenzte, unabhängig wartbare Einheiten übertragen
 \cite{cheesecakelabs_react_soc}.
 Neben dem clientseitigen Anwendungszustand, der Informationen
 wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
-eine SPA auch den serverseitigen Datenbestand verwalten, also
-Daten, die über eine \acs{API} vom Backend abgerufen werden. Diese
+eine \acs{SPA} auch den serverseitigen Datenbestand verwalten, also
+Daten, die über eine Programmierschnittstelle (\acfirst{API}) vom
+Backend abgerufen werden. Diese
 beiden Arten von Zustand unterscheiden sich grundlegend: Während
 clientseitiger Zustand vollständig im Browser entsteht und
 kontrolliert wird, ist serverseitiger Zustand lediglich eine
@@ -288,7 +289,7 @@ zwischengespeicherte Abbildung von Daten, deren eigentliche Quelle
 auf dem Server liegt und die daher veralten kann. TanStack Query
 ist eine Bibliothek, die auf die Verwaltung dieses serverseitigen
 Zustands spezialisiert ist. Sie übernimmt das Abrufen,
-Zwischenspeichern und Synchronisieren von API-Daten und stellt den
+Zwischenspeichern und Synchronisieren von \acs{API}-Daten und stellt den
 aufrufenden Komponenten zugleich den Zustand jeder Anfrage bereit,
 etwa ob diese noch geladen wird, fehlgeschlagen ist oder
 erfolgreich Daten geliefert hat \cite{tanstack_query_docs}. Für
@@ -301,9 +302,9 @@ Letzteren zuständig ist.
 \subsection{Routing in Single-Page Applications}
 \label{subsec:routing}
 
-Da SPAs keine serverseitigen Seitennavigationen durchführen,
+Da \acs{SPA}s keine serverseitigen Seitennavigationen durchführen,
 übernimmt clientseitiges Routing die Aufgabe, verschiedene
-Ansichten der Anwendung anhand der \acs{URL} darzustellen. React
+Ansichten der Anwendung anhand der \acfirst{URL} darzustellen. React
 Router ist die etablierte Lösung für Routing in
 React-Anwendungen und ermöglicht die deklarative Definition
 von Routen sowie die Navigation zwischen Ansichten ohne
@@ -314,7 +315,7 @@ rollenbasierter Seitenschutz ein wesentliches
 Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
 Nutzer mit den entsprechenden Berechtigungen zugänglich
 gemacht. Dieses Konzept basiert auf dem Prinzip der
-rollenbasierten Zugriffskontrolle (\acs{RBAC}), das den Zugriff
+rollenbasierten Zugriffskontrolle (\acfirst{RBAC}), das den Zugriff
 auf Ressourcen und Funktionen abhängig von der zugewiesenen
 Rolle eines Nutzers steuert \cite{ferraiolo_rbac_arxiv}.
 In der Praxis werden solche geschützten Routen als 
@@ -367,15 +368,15 @@ Komponentenstile und stellen sicher, dass die
 Benutzeroberfläche unabhängig vom jeweiligen Entwickler
 konsistent bleibt.
 
-Tailwind CSS ist ein utility-first CSS-Framework, das
-Entwicklern vorgefertigte CSS-Hilfsklassen bereitstellt,
-die direkt im HTML-Markup verwendet werden. Im Gegensatz
-zu klassischen CSS-Frameworks wie Bootstrap definiert
+Tailwind CSS ist ein utility-first \acs{CSS}-Framework, das
+Entwicklern vorgefertigte \acs{CSS}-Hilfsklassen bereitstellt,
+die direkt im \acs{HTML}-Markup verwendet werden. Im Gegensatz
+zu klassischen \acs{CSS}-Frameworks wie Bootstrap definiert
 Tailwind keine fertigen Komponenten, sondern atomare
 Stilklassen wie Abstände, Farben und Typografie, die
 flexibel kombiniert werden können. Dieser Ansatz
 beschleunigt die Entwicklung erheblich, da kein separates
-CSS geschrieben werden muss und Stile direkt im Markup
+\acs{CSS} geschrieben werden muss und Stile direkt im Markup
 sichtbar sind \cite{tailwindcss_docs}.
 
 shadcn/ui ist eine Sammlung zugänglicher, anpassbarer
@@ -389,9 +390,9 @@ Dadurch behalten Entwickler die vollständige Kontrolle
 anpassen \cite{shadcn_docs}.
 
 Die Einhaltung von Barrierefreiheitsstandards, insbesondere
-der Web Content Accessibility Guidelines (\acs{WCAG}~2.1), ist
+der Web Content Accessibility Guidelines (\acfirst{WCAG}~2.1), ist
 dabei ein wesentliches Qualitätsmerkmal moderner
-Webanwendungen. WCAG~2.1 legt unter anderem
+Webanwendungen. \acs{WCAG}~2.1 legt unter anderem
 Mindestanforderungen an Kontrastverhältnisse,
 Tastaturnavigation und Screenreader-Unterstützung fest
 \cite{shah_design_system_2023}. Die Einhaltung dieser
@@ -403,14 +404,14 @@ verbessert auch die allgemeine Usability für alle Nutzer.
 \label{subsec:rest-api}
 
 Die Kommunikation zwischen Frontend und Backend erfolgt in
-\textit{Bazario} über REST-basierte \acs{HTTP}-Schnittstellen.
-\acs{REST} ist ein Architekturstil für Webschnittstellen, der auf 
-zustandslosen Anfragen, standardisierten HTTP-Methoden und 
+\textit{Bazario} über \acs{REST}-basierte \acfirst{HTTP}-Schnittstellen.
+\acfirst{REST} ist ein Architekturstil für Webschnittstellen, der auf 
+zustandslosen Anfragen, standardisierten \acs{HTTP}-Methoden und 
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
 enthält alle zur Verarbeitung notwendigen Informationen,
 ohne dass der Server einen clientseitigen Sitzungszustand
-speichern muss. Auf der Clientseite werden diese HTTP-Anfragen mithilfe von Axios
-umgesetzt, einem verbreiteten, Promise-basierten HTTP-Client für
+speichern muss. Auf der Clientseite werden diese \acs{HTTP}-Anfragen mithilfe von Axios
+umgesetzt, einem verbreiteten, Promise-basierten \acs{HTTP}-Client für
 JavaScript-Anwendungen. Axios erlaubt es, eine zentrale Instanz
 mit einer festen Basis-Adresse und einheitlichen
 Standardeinstellungen zu konfigurieren, und stellt sogenannte
@@ -419,16 +420,16 @@ Antworten an einer zentralen Stelle verarbeitet werden können,
 etwa um jeder Anfrage automatisch einen Authentifizierungstoken
 hinzuzufügen \cite{axios_docs}.
 
-Für die Absicherung der API-Endpunkte setzt
+Für die Absicherung der \acs{API}-Endpunkte setzt
 \textit{Bazario} auf tokenbasierte Authentifizierung
 über Laravel Sanctum. Nach erfolgreicher Anmeldung
 erhält der Nutzer einen Bearer Token, der bei jeder
-weiteren API-Anfrage im Authorization-Header übermittelt
+weiteren \acs{API}-Anfrage im Authorization-Header übermittelt
 wird. Der Zugriff auf geschützte Endpunkte wird
 serverseitig anhand der Rolle des Nutzers gesteuert,
 sodass nur berechtigte Nutzer auf rollenspezifische
 Funktionen zugreifen können \cite{laravel_sanctum_docs}.
-Neben der REST-basierten Kommunikation setzt
+Neben der \acs{REST}-basierten Kommunikation setzt
 \textit{Bazario} für das Echtzeit-Messaging auf
 WebSockets. WebSockets ermöglichen eine dauerhafte,
 bidirektionale Verbindung zwischen Client und Server,
@@ -518,7 +519,7 @@ Effizienz des Checkout-Vorgangs
 User Experience umfasst dabei neben der reinen
 Gebrauchstauglichkeit auch emotionale und
 wahrnehmungsbezogene Aspekte der Nutzung. Für
-E-Commerce-Websites wurden UX-spezifische Heuristiken
+E-Commerce-Websites wurden \acs{UX}-spezifische Heuristiken
 erarbeitet, die Aspekte wie Vertrauen, Orientierung,
 Effizienz des Checkout-Prozesses und visuelle Konsistenz
 berücksichtigen \cite{bonastre_ux_heuristics}. Diese

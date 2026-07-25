@@ -9,7 +9,7 @@ Multi-Rollen-Marktplatz, der im Rahmen eines Praxisprojekts
 bei SahemTech entwickelt wird. Das Gesamtsystem folgt einer
 klaren Trennung zwischen Präsentationsschicht, Geschäftslogik
 und Datenhaltung. Die Kommunikation zwischen Frontend und
-Backend erfolgt über REST-basierte HTTP-Schnittstellen,
+Backend erfolgt über \acs{REST}-basierte \acs{HTTP}-Schnittstellen,
 die Echtzeitkommunikation des Chat-Systems über eine
 WebSocket-Verbindung auf Basis von Pusher.
 
@@ -21,9 +21,9 @@ Zugriffskontrolle, Buchungsverwaltung, Werbeworkflows
 sowie die Zahlungsintegration über Stripe. Die Datenhaltung
 erfolgt über eine relationale MySQL-Datenbank, die
 Authentifizierung über Laravel Sanctum mit tokenbasierter
-API-Authentifizierung. Die vorliegende Arbeit beschränkt
+\acs{API}-Authentifizierung. Die vorliegende Arbeit beschränkt
 sich auf die Entwicklung des Frontends, das die vom Backend
-bereitgestellten API-Endpunkte konsumiert und alle
+bereitgestellten \acs{API}-Endpunkte konsumiert und alle
 Funktionsbereiche der Plattform als rollenbasierte
 Single-Page Application darstellt.
 
@@ -47,7 +47,7 @@ ausfüllen und notwendige Dokumente hochladen. Der
 Antragsstatus ist für den Nutzer jederzeit einsehbar.
 Zusätzlich unterstützt die Plattform eine
 Passwort-Zurücksetzen-Funktion auf Basis eines
-\ac{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
+\acfirst{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
 
 Käufer müssen Produkte und Dienstleistungen nach Kategorie
 filtern und in einer Detailansicht einsehen können. Produkte
@@ -95,7 +95,7 @@ Customer & Produktfilterung, Produktdetail,
 Warenkorb, Checkout mit Stripe, Bestellhistorie,
 Buchungsübersicht, Stornierung \\
 \hline
-Seller & Produktverwaltung (\ac{CRUD}), Bildupload,
+Seller & Produktverwaltung (\acfirst{CRUD}), Bildupload,
 Bestellübersicht, Statusverwaltung, Werbeanzeigen erstellen,
 Stripe-Connect-Onboarding \\
 \hline
@@ -120,14 +120,14 @@ nicht-funktionale Anforderungen an das Frontend definiert.
 Die Anwendung soll flüssig bedienbar sein. Seitenwechsel
 erfolgen ohne vollständigen Seitenneuladen, Ladezeiten
 werden durch Lazy Loading und effizientes State Management
-minimiert. API-Anfragen werden durch geeignete
+minimiert. \acs{API}-Anfragen werden durch geeignete
 Ladezustände und Fehlermeldungen für den Nutzer transparent
 kommuniziert.
 
 Die Sicherheit wird durch tokenbasierte Authentifizierung
 über Laravel Sanctum, rollenbasierten Seitenschutz über
 geschützte Routen sowie die Nutzung von Stripe Elements
-zur PCI-DSS-konformen Zahlungserfassung gewährleistet.
+zur \acs{PCI-DSS}-konformen Zahlungserfassung gewährleistet.
 Sensible Daten werden zu keiner Zeit im Frontend gespeichert
 oder verarbeitet. Abgelaufene Tokens werden automatisch
 erkannt und der Nutzer wird zur erneuten Anmeldung
@@ -136,7 +136,7 @@ weitergeleitet.
 Die Anwendung muss responsiv sein und auf gängigen Desktop-
 und Mobilbrowsern korrekt dargestellt werden. Die
 Benutzeroberfläche orientiert sich an den Richtlinien von
-WCAG~2.1 hinsichtlich Barrierefreiheit, Kontrast und
+\acs{WCAG}~2.1 hinsichtlich Barrierefreiheit, Kontrast und
 Tastaturnavigation. Wartbarkeit und Erweiterbarkeit werden
 durch eine komponentenbasierte Architektur sowie eine
 feature-orientierte Ordnerstruktur sichergestellt.
@@ -161,10 +161,10 @@ Sicherheit & Schutz vor unbefugtem Zugriff &
 Laravel Sanctum, geschützte Routen, Stripe Elements \\
 \hline
 Responsivität & Korrekte Darstellung auf allen Geräten &
-Responsive Design, CSS-Breakpoints \\
+Responsive Design, \acs{CSS}-Breakpoints \\
 \hline
-Barrierefreiheit & WCAG~2.1-Konformität &
-Semantisches \ac{HTML}, Kontrastverhältnisse \\
+Barrierefreiheit & \acs{WCAG}~2.1-Konformität &
+Semantisches \acfirst{HTML}, Kontrastverhältnisse \\
 \hline
 Wartbarkeit & Erweiterbare Codestruktur &
 Komponentenarchitektur, feature-basierte Struktur \\
@@ -183,7 +183,7 @@ die Rolle Customer. Ein Wechsel zu Seller oder
 ServiceProvider ist durch einen Rollenwechselantrag
 möglich, der durch einen Administrator genehmigt werden
 muss. Der Ablauf dieses Prozesses basiert auf dem im Backend
-implementierten RBAC-Konzept. Das Frontend stellt dem
+implementierten \acs{RBAC}-Konzept. Das Frontend stellt dem
 Nutzer ein Formular zum Einreichen des Antrags sowie
 eine Statusanzeige bereit und passt die
 Navigationselemente nach erfolgter Rollenzuweisung
@@ -257,10 +257,10 @@ Die Bibliothek ermöglicht die deklarative Definition von
 Routen sowie den rollenbasierten Seitenschutz über
 geschützte Routen, sodass Funktionsbereiche nur für Nutzer mit den entsprechenden 
 Berechtigungen zugänglich sind \cite{reactrouter_docs, wieruch_protected_routes}.
-Axios wurde als HTTP-Client für die Kommunikation mit dem
+Axios wurde als \acs{HTTP}-Client für die Kommunikation mit dem
 Backend gewählt, ohne dass dabei ein einzelner, entscheidender
 Grund ausschlaggebend war. Die Bibliothek stellt die
-grundlegende Infrastruktur für die HTTP-Kommunikation bereit
+grundlegende Infrastruktur für die \acs{HTTP}-Kommunikation bereit
 und ist die im Ökosystem am weitesten verbreitete und am
 längsten bewährte Lösung für diesen Zweck; nennenswerte
 Alternativen sind kaum vorhanden \cite{axios_docs}.
@@ -280,10 +280,10 @@ serverseitig gemeldete Fehler werden dem betroffenen
 Eingabefeld zugeordnet
 \cite{react_hook_form_docs, zod_docs}.
 
-Tailwind CSS und shadcn/ui wurden als UI-Bibliotheken
+Tailwind CSS und shadcn/ui wurden als \acs{UI}-Bibliotheken
 gewählt. Tailwind CSS ermöglicht eine schnelle und
 konsistente Gestaltung der Benutzeroberfläche durch
-vorgefertigte Hilfsklassen, ohne dass separates CSS
+vorgefertigte Hilfsklassen, ohne dass separates \acs{CSS}
 geschrieben werden muss. Dies spart erheblich
 Entwicklungszeit und sorgt für ein einheitliches
 Erscheinungsbild über alle Ansichten hinweg
@@ -295,14 +295,14 @@ Abschnitt~\ref{subsec:ui-bibliotheken}) \cite{shadcn_docs}.
 Stripe wurde als Zahlungsanbieter gewählt, da das Backend
 bereits auf Stripe aufbaut und Stripe mit Stripe Elements
 sowie React Stripe.js eine vollständige,
-PCI-DSS-konforme Frontend-Integration bereitstellt, die
+\acs{PCI-DSS}-konforme Frontend-Integration bereitstellt, die
 die Komplexität der Zahlungsabwicklung im Frontend auf
 ein Minimum reduziert
 \cite{stripe_elements_docs, stripe_react_js_docs}.
 
 Laravel Sanctum wird als Authentifizierungsmechanismus
 eingesetzt, da das Backend bereits auf diesem System
-aufbaut. Aus Frontend-Sicht bestimmt Sanctum die Handhabung der Bearer Tokens, die nach erfolgreichem Login gespeichert und bei jeder API-Anfrage im Authorization-Header mitgesendet werden  \cite{laravel_sanctum_docs}. Abgelaufene oder ungültige Tokens werden vom Frontend erkannt und die zugehörige Sitzung automatisch verworfen.
+aufbaut. Aus Frontend-Sicht bestimmt Sanctum die Handhabung der Bearer Tokens, die nach erfolgreichem Login gespeichert und bei jeder \acs{API}-Anfrage im Authorization-Header mitgesendet werden  \cite{laravel_sanctum_docs}. Abgelaufene oder ungültige Tokens werden vom Frontend erkannt und die zugehörige Sitzung automatisch verworfen.
 
 Tabelle~\ref{tab:technologiestack} fasst den gewählten
 Technologiestack und die jeweilige Begründung zusammen.
@@ -316,7 +316,7 @@ Technologiestack und die jeweilige Begründung zusammen.
 \textbf{Technologie} & \textbf{Einsatzbereich} &
 \textbf{Begründung} \\
 \hline
-React & UI-Framework &
+React & \acs{UI}-Framework &
 Komponentenbasiert, großes Ökosystem, weit verbreitet \\
 \hline
 Zustand & State Management &
@@ -326,7 +326,7 @@ kein Provider erforderlich \\
 React Router & Routing &
 Deklaratives Routing, rollenbasierter Seitenschutz \\
 \hline
-Axios & HTTP-Kommunikation &
+Axios & \acs{HTTP}-Kommunikation &
 Zentrale, wiederverwendbare Instanz mit Interceptors,
 automatische Token-Anbindung \\
 \hline
@@ -338,16 +338,16 @@ Tailwind CSS & Styling &
 Utility-first, spart Entwicklungszeit,
 konsistentes Erscheinungsbild \\
 \hline
-shadcn/ui & UI-Komponenten &
+shadcn/ui & \acs{UI}-Komponenten &
 Barrierefrei, vollständig anpassbar,
 kein Paket-Lock-in \\
 \hline
 Stripe Elements & Zahlungsabwicklung &
-PCI-DSS-konform, nahtlose React-Integration \\
+\acs{PCI-DSS}-konform, nahtlose React-Integration \\
 \hline
 Laravel Sanctum & Authentifizierung &
 Tokenbasiert, Bearer Tokens, rollenbasierte
-Zugriffskontrolle auf API-Endpunkte \\
+Zugriffskontrolle auf \acs{API}-Endpunkte \\
 \hline
 React Hook Form & Formularverwaltung &
 Hook-basiert, geringe Neu-Renderings,
