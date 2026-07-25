@@ -326,7 +326,9 @@ Anwendung verlassen muss, wäre es eine schlechte
 Nutzererfahrung, wenn diese Artikel beim erneuten Öffnen der
 Anwendung verschwunden wären. Aus diesem Grund wird der
 Warenkorbinhalt zusätzlich im localStorage des Browsers
-gespeichert.
+gespeichert.Technisch erfolgt dies über die persist-Middleware von Zustand,
+die den Inhalt des Stores automatisch mit dem localStorage
+synchronisiert \cite{zustand_docs}.
 
 Darüber hinaus muss jede Änderung am Warenkorb unmittelbar an
 allen Stellen der Anwendung sichtbar werden, an denen sie

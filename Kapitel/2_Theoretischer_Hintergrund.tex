@@ -261,10 +261,9 @@ wird direkt als Hook definiert und kann in jeder Komponente
 ohne zusätzliche Provider-Wrapper verwendet werden. Dieses
 Konzept reduziert die Komplexität der Zustandsverwaltung
 erheblich und ermöglicht eine schnelle sowie wartbare
-Implementierung \cite{zustand_docs}. Für \textit{Bazario}
-verwaltet Zustand zentrale Zustände wie den
-Authentifizierungsstatus, die aktive Nutzerrolle sowie den
-Warenkorbinhalt. Diese Zustände werden dabei nicht in einem
+Implementierung \cite{zustand_docs}. Für \textit{Bazario} verwaltet Zustand zentrale Zustände wie den
+Authentifizierungsstatus, die Session des Nutzers einschließlich
+der zugewiesenen Rollen sowie den Warenkorbinhalt. Diese Zustände werden dabei nicht in einem
 einzigen, gemeinsamen Store zusammengefasst, sondern nach dem
 Prinzip der Separation of Concerns auf mehrere, fachlich
 abgegrenzte Stores verteilt, von denen jeder ausschließlich
