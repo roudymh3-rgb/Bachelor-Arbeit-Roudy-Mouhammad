@@ -1,4 +1,4 @@
-\chapter{Konzept für ein Frontend}
+\chapter{Frontend-Konzept}
 \label{chap:konzept}
 
 % Dieses Kapitel beschreibt das geplante Frontend-Konzept auf Basis
@@ -59,8 +59,7 @@ mit zugehörigen Komponenten, Hooks, Schemas,
 Typdefinitionen und API-Funktionen erhält.
 Unter \texttt{components/ui/} befinden sich
 die wiederverwendbaren UI-Basiskomponenten aus
-shadcn/ui, deren Quellcode direkt ins Projekt
-kopiert und angepasst wird \cite{shadcn_docs},
+shadcn/ui (vgl. Abschnitt~\ref{subsec:ui-bibliotheken}),
 während \texttt{components/shared/}
 projektübergreifend genutzte Komponenten wie
 den Anwendungs-Header enthält. Das Verzeichnis
@@ -213,16 +212,12 @@ gebunden sind.
 \label{subsec:state-management-konzept}
 
 Für das globale State Management setzt
-\textit{Bazario} auf Zustand, eine
-schlanke, hook-basierte
-State-Management-Bibliothek für
-React-Anwendungen. Im Unterschied zu
-klassischen State-Management-Lösungen
-benötigt sie keine Provider-Wrapper und
-reduziert den Konfigurationsaufwand, da
-ein Store direkt als Hook definiert und
-in jeder Komponente verwendet werden
-kann \cite{zustand_docs}.
+\textit{Bazario} auf die in
+Abschnitt~\ref{subsec:state-management}
+vorgestellte Bibliothek Zustand, die
+ohne Provider-Wrapper auskommt und den
+Konfigurationsaufwand gering hält
+\cite{zustand_docs}.
 
 Die globalen Zustände der Anwendung
 umfassen den Authentifizierungsstatus,
@@ -277,19 +272,20 @@ unterscheidet die Bibliothek zwischen lesenden Anfragen, die
 Daten vom Server abrufen, und schreibenden Operationen, die Daten
 auf dem Server verändern. Darüber hinaus bietet
 die Bibliothek einen Mechanismus zur gezielten Invalidierung
-bereits abgerufener Daten auf API-Ebene; dessen projektweite
-Nutzung ist einer späteren Ausbaustufe der Anwendung vorbehalten
-und wird in dieser Arbeit nicht weiter vertieft.
+bereits abgerufener Daten; dieser bildet die projektweit
+einheitliche Grundlage für die Aktualität zwischengespeicherter
+Daten und wird in Kapitel~\ref{chap:umsetzung} anhand konkreter
+Beispiele beschrieben.
 
 
 Das beschriebene Konzept ergänzt das in
 Abschnitt~\ref{subsec:state-management-konzept} dargestellte
-globale State Management, verfolgt jedoch einen anderen Zweck.
-Während Zustand den clientseitigen Anwendungszustand verwaltet,
-etwa die aktive Nutzerrolle oder den Inhalt des Warenkorbs, ist
-TanStack Query für den serverseitigen Datenbestand zuständig, der
-über die beschriebenen Schichten abgerufen und synchronisiert
-wird.
+globale State Management: Entsprechend der in
+Abschnitt~\ref{subsec:state-management} eingeführten Trennung
+verwaltet Zustand den clientseitigen Anwendungszustand, während
+TanStack Query für den serverseitigen Datenbestand zuständig
+ist, der über die beschriebenen Schichten abgerufen und
+synchronisiert wird.
 
 
 \section{UI/UX-Konzept}
@@ -483,10 +479,10 @@ dabei jedoch die Buchungsregeln.
 
 % TODO: Buchungskalender, Bestellübersicht.
 
-\subsection{Benutzeroberfläche}
+\subsection{Kundenbereich}
 % TODO: Bestellhistorie, Buchungsübersicht, Stornierung.
 
-\subsection{Dienstleistungsbuchung}
+\subsection{Administration}
 % TODO: Onboarding-Warteschlange, Inhaltsmoderation, Zahlungsverwaltung.
 
 \subsection{Werbung und Ankündigungen}

@@ -237,19 +237,17 @@ Laravel-Backend.
 
 React wurde als Frontend-Framework gewählt, da es die
 komponentenbasierte Entwicklung komplexer, interaktiver
-Benutzeroberflächen effizient unterstützt. Im Vergleich
-zu Angular bietet React eine schlankere Architektur und
-größere Flexibilität bei der Strukturierung der Anwendung.
-Im Vergleich zu Vue.js verfügt React über ein größeres
-Ökosystem und eine breitere Unterstützung durch
-Drittbibliotheken \cite{comparative_spa_frameworks}.
+Benutzeroberflächen effizient unterstützt und gegenüber
+Angular und Vue.js die in Abschnitt~\ref{subsec:react}
+beschriebenen Vorteile hinsichtlich Flexibilität und
+Ökosystem bietet \cite{comparative_spa_frameworks}.
 
 Zustand wurde für das globale State Management gewählt.
 Die Bibliothek basiert auf einem hook-basierten Ansatz
-und lässt sich nahtlos in die React-Komponentenstruktur
-integrieren. Ein Store wird direkt als Hook definiert und
-kann in jeder Komponente ohne zusätzliche Provider-Wrapper
-verwendet werden. Authentifizierungsstatus, Nutzerrolle
+und lässt sich ohne zusätzliche Provider-Wrapper nahtlos
+in die React-Komponentenstruktur integrieren (vgl.
+Abschnitt~\ref{subsec:state-management}).
+Authentifizierungsstatus, Nutzerrolle
 und Warenkorbinhalt werden in eigenständigen
 Zustand-Stores verwaltet und stehen allen Komponenten
 konsistent zur Verfügung \cite{zustand_docs}.
@@ -281,10 +279,9 @@ geschrieben werden muss. Dies spart erheblich
 Entwicklungszeit und sorgt für ein einheitliches
 Erscheinungsbild über alle Ansichten hinweg
 \cite{tailwindcss_docs}. shadcn/ui ergänzt Tailwind CSS
-durch eine Sammlung vorgefertigter, barrierefreier
-React-Komponenten, deren Quellcode direkt ins Projekt
-übernommen und vollständig angepasst werden kann
-\cite{shadcn_docs}.
+durch eine Sammlung vorgefertigter, barrierefreier und
+vollständig anpassbarer React-Komponenten (vgl.
+Abschnitt~\ref{subsec:ui-bibliotheken}) \cite{shadcn_docs}.
 
 Stripe wurde als Zahlungsanbieter gewählt, da das Backend
 bereits auf Stripe aufbaut und Stripe mit Stripe Elements
