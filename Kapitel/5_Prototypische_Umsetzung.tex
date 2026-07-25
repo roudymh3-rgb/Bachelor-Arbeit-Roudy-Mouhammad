@@ -177,7 +177,7 @@ Nutzer nötig sind, während der Login als Dialog umgesetzt ist, der
 von jeder Stelle der Anwendung aus geöffnet werden kann, ohne die
 aktuelle Seite zu verlassen. Beide Formulare nutzen
 react-hook-form zusammen mit Zod-Schemata zur clientseitigen
-Validierung; serverseitig gemeldete Fehler werden dem betroffenen
+Validierung (vgl. Abschnitt~\ref{subsec:formulare-validierung}); serverseitig gemeldete Fehler werden dem betroffenen
 Feld zugeordnet, unspezifische Fehler als allgemeine Meldung
 angezeigt. Während der Bearbeitung wird die Absende-Schaltfläche
 deaktiviert, um ein mehrfaches Absenden zu verhindern. Verläuft
@@ -432,8 +432,9 @@ Intervalle hinzuzufügen oder zu entfernen.
 Das zugehörige Formular \texttt{TimeOffForm} für einzelne
 Abwesenheitszeiträume ist als eigene Komponente ausgelagert, da
 es an mehreren Stellen innerhalb des Funktionsbereichs
-wiederverwendet wird. Die Eingaben werden über ein Zod-Schema
-validiert, bevor sie an das Backend übertragen werden.
+wiederverwendet wird. Die Eingaben werden über ein Zod-Schema (vgl.
+Abschnitt~\ref{subsec:formulare-validierung}) validiert, bevor
+sie an das Backend übertragen werden.
 
 \begin{lstlisting}[caption={Validierungsschema für Abwesenheitszeiträume (time-off-form.schema.ts)}, label={lst:time-off-schema}]
 export const timeOffFormSchema = z.object({

@@ -10,9 +10,8 @@
 E-Commerce bezeichnet den elektronischen Handel mit Waren und
 Dienstleistungen über digitale Netzwerke, insbesondere das Internet.
 Er umfasst sämtliche onlinebasierten Geschäftstransaktionen zwischen
-Unternehmen und Konsumenten (\acs{B2C}\acused{B2C}) sowie zwischen Unternehmen
-untereinander (\acs{B2B}\acused{B2B})
-\cite{turban_ecommerce}. Der Begriff schließt
+Unternehmen und Konsumenten, \acs{B2C}, sowie zwischen Unternehmen
+untereinander, \acs{B2B} \cite{turban_ecommerce}. Der Begriff schließt
 dabei nicht nur den reinen Produktverkauf ein, sondern auch die
 digitale Vermittlung von Dienstleistungen und die Abwicklung
 zugehöriger Geschäftsprozesse \cite{wirtz_electronic_business}.
@@ -104,7 +103,7 @@ wie Reservierungen, Buchungen oder Bestellbestätigungen
 \cite{stripe_security_guide}.
 
 Für die Integration im Frontend stellt Stripe mit Stripe Elements
-eine Bibliothek vorgefertigter, \ac{PCI-DSS}-konformer UI-Komponenten
+eine Bibliothek vorgefertigter, \acs{PCI-DSS}-konformer UI-Komponenten
 bereit, die eine sichere Erfassung von Zahlungsdaten direkt im
 Browser ermöglichen, ohne dass sensible Kartendaten den eigenen
 Server passieren \cite{stripe_elements_docs}. Die Einbindung in
@@ -281,7 +280,7 @@ abgegrenzte, unabhängig wartbare Einheiten übertragen
 Neben dem clientseitigen Anwendungszustand, der Informationen
 wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
 eine SPA auch den serverseitigen Datenbestand verwalten, also
-Daten, die über eine \ac{API} vom Backend abgerufen werden. Diese
+Daten, die über eine \acs{API} vom Backend abgerufen werden. Diese
 beiden Arten von Zustand unterscheiden sich grundlegend: Während
 clientseitiger Zustand vollständig im Browser entsteht und
 kontrolliert wird, ist serverseitiger Zustand lediglich eine
@@ -304,7 +303,7 @@ Letzteren zuständig ist.
 
 Da SPAs keine serverseitigen Seitennavigationen durchführen,
 übernimmt clientseitiges Routing die Aufgabe, verschiedene
-Ansichten der Anwendung anhand der \ac{URL} darzustellen. React
+Ansichten der Anwendung anhand der \acs{URL} darzustellen. React
 Router ist die etablierte Lösung für Routing in
 React-Anwendungen und ermöglicht die deklarative Definition
 von Routen sowie die Navigation zwischen Ansichten ohne
@@ -315,7 +314,7 @@ rollenbasierter Seitenschutz ein wesentliches
 Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
 Nutzer mit den entsprechenden Berechtigungen zugänglich
 gemacht. Dieses Konzept basiert auf dem Prinzip der
-rollenbasierten Zugriffskontrolle (\ac{RBAC}), das den Zugriff
+rollenbasierten Zugriffskontrolle (\acs{RBAC}), das den Zugriff
 auf Ressourcen und Funktionen abhängig von der zugewiesenen
 Rolle eines Nutzers steuert \cite{ferraiolo_rbac_arxiv}.
 In der Praxis werden solche geschützten Routen als 
@@ -390,7 +389,7 @@ Dadurch behalten Entwickler die vollständige Kontrolle
 anpassen \cite{shadcn_docs}.
 
 Die Einhaltung von Barrierefreiheitsstandards, insbesondere
-der Web Content Accessibility Guidelines (\ac{WCAG}~2.1), ist
+der Web Content Accessibility Guidelines (\acs{WCAG}~2.1), ist
 dabei ein wesentliches Qualitätsmerkmal moderner
 Webanwendungen. WCAG~2.1 legt unter anderem
 Mindestanforderungen an Kontrastverhältnisse,
@@ -404,8 +403,8 @@ verbessert auch die allgemeine Usability für alle Nutzer.
 \label{subsec:rest-api}
 
 Die Kommunikation zwischen Frontend und Backend erfolgt in
-\textit{Bazario} über REST-basierte \ac{HTTP}-Schnittstellen.
-\ac{REST} ist ein Architekturstil für Webschnittstellen, der auf 
+\textit{Bazario} über REST-basierte \acs{HTTP}-Schnittstellen.
+\acs{REST} ist ein Architekturstil für Webschnittstellen, der auf 
 zustandslosen Anfragen, standardisierten HTTP-Methoden und 
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
 enthält alle zur Verarbeitung notwendigen Informationen,
@@ -443,6 +442,24 @@ neue Nachrichten und Statusänderungen unmittelbar in
 der Benutzeroberfläche dargestellt werden
 \cite{pusher_docs}.
 
+
+\subsection{Formularverarbeitung und Validierung}
+\label{subsec:formulare-validierung}
+
+Formulare bilden in E-Commerce-Anwendungen einen zentralen
+Interaktionspunkt, etwa bei Registrierung und Anmeldung oder der
+Verwaltung von Produkten und Dienstleistungen. React Hook Form
+ist eine Bibliothek zur Formularverwaltung in React-Anwendungen,
+die Eingabefelder über Hooks registriert und den Formularzustand
+mit möglichst wenigen Neu-Renderings verwaltet
+\cite{react_hook_form_docs}. Zod ist eine TypeScript-orientierte
+Bibliothek zur Schema-Validierung, mit der Datenstrukturen
+deklarativ definiert und zur Laufzeit geprüft werden; aus den
+Schemata werden zugleich statische Typen abgeleitet
+\cite{zod_docs}. Beide Bibliotheken lassen sich über einen
+sogenannten Resolver koppeln, sodass Formulareingaben
+clientseitig gegen ein Zod-Schema validiert werden, bevor eine
+Anfrage an das Backend gestellt wird \cite{react_hook_form_docs}.
 
 \section{Qualitätssicherung in der Frontend-Entwicklung}
 \label{sec:qualitaetssicherung}

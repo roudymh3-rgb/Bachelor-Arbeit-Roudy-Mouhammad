@@ -271,6 +271,15 @@ Kontrolle über den Zustand jeder Verbindung ermöglicht, etwa
 ob eine Anfrage gerade lädt, sowie über die Zwischenspeicherung
 bereits abgerufener Daten \cite{tanstack_query_docs}.
 
+React Hook Form und Zod wurden für die Formularverarbeitung
+und die clientseitige Validierung gewählt (vgl.
+Abschnitt~\ref{subsec:formulare-validierung}). Formulareingaben
+werden vor dem Absenden gegen Zod-Schemata geprüft, die bewusst
+mit den Validierungsregeln des Backends übereinstimmen;
+serverseitig gemeldete Fehler werden dem betroffenen
+Eingabefeld zugeordnet
+\cite{react_hook_form_docs, zod_docs}.
+
 Tailwind CSS und shadcn/ui wurden als UI-Bibliotheken
 gewählt. Tailwind CSS ermöglicht eine schnelle und
 konsistente Gestaltung der Benutzeroberfläche durch
@@ -339,6 +348,14 @@ PCI-DSS-konform, nahtlose React-Integration \\
 Laravel Sanctum & Authentifizierung &
 Tokenbasiert, Bearer Tokens, rollenbasierte
 Zugriffskontrolle auf API-Endpunkte \\
+\hline
+React Hook Form & Formularverwaltung &
+Hook-basiert, geringe Neu-Renderings,
+koppelbar mit Schema-Validierung \\
+\hline
+Zod & Validierung &
+Deklarative Schemata, konsistent mit
+Backend-Validierungsregeln \\
 \hline
 
 \end{tabular}
