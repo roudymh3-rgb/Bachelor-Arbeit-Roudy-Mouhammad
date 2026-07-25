@@ -292,6 +292,17 @@ durch eine Sammlung vorgefertigter, barrierefreier und
 vollständig anpassbarer React-Komponenten (vgl.
 Abschnitt~\ref{subsec:ui-bibliotheken}) \cite{shadcn_docs}.
 
+Vite wird als Build-Tool eingesetzt, da es eine schnelle
+Entwicklungsumgebung und optimierte Produktions-Builds für
+React-Anwendungen bereitstellt (vgl.
+Abschnitt~\ref{subsec:komponentenarchitektur})
+\cite{vite_docs}. Für die Echtzeitkommunikation des
+Messaging-Systems wird die Bibliothek \texttt{pusher-js}
+verwendet, da das Backend Pusher als Broadcast-Dienst
+einsetzt; das Frontend abonniert darüber die relevanten
+Channels (vgl. Abschnitt~\ref{subsec:rest-api})
+\cite{pusher_docs}.
+
 Stripe wurde als Zahlungsanbieter gewählt, da das Backend
 bereits auf Stripe aufbaut und Stripe mit Stripe Elements
 sowie React Stripe.js eine vollständige,
@@ -319,7 +330,7 @@ Technologiestack und die jeweilige Begründung zusammen.
 React & \acs{UI}-Framework &
 Komponentenbasiert, großes Ökosystem, weit verbreitet \\
 \hline
-Zustand & State Management &
+Zustand-Bibliothek & State Management &
 Schlanker hook-basierter Store, kein Boilerplate,
 kein Provider erforderlich \\
 \hline
@@ -356,6 +367,14 @@ koppelbar mit Schema-Validierung \\
 Zod & Validierung &
 Deklarative Schemata, konsistent mit
 Backend-Validierungsregeln \\
+\hline
+Vite & Build-Tool &
+Schnelle Entwicklungsumgebung,
+optimierte Produktions-Builds \\
+\hline
+pusher-js & Echtzeitkommunikation &
+WebSocket-Anbindung über Pusher,
+vom Backend vorgegeben \\
 \hline
 
 \end{tabular}
