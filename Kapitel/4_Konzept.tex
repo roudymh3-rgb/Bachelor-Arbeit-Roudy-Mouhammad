@@ -224,7 +224,14 @@ Die globalen Zustände der Anwendung
 umfassen den Authentifizierungsstatus,
 die Session des Nutzers einschließlich
 der zugewiesenen Rollen sowie den
-Warenkorbinhalt.
+Warenkorbinhalt. Hinzu kommen rein
+darstellungsbezogene Zustände wie die
+Sichtbarkeit des Login-Dialogs und der
+mobilen Navigation. Entsprechend dem in
+Abschnitt~\ref{subsec:state-management}
+beschriebenen Prinzip der Separation of
+Concerns werden diese Bereiche in
+getrennten Stores verwaltet.
 \subsection{Netzwerk- und API-Kommunikation}
 \label{subsec:netzwerk_konzept}
 

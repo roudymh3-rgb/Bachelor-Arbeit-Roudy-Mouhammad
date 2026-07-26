@@ -207,6 +207,7 @@ interface AuthStoreState {
   isAuthenticated: boolean
   isBootstrapping: boolean
   setSession: (session: AuthSession) => void
+  setBootstrapping: (isBootstrapping: boolean) => void
   syncVerifiedUser: (user: User) => void
   clearSession: () => void
 }
@@ -304,7 +305,13 @@ zurückgreift wie die Produktkarte, sowie einer Übersicht mit
 Preis, Kategorie und Verkäuferinformationen dargestellt.
 
 % ----------------------------------------------------------------
+% TODO (Roudy): Screenshot der Startseite mit den
+% Vorschau-Karten (Produkte und Dienstleistungen,
+% inkl. "New"-Kennzeichnung).
 
+% TODO (Roudy): Screenshot der Produkt-Katalogseite mit
+% Kategoriefilter und Paginierung (Seite/Kategorie in der URL
+% sichtbar, z. B. /products?page=2&category=3).
 
 % ----------------------------------------------------------------
 \section{Warenkorb, Checkout und Zahlung}
@@ -314,9 +321,10 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 \label{subsec:impl_warenkorb}
 
 Der Warenkorb wird über einen zentralen Zustand-Store verwaltet,
-dessen Inhalt im Cache gehalten wird. Jede Änderung, etwa das
-Hinzufügen eines Elements, wird dabei im Cache abgelegt. Da der
-Cache jedoch nur besteht, solange die Seite geöffnet ist, muss
+dessen Inhalt zunächst nur im Arbeitsspeicher gehalten wird. Jede
+Änderung, etwa das Hinzufügen eines Elements, wird dabei dort
+abgelegt. Da dieser Speicher jedoch nur besteht, solange die
+Seite geöffnet ist, muss
 der Inhalt des Warenkorbs zusätzlich dauerhaft gesichert werden,
 damit er einen Seitenwechsel, ein erneutes Laden oder ein
 Schließen der Anwendung übersteht. Der Grund dafür liegt in der
@@ -438,7 +446,7 @@ wiederverwendet wird. Die Eingaben werden über ein Zod-Schema (vgl.
 Abschnitt~\ref{subsec:formulare-validierung}) validiert, bevor
 sie an das Backend übertragen werden.
 
-\begin{lstlisting}[caption={Validierungsschema für Abwesenheitszeiträume (time-off-form.schema.ts)}, label={lst:time-off-schema}]
+\begin{lstlisting}[caption={Validierungsschema für Abwesenheitszeiträume (time-off-form-schema.ts)}, label={lst:time-off-schema}]
 export const timeOffFormSchema = z.object({
   starts_at: z.string().min(1, 'Start date and time are required.'),
   ends_at: z.string().min(1, 'End date and time are required.'),
@@ -482,9 +490,11 @@ benötigen.
 % hin (Kartenuebersicht der eigenen Produkte).
 
 Die eigenen Produkte werden über \texttt{useMyProductsQuery}
-abgerufen und in derselben Kartenansicht dargestellt, die auch
-auf der öffentlichen Katalogseite verwendet wird (vgl.
-Abschnitt~\ref{subsec:impl_produktlisting}). Das Löschen eines
+abgerufen und nach demselben Kartenprinzip dargestellt, das auch
+auf der öffentlichen Katalogseite zum Einsatz kommt (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}); die
+Verwaltungskarte ergänzt dabei Aktionen zum Bearbeiten
+und Löschen. Das Löschen eines
 Produkts invalidiert dabei, analog zur Dienstleistungsverwaltung,
 mehrere zusammenhängende Cache-Einträge zugleich.
 
