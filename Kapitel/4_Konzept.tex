@@ -21,6 +21,15 @@ Funktionsbereiche unabhängig voneinander
 entwickelt und erweitert werden können
 \cite{ijlrp_react_components}.
  
+Innerhalb dieser Struktur spiegelt sich das in
+Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte
+Prinzip der Trennung von Presentational und Container
+Components wider: Komponenten im Verzeichnis
+\texttt{components/} eines Funktionsbereichs übernehmen
+ausschließlich die Darstellung, während Datenzugriff und
+Geschäftslogik in den zugehörigen Ordnern \texttt{api/} und
+\texttt{hooks/} gekapselt sind.
+
 Das Projekt wird mit Vite als Build-Tool
 initialisiert, das eine schnelle
 Entwicklungsumgebung und optimierte

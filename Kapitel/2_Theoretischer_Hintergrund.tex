@@ -61,6 +61,14 @@ Hinsichtlich der Geschäftsmodelle lassen sich provisionsbasierte
 Modelle, bei denen die Plattform einen prozentualen Anteil am
 Transaktionswert einbehält, feste Transaktionsgebühren sowie
 hybride Ansätze unterscheiden, die beide Varianten kombinieren.
+\textit{Bazario} setzt auf ein hybrides Modell: Neben einer
+festen, unabhängig vom Umsatz erhobenen Grundprovision fällt
+eine zusätzliche, transaktionsabhängige Provision an, deren
+Höhe sich nach dem über die Plattform abgewickelten
+Bestellvolumen richtet. Beide Anteile werden dem Anbieter bei
+jeder Transaktion abgezogen. Die konkrete Konfiguration der
+Provisionssätze erfolgt über das Backend und ist im Rahmen
+dieser Arbeit nicht Gegenstand des Frontends.
 Tabelle~\ref{tab:abrechnungsmodelle} stellt die drei verbreiteten 
 Abrechnungsmodelle digitaler Marktplätze vergleichend gegenüber. 
 Die Merkmale wurden auf Basis von \cite{taeuscher_platform_models} 
@@ -106,18 +114,24 @@ Für die Integration im Frontend stellt Stripe mit Stripe Elements
 eine Bibliothek vorgefertigter, \acs{PCI-DSS}-konformer \acs{UI}-Komponenten
 bereit, die eine sichere Erfassung von Zahlungsdaten direkt im
 Browser ermöglichen, ohne dass sensible Kartendaten den eigenen
-Server passieren \cite{stripe_elements_docs}. Die Einbindung in
-React-basierte Frontends erfolgt über die offizielle
-React Stripe.js-Bibliothek, die Hooks und Komponenten für die
-nahtlose Integration des Stripe-Zahlungsflusses bereitstellt
-\cite{stripe_react_js_docs}.
+Server passieren \cite{stripe_elements_docs}.
+
+Neben dieser eingebetteten Integration bietet Stripe mit
+Stripe Checkout eine alternative, gehostete Zahlungsseite an:
+Das Frontend leitet den Nutzer dabei lediglich auf eine von
+Stripe bereitgestellte, vorkonfigurierte Zahlungsseite weiter
+und verarbeitet nach Abschluss der Zahlung die Rückleitung
+auf eine Erfolgs- oder Abbruchseite. Im Gegensatz zur
+eingebetteten Variante entfällt dadurch die Notwendigkeit,
+eigene Zahlungsformulare im Frontend zu gestalten und zu
+validieren \cite{stripe_checkout_docs}.
 
 Der \acfirst{PCI-DSS} ist ein
 Sicherheitsstandard, der Anforderungen an die sichere Verarbeitung,
-Speicherung und Übertragung von Kartendaten definiert. Durch den
-Einsatz von Stripe Elements werden sensible Zahlungsdaten
-ausschließlich auf den Servern von Stripe verarbeitet, wodurch
-der \acs{PCI-DSS}-Scope des Betreibers erheblich reduziert wird
+Speicherung und Übertragung von Kartendaten definiert. Sowohl bei Stripe Elements als auch bei Stripe Checkout
+werden sensible Zahlungsdaten ausschließlich auf den Servern
+von Stripe verarbeitet, wodurch der \acs{PCI-DSS}-Scope des
+Betreibers erheblich reduziert wird
 \cite{stripe_security_guide}.
 
 \subsection{Wettbewerbsanalyse bestehender Marktplatzplattformen}

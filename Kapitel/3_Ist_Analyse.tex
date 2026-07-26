@@ -301,12 +301,17 @@ Channels (vgl. Abschnitt~\ref{subsec:rest-api})
 \cite{pusher_docs}.
 
 Stripe wurde als Zahlungsanbieter gewählt, da das Backend
-bereits auf Stripe aufbaut und Stripe mit Stripe Elements
-sowie React Stripe.js eine vollständige,
-\acs{PCI-DSS}-konforme Frontend-Integration bereitstellt, die
-die Komplexität der Zahlungsabwicklung im Frontend auf
-ein Minimum reduziert
-\cite{stripe_elements_docs, stripe_react_js_docs}.
+bereits auf Stripe aufbaut. Die Zahlungsabwicklung selbst
+erfolgt dabei serverseitig; das Frontend leitet den Nutzer
+lediglich auf eine vom Backend bereitgestellte,
+\acs{PCI-DSS}-konforme Stripe-Zahlungsseite weiter und
+verarbeitet nach Abschluss der Zahlung die Weiterleitung
+auf die Erfolgs- beziehungsweise Abbruchseite. Eine
+Einbindung von Stripe Elements oder React Stripe.js im
+Frontend ist damit für den aktuellen Funktionsumfang nicht
+erforderlich; sie käme erst bei einer Erweiterung um eine
+eigene, im Frontend gestaltete Zahlungsoberfläche in Betracht
+\cite{stripe_security_guide}.
 
 Laravel Sanctum wird als Authentifizierungsmechanismus
 eingesetzt, da das Backend bereits auf diesem System
@@ -350,8 +355,9 @@ shadcn/ui & \acs{UI}-Komponenten &
 Barrierefrei, vollständig anpassbar,
 kein Paket-Lock-in \\
 \hline
-Stripe Elements & Zahlungsabwicklung &
-\acs{PCI-DSS}-konform, nahtlose React-Integration \\
+Stripe (Redirect) & Zahlungsabwicklung &
+Weiterleitung auf vom Backend bereitgestellte,
+\acs{PCI-DSS}-konforme Zahlungsseite \\
 \hline
 Laravel Sanctum & Authentifizierung &
 Tokenbasiert, Bearer Tokens, rollenbasierte
