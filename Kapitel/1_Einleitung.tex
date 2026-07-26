@@ -38,10 +38,10 @@ beide Angebotsformen in einem einzigen Bestellprozess zu
 kombinieren.
 
 Die technische Umsetzung einer solchen Plattform stellt hohe
-Anforderungen an das Frontend. Es muss vier voneinander
-verschiedene Nutzerrollen bedienen, nämlich Käufer, Verkäufer,
-Dienstleister und Administratoren, mit jeweils eigenen
-Funktionsbereichen und Zugriffsrechten. Im weiteren Verlauf
+Anforderungen an das Frontend. Es muss drei Nutzerrollen mit jeweils eigenen Funktionsbereichen
+und Zugriffsrechten bedienen, nämlich Käufer, Verkäufer und
+Dienstleister; die vierte Rolle, der Administrator, greift über
+das vom Backend bereitgestellte Dashboard auf die Plattform zu. Im weiteren Verlauf
 der Arbeit werden für diese Rollen die plattforminternen
 Bezeichnungen Customer, Seller, ServiceProvider und Admin
 verwendet. Gleichzeitig soll die
@@ -98,6 +98,10 @@ in der jeweiligen Sprache gelieferten Daten an. Der bestehende
 Prototyp fragt die Inhalte durchgängig auf Englisch an; eine
 Umschaltung zwischen den verfügbaren Sprachen ist nicht Teil
 dieser Arbeit.
+Die administrativen Funktionen der Plattform, etwa die Prüfung
+von Rollenwechselanträgen und die Freigabe von Werbeanzeigen,
+erfolgen über das vom Backend bereitgestellte Admin-Dashboard
+und sind nicht Teil des in dieser Arbeit entwickelten Frontends.
 
 \section{Aufbau der Arbeit}
 \label{sec:aufbau}
