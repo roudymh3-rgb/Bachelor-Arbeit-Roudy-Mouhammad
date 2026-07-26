@@ -81,16 +81,18 @@ Abbildung~\ref{fig:ordnerstruktur} zeigt die
 Ordnerstruktur des Projekts zum aktuellen
 Stand der Konzeption. Jeder Funktionsbereich
 unter \texttt{features/} folgt intern
-derselben Unterstruktur mit den Ordnern
+einer einheitlichen Grundstruktur, die je
+nach Bedarf die Ordner
 \texttt{api/}, \texttt{components/},
 \texttt{hooks/}, \texttt{pages/},
-\texttt{schemas/} und \texttt{types/}; diese
+\texttt{schemas/} und \texttt{types/}
+umfasst; diese
 wird in Kapitel~\ref{chap:umsetzung} am
 Beispiel einzelner Funktionsbereiche im
 Detail gezeigt.
  
 \begin{figure}[H]
-\centering
+\centering \smaller
 \begin{verbatim}
 BAZARIO/
 |-- public/
@@ -105,8 +107,12 @@ BAZARIO/
 |   |-- features/
 |   |   |-- account/
 |   |   |-- auth/
+|   |   |-- cart/
 |   |   |-- categories/
+|   |   |-- connect/
+|   |   |-- earnings/
 |   |   |-- home/
+|   |   |-- orders/
 |   |   |-- products/
 |   |   |-- provider-availability/
 |   |   |-- sellers/
@@ -120,14 +126,7 @@ BAZARIO/
 |   |-- App.tsx
 |   |-- index.css
 |   `-- main.tsx
-|-- components.json
-|-- eslint.config.js
-|-- index.html
-|-- package.json
-|-- tsconfig.json
-|-- tsconfig.app.json
-|-- tsconfig.node.json
-`-- vite.config.ts
+`-- (Konfigurationsdateien, vgl. Text)
 \end{verbatim}
 \caption{Ordnerstruktur des Frontends von
 Bazario zum aktuellen Stand der Konzeption}
@@ -147,10 +146,12 @@ den Produkt- und Dienstleistungskatalog
 inklusive der öffentlichen Verkäufer- und
 Dienstleister-Profile sowie die Verwaltung von
 Arbeitszeiten und Abwesenheiten der
-Dienstleister abbilden. Für Warenkorb
-und Checkout, Bestellabwicklung, Messaging,
-Werbeanzeigen sowie die Administration sind
-weitere Funktionsbereiche vorgesehen.
+Dienstleister abbilden. Hinzu kommen die Funktionsbereiche \texttt{cart/} für den
+Warenkorb, \texttt{orders/} für die Bestellabwicklung,
+\texttt{connect/} für das Stripe-Connect-Onboarding der Anbieter
+sowie \texttt{earnings/} für deren Einnahmenübersicht. Für
+Messaging und Werbeanzeigen sind weitere Funktionsbereiche
+vorgesehen.
 
 \subsection{Routing-Konzept und
 rollenbasierter Seitenschutz}
