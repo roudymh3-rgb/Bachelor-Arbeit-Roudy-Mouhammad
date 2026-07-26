@@ -126,8 +126,8 @@ kommuniziert.
 
 Die Sicherheit wird durch tokenbasierte Authentifizierung
 über Laravel Sanctum, rollenbasierten Seitenschutz über
-geschützte Routen sowie die Nutzung von Stripe Elements
-zur \acs{PCI-DSS}-konformen Zahlungserfassung gewährleistet.
+geschützte Routen sowie die Weiterleitung auf eine
+\acs{PCI-DSS}-konforme Stripe-Zahlungsseite gewährleistet.
 Sensible Daten werden zu keiner Zeit im Frontend gespeichert
 oder verarbeitet. Abgelaufene Tokens werden automatisch
 erkannt und der Nutzer wird zur erneuten Anmeldung
@@ -158,7 +158,8 @@ Performance & Schnelle Ladezeiten, flüssige Navigation &
 Lazy Loading, optimiertes State Management \\
 \hline
 Sicherheit & Schutz vor unbefugtem Zugriff &
-Laravel Sanctum, geschützte Routen, Stripe Elements \\
+Laravel Sanctum, geschützte Routen, PCI-DSS-konforme
+Stripe-Zahlungsseite \\
 \hline
 Responsivität & Korrekte Darstellung auf allen Geräten &
 Responsive Design, \acs{CSS}-Breakpoints \\
