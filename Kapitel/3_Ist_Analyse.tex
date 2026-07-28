@@ -226,160 +226,156 @@ Funktionen über das Backend-Dashboard \\
 \end{table}
 
 
+% =====================================================================
+% ERSATZ fuer Abschnitt 3.4 in Kapitel/3_Ist_Analyse.tex
+% Kompletten bisherigen Abschnitt "Technologieauswahl und Begruendung"
+% durch den folgenden Text ersetzen.
+%
+% Ziel: Flieszttext von ca. 2 Seiten auf ca. 0,5 Seiten reduzieren.
+% Die Begruendung wird von der Tabelle getragen, die Gegenueberstellung
+% der Alternativen von Abschnitt 2.3.
+% =====================================================================
+
 \section{Technologieauswahl und Begründung}
 \label{sec:technologieauswahl}
 
-Die Auswahl des Technologiestacks für das Frontend von
-\textit{Bazario} erfolgte auf Basis der funktionalen
-und nicht-funktionalen Anforderungen sowie unter
-Berücksichtigung der Kompatibilität mit dem
-Laravel-Backend.
+Die Auswahl des Frontend-Technologiestacks folgt den in
+Abschnitt~\ref{sec:anforderungsanalyse} definierten Anforderungen.
+Maßgeblich sind dabei vier Kriterien: die Eignung für eine
+interaktionsreiche Single-Page Application mit mehreren
+Nutzerrollen, die Erfüllung der nicht-funktionalen Vorgaben zu
+Performance, Sicherheit, Responsivität und Barrierefreiheit
+(vgl. Abschnitt~\ref{subsec:nichtfunktionale-anforderungen}), die
+Kompatibilität mit dem bestehenden Laravel-Backend sowie der
+Einarbeitungsaufwand im Rahmen einer Bachelorarbeit.
 
-React wurde als Frontend-Framework gewählt, da es die
-komponentenbasierte Entwicklung komplexer, interaktiver
-Benutzeroberflächen effizient unterstützt und gegenüber
-Angular und Vue.js die in Abschnitt~\ref{subsec:react}
-beschriebenen Vorteile hinsichtlich Flexibilität und
-Ökosystem bietet \cite{comparative_spa_frameworks}.
+Die eingesetzten Technologien lassen sich anhand dieser Kriterien
+in zwei Gruppen einteilen. Durch das Backend vorgegeben sind
+Laravel Sanctum für die tokenbasierte Authentifizierung, Pusher
+für die Echtzeitkommunikation sowie Stripe für die
+Zahlungsabwicklung; für diese drei bestand keine eigenständige
+Auswahlentscheidung, da das Frontend lediglich die clientseitige
+Anbindung übernimmt. Im Fall von Stripe erfolgt die
+Zahlungsabwicklung vollständig serverseitig: Das Frontend leitet
+den Nutzer auf eine vom Backend bereitgestellte,
+\acs{PCI-DSS}-konforme Zahlungsseite weiter und verarbeitet
+anschließend die Rückleitung auf die Erfolgs- beziehungsweise
+Abbruchseite. Eine Einbindung von Stripe Elements oder
+React Stripe.js ist für den aktuellen Funktionsumfang daher nicht
+erforderlich \cite{stripe_security_guide}.
 
-Zustand wurde für das globale State Management gewählt.
-Die Bibliothek basiert auf einem hook-basierten Ansatz
-und lässt sich ohne zusätzliche Provider-Wrapper nahtlos
-in die React-Komponentenstruktur integrieren (vgl.
-Abschnitt~\ref{subsec:state-management}).
-Die Session einschließlich der Nutzerrollen sowie der
-Warenkorbinhalt werden in eigenständigen
-Zustand-Stores verwaltet und stehen allen Komponenten
-konsistent zur Verfügung \cite{zustand_docs}.
-
-React Router wurde für das clientseitige Routing gewählt.
-Die Bibliothek ermöglicht die deklarative Definition von
-Routen sowie den rollenbasierten Seitenschutz über
-geschützte Routen, sodass Funktionsbereiche nur für Nutzer mit den entsprechenden 
-Berechtigungen zugänglich sind \cite{reactrouter_docs, wieruch_protected_routes}.
-Axios wurde als \acs{HTTP}-Client für die Kommunikation mit dem
-Backend gewählt, ohne dass dabei ein einzelner, entscheidender
-Grund ausschlaggebend war. Die Bibliothek stellt die
-grundlegende Infrastruktur für die \acs{HTTP}-Kommunikation bereit
-und ist die im Ökosystem am weitesten verbreitete und am
-längsten bewährte Lösung für diesen Zweck; nennenswerte
-Alternativen sind kaum vorhanden \cite{axios_docs}.
-
-TanStack Query wurde für die Verwaltung des serverseitigen
-Datenbestands gewählt, weil die Bibliothek eine gezielte
-Kontrolle über den Zustand jeder Verbindung ermöglicht, etwa
-ob eine Anfrage gerade lädt, sowie über die Zwischenspeicherung
-bereits abgerufener Daten \cite{tanstack_query_docs}.
-
-React Hook Form und Zod wurden für die Formularverarbeitung
-und die clientseitige Validierung gewählt (vgl.
-Abschnitt~\ref{subsec:formulare-validierung}). Formulareingaben
-werden vor dem Absenden gegen Zod-Schemata geprüft, die bewusst
-mit den Validierungsregeln des Backends übereinstimmen;
-serverseitig gemeldete Fehler werden dem betroffenen
-Eingabefeld zugeordnet
+Frei gewählt wurden dagegen React als Frontend-Framework, Zustand
+für den clientseitigen Anwendungszustand, TanStack Query für den
+serverseitigen Datenbestand, React Router für das clientseitige
+Routing, Axios als \acs{HTTP}-Client, React Hook Form in Verbindung
+mit Zod für Formularverarbeitung und Validierung, Tailwind CSS
+mit shadcn/ui für die Gestaltung sowie Vite als Build-Tool. Die
+Gegenüberstellung der jeweils in Betracht kommenden Alternativen
+erfolgt in Abschnitt~\ref{sec:technologiestack}; die daraus
+abgeleitete Entscheidung fasst
+Tabelle~\ref{tab:technologiestack} zusammen. Für Axios war dabei
+kein einzelner Grund ausschlaggebend, da die Bibliothek die im
+Ökosystem am längsten bewährte Lösung für diesen Zweck darstellt
+und nennenswerte Alternativen kaum vorhanden sind
+\cite{axios_docs}. Die Zod-Schemata stimmen bewusst mit den
+Validierungsregeln des Backends überein, sodass clientseitige und
+serverseitige Prüfung denselben Regeln folgen
 \cite{react_hook_form_docs, zod_docs}.
-
-Tailwind CSS und shadcn/ui wurden als \acs{UI}-Bibliotheken
-gewählt. Tailwind CSS ermöglicht eine schnelle und
-konsistente Gestaltung der Benutzeroberfläche durch
-vorgefertigte Hilfsklassen, ohne dass separates \acs{CSS}
-geschrieben werden muss. Dies spart erheblich
-Entwicklungszeit und sorgt für ein einheitliches
-Erscheinungsbild über alle Ansichten hinweg
-\cite{tailwindcss_docs}. shadcn/ui ergänzt Tailwind CSS
-durch eine Sammlung vorgefertigter, barrierefreier und
-vollständig anpassbarer React-Komponenten (vgl.
-Abschnitt~\ref{subsec:ui-bibliotheken}) \cite{shadcn_docs}.
-
-Vite wird als Build-Tool eingesetzt, da es eine schnelle
-Entwicklungsumgebung und optimierte Produktions-Builds für
-React-Anwendungen bereitstellt . Für die Echtzeitkommunikation des
-Messaging-Systems wird die Bibliothek \texttt{pusher-js}
-verwendet, da das Backend Pusher als Broadcast-Dienst
-einsetzt; das Frontend abonniert darüber die relevanten
-Channels (vgl. Abschnitt~\ref{subsec:rest-api})
-\cite{pusher_docs}.
-
-Stripe wurde als Zahlungsanbieter gewählt, da das Backend
-bereits auf Stripe aufbaut. Die Zahlungsabwicklung selbst
-erfolgt dabei serverseitig; das Frontend leitet den Nutzer
-lediglich auf eine vom Backend bereitgestellte,
-\acs{PCI-DSS}-konforme Stripe-Zahlungsseite weiter und
-verarbeitet nach Abschluss der Zahlung die Weiterleitung
-auf die Erfolgs- beziehungsweise Abbruchseite. Eine
-Einbindung von Stripe Elements oder React Stripe.js im
-Frontend ist damit für den aktuellen Funktionsumfang nicht
-erforderlich; sie käme erst bei einer Erweiterung um eine
-eigene, im Frontend gestaltete Zahlungsoberfläche in Betracht
-\cite{stripe_security_guide}.
-
-Laravel Sanctum wird als Authentifizierungsmechanismus
-eingesetzt, da das Backend bereits auf diesem System
-aufbaut. Aus Frontend-Sicht bestimmt Sanctum die Handhabung der Bearer Tokens, die nach erfolgreichem Login gespeichert und bei jeder \acs{API}-Anfrage im Authorization-Header mitgesendet werden  \cite{laravel_sanctum_docs}. Abgelaufene oder ungültige Tokens werden vom Frontend erkannt und die zugehörige Sitzung automatisch verworfen.
-
-Tabelle~\ref{tab:technologiestack} fasst den gewählten
-Technologiestack und die jeweilige Begründung zusammen.
 
 \begin{table}[H]
 \centering
 \caption{Technologiestack des Frontends von Bazario}
 \label{tab:technologiestack}
-\begin{tabular}{|l|l|p{7cm}|}
+\small
+\begin{tabular}{|p{2.3cm}|p{2.4cm}|p{2.6cm}|p{4.6cm}|}
 \hline
 \textbf{Technologie} & \textbf{Einsatzbereich} &
-\textbf{Begründung} \\
+\textbf{Betrachtete Alternative} & \textbf{Begründung} \\
 \hline
-React & \acs{UI}-Framework &
-Komponentenbasiert, großes Ökosystem, weit verbreitet \\
+React & \acs{UI}-Framework & Angular, Vue.js &
+Komponentenbasiert, großes Ökosystem, hohe Flexibilität bei der
+Strukturierung \\
 \hline
-Zustand-Bibliothek & State Management &
-Schlanker hook-basierter Store, kein Boilerplate,
-kein Provider erforderlich \\
+Zustand & Client-State & Redux, Context \acs{API} &
+Schlanker hook-basierter Store, kein Boilerplate, kein Provider
+erforderlich \\
 \hline
-React Router & Routing &
+TanStack Query & Server-State & manuelle Cache-Verwaltung &
+Einheitliche Verbindungszustände, Caching und gezielte
+Invalidierung \\
+\hline
+React Router & Routing & --- &
 Deklaratives Routing, rollenbasierter Seitenschutz \\
 \hline
-Axios & \acs{HTTP}-Kommunikation &
-Zentrale, wiederverwendbare Instanz mit Interceptors,
-automatische Token-Anbindung \\
+Axios & \acs{HTTP}-Kom\-mu\-ni\-ka\-tion & Fetch \acs{API} &
+Zentrale Instanz mit Interceptors, automatische
+Token-Anbindung \\
 \hline
-TanStack Query & Server-State-Management &
-Einheitliche Verwaltung von Ladezuständen sowie Caching
-serverseitiger Daten \\
+React Hook Form & Formular\-verwaltung & --- &
+Hook-basiert, geringe Neu-Renderings, koppelbar mit
+Schema-Validierung \\
 \hline
-Tailwind CSS & Styling &
-Utility-first, spart Entwicklungszeit,
-konsistentes Erscheinungsbild \\
-\hline
-shadcn/ui & \acs{UI}-Komponenten &
-Barrierefrei, vollständig anpassbar,
-kein Paket-Lock-in \\
-\hline
-Stripe (Redirect) & Zahlungsabwicklung &
-Weiterleitung auf vom Backend bereitgestellte,
-\acs{PCI-DSS}-konforme Zahlungsseite \\
-\hline
-Laravel Sanctum & Authentifizierung &
-Tokenbasiert, Bearer Tokens, rollenbasierte
-Zugriffskontrolle auf \acs{API}-Endpunkte \\
-\hline
-React Hook Form & Formularverwaltung &
-Hook-basiert, geringe Neu-Renderings,
-koppelbar mit Schema-Validierung \\
-\hline
-Zod & Validierung &
+Zod & Validierung & --- &
 Deklarative Schemata, konsistent mit
 Backend-Validierungsregeln \\
 \hline
-Vite & Build-Tool &
-Schnelle Entwicklungsumgebung,
-optimierte Produktions-Builds \\
+Tailwind CSS & Styling & Bootstrap, CSS-in-JS &
+Utility-first, konsistentes Erscheinungsbild ohne separates
+\acs{CSS} \\
 \hline
-pusher-js & Echtzeitkommunikation &
-WebSocket-Anbindung über Pusher,
-vom Backend vorgegeben \\
+shadcn/ui & \acs{UI}-Kom\-po\-nen\-ten & klassische
+Komponenten\-bibliothek &
+Barrierefrei, vollständig anpassbar, kein Paket-Lock-in \\
 \hline
-
+Vite & Build-Tool & --- &
+Schnelle Entwicklungsumgebung, optimierte
+Produktions-Builds \cite{vite_docs} \\
+\hline
+Laravel Sanctum & Authenti\-fizierung &
+\multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
+Frontend verwaltet Bearer Tokens und erkennt abgelaufene
+Sitzungen \cite{laravel_sanctum_docs}} \\
+\hline
+pusher-js & Echtzeit\-kommunikation &
+\multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
+WebSocket-Anbindung über Pusher \cite{pusher_docs}} \\
+\hline
+Stripe (Redirect) & Zahlungs\-abwicklung &
+\multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
+Weiterleitung auf \acs{PCI-DSS}-konforme Zahlungsseite
+\cite{stripe_security_guide}} \\
+\hline
 \end{tabular}
 \end{table}
+
+% =====================================================================
+% TODO (Roudy) -- bitte selbst pruefen bzw. umformulieren:
+%
+% 1. Die vier Auswahlkriterien im ersten Absatz sind meine
+%    Zusammenfassung aus Abschnitt 3.2. Sie stammen nicht aus einem
+%    Meeting. Bitte pruefen, ob das deine tatsaechlichen Kriterien
+%    waren, insbesondere "Einarbeitungsaufwand im Rahmen einer
+%    Bachelorarbeit".
+%
+% 2. Spalte "Betrachtete Alternative": Folgende Eintraege sind von
+%    mir ergaenzt und in deinem bisherigen Text nicht belegt:
+%      - TanStack Query -> "manuelle Cache-Verwaltung"
+%      - Axios -> "Fetch API"
+%      - shadcn/ui -> "klassische Komponentenbibliothek"
+%    Belegt sind dagegen: React -> Angular/Vue und
+%    Tailwind -> Bootstrap (beide stehen so in deinem Kapitel 2).
+%    Zustand -> Redux/Context ergibt sich aus dem geplanten
+%    Abschnitt 2.3.3.
+%    Bei React Router, React Hook Form, Zod und Vite habe ich
+%    bewusst "---" gesetzt, statt Alternativen zu erfinden.
+%    Jede Alternative, die hier stehen bleibt, muss in Abschnitt 2.3
+%    auch tatsaechlich gegenuebergestellt werden.
+%
+% 3. Der Verweis \ref{sec:technologiestack} zeigt auf den bisherigen
+%    Abschnitt 2.3. Nach dem Umbau von 2.3 ggf. auf die neuen
+%    Unterabschnitte praezisieren.
+%
+% 4. \cite{vite_docs} war im alten Text vergessen und ist hier
+%    ergaenzt. Ausserdem war dort "bereitstellt ." mit Leerzeichen
+%    vor dem Punkt.
+% =====================================================================

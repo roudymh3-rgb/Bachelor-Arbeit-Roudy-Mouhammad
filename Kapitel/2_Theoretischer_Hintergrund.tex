@@ -337,125 +337,326 @@ bevor die eigentliche Ansicht gerendert wird
 \cite{wieruch_protected_routes}.
 
 
-\section{Technologiestack}
+% =====================================================================
+% ERSATZ fuer Abschnitt 2.3 in Kapitel/2_Theoretischer_Hintergrund.tex
+%
+% Der bisherige Abschnitt "Technologiestack" wird vollstaendig durch
+% den folgenden ersetzt. Kein "Fuer Bazario" mehr, keine
+% Auswahlentscheidung. Nur Funktionsumfang und Gegenueberstellung.
+% Die Entscheidung selbst steht in 3.4.
+%
+% HINWEIS ZU DEN LABELS
+% Das Section-Label \label{sec:technologiestack} bleibt absichtlich
+% unveraendert, obwohl der Titel jetzt anders lautet. Es wird aus 3.4
+% referenziert. Labels sind intern und fuer den Leser unsichtbar;
+% ein Umbenennen braechte keinen Vorteil, aber das Risiko toter
+% Verweise. Dasselbe gilt fuer subsec:react, subsec:rest-api und
+% subsec:ui-bibliotheken, die aus Kapitel 3 und 4 referenziert werden.
+%
+% Umfang: vorher ca. 3,1 Seiten, jetzt ca. 5 Seiten.
+% =====================================================================
+
+\section{Frameworks und Kommunikationsansätze im Frontend}
 \label{sec:technologiestack}
 
-\subsection{React als Frontend-Framework}
+% ---------------------------------------------------------------------
+\subsection{Aufgaben und Funktionsumfang von Frontend-Frameworks}
+\label{subsec:framework-funktionen}
+
+Der Begriff Framework wird im Frontend-Bereich uneinheitlich
+verwendet. Gemeinsam ist den gebräuchlichen Lösungen, dass sie die
+Erzeugung und Aktualisierung der Benutzeroberfläche von der direkten
+Manipulation des Document Object Model (\acfirst{DOM}) entkoppeln.
+Anstatt einzelne Änderungen am \acs{DOM} zu programmieren, wird der
+gewünschte Zustand der Oberfläche in Abhängigkeit von Daten
+beschrieben; die notwendigen Änderungen ermittelt und vollzieht das
+Framework selbst. Dieses Vorgehen wird als deklaratives Rendering
+bezeichnet und bildet die gemeinsame Grundlage aller im Folgenden
+betrachteten Ansätze \cite{comparative_spa_frameworks}.
+
+Erheblich unterscheiden sich die Lösungen jedoch im Funktionsumfang.
+Umfassende Frameworks liefern neben dem in
+Abschnitt~\ref{subsec:komponentenbasiert} beschriebenen
+Komponentenmodell auch Routing, Formularverarbeitung,
+\acs{HTTP}-Kommunikation und Werkzeuge zur Abhängigkeitsverwaltung
+als integrale Bestandteile aus und geben deren Verwendung weitgehend
+vor. Bibliotheken decken dagegen ausschließlich die Darstellungsschicht
+ab und überlassen die übrigen Aufgaben ergänzenden Paketen
+\cite{comparative_spa_frameworks}.
+
+Für die Auswahl bedeutet dieser Unterschied eine Abwägung. Ein
+umfassendes Framework gibt eine einheitliche Struktur vor und
+verringert den Entscheidungsaufwand, bindet das Projekt aber an die
+Weiterentwicklung eines einzelnen Anbieters. Eine Bibliothek lässt
+Freiheit bei der Zusammenstellung des Technologiestacks, verlagert
+die Verantwortung für dessen Stimmigkeit jedoch in das Projekt
+\cite{repolust_frontend_frameworks}. Die Aufgabenbereiche, die dabei
+gesondert zu entscheiden sind, werden in den folgenden Abschnitten
+einzeln betrachtet: die Wahl des Frameworks selbst
+(Abschnitt~\ref{subsec:react}), die Verwaltung des
+Anwendungszustands (Abschnitt~\ref{subsec:state-ansaetze}), die
+Kommunikation mit dem Backend (Abschnitt~\ref{subsec:rest-api}), die
+Gestaltung der Oberfläche (Abschnitt~\ref{subsec:ui-bibliotheken})
+sowie die Verarbeitung von Formularen
+(Abschnitt~\ref{subsec:formulare-validierung}).
+
+
+% ---------------------------------------------------------------------
+\subsection{Gegenüberstellung von React, Angular und Vue.js}
 \label{subsec:react}
 
 React ist eine JavaScript-Bibliothek zur Entwicklung
-komponentenbasierter Benutzeroberflächen, die von Meta
-entwickelt und gepflegt wird. Sie basiert auf dem Konzept
-des Virtual DOM, wodurch Änderungen im Browser gezielt und
-performant aktualisiert werden können, ohne die gesamte
-Seite neu zu laden. React hat sich als eines der
-meistgenutzten Frontend-Frameworks etabliert
+komponentenbasierter Benutzeroberflächen, die von Meta entwickelt und
+gepflegt wird. Sie basiert auf dem Konzept des Virtual \acs{DOM},
+wodurch Änderungen im Browser gezielt und performant aktualisiert
+werden können, ohne die gesamte Seite neu zu laden. React hat sich als
+eines der meistgenutzten Frontend-Frameworks etabliert
 \cite{comparative_spa_frameworks}.
 
-Im Vergleich zu Angular bietet React eine schlankere
-Architektur und größere Flexibilität bei der Strukturierung
-der Anwendung. Angular verfolgt einen stark vorgebenden Ansatz
-mit strikten Konventionen, während React lediglich die
-View-Schicht abdeckt und Entwicklern die Wahl der
-ergänzenden Bibliotheken überlässt. Vue.js liegt konzeptuell
-zwischen beiden Ansätzen, verfügt jedoch über ein kleineres
-Ökosystem und eine geringere Verbreitung in komplexen
-Unternehmensanwendungen \cite{comparative_spa_frameworks}.
+Angular verfolgt demgegenüber einen stark vorgebenden Ansatz mit
+strikten Konventionen und liefert Routing, Formularverarbeitung und
+\acs{HTTP}-Kommunikation bereits mit aus. React deckt lediglich die
+View-Schicht ab und überlässt die Wahl der ergänzenden Bibliotheken
+den Entwicklern. Vue.js liegt konzeptuell zwischen beiden Ansätzen,
+verfügt jedoch über ein kleineres Ökosystem und eine geringere
+Verbreitung in komplexen Unternehmensanwendungen
+\cite{comparative_spa_frameworks}.
 
-Im Vergleich zu Next.js bietet React als reine
-Client-Side-Rendering-Lösung Vorteile in Szenarien, bei
-denen keine serverseitige Vorausführung erforderlich ist.
-Für \textit{Bazario} als interaktionsreiche
-Multi-Rollen-Plattform ohne primären SEO-Fokus ist dieser
-Ansatz geeignet \cite{pati_react_nextjs_2025}.
+Eine systematische Gegenüberstellung der drei Lösungen anhand einer
+Nutzwertanalyse über neun Kriterien, darunter \acs{API}-Stabilität,
+Community-Unterstützung, Leistung und Testbarkeit, kommt zu dem
+Ergebnis, dass React mit 75,15 Prozent die höchste Gesamtbewertung
+erreicht, gefolgt von Vue.js mit 60,14 Prozent und Angular mit
+57,30 Prozent. React wird dabei insbesondere die Stabilität seiner
+Schnittstellen und die Breite seines Ökosystems zugerechnet, Vue.js
+eine hohe Leistung bei Schwächen in der \acs{API}-Stabilität und
+Angular eine klare Versionierungsstrategie bei eingeschränkter
+interner Abwärtskompatibilität \cite{repolust_frontend_frameworks}.
 
-\subsection{UI-Bibliotheken und Designsysteme}
-\label{subsec:ui-bibliotheken}
+Von den genannten Lösungen abzugrenzen sind Meta-Frameworks wie
+Next.js, die React um serverseitiges Rendering und um eine
+vorgegebene Projektstruktur ergänzen. Sie bieten Vorteile,
+wenn Inhalte für Suchmaschinen zugänglich sein müssen oder eine
+serverseitige Vorausführung erforderlich ist, erhöhen jedoch die
+Komplexität der Betriebsumgebung \cite{pati_react_nextjs_2025}.
+Tabelle~\ref{tab:frameworks} fasst die Gegenüberstellung zusammen.
 
-Ein konsistentes Designsystem bildet die Grundlage für eine
-einheitliche Nutzererfahrung über alle Ansichten und Rollen
-hinweg. Designsysteme definieren wiederverwendbare visuelle
-Grundelemente wie Farben, Typografie, Abstände und
-Komponentenstile und stellen sicher, dass die
-Benutzeroberfläche unabhängig vom jeweiligen Entwickler
-konsistent bleibt.
+\begin{table}[H]
+\centering
+\caption{Gegenüberstellung von React, Angular und Vue.js}
+\label{tab:frameworks}
+\small
+\begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
+\hline
+\textbf{Kriterium} & \textbf{React} & \textbf{Angular} &
+\textbf{Vue.js} \\
+\hline
+Einordnung & Bibliothek für die View-Schicht &
+Umfassendes Framework & Framework mit modularem Kern \\
+\hline
+Funktions\-umfang & Ergänzende Bibliotheken erforderlich &
+Routing, Formulare, \acs{HTTP} enthalten &
+Kernfunktionen enthalten, Erweiterungen optional \\
+\hline
+Struktur\-vorgabe & Gering, hohe Gestaltungsfreiheit &
+Hoch, strikte Konventionen & Mittel \\
+\hline
+Ökosystem & Sehr groß & Groß & Kleiner \\
+\hline
+Nutzwert nach \cite{repolust_frontend_frameworks} &
+75,15 \% & 57,30 \% & 60,14 \% \\
+\hline
+\end{tabular}
+\end{table}
 
-Tailwind CSS ist ein utility-first \acs{CSS}-Framework, das
-Entwicklern vorgefertigte \acs{CSS}-Hilfsklassen bereitstellt,
-die direkt im \acs{HTML}-Markup verwendet werden. Im Gegensatz
-zu klassischen \acs{CSS}-Frameworks wie Bootstrap definiert
-Tailwind keine fertigen Komponenten, sondern atomare
-Stilklassen wie Abstände, Farben und Typografie, die
-flexibel kombiniert werden können. Dieser Ansatz
-beschleunigt die Entwicklung erheblich, da kein separates
-\acs{CSS} geschrieben werden muss und Stile direkt im Markup
-sichtbar sind \cite{tailwindcss_docs}.
 
-shadcn/ui ist eine Sammlung zugänglicher, anpassbarer
-React-Komponenten, die auf Radix UI-Primitives basieren
-und mit Tailwind CSS gestaltet sind. Im Unterschied zu
-klassischen Komponentenbibliotheken wird shadcn/ui nicht
-als Paketabhängigkeit installiert, sondern die
-Komponentenquellcodes werden direkt in das Projekt kopiert.
-Dadurch behalten Entwickler die vollständige Kontrolle
-über den Code und können Komponenten ohne Einschränkungen
-anpassen \cite{shadcn_docs}.
+% ---------------------------------------------------------------------
+\subsection{Ansätze des State Managements}
+\label{subsec:state-ansaetze}
 
-Die Einhaltung von Barrierefreiheitsstandards, insbesondere
-der Web Content Accessibility Guidelines (\acfirst{WCAG}~2.1), ist
-dabei ein wesentliches Qualitätsmerkmal moderner
-Webanwendungen. \acs{WCAG}~2.1 legt unter anderem
-Mindestanforderungen an Kontrastverhältnisse,
-Tastaturnavigation und Screenreader-Unterstützung fest
-\cite{shah_design_system_2023}. Die Einhaltung dieser
-Standards erhöht nicht nur die Zugänglichkeit der
-Plattform für Menschen mit Behinderungen, sondern
-verbessert auch die allgemeine Usability für alle Nutzer.
+Wie in Abschnitt~\ref{subsec:state-management} dargestellt, ist
+zwischen clientseitigem Anwendungszustand und serverseitigem
+Datenbestand zu unterscheiden. Für beide stehen unterschiedliche
+Ansätze zur Verfügung.
 
-\subsection{REST-APIs und HTTP-Kommunikation}
+Für den clientseitigen Zustand bietet React mit der Context
+\acs{API} eine eingebaute Lösung, die Daten ohne Weiterreichen über
+mehrere Komponentenebenen hinweg verfügbar macht. Sie eignet sich
+für selten wechselnde Werte wie Sprache oder Farbschema, führt bei
+häufigen Aktualisierungen jedoch zu unnötigen Neu-Renderings aller
+eingebundenen Komponenten \cite{le_state_management}.
+
+Redux verfolgt einen zentralisierten Ansatz mit unidirektionalem
+Datenfluss: Zustandsänderungen werden ausschließlich über Aktionen
+ausgelöst und in Reducern verarbeitet, wodurch jede Änderung
+nachvollziehbar bleibt. Diese Nachvollziehbarkeit erkauft der Ansatz
+mit einem hohen Anteil an wiederkehrendem Strukturcode und einer
+Einbindung der Anwendung in einen Provider
+\cite{redux_docs, le_state_management}.
+
+Zustand verfolgt einen hook-basierten Ansatz, bei dem ein Store
+unmittelbar als Hook definiert und ohne Provider-Wrapper in jeder
+Komponente verwendet werden kann. Komponenten werden dabei nur dann
+neu gerendert, wenn sich derjenige Teil des Zustands ändert, den sie
+tatsächlich lesen \cite{zustand_docs}.
+
+Für den serverseitigen Datenbestand besteht die Alternative zwischen
+einer eigenen Verwaltung im clientseitigen Zustand und einer darauf
+spezialisierten Bibliothek. Bei eigener Verwaltung müssen
+Ladezustand, Fehlerfall und Aktualität für jede Anfrage einzeln
+abgebildet werden. TanStack Query übernimmt diese Aufgaben
+stattdessen zentral: Anfragen werden über einen Schlüssel
+identifiziert, die Ergebnisse zwischengespeichert und der Zustand
+jeder Verbindung den aufrufenden Komponenten einheitlich
+bereitgestellt \cite{tanstack_query_docs}.
+Tabelle~\ref{tab:state-management} stellt die Ansätze für den
+clientseitigen Zustand gegenüber.
+
+\begin{table}[H]
+\centering
+\caption{Gegenüberstellung der Ansätze für clientseitiges State
+Management}
+\label{tab:state-management}
+\small
+\begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
+\hline
+\textbf{Kriterium} & \textbf{Context \acs{API}} &
+\textbf{Redux} & \textbf{Zustand} \\
+\hline
+Herkunft & In React enthalten & Externe Bibliothek &
+Externe Bibliothek \\
+\hline
+Struktur\-code & Gering & Hoch (Aktionen, Reducer) & Gering \\
+\hline
+Provider erforderlich & Ja & Ja & Nein \\
+\hline
+Neu-Rendering & Alle eingebundenen Komponenten &
+Selektiv über Selektoren & Selektiv je gelesenem Teilzustand \\
+\hline
+Geeignet für & Selten wechselnde Werte &
+Komplexe, nachvollziehbare Zustandsflüsse &
+Überschaubare Anzahl fachlich getrennter Stores \\
+\hline
+\end{tabular}
+\end{table}
+
+
+% ---------------------------------------------------------------------
+\subsection{Kommunikationsansätze zwischen Frontend und Backend}
 \label{subsec:rest-api}
 
-Die Kommunikation zwischen Frontend und Backend erfolgt in
-\textit{Bazario} über \acs{REST}-basierte \acfirst{HTTP}-Schnittstellen.
-\acfirst{REST} ist ein Architekturstil für Webschnittstellen, der auf 
-zustandslosen Anfragen, standardisierten \acs{HTTP}-Methoden und 
-ressourcenorientierter Adressierung basiert \cite{fielding_rest}. Jede Anfrage
-enthält alle zur Verarbeitung notwendigen Informationen,
-ohne dass der Server einen clientseitigen Sitzungszustand
-speichern muss. Auf der Clientseite werden diese \acs{HTTP}-Anfragen mithilfe von Axios
-umgesetzt, einem verbreiteten, Promise-basierten \acs{HTTP}-Client für
-JavaScript-Anwendungen. Axios erlaubt es, eine zentrale Instanz
-mit einer festen Basis-Adresse und einheitlichen
-Standardeinstellungen zu konfigurieren, und stellt sogenannte
-Interceptors bereit, mit denen ausgehende Anfragen und eingehende
-Antworten an einer zentralen Stelle verarbeitet werden können,
-etwa um jeder Anfrage automatisch einen Authentifizierungstoken
-hinzuzufügen \cite{axios_docs}.
+\acfirst{REST} ist ein Architekturstil für Webschnittstellen, der auf
+zustandslosen Anfragen, standardisierten \acs{HTTP}-Methoden und
+ressourcenorientierter Adressierung basiert \cite{fielding_rest}.
+Jede Anfrage enthält alle zur Verarbeitung notwendigen Informationen,
+ohne dass der Server einen clientseitigen Sitzungszustand speichern
+muss. Die Struktur der Antwort wird dabei serverseitig festgelegt.
+Benötigt eine Ansicht Daten aus mehreren Ressourcen, sind mehrere
+Anfragen erforderlich; benötigt sie nur einen Teil der gelieferten
+Felder, werden dennoch alle übertragen.
 
-Für die Absicherung der \acs{API}-Endpunkte setzt
-\textit{Bazario} auf tokenbasierte Authentifizierung
-über Laravel Sanctum. Nach erfolgreicher Anmeldung
-erhält der Nutzer einen Bearer Token, der bei jeder
-weiteren \acs{API}-Anfrage im Authorization-Header übermittelt
-wird. Der Zugriff auf geschützte Endpunkte wird
-serverseitig anhand der Rolle des Nutzers gesteuert,
-sodass nur berechtigte Nutzer auf rollenspezifische
-Funktionen zugreifen können \cite{laravel_sanctum_docs}.
-Neben der \acs{REST}-basierten Kommunikation setzt
-\textit{Bazario} für das Echtzeit-Messaging auf
-WebSockets. WebSockets ermöglichen eine dauerhafte,
-bidirektionale Verbindung zwischen Client und Server,
-über die Nachrichten in Echtzeit übertragen werden,
-ohne dass der Client wiederholt Anfragen stellen muss.
-Die Verwaltung und Verteilung der WebSocket-Verbindungen
-erfolgt über Pusher als externen Broadcast-Dienst.
-Das Frontend abonniert die relevanten Channels über
-die JavaScript-Bibliothek \texttt{pusher-js}, sodass
-neue Nachrichten und Statusänderungen unmittelbar in
-der Benutzeroberfläche dargestellt werden
-\cite{pusher_docs}.
+GraphQL setzt an dieser Stelle an und verlagert die Bestimmung der
+Antwortstruktur auf den Client. Über einen einzelnen Endpunkt
+formuliert dieser eine Abfrage, die genau die benötigten Felder
+benennt, auch über mehrere zusammenhängende Ressourcen hinweg.
+Messungen zeigen, dass sich der Umfang der übertragenen Daten dadurch
+erheblich reduzieren lässt und der Vorteil insbesondere bei hoher
+Netzwerklatenz zum Tragen kommt. Demgegenüber weist \acs{REST}
+Vorteile bei Antwortzeit und Speicherbedarf auf, insbesondere unter
+hoher Last und bei häufig wiederholten, gleichartigen Anfragen; bei
+komplexen Abfragen steigen unter GraphQL sowohl Antwortzeiten als
+auch Fehlerraten \cite{diva_graphql_rest, lloyd_graphql_rest}.
+
+Beiden Ansätzen gemeinsam ist, dass die Kommunikation vom Client
+ausgeht. Muss der Server seinerseits Daten übermitteln, ohne dass
+eine Anfrage vorliegt, etwa bei Benachrichtigungen oder Nachrichten
+in Echtzeit, ist ein anfragebasiertes Verfahren ungeeignet.
+WebSockets stellen hierfür eine dauerhafte, bidirektionale Verbindung
+zwischen Client und Server bereit, über die beide Seiten jederzeit
+Daten senden können, ohne dass der Client wiederholt Anfragen stellen
+muss. WebSockets treten damit nicht an die Stelle von \acs{REST} oder
+GraphQL, sondern ergänzen diese für Anwendungsfälle mit
+Echtzeitanforderung.
+
+Unabhängig vom gewählten Ansatz erfolgt der Zugriff im Browser über
+einen \acs{HTTP}-Client. Axios ist ein verbreiteter,
+Promise-basierter \acs{HTTP}-Client für JavaScript-Anwendungen. Er
+erlaubt es, eine zentrale Instanz mit einer festen Basis-Adresse und
+einheitlichen Standardeinstellungen zu konfigurieren, und stellt
+sogenannte Interceptors bereit, mit denen ausgehende Anfragen und
+eingehende Antworten an einer zentralen Stelle verarbeitet werden
+können, etwa um jeder Anfrage automatisch einen
+Authentifizierungstoken hinzuzufügen \cite{axios_docs}. Die im
+Browser eingebaute Fetch-\acs{API} bietet vergleichbare
+Grundfunktionen, jedoch ohne zentrale Konfiguration und ohne
+Interceptors, sodass diese Aufgaben bei ihrer Verwendung selbst
+umgesetzt werden müssen. Tabelle~\ref{tab:kommunikation} fasst die
+Kommunikationsansätze zusammen.
+
+\begin{table}[H]
+\centering
+\caption{Gegenüberstellung der Kommunikationsansätze}
+\label{tab:kommunikation}
+\small
+\begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
+\hline
+\textbf{Kriterium} & \textbf{\acs{REST}} & \textbf{GraphQL} &
+\textbf{WebSockets} \\
+\hline
+Initiative & Client & Client & Client und Server \\
+\hline
+Endpunkte & Mehrere, ressourcen\-orientiert & Einer &
+Kanal\-basiert \\
+\hline
+Antwort\-struktur & Serverseitig festgelegt &
+Clientseitig bestimmt & Anwendungs\-spezifisch \\
+\hline
+Stärke & Antwortzeit, Zwischen\-speicherung &
+Geringes Daten\-volumen, eine Anfrage je Ansicht &
+Übertragung in Echtzeit \\
+\hline
+Schwäche & Über\-tragung nicht benötigter Felder &
+Höhere Antwortzeit bei komplexen Abfragen &
+Dauerhafte Verbindung erforderlich \\
+\hline
+\end{tabular}
+\end{table}
 
 
+% ---------------------------------------------------------------------
+\subsection{Styling-Ansätze und UI-Bibliotheken}
+\label{subsec:ui-bibliotheken}
+
+Für die Gestaltung der Oberfläche lassen sich drei Ansätze
+unterscheiden. Komponentenbasierte \acs{CSS}-Frameworks wie Bootstrap
+liefern fertig gestaltete Elemente aus, die unmittelbar verwendbar
+sind, deren Anpassung an ein eigenes Erscheinungsbild jedoch Aufwand
+erfordert. Bei \acs{CSS}-in-JS werden Stile innerhalb des
+JavaScript-Codes einer Komponente definiert, wodurch Stil und Logik
+zusammenliegen, zur Laufzeit jedoch zusätzlicher Verarbeitungsaufwand
+entsteht.
+
+Utility-first-Frameworks wie Tailwind CSS verfolgen einen dritten
+Ansatz: Sie definieren keine fertigen Komponenten, sondern atomare
+Stilklassen für Abstände, Farben und Typografie, die direkt im
+\acs{HTML}-Markup kombiniert werden. Dadurch entfällt das Schreiben
+separaten \acs{CSS}, und Stile sind unmittelbar im Markup sichtbar
+\cite{tailwindcss_docs}. Vergleichende Untersuchungen ordnen
+utility-first-Frameworks eine höhere Kontrolle und Effizienz zu,
+weisen zugleich aber auf eine steilere Lernkurve und längere
+Klassenangaben im Markup hin \cite{utility_first_comparison}.
+
+Ergänzend zu diesen Ansätzen existieren Komponentensammlungen wie
+shadcn/ui, die zugängliche, anpassbare React-Komponenten auf Basis
+von Radix UI-Primitives bereitstellen und mit Tailwind CSS gestaltet
+sind. Im Unterschied zu klassischen Komponentenbibliotheken wird
+shadcn/ui nicht als Paketabhängigkeit installiert; die
+Komponentenquellcodes werden stattdessen direkt in das Projekt
+kopiert, wodurch die vollständige Kontrolle über den Code beim
+Projekt verbleibt \cite{shadcn_docs}.
+
+
+% ---------------------------------------------------------------------
 \subsection{Formularverarbeitung und Validierung}
 \label{subsec:formulare-validierung}
 
@@ -473,6 +674,69 @@ Schemata werden zugleich statische Typen abgeleitet
 sogenannten Resolver koppeln, sodass Formulareingaben
 clientseitig gegen ein Zod-Schema validiert werden, bevor eine
 Anfrage an das Backend gestellt wird \cite{react_hook_form_docs}.
+
+
+% =====================================================================
+% HERKUNFT DES TEXTES -- bitte lesen
+%
+% AUS DEINEM BISHERIGEN TEXT UEBERNOMMEN (unveraendert oder nur
+% entschaerft, weil die Bazario-Bezuege raus mussten):
+%   - 2.3.2, Absatz 1 und 2 (React, Virtual DOM, Angular/Vue)
+%   - 2.3.4, REST-Definition nach Fielding
+%   - 2.3.4, Beschreibung von Axios und Interceptors
+%   - 2.3.5, Tailwind CSS und shadcn/ui
+%   - 2.3.6 vollstaendig, unveraendert
+%
+% VON MIR NEU FORMULIERT (Literaturbasis vorhanden, aber die
+% Formulierung und die Zuspitzung stammen nicht von dir):
+%   - 2.3.1 vollstaendig
+%   - 2.3.2, Absatz 3 (Nutzwertanalyse) und Absatz 4 (Next.js)
+%   - 2.3.3 vollstaendig
+%   - 2.3.4, Absaetze zu GraphQL und WebSockets
+%   - 2.3.5, Absatz 1 (Bootstrap und CSS-in-JS)
+%   - alle drei Tabellen
+%
+% Nach deiner Regel musst du diese Passagen selbst nachziehen. Sie
+% sind belegt, aber es sind nicht deine Saetze.
+%
+%
+% TODO (Roudy):
+%
+% 1. NEUE ABKUERZUNG: \acfirst{DOM} in 2.3.1 setzt voraus, dass DOM
+%    in Kapitel/0_Abkuerzungsverzeichnis definiert ist. Pruefen und
+%    ggf. anlegen. Im bisherigen Text kam "Virtual DOM" nur
+%    ausgeschrieben vor.
+%
+% 2. Die Prozentwerte in 2.3.2 und in der Tabelle (75,15 / 60,14 /
+%    57,30) stammen aus der Masterarbeit von Repolust. Pruefe im PDF,
+%    ob du sie so uebernehmen willst. Wichtig: Die Arbeit bewertet
+%    Eignung fuer LEGACY-Projekte anhand von Abwaertskompatibilitaet.
+%    Das ist nicht exakt dein Anwendungsfall. Entweder du erwaehnst
+%    den Untersuchungsrahmen im Satz, oder du laesst die Zahlen weg
+%    und nutzt die Arbeit nur qualitativ. Ich wuerde den Rahmen
+%    nennen, sonst ist es angreifbar.
+%
+% 3. Die GraphQL-Aussagen in 2.3.4 stuetzen sich auf zwei Quellen,
+%    deren Autor und Jahr in literatur_neu_fuer_2_3.bib noch als TODO
+%    stehen. Vor der Abgabe ergaenzen.
+%
+% 4. Zu 2.3.3: Ich habe den IJSAT-Artikel bewusst NICHT zitiert
+%    (Begruendung in literatur_neu_fuer_2_3.bib). Der Abschnitt
+%    stuetzt sich auf le_state_management, redux_docs, zustand_docs
+%    und tanstack_query_docs. Wenn dir das zu duenn erscheint, sag
+%    Bescheid.
+%
+% 5. In 2.3.5 habe ich CSS-in-JS ohne eigene Quelle beschrieben, weil
+%    ich dafuer keine belastbare gefunden habe. Der Absatz ist
+%    inhaltlich unstrittig, aber unbelegt. Entweder Quelle nachtragen
+%    oder den CSS-in-JS-Satz streichen und nur Bootstrap gegen
+%    utility-first stellen.
+%
+% 6. Pruefen, ob \acs{REST} beim ersten Vorkommen in 2.3.4 wirklich
+%    \acfirst sein muss. In deinem alten Text stand \acfirst{REST}
+%    dort. Da REST aber schon in 2.1 und 2.2 vorkommt, kann die
+%    Langform bereits verbraucht sein.
+% =====================================================================
 
 \section{Qualitätssicherung in der Frontend-Entwicklung}
 \label{sec:qualitaetssicherung}
