@@ -236,6 +236,23 @@ Funktionen über das Backend-Dashboard \\
 % der Alternativen von Abschnitt 2.3.
 % =====================================================================
 
+% =====================================================================
+% ERSATZ fuer Abschnitt 3.4 in Kapitel/3_Ist_Analyse.tex
+% Kompletten bisherigen Abschnitt "Technologieauswahl und Begruendung"
+% durch den folgenden Text ersetzen.
+%
+% VERSION 3 -- Stand nach dem Umbau von 2.2 und 2.3.
+% Der Flieszttext ist unveraendert gegenueber Version 2. Geaendert
+% haben sich nur die Hinweise am Dateiende: Die Spalte "Betrachtete
+% Alternative" ist inzwischen durch den neuen Abschnitt 2.3 gedeckt.
+%
+% Begruendung nur in der Tabelle, nicht doppelt in Text und Tabelle.
+% Uebrig bleibt der Kriterien-Absatz, weil eine Tabelle die
+% Auswahlkriterien selbst nicht tragen kann.
+%
+% Umfang: vorher ca. 3 Seiten, jetzt ca. 1,2 Seiten.
+% =====================================================================
+
 \section{Technologieauswahl und Begründung}
 \label{sec:technologieauswahl}
 
@@ -249,38 +266,21 @@ Performance, Sicherheit, Responsivität und Barrierefreiheit
 Kompatibilität mit dem bestehenden Laravel-Backend sowie der
 Einarbeitungsaufwand im Rahmen einer Bachelorarbeit.
 
-Die eingesetzten Technologien lassen sich anhand dieser Kriterien
-in zwei Gruppen einteilen. Durch das Backend vorgegeben sind
-Laravel Sanctum für die tokenbasierte Authentifizierung, Pusher
-für die Echtzeitkommunikation sowie Stripe für die
-Zahlungsabwicklung; für diese drei bestand keine eigenständige
+Anhand dieser Kriterien lassen sich die eingesetzten Technologien
+in zwei Gruppen einteilen. Laravel Sanctum, Pusher und Stripe sind
+durch das Backend vorgegeben; hier bestand keine eigenständige
 Auswahlentscheidung, da das Frontend lediglich die clientseitige
 Anbindung übernimmt. Im Fall von Stripe erfolgt die
-Zahlungsabwicklung vollständig serverseitig: Das Frontend leitet
-den Nutzer auf eine vom Backend bereitgestellte,
-\acs{PCI-DSS}-konforme Zahlungsseite weiter und verarbeitet
-anschließend die Rückleitung auf die Erfolgs- beziehungsweise
-Abbruchseite. Eine Einbindung von Stripe Elements oder
-React Stripe.js ist für den aktuellen Funktionsumfang daher nicht
-erforderlich \cite{stripe_security_guide}.
-
-Frei gewählt wurden dagegen React als Frontend-Framework, Zustand
-für den clientseitigen Anwendungszustand, TanStack Query für den
-serverseitigen Datenbestand, React Router für das clientseitige
-Routing, Axios als \acs{HTTP}-Client, React Hook Form in Verbindung
-mit Zod für Formularverarbeitung und Validierung, Tailwind CSS
-mit shadcn/ui für die Gestaltung sowie Vite als Build-Tool. Die
-Gegenüberstellung der jeweils in Betracht kommenden Alternativen
-erfolgt in Abschnitt~\ref{sec:technologiestack}; die daraus
-abgeleitete Entscheidung fasst
-Tabelle~\ref{tab:technologiestack} zusammen. Für Axios war dabei
-kein einzelner Grund ausschlaggebend, da die Bibliothek die im
-Ökosystem am längsten bewährte Lösung für diesen Zweck darstellt
-und nennenswerte Alternativen kaum vorhanden sind
-\cite{axios_docs}. Die Zod-Schemata stimmen bewusst mit den
-Validierungsregeln des Backends überein, sodass clientseitige und
-serverseitige Prüfung denselben Regeln folgen
-\cite{react_hook_form_docs, zod_docs}.
+Zahlungsabwicklung vollständig serverseitig, sodass eine Einbindung
+von Stripe Elements oder React Stripe.js für den aktuellen
+Funktionsumfang nicht erforderlich ist
+\cite{stripe_security_guide}. Alle übrigen Technologien wurden frei
+gewählt; die Gegenüberstellung der jeweils betrachteten
+Alternativen erfolgt in Abschnitt~\ref{sec:technologiestack}. Eine
+Ausnahme bildet Axios, für das kein einzelner Grund ausschlaggebend
+war, da nennenswerte Alternativen kaum vorhanden sind
+\cite{axios_docs}. Tabelle~\ref{tab:technologiestack} fasst die
+getroffene Auswahl zusammen.
 
 \begin{table}[H]
 \centering
@@ -348,8 +348,70 @@ Weiterleitung auf \acs{PCI-DSS}-konforme Zahlungsseite
 \end{tabular}
 \end{table}
 
+
 % =====================================================================
-% TODO (Roudy) -- bitte selbst pruefen bzw. umformulieren:
+% OPTIONALE ERGAENZUNG -- SPA-ENTSCHEIDUNG
+%
+% Beim Umbau von 2.2.1 ist der Bazario-Schlussabsatz entfallen
+% ("Fuer interaktionsreiche Plattformen wie Bazario ... keinen
+% primaeren SEO-Fokus"). Damit steht die Entscheidung fuer eine
+% Single-Page Application nirgends mehr ausdruecklich.
+%
+% Das erste Kriterium oben nennt sie zwar implizit. Wenn du sie
+% deutlich haben willst, fuege nach dem ersten Absatz ein:
+%
+%   Aus dem ersten Kriterium folgt unmittelbar die Entscheidung für
+%   eine Single-Page Application. Da die Inhalte der Plattform
+%   überwiegend hinter einer Anmeldung liegen, fällt der in
+%   Abschnitt~\ref{subsec:spa-mpa} beschriebene Nachteil bei der
+%   Auffindbarkeit durch Suchmaschinen nicht ins Gewicht.
+%
+% Kostet zwei Zeilen. Ich wuerde es einbauen, weil die
+% SPA-Entscheidung sonst als einzige unbegruendet bliebe.
+% =====================================================================
+
+
+% =====================================================================
+% WAS SICH GEGENUEBER DEM ALTEN 3.4 GEAENDERT HAT
+%
+% GESTRICHEN, weil doppelt:
+%   - Je ein eigener Absatz fuer Sanctum, Pusher und Stripe. Bei
+%     allen dreien gilt dieselbe Aussage, jetzt in einem Satz.
+%   - Die Aufzaehlung aller frei gewaehlten Technologien. War die
+%     erste Tabellenspalte in Satzform.
+%   - Der Zod-Absatz. Steht fast wortgleich in 5.5.1, im Absatz nach
+%     dem Listing time-off-form-schema.
+%   - Alle Einzelbegruendungen im Flieszttext. Stehen in der Tabelle.
+%
+% NEU:
+%   - Kriterien-Absatz. Das ist die eigentliche Begruendung, die eine
+%     Tabelle nicht tragen kann.
+%   - Spalte "Betrachtete Alternative". Stellt den Bogen zu 2.3 her.
+%   - \cite{vite_docs}, war vorher vergessen. Ausserdem stand dort
+%     "bereitstellt ." mit Leerzeichen vor dem Punkt.
+%
+%
+% STATUS DER SPALTE "BETRACHTETE ALTERNATIVE"
+%
+% In Version 1 und 2 hatte ich hier gewarnt, dass drei Eintraege
+% unbelegt sind. Das hat sich mit dem neuen Abschnitt 2.3 erledigt.
+% Alle genannten Alternativen werden dort jetzt tatsaechlich
+% gegenuebergestellt:
+%
+%   React        -> Angular, Vue.js              in 2.3.2
+%   Zustand      -> Redux, Context API           in 2.3.3
+%   TanStack Q.  -> manuelle Cache-Verwaltung    in 2.3.3
+%   Axios        -> Fetch API                    in 2.3.5
+%   Tailwind     -> Bootstrap, CSS-in-JS         in 2.3.6
+%   shadcn/ui    -> klassische Komponentenbibl.  in 2.3.6
+%
+% Bei React Router, React Hook Form, Zod und Vite steht bewusst
+% "---", weil 2.3 dort keine Alternative gegenueberstellt. Das ist
+% konsistent. Falls du spaeter doch eine ergaenzt, muessen beide
+% Stellen zugleich geaendert werden.
+%
+%
+% TODO (Roudy):
 %
 % 1. Die vier Auswahlkriterien im ersten Absatz sind meine
 %    Zusammenfassung aus Abschnitt 3.2. Sie stammen nicht aus einem
@@ -357,25 +419,14 @@ Weiterleitung auf \acs{PCI-DSS}-konforme Zahlungsseite
 %    waren, insbesondere "Einarbeitungsaufwand im Rahmen einer
 %    Bachelorarbeit".
 %
-% 2. Spalte "Betrachtete Alternative": Folgende Eintraege sind von
-%    mir ergaenzt und in deinem bisherigen Text nicht belegt:
-%      - TanStack Query -> "manuelle Cache-Verwaltung"
-%      - Axios -> "Fetch API"
-%      - shadcn/ui -> "klassische Komponentenbibliothek"
-%    Belegt sind dagegen: React -> Angular/Vue und
-%    Tailwind -> Bootstrap (beide stehen so in deinem Kapitel 2).
-%    Zustand -> Redux/Context ergibt sich aus dem geplanten
-%    Abschnitt 2.3.3.
-%    Bei React Router, React Hook Form, Zod und Vite habe ich
-%    bewusst "---" gesetzt, statt Alternativen zu erfinden.
-%    Jede Alternative, die hier stehen bleibt, muss in Abschnitt 2.3
-%    auch tatsaechlich gegenuebergestellt werden.
+% 2. Entscheiden, ob die optionale SPA-Ergaenzung oben rein soll.
 %
-% 3. Der Verweis \ref{sec:technologiestack} zeigt auf den bisherigen
-%    Abschnitt 2.3. Nach dem Umbau von 2.3 ggf. auf die neuen
-%    Unterabschnitte praezisieren.
+% 3. Zeile "Zustand": In der Begruendung steht "kein Boilerplate".
+%    Falls du in 2.3.3 den Halbsatz zu Redux Toolkit ergaenzt
+%    (siehe Chat), formuliere hier entsprechend vorsichtiger,
+%    etwa "geringer Anteil an Strukturcode".
 %
-% 4. \cite{vite_docs} war im alten Text vergessen und ist hier
-%    ergaenzt. Ausserdem war dort "bereitstellt ." mit Leerzeichen
-%    vor dem Punkt.
+% 4. Der Verweis \ref{sec:technologiestack} zeigt auf Abschnitt 2.3.
+%    Das Label ist trotz des neuen Titels unveraendert geblieben,
+%    der Verweis stimmt also.
 % =====================================================================

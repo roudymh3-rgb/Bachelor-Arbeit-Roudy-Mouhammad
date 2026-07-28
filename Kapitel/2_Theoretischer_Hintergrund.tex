@@ -179,29 +179,59 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \end{tabular}
 \end{table}
 
+% =====================================================================
+% ABSCHNITT 2.2 -- VOLLSTAENDIG
+% Ersetzt in Kapitel/2_Theoretischer_Hintergrund.tex den gesamten
+% Abschnitt "Frontend-Architektur fuer webbasierte Anwendungen",
+% also von \section bis unmittelbar vor \section{Frameworks ...}
+%
+% NEUE AUFTEILUNG
+%   2.2 = was unabhaengig von jeder Technologiewahl gilt
+%   2.3 = alles, wo es eine Auswahl gibt (Konzept UND Optionen)
+%
+% Dadurch verschwinden die Doppeltitel. Frueher:
+%   2.2.3 State Management  /  2.3.3 Ansaetze des State Managements
+%   2.2.4 Routing           /  2.3.4 Routing-Bibliotheken
+% Jetzt steht jedes Thema nur noch an einer Stelle.
+%
+% 2.2 hat damit drei statt vier Unterabschnitte.
+% Umfang: vorher ca. 3,5 Seiten, jetzt ca. 2,5 Seiten.
+% =====================================================================
+
 \section{Frontend-Architektur für webbasierte Anwendungen}
 \label{sec:frontend-architektur}
 
+% ---------------------------------------------------------------------
 \subsection{Single-Page Applications vs.\ Multi-Page Applications}
 \label{subsec:spa-mpa}
 
 Webbasierte Anwendungen lassen sich grundlegend in zwei
 Architekturansätze unterteilen: Multi-Page Applications
-(\acfirst{MPA}) und Single-Page Applications (\acfirst{SPA}). Bei \acs{MPA}s wird bei jeder
-Nutzerinteraktion eine vollständige \acs{HTML}-Seite vom Server geladen
-und im Browser neu gerendert. Dieser Ansatz führt bei komplexen
-Anwendungen zu spürbaren Ladezeiten und einer fragmentierten
-Nutzererfahrung \cite{bhalla_spa_architecture}.
+(\acfirst{MPA}) und Single-Page Applications (\acfirst{SPA}). Bei
+\acs{MPA}s wird bei jeder Nutzerinteraktion eine vollständige
+\acs{HTML}-Seite vom Server geladen und im Browser neu gerendert.
+Dieser Ansatz führt bei komplexen Anwendungen zu spürbaren Ladezeiten
+und einer fragmentierten Nutzererfahrung
+\cite{bhalla_spa_architecture}.
 
 \acs{SPA}s hingegen laden die Anwendung einmalig und aktualisieren
 anschließend nur die jeweils relevanten Teile der Oberfläche.
 Die Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
-\cite{jonathan_react_spa}. Tabelle~\ref{tab:spa-mpa} stellt
+\cite{jonathan_react_spa}.
+
+Der wesentliche Nachteil der \acs{SPA}-Architektur betrifft die
+Auffindbarkeit durch Suchmaschinen. Da die Inhalte erst im Browser
+erzeugt werden, steht beim ersten Abruf zunächst nur ein leeres
+Grundgerüst zur Verfügung. Anwendungen, deren Inhalte über
+Suchmaschinen gefunden werden sollen, benötigen daher ergänzend
+serverseitiges Rendering. Für Anwendungen hinter einer Anmeldung,
+deren Inhalte ohnehin nicht öffentlich indexiert werden,
+entfällt dieser Nachteil weitgehend
+\cite{bhalla_spa_architecture}. Tabelle~\ref{tab:spa-mpa} stellt
 beide Ansätze vergleichend gegenüber.
 
-
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \caption{Vergleich SPA und MPA}
 \label{tab:spa-mpa}
@@ -225,15 +255,10 @@ Inhaltsreiche Webseiten \\
 \end{tabular}
 \end{table}
 
-Für interaktionsreiche Plattformen wie \textit{Bazario}, bei
-denen verschiedene Rollen unterschiedliche Ansichten und Workflows
-erfordern, bietet die \acs{SPA}-Architektur entscheidende Vorteile
-hinsichtlich Performance und Benutzererfahrung. Da
-\textit{Bazario} keinen primären SEO-Fokus verfolgt, wiegen
-die Vorteile der \acs{SPA}-Architektur die Einschränkungen
-hinsichtlich Suchmaschinenoptimierung deutlich auf.
 
-\subsection{Komponentenbasierte Entwicklung}
+% ---------------------------------------------------------------------
+\subsection{Komponentenbasierte Entwicklung und Trennung der
+Verantwortlichkeiten}
 \label{subsec:komponentenbasiert}
 
 Ein zentrales Prinzip moderner Frontend-Entwicklung ist die
@@ -245,115 +270,155 @@ Wiederverwendbarkeit von Code, da Komponenten unabhängig
 voneinander entwickelt, getestet und ausgetauscht werden können
 \cite{ijlrp_react_components}.
 
-In der Praxis unterscheidet man zwischen Presentational Components, 
-die ausschließlich für die Darstellung zuständig sind, und Container 
-Components, die Geschäftslogik und Datenzugriff kapseln 
-\cite{abramov_presentational_container}. Diese Trennung hält Komponenten überschaubar und
-erleichtert das Testen einzelner Einheiten. Die Qualität
-komponentenbasierter Anwendungen hängt wesentlich von einer
-sauberen Trennung der Verantwortlichkeiten ab. Häufige
-Entwurfsprobleme, sogenannte Code Smells, wie zu große
-Komponenten oder starke Kopplungen, beeinträchtigen die
-Lesbarkeit und Wartbarkeit des Codes
-\cite{ferreira_react_smells}.
+In der Praxis unterscheidet man zwischen Presentational Components,
+die ausschließlich für die Darstellung zuständig sind, und Container
+Components, die Geschäftslogik und Datenzugriff kapseln
+\cite{abramov_presentational_container}. Diese Trennung hält
+Komponenten überschaubar und erleichtert das Testen einzelner
+Einheiten. Die Qualität komponentenbasierter Anwendungen hängt
+wesentlich von einer sauberen Trennung der Verantwortlichkeiten ab.
+Häufige Entwurfsprobleme, sogenannte Code Smells, wie zu große
+Komponenten oder starke Kopplungen, beeinträchtigen die Lesbarkeit
+und Wartbarkeit des Codes \cite{ferreira_react_smells}.
 
-\subsection{State Management}
-\label{subsec:state-management}
-
-In komplexen \acs{SPA}s mit mehreren Nutzerrollen und
-funktionsübergreifenden Daten, wie Authentifizierungsstatus,
-Nutzerrolle und Warenkorbinhalt, reicht lokaler
-Komponentenzustand häufig nicht aus. Globales State
-Management ermöglicht es, Anwendungszustände zentral zu
-verwalten und konsistent über alle Komponenten hinweg
-verfügbar zu machen \cite{bhalla_spa_architecture}.
-
-Zustand ist eine schlanke, hook-basierte
-State-Management-Bibliothek für React-Anwendungen. Ein Store
-wird direkt als Hook definiert und kann in jeder Komponente
-ohne zusätzliche Provider-Wrapper verwendet werden. Dieses
-Konzept reduziert die Komplexität der Zustandsverwaltung
-erheblich und ermöglicht eine schnelle sowie wartbare
-Implementierung \cite{zustand_docs}. Für \textit{Bazario} verwaltet Zustand zentrale Zustände wie den
-Authentifizierungsstatus, die Session des Nutzers einschließlich
-der zugewiesenen Rollen sowie den Warenkorbinhalt. Diese Zustände werden dabei nicht in einem
-einzigen, gemeinsamen Store zusammengefasst, sondern nach dem
-Prinzip der Separation of Concerns auf mehrere, fachlich
-abgegrenzte Stores verteilt, von denen jeder ausschließlich
-für einen bestimmten Bereich der Anwendung zuständig ist. Das
-Prinzip geht auf Dijkstra zurück, der es als Technik zur
-Beherrschung von Komplexität beschreibt, bei der verschiedene
+Diesem Vorgehen liegt das allgemeinere Prinzip der Separation of
+Concerns zugrunde. Es geht auf Dijkstra zurück, der es als Technik
+zur Beherrschung von Komplexität beschreibt, bei der verschiedene
 Aspekte eines Systems bewusst getrennt und jeweils in sich
 konsistent betrachtet werden \cite{dijkstra_separation_of_concerns}.
-In modernen React-Anwendungen wird dieses Prinzip unter anderem
-auf die Aufteilung des globalen Zustands in fachlich
-abgegrenzte, unabhängig wartbare Einheiten übertragen
-\cite{cheesecakelabs_react_soc}.
-Neben dem clientseitigen Anwendungszustand, der Informationen
-wie die aktive Nutzerrolle oder den Warenkorbinhalt umfasst, muss
-eine \acs{SPA} auch den serverseitigen Datenbestand verwalten, also
-Daten, die über eine Programmierschnittstelle (\acfirst{API}) vom
-Backend abgerufen werden. Diese
-beiden Arten von Zustand unterscheiden sich grundlegend: Während
-clientseitiger Zustand vollständig im Browser entsteht und
-kontrolliert wird, ist serverseitiger Zustand lediglich eine
-zwischengespeicherte Abbildung von Daten, deren eigentliche Quelle
-auf dem Server liegt und die daher veralten kann. TanStack Query
-ist eine Bibliothek, die auf die Verwaltung dieses serverseitigen
-Zustands spezialisiert ist. Sie übernimmt das Abrufen,
-Zwischenspeichern und Synchronisieren von \acs{API}-Daten und stellt den
-aufrufenden Komponenten zugleich den Zustand jeder Anfrage bereit,
-etwa ob diese noch geladen wird, fehlgeschlagen ist oder
-erfolgreich Daten geliefert hat \cite{tanstack_query_docs}. Für
-\textit{Bazario} ergibt sich damit eine klare Aufteilung: Der
-clientseitige Anwendungszustand und der serverseitige
-Datenbestand werden durch getrennte, jeweils spezialisierte
-Mechanismen verwaltet, während TanStack Query durchgängig für
-Letzteren zuständig ist.
+In modernen React-Anwendungen wird dieses Prinzip nicht nur auf die
+Aufteilung der Oberfläche in Komponenten angewendet, sondern
+ebenso auf die Gliederung des Anwendungszustands und der
+Verzeichnisstruktur in fachlich abgegrenzte, unabhängig wartbare
+Einheiten \cite{cheesecakelabs_react_soc}.
 
-\subsection{Routing in Single-Page Applications}
-\label{subsec:routing}
 
-Da \acs{SPA}s keine serverseitigen Seitennavigationen durchführen,
-übernimmt clientseitiges Routing die Aufgabe, verschiedene
-Ansichten der Anwendung anhand der \acfirst{URL} darzustellen. React
-Router ist die etablierte Lösung für Routing in
-React-Anwendungen und ermöglicht die deklarative Definition
-von Routen sowie die Navigation zwischen Ansichten ohne
-Seitenneuladen \cite{reactrouter_docs}.
+% ---------------------------------------------------------------------
+\subsection{Rollenbasierte Zugriffskontrolle}
+\label{subsec:rbac}
 
-Für Multi-Rollen-Plattformen wie \textit{Bazario} ist
-rollenbasierter Seitenschutz ein wesentliches
-Sicherheitsmerkmal. Bestimmte Routen werden dabei nur für
-Nutzer mit den entsprechenden Berechtigungen zugänglich
-gemacht. Dieses Konzept basiert auf dem Prinzip der
-rollenbasierten Zugriffskontrolle (\acfirst{RBAC}), das den Zugriff
-auf Ressourcen und Funktionen abhängig von der zugewiesenen
-Rolle eines Nutzers steuert \cite{ferraiolo_rbac_arxiv}.
-In der Praxis werden solche geschützten Routen als 
-Wrapper-Komponenten implementiert, die den 
-Authentifizierungsstatus und die Rolle des Nutzers prüfen, 
-bevor die eigentliche Ansicht gerendert wird 
-\cite{wieruch_protected_routes}.
+Anwendungen, in denen unterschiedliche Nutzergruppen auf
+unterschiedliche Funktionsbereiche zugreifen, benötigen ein Modell
+zur Steuerung dieser Zugriffe. Die rollenbasierte Zugriffskontrolle
+(\acfirst{RBAC}) steuert den Zugriff auf Ressourcen und Funktionen
+nicht anhand einzelner Nutzer, sondern anhand der ihnen
+zugewiesenen Rollen. Berechtigungen werden dabei zu Rollen
+gebündelt und Nutzer diesen Rollen zugeordnet, wodurch sich
+Berechtigungen zentral ändern lassen, ohne jeden Nutzer einzeln
+anzupassen \cite{ferraiolo_rbac_arxiv}. Ein Nutzer kann mehrere
+Rollen gleichzeitig besitzen; die ihm zustehenden Berechtigungen
+ergeben sich dann aus deren Vereinigung.
+
+Für das Frontend hat dieses Modell zwei Auswirkungen. Zum einen
+richten sich die angezeigten Navigationselemente und
+Funktionsbereiche nach den Rollen des angemeldeten Nutzers, sodass
+jede Rolle nur die für sie vorgesehenen Bereiche vorfindet. Zum
+anderen müssen einzelne Ansichten vor dem Aufruf durch nicht
+berechtigte Nutzer geschützt werden.
+
+Dabei ist zu beachten, dass ein clientseitig umgesetzter
+Zugriffsschutz für sich genommen keine Sicherheitsmaßnahme
+darstellt. Da der gesamte Anwendungscode im Browser des Nutzers
+ausgeführt wird, lässt sich eine dort implementierte Prüfung
+umgehen. Sie dient der Benutzerführung, indem sie verhindert, dass
+Nutzer auf Ansichten gelangen, die für sie ohne Funktion wären. Die
+verbindliche Durchsetzung der Zugriffsrechte muss serverseitig an
+der Schnittstelle erfolgen \cite{ferraiolo_rbac_arxiv}.
 
 
 % =====================================================================
-% ERSATZ fuer Abschnitt 2.3 in Kapitel/2_Theoretischer_Hintergrund.tex
+% WAS SICH GEAENDERT HAT
 %
-% Der bisherige Abschnitt "Technologiestack" wird vollstaendig durch
-% den folgenden ersetzt. Kein "Fuer Bazario" mehr, keine
-% Auswahlentscheidung. Nur Funktionsumfang und Gegenueberstellung.
-% Die Entscheidung selbst steht in 3.4.
+% ENTFERNT AUS 2.2.1
+%   Der Schlussabsatz "Fuer interaktionsreiche Plattformen wie
+%   Bazario ... Da Bazario keinen primaeren SEO-Fokus verfolgt ..."
+%   Ersetzt durch einen neutralen Absatz zum SEO-Nachteil von SPAs.
+%   Die Entscheidung fuer eine SPA gehoert nach 3.4 (siehe TODO 1).
 %
-% HINWEIS ZU DEN LABELS
-% Das Section-Label \label{sec:technologiestack} bleibt absichtlich
-% unveraendert, obwohl der Titel jetzt anders lautet. Es wird aus 3.4
-% referenziert. Labels sind intern und fuer den Leser unsichtbar;
-% ein Umbenennen braechte keinen Vorteil, aber das Risiko toter
-% Verweise. Dasselbe gilt fuer subsec:react, subsec:rest-api und
-% subsec:ui-bibliotheken, die aus Kapitel 3 und 4 referenziert werden.
+% VERSCHOBEN NACH 2.2.2
+%   Separation of Concerns mit Dijkstra und cheesecakelabs, kam
+%   frueher aus 2.2.3. Passt hier besser, weil dein bestehender Text
+%   in 2.2.2 ohnehin von "sauberer Trennung der Verantwortlichkeiten"
+%   spricht.
 %
-% Umfang: vorher ca. 3,1 Seiten, jetzt ca. 5 Seiten.
+% KOMPLETT NACH 2.3 VERSCHOBEN
+%   Das gesamte alte 2.2.3 (State Management) -> jetzt 2.3.3
+%   Das clientseitige Routing aus 2.2.4        -> jetzt 2.3.4
+%
+% NEU
+%   2.2.3 Rollenbasierte Zugriffskontrolle. Der RBAC-Teil des alten
+%   2.2.4, herausgeloest und eigenstaendig ausgebaut.
+%
+%
+% ====================== WICHTIG: LABELS ==============================
+%
+% Ein Label hat sich GEAENDERT:
+%   subsec:routing  ->  subsec:rbac
+%
+% In Kapitel 4, Abschnitt 4.1.2 (Routing-Konzept) steht:
+%
+%   "Dieses Konzept folgt dem in Abschnitt~\ref{subsec:routing}
+%    vorgestellten Prinzip der rollenbasierten Zugriffskontrolle."
+%
+% Dort muss \ref{subsec:routing} durch \ref{subsec:rbac} ersetzt
+% werden. Der Name subsec:routing wird in 2.3.4 wiederverwendet,
+% wo es dann tatsaechlich um Routing geht. Ohne diese Aenderung
+% zeigt der Verweis auf den falschen Abschnitt, OHNE dass LaTeX
+% eine Warnung ausgibt.
+%
+% Bitte im ganzen Projekt nach \ref{subsec:routing} suchen und
+% pruefen, ob weitere Stellen betroffen sind.
+%
+% Unveraendert bleiben: subsec:spa-mpa, subsec:komponentenbasiert.
+%
+%
+% TODO (Roudy):
+%
+% 1. Die SPA-Entscheidung steht jetzt nirgends mehr explizit. In 3.4
+%    nennt das erste Kriterium bereits "die Eignung fuer eine
+%    interaktionsreiche Single-Page Application mit mehreren
+%    Nutzerrollen". Wenn du es deutlicher willst, ergaenze in 3.4
+%    nach dem Kriterien-Absatz einen Satz wie:
+%
+%    "Aus dem ersten Kriterium folgt unmittelbar die Entscheidung
+%     fuer eine Single-Page Application; da die Inhalte der Plattform
+%     ueberwiegend hinter einer Anmeldung liegen, faellt der in
+%     Abschnitt~\ref{subsec:spa-mpa} beschriebene Nachteil bei der
+%     Auffindbarkeit durch Suchmaschinen nicht ins Gewicht."
+%
+%    Ich habe ihn nicht eingebaut, weil du 3.4 bewusst kurz haelst.
+%    Deine Entscheidung.
+%
+% 2. Der dritte Absatz in 2.2.1 (SEO-Nachteil, neutral formuliert)
+%    und der dritte Absatz in 2.2.3 (clientseitiger Schutz ist keine
+%    Sicherheitsmassnahme) sind von mir. Fachlich unstrittig, aber
+%    nicht deine Saetze, und ferraiolo_rbac_arxiv belegt den zweiten
+%    nur mittelbar. Bitte selbst nachziehen.
+%
+% 3. Absatz 1 von 2.2.3 (Buendelung von Berechtigungen zu Rollen,
+%    Mehrfachrollen) ist von mir aus ferraiolo_rbac_arxiv
+%    zusammengefasst. Pruefe am Papier, ob die Darstellung passt.
+%
+% 4. Pruefen, ob \acfirst{RBAC} jetzt an der richtigen Stelle steht.
+%    Frueher kam die Langform in 2.2.4 vor, jetzt in 2.2.3. Da
+%    2.2.3 frueher im Text liegt als das alte 2.2.4, sollte es
+%    passen, aber einmal ins PDF schauen.
+% =====================================================================
+
+% =====================================================================
+% ABSCHNITT 2.3 -- VOLLSTAENDIG
+% Ersetzt in Kapitel/2_Theoretischer_Hintergrund.tex den gesamten
+% bisherigen Abschnitt "Technologiestack".
+%
+% Jeder Unterabschnitt enthaelt jetzt Konzept UND Optionen zusammen.
+% Dadurch gibt es keine Doppeltitel mit 2.2 mehr.
+%
+% Keine Auswahlentscheidung, kein "Fuer Bazario". Die Entscheidung
+% steht ausschliesslich in 3.4.
+%
+% Umfang: vorher ca. 3,1 Seiten, jetzt ca. 6 Seiten.
+% Zusammen mit 2.2 (2,5 statt 3,5) betraegt der Zuwachs fuer 2.2+2.3
+% insgesamt ca. +1,9 Seiten.
 % =====================================================================
 
 \section{Frameworks und Kommunikationsansätze im Frontend}
@@ -380,9 +445,9 @@ Abschnitt~\ref{subsec:komponentenbasiert} beschriebenen
 Komponentenmodell auch Routing, Formularverarbeitung,
 \acs{HTTP}-Kommunikation und Werkzeuge zur Abhängigkeitsverwaltung
 als integrale Bestandteile aus und geben deren Verwendung weitgehend
-vor. Bibliotheken decken dagegen ausschließlich die Darstellungsschicht
-ab und überlassen die übrigen Aufgaben ergänzenden Paketen
-\cite{comparative_spa_frameworks}.
+vor. Bibliotheken decken dagegen ausschließlich die
+Darstellungsschicht ab und überlassen die übrigen Aufgaben
+ergänzenden Paketen \cite{comparative_spa_frameworks}.
 
 Für die Auswahl bedeutet dieser Unterschied eine Abwägung. Ein
 umfassendes Framework gibt eine einheitliche Struktur vor und
@@ -390,28 +455,26 @@ verringert den Entscheidungsaufwand, bindet das Projekt aber an die
 Weiterentwicklung eines einzelnen Anbieters. Eine Bibliothek lässt
 Freiheit bei der Zusammenstellung des Technologiestacks, verlagert
 die Verantwortung für dessen Stimmigkeit jedoch in das Projekt
-\cite{repolust_frontend_frameworks}. Die Aufgabenbereiche, die dabei
-gesondert zu entscheiden sind, werden in den folgenden Abschnitten
-einzeln betrachtet: die Wahl des Frameworks selbst
-(Abschnitt~\ref{subsec:react}), die Verwaltung des
-Anwendungszustands (Abschnitt~\ref{subsec:state-ansaetze}), die
-Kommunikation mit dem Backend (Abschnitt~\ref{subsec:rest-api}), die
-Gestaltung der Oberfläche (Abschnitt~\ref{subsec:ui-bibliotheken})
-sowie die Verarbeitung von Formularen
-(Abschnitt~\ref{subsec:formulare-validierung}).
+\cite{repolust_frontend_frameworks}. Fällt die Wahl auf eine
+Bibliothek, sind die übrigen Aufgabenbereiche einzeln zu
+entscheiden. Sie werden in den folgenden Abschnitten in dieser
+Reihenfolge behandelt: die Wahl des Frameworks selbst, die
+Verwaltung des Anwendungszustands, das clientseitige Routing, die
+Kommunikation mit dem Backend, die Gestaltung der Oberfläche sowie
+die Verarbeitung von Formularen.
 
 
 % ---------------------------------------------------------------------
-\subsection{Gegenüberstellung von React, Angular und Vue.js}
+\subsection{React, Angular und Vue.js im Vergleich}
 \label{subsec:react}
 
 React ist eine JavaScript-Bibliothek zur Entwicklung
-komponentenbasierter Benutzeroberflächen, die von Meta entwickelt und
-gepflegt wird. Sie basiert auf dem Konzept des Virtual \acs{DOM},
-wodurch Änderungen im Browser gezielt und performant aktualisiert
-werden können, ohne die gesamte Seite neu zu laden. React hat sich als
-eines der meistgenutzten Frontend-Frameworks etabliert
-\cite{comparative_spa_frameworks}.
+komponentenbasierter Benutzeroberflächen, die von Meta entwickelt
+und gepflegt wird. Sie basiert auf dem Konzept des Virtual
+\acs{DOM}, wodurch Änderungen im Browser gezielt und performant
+aktualisiert werden können, ohne die gesamte Seite neu zu laden.
+React hat sich als eines der meistgenutzten Frontend-Frameworks
+etabliert \cite{comparative_spa_frameworks}.
 
 Angular verfolgt demgegenüber einen stark vorgebenden Ansatz mit
 strikten Konventionen und liefert Routing, Formularverarbeitung und
@@ -427,18 +490,19 @@ Nutzwertanalyse über neun Kriterien, darunter \acs{API}-Stabilität,
 Community-Unterstützung, Leistung und Testbarkeit, kommt zu dem
 Ergebnis, dass React mit 75,15 Prozent die höchste Gesamtbewertung
 erreicht, gefolgt von Vue.js mit 60,14 Prozent und Angular mit
-57,30 Prozent. React wird dabei insbesondere die Stabilität seiner
-Schnittstellen und die Breite seines Ökosystems zugerechnet, Vue.js
-eine hohe Leistung bei Schwächen in der \acs{API}-Stabilität und
-Angular eine klare Versionierungsstrategie bei eingeschränkter
-interner Abwärtskompatibilität \cite{repolust_frontend_frameworks}.
+57,30 Prozent. Die Untersuchung bewertet dabei ausdrücklich die
+Eignung für Legacy-Projekte anhand von Kriterien der
+Abwärtskompatibilität; die zugrunde liegenden Einzelkriterien wie
+Stabilität der Schnittstellen und Breite des Ökosystems sind jedoch
+auch für Neuentwicklungen aussagekräftig
+\cite{repolust_frontend_frameworks}.
 
 Von den genannten Lösungen abzugrenzen sind Meta-Frameworks wie
 Next.js, die React um serverseitiges Rendering und um eine
-vorgegebene Projektstruktur ergänzen. Sie bieten Vorteile,
-wenn Inhalte für Suchmaschinen zugänglich sein müssen oder eine
-serverseitige Vorausführung erforderlich ist, erhöhen jedoch die
-Komplexität der Betriebsumgebung \cite{pati_react_nextjs_2025}.
+vorgegebene Projektstruktur ergänzen. Sie beheben den in
+Abschnitt~\ref{subsec:spa-mpa} beschriebenen Nachteil bei der
+Auffindbarkeit durch Suchmaschinen, erhöhen jedoch die Komplexität
+der Betriebsumgebung \cite{pati_react_nextjs_2025}.
 Tabelle~\ref{tab:frameworks} fasst die Gegenüberstellung zusammen.
 
 \begin{table}[H]
@@ -471,13 +535,27 @@ Nutzwert nach \cite{repolust_frontend_frameworks} &
 
 
 % ---------------------------------------------------------------------
-\subsection{Ansätze des State Managements}
-\label{subsec:state-ansaetze}
+\subsection{Verwaltung des Anwendungszustands}
+\label{subsec:state-management}
 
-Wie in Abschnitt~\ref{subsec:state-management} dargestellt, ist
-zwischen clientseitigem Anwendungszustand und serverseitigem
-Datenbestand zu unterscheiden. Für beide stehen unterschiedliche
-Ansätze zur Verfügung.
+In komplexen \acs{SPA}s mit mehreren Nutzerrollen und
+funktionsübergreifenden Daten, etwa dem Authentifizierungsstatus,
+der Nutzerrolle oder dem Inhalt eines Warenkorbs, reicht lokaler
+Komponentenzustand häufig nicht aus. Globales State Management
+ermöglicht es, Anwendungszustände zentral zu verwalten und
+konsistent über alle Komponenten hinweg verfügbar zu machen
+\cite{bhalla_spa_architecture}.
+
+Dabei ist zwischen zwei grundsätzlich verschiedenen Arten von
+Zustand zu unterscheiden. Clientseitiger Anwendungszustand entsteht
+vollständig im Browser und wird dort kontrolliert. Serverseitiger
+Datenbestand ist dagegen lediglich eine zwischengespeicherte
+Abbildung von Daten, deren eigentliche Quelle auf dem Server liegt
+und die daher veralten kann. Beide Arten erfordern
+unterschiedliche Mechanismen: Während clientseitiger Zustand
+unmittelbar gesetzt und gelesen wird, muss serverseitiger Zustand
+über eine Programmierschnittstelle (\acfirst{API}) abgerufen,
+zwischengespeichert und mit der Quelle synchronisiert werden.
 
 Für den clientseitigen Zustand bietet React mit der Context
 \acs{API} eine eingebaute Lösung, die Daten ohne Weiterreichen über
@@ -498,7 +576,13 @@ Zustand verfolgt einen hook-basierten Ansatz, bei dem ein Store
 unmittelbar als Hook definiert und ohne Provider-Wrapper in jeder
 Komponente verwendet werden kann. Komponenten werden dabei nur dann
 neu gerendert, wenn sich derjenige Teil des Zustands ändert, den sie
-tatsächlich lesen \cite{zustand_docs}.
+tatsächlich lesen \cite{zustand_docs}. Unabhängig vom gewählten
+Ansatz gilt für die Gliederung des globalen Zustands das in
+Abschnitt~\ref{subsec:komponentenbasiert} eingeführte Prinzip der
+Separation of Concerns: Der Zustand wird nicht in einem einzigen
+Speicher zusammengefasst, sondern auf fachlich abgegrenzte,
+unabhängig wartbare Einheiten verteilt
+\cite{cheesecakelabs_react_soc}.
 
 Für den serverseitigen Datenbestand besteht die Alternative zwischen
 einer eigenen Verwaltung im clientseitigen Zustand und einer darauf
@@ -542,26 +626,58 @@ Komplexe, nachvollziehbare Zustandsflüsse &
 
 
 % ---------------------------------------------------------------------
+\subsection{Clientseitiges Routing}
+\label{subsec:routing}
+
+Da \acs{SPA}s keine serverseitigen Seitennavigationen durchführen,
+übernimmt clientseitiges Routing die Aufgabe, verschiedene Ansichten
+der Anwendung anhand der \acfirst{URL} darzustellen. Die \acs{URL}
+bleibt damit die maßgebliche Beschreibung des Anwendungszustands:
+Ein Aufruf derselben Adresse führt zu derselben Ansicht, und
+einzelne Ansichten bleiben verlinkbar, obwohl kein Seitenwechsel im
+herkömmlichen Sinne stattfindet \cite{bhalla_spa_architecture}. Wie
+in Abschnitt~\ref{subsec:framework-funktionen} dargestellt, wird
+diese Aufgabe in React nicht vom Framework selbst übernommen,
+sondern durch eine ergänzende Bibliothek.
+
+React Router ist die im React-Ökosystem etablierte Lösung hierfür.
+Routen werden deklarativ definiert, also als Zuordnung zwischen
+\acs{URL}-Mustern und den jeweils darzustellenden Komponenten, und
+lassen sich hierarchisch verschachteln, sodass gemeinsame
+Bestandteile wie ein Anwendungsrahmen nur einmal festgelegt werden
+müssen. Die Navigation zwischen Ansichten erfolgt ohne
+Seitenneuladen \cite{reactrouter_docs}.
+
+Der in Abschnitt~\ref{subsec:rbac} beschriebene rollenbasierte
+Zugriffsschutz wird dabei nicht von der Bibliothek selbst
+übernommen, sondern als Wrapper-Komponente umgesetzt: Eine
+vorgeschaltete Komponente prüft Authentifizierungsstatus und Rolle
+des Nutzers, bevor die eigentliche Ansicht gerendert wird, und
+leitet andernfalls auf eine zulässige Route um
+\cite{wieruch_protected_routes}.
+
+
+% ---------------------------------------------------------------------
 \subsection{Kommunikationsansätze zwischen Frontend und Backend}
 \label{subsec:rest-api}
 
-\acfirst{REST} ist ein Architekturstil für Webschnittstellen, der auf
-zustandslosen Anfragen, standardisierten \acs{HTTP}-Methoden und
+\acfirst{REST} ist ein Architekturstil für Webschnittstellen, der
+auf zustandslosen Anfragen, standardisierten \acs{HTTP}-Methoden und
 ressourcenorientierter Adressierung basiert \cite{fielding_rest}.
-Jede Anfrage enthält alle zur Verarbeitung notwendigen Informationen,
-ohne dass der Server einen clientseitigen Sitzungszustand speichern
-muss. Die Struktur der Antwort wird dabei serverseitig festgelegt.
-Benötigt eine Ansicht Daten aus mehreren Ressourcen, sind mehrere
-Anfragen erforderlich; benötigt sie nur einen Teil der gelieferten
-Felder, werden dennoch alle übertragen.
+Jede Anfrage enthält alle zur Verarbeitung notwendigen
+Informationen, ohne dass der Server einen clientseitigen
+Sitzungszustand speichern muss. Die Struktur der Antwort wird dabei
+serverseitig festgelegt. Benötigt eine Ansicht Daten aus mehreren
+Ressourcen, sind mehrere Anfragen erforderlich; benötigt sie nur
+einen Teil der gelieferten Felder, werden dennoch alle übertragen.
 
 GraphQL setzt an dieser Stelle an und verlagert die Bestimmung der
 Antwortstruktur auf den Client. Über einen einzelnen Endpunkt
 formuliert dieser eine Abfrage, die genau die benötigten Felder
 benennt, auch über mehrere zusammenhängende Ressourcen hinweg.
-Messungen zeigen, dass sich der Umfang der übertragenen Daten dadurch
-erheblich reduzieren lässt und der Vorteil insbesondere bei hoher
-Netzwerklatenz zum Tragen kommt. Demgegenüber weist \acs{REST}
+Messungen zeigen, dass sich der Umfang der übertragenen Daten
+dadurch erheblich reduzieren lässt und der Vorteil insbesondere bei
+hoher Netzwerklatenz zum Tragen kommt. Demgegenüber weist \acs{REST}
 Vorteile bei Antwortzeit und Speicherbedarf auf, insbesondere unter
 hoher Last und bei häufig wiederholten, gleichartigen Anfragen; bei
 komplexen Abfragen steigen unter GraphQL sowohl Antwortzeiten als
@@ -571,12 +687,12 @@ Beiden Ansätzen gemeinsam ist, dass die Kommunikation vom Client
 ausgeht. Muss der Server seinerseits Daten übermitteln, ohne dass
 eine Anfrage vorliegt, etwa bei Benachrichtigungen oder Nachrichten
 in Echtzeit, ist ein anfragebasiertes Verfahren ungeeignet.
-WebSockets stellen hierfür eine dauerhafte, bidirektionale Verbindung
-zwischen Client und Server bereit, über die beide Seiten jederzeit
-Daten senden können, ohne dass der Client wiederholt Anfragen stellen
-muss. WebSockets treten damit nicht an die Stelle von \acs{REST} oder
-GraphQL, sondern ergänzen diese für Anwendungsfälle mit
-Echtzeitanforderung.
+WebSockets stellen hierfür eine dauerhafte, bidirektionale
+Verbindung zwischen Client und Server bereit, über die beide Seiten
+jederzeit Daten senden können, ohne dass der Client wiederholt
+Anfragen stellen muss. WebSockets treten damit nicht an die Stelle
+von \acs{REST} oder GraphQL, sondern ergänzen diese für
+Anwendungsfälle mit Echtzeitanforderung.
 
 Unabhängig vom gewählten Ansatz erfolgt der Zugriff im Browser über
 einen \acs{HTTP}-Client. Axios ist ein verbreiteter,
@@ -628,13 +744,13 @@ Dauerhafte Verbindung erforderlich \\
 \label{subsec:ui-bibliotheken}
 
 Für die Gestaltung der Oberfläche lassen sich drei Ansätze
-unterscheiden. Komponentenbasierte \acs{CSS}-Frameworks wie Bootstrap
-liefern fertig gestaltete Elemente aus, die unmittelbar verwendbar
-sind, deren Anpassung an ein eigenes Erscheinungsbild jedoch Aufwand
-erfordert. Bei \acs{CSS}-in-JS werden Stile innerhalb des
-JavaScript-Codes einer Komponente definiert, wodurch Stil und Logik
-zusammenliegen, zur Laufzeit jedoch zusätzlicher Verarbeitungsaufwand
-entsteht.
+unterscheiden. Komponentenbasierte \acs{CSS}-Frameworks wie
+Bootstrap liefern fertig gestaltete Elemente aus, die unmittelbar
+verwendbar sind, deren Anpassung an ein eigenes Erscheinungsbild
+jedoch Aufwand erfordert. Bei \acs{CSS}-in-JS werden Stile innerhalb
+des JavaScript-Codes einer Komponente definiert, wodurch Stil und
+Logik zusammenliegen, zur Laufzeit jedoch zusätzlicher
+Verarbeitungsaufwand entsteht.
 
 Utility-first-Frameworks wie Tailwind CSS verfolgen einen dritten
 Ansatz: Sie definieren keine fertigen Komponenten, sondern atomare
@@ -677,65 +793,83 @@ Anfrage an das Backend gestellt wird \cite{react_hook_form_docs}.
 
 
 % =====================================================================
-% HERKUNFT DES TEXTES -- bitte lesen
+% ====================== WICHTIG: LABELS ==============================
 %
-% AUS DEINEM BISHERIGEN TEXT UEBERNOMMEN (unveraendert oder nur
-% entschaerft, weil die Bazario-Bezuege raus mussten):
-%   - 2.3.2, Absatz 1 und 2 (React, Virtual DOM, Angular/Vue)
-%   - 2.3.4, REST-Definition nach Fielding
-%   - 2.3.4, Beschreibung von Axios und Interceptors
-%   - 2.3.5, Tailwind CSS und shadcn/ui
-%   - 2.3.6 vollstaendig, unveraendert
+% subsec:state-management  liegt jetzt in 2.3.3 statt in 2.2.3.
+%   Referenzen aus 4.1.3, 4.1.4 und 5.4 funktionieren weiter,
+%   MIT ZWEI AUSNAHMEN:
 %
-% VON MIR NEU FORMULIERT (Literaturbasis vorhanden, aber die
-% Formulierung und die Zuspitzung stammen nicht von dir):
-%   - 2.3.1 vollstaendig
-%   - 2.3.2, Absatz 3 (Nutzwertanalyse) und Absatz 4 (Next.js)
-%   - 2.3.3 vollstaendig
-%   - 2.3.4, Absaetze zu GraphQL und WebSockets
-%   - 2.3.5, Absatz 1 (Bootstrap und CSS-in-JS)
-%   - alle drei Tabellen
+%   In 4.1.3 steht:
+%     "Entsprechend dem in Abschnitt~\ref{subsec:state-management}
+%      beschriebenen Prinzip der Separation of Concerns ..."
+%   In 5.4 steht:
+%     "Diese Trennung folgt dem bereits in
+%      Abschnitt~\ref{subsec:state-management} eingefuehrten Prinzip
+%      der Separation of Concerns ..."
 %
-% Nach deiner Regel musst du diese Passagen selbst nachziehen. Sie
-% sind belegt, aber es sind nicht deine Saetze.
+%   Separation of Concerns steht jetzt in 2.2.2. Beide Stellen
+%   muessen auf \ref{subsec:komponentenbasiert} geaendert werden.
+%   Ohne diese Aenderung zeigen die Verweise auf den falschen
+%   Abschnitt, OHNE LaTeX-Warnung.
+%
+% subsec:routing  liegt jetzt in 2.3.4 (Clientseitiges Routing).
+%   Der RBAC-Verweis aus 4.1.2 muss auf subsec:rbac umgestellt
+%   werden, siehe Datei 2_2_Frontend_Architektur_KOMPLETT.tex.
+%
+% subsec:state-ansaetze  wird NICHT mehr verwendet. Falls du die
+%   frueher gelieferte Fassung von 2.2.3 schon eingebaut hast,
+%   verschwindet dieses Label mit dem Ersetzen. Pruefen, dass es
+%   nirgends mehr referenziert wird.
+%
+% Unveraendert: sec:technologiestack, subsec:react, subsec:rest-api,
+%   subsec:ui-bibliotheken, subsec:formulare-validierung.
+%
+%
+% CHECKLISTE NACH DEM EINBAU
+%
+%   [ ] 4.1.2: \ref{subsec:routing}          -> \ref{subsec:rbac}
+%   [ ] 4.1.3: \ref{subsec:state-management} -> \ref{subsec:komponentenbasiert}
+%              (nur an der Separation-of-Concerns-Stelle)
+%   [ ] 5.4:   \ref{subsec:state-management} -> \ref{subsec:komponentenbasiert}
+%              (nur an der Separation-of-Concerns-Stelle)
+%   [ ] Projektweit nach subsec:state-ansaetze suchen, muss 0 Treffer geben
+%   [ ] Kompilieren, Log auf "multiply defined" und "undefined" pruefen
+%
+%
+% HERKUNFT DES TEXTES
+%
+% AUS DEINEM TEXT UEBERNOMMEN:
+%   2.3.2 Absatz 1 und 2, 2.3.3 Absatz 1, 2.3.4 Absatz 1 (Teil),
+%   2.3.5 REST-Definition und Axios, 2.3.6 Tailwind und shadcn/ui,
+%   2.3.7 vollstaendig.
+%
+% VON MIR NEU FORMULIERT:
+%   2.3.1 vollstaendig, 2.3.2 Absatz 3 und 4, 2.3.3 Absaetze 2 bis 6,
+%   2.3.4 Absatz 2 und 3, 2.3.5 GraphQL und WebSockets,
+%   2.3.6 Absatz 1, alle drei Tabellen.
 %
 %
 % TODO (Roudy):
 %
-% 1. NEUE ABKUERZUNG: \acfirst{DOM} in 2.3.1 setzt voraus, dass DOM
-%    in Kapitel/0_Abkuerzungsverzeichnis definiert ist. Pruefen und
-%    ggf. anlegen. Im bisherigen Text kam "Virtual DOM" nur
-%    ausgeschrieben vor.
+% 1. In 2.3.2 habe ich den Untersuchungsrahmen der Repolust-Arbeit
+%    jetzt ausdruecklich genannt ("bewertet die Eignung fuer
+%    Legacy-Projekte"). Damit sind die Prozentwerte verwendbar, ohne
+%    angreifbar zu sein. Pruefe den Satz am PDF nach.
 %
-% 2. Die Prozentwerte in 2.3.2 und in der Tabelle (75,15 / 60,14 /
-%    57,30) stammen aus der Masterarbeit von Repolust. Pruefe im PDF,
-%    ob du sie so uebernehmen willst. Wichtig: Die Arbeit bewertet
-%    Eignung fuer LEGACY-Projekte anhand von Abwaertskompatibilitaet.
-%    Das ist nicht exakt dein Anwendungsfall. Entweder du erwaehnst
-%    den Untersuchungsrahmen im Satz, oder du laesst die Zahlen weg
-%    und nutzt die Arbeit nur qualitativ. Ich wuerde den Rahmen
-%    nennen, sonst ist es angreifbar.
+% 2. 2.3.6: Der Satz zu CSS-in-JS ist unbelegt, ich habe keine
+%    belastbare Quelle gefunden. Entweder Quelle nachtragen oder den
+%    Satz streichen und nur Bootstrap gegen utility-first stellen.
 %
-% 3. Die GraphQL-Aussagen in 2.3.4 stuetzen sich auf zwei Quellen,
-%    deren Autor und Jahr in literatur_neu_fuer_2_3.bib noch als TODO
-%    stehen. Vor der Abgabe ergaenzen.
+% 3. \acfirst{DOM} in 2.3.1 setzt einen Eintrag im
+%    Abkuerzungsverzeichnis voraus. Pruefen und ggf. anlegen.
 %
-% 4. Zu 2.3.3: Ich habe den IJSAT-Artikel bewusst NICHT zitiert
-%    (Begruendung in literatur_neu_fuer_2_3.bib). Der Abschnitt
-%    stuetzt sich auf le_state_management, redux_docs, zustand_docs
-%    und tanstack_query_docs. Wenn dir das zu duenn erscheint, sag
-%    Bescheid.
+% 4. \acfirst{REST} steht in 2.3.5. Da REST bereits in 2.1 und in
+%    Kapitel 1 vorkommt, ist die Langform moeglicherweise schon
+%    verbraucht. Einmal ins PDF schauen.
 %
-% 5. In 2.3.5 habe ich CSS-in-JS ohne eigene Quelle beschrieben, weil
-%    ich dafuer keine belastbare gefunden habe. Der Absatz ist
-%    inhaltlich unstrittig, aber unbelegt. Entweder Quelle nachtragen
-%    oder den CSS-in-JS-Satz streichen und nur Bootstrap gegen
-%    utility-first stellen.
-%
-% 6. Pruefen, ob \acs{REST} beim ersten Vorkommen in 2.3.4 wirklich
-%    \acfirst sein muss. In deinem alten Text stand \acfirst{REST}
-%    dort. Da REST aber schon in 2.1 und 2.2 vorkommt, kann die
-%    Langform bereits verbraucht sein.
+% 5. \acfirst{API} steht jetzt in 2.3.3. Frueher stand es dort auch,
+%    aber 2.3.3 liegt jetzt spaeter im Text als frueher 2.2.3.
+%    Pruefen, ob API nicht schon vorher ausgeschrieben werden muss.
 % =====================================================================
 
 \section{Qualitätssicherung in der Frontend-Entwicklung}
