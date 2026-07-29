@@ -165,7 +165,7 @@ Responsivität & Korrekte Darstellung auf allen Geräten &
 Responsive Design, \acs{CSS}-Breakpoints \\
 \hline
 Barrierefreiheit & \acs{WCAG}~2.1-Konformität &
-Semantisches \acfirst{HTML}, Kontrastverhältnisse \\
+Semantisches \acs{HTML}, Kontrastverhältnisse \\
 \hline
 Wartbarkeit & Erweiterbare Codestruktur &
 Komponentenarchitektur, feature-basierte Struktur \\
@@ -327,9 +327,13 @@ shadcn/ui & \acs{UI}-Kom\-po\-nen\-ten & klassische
 Komponenten\-bibliothek &
 Barrierefrei, vollständig anpassbar, kein Paket-Lock-in \\
 \hline
-Vite & Build-Tool & --- &
-Schnelle Entwicklungsumgebung, optimierte
-Produktions-Builds \cite{vite_docs} \\
+Vitest & Unit- und Integra\-tions\-tests & --- &
+Nativer Test-Runner für Vite, keine zusätzliche Konfiguration
+\cite{vitest_docs} \\
+\hline
+Playwright & End-to-End-Tests & --- &
+Automatisierte Nutzerflows in mehreren Browsern
+\cite{playwright_docs} \\
 \hline
 Laravel Sanctum & Authenti\-fizierung &
 \multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
