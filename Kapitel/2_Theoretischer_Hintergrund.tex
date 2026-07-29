@@ -473,13 +473,14 @@ GraphQL verlagert die Bestimmung der Antwortstruktur auf den
 Client. Über einen einzelnen Endpunkt formuliert dieser eine
 Abfrage, die genau die benötigten Felder benennt, auch über mehrere
 zusammenhängende Ressourcen hinweg. Messungen zeigen, dass sich das
-übertragene Datenvolumen dadurch erheblich reduzieren lässt und der
-Vorteil besonders bei hoher Netzwerklatenz zum Tragen kommt.
-Demgegenüber weist \acs{REST} Vorteile bei Antwortzeit und
-Speicherbedarf auf, insbesondere unter hoher Last und bei häufig
-wiederholten, gleichartigen Anfragen; bei komplexen Abfragen steigen
-unter GraphQL sowohl Antwortzeiten als auch Fehlerraten
-\cite{diva_graphql_rest, lloyd_graphql_rest}.
+übertragene Datenvolumen dadurch erheblich reduzieren lässt. Eine
+Untersuchung von neun Datenbank-Endpunkten misst für eine
+GraphQL-Implementierung 25 bis 67 Prozent geringere Antwortzeiten als
+für eine vergleichbare \acs{REST}-Schnittstelle, mit den größten
+Vorteilen bei Abfragen über mehrere verknüpfte Ressourcen. Unter
+hoher Nebenläufigkeit kehrt sich das Verhältnis um: Dort liefert
+\acs{REST} 65 bis 72 Prozent geringere Antwortzeiten und skaliert
+stabiler \cite{lawi_graphql_rest, lloyd_graphql_rest}.
 
 Beiden Ansätzen gemeinsam ist, dass die Kommunikation vom Client
 ausgeht. Muss der Server seinerseits Daten übermitteln, ohne dass
@@ -528,7 +529,7 @@ Geringes Daten\-volumen, eine Anfrage je Ansicht &
 Übertragung in Echtzeit \\
 \hline
 Schwäche & Über\-tragung nicht benötigter Felder &
-Höhere Antwortzeit bei komplexen Abfragen &
+Schwächere Skalierung unter hoher Last &
 Dauerhafte Verbindung erforderlich \\
 \hline
 \end{tabular}
