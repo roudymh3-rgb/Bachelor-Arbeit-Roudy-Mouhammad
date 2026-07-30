@@ -311,7 +311,55 @@ synchronisiert wird.
 
 \subsection{Designsystem und Farbschema}
 \label{subsec:designsystem}
-
+Das Designsystem von \textit{Bazario} setzt das in
+Abschnitt~\ref{subsec:designsysteme} beschriebene Prinzip um, die
+visuellen Grundelemente einer Anwendung nicht in den Komponenten zu
+verstreuen, sondern als benannte Werte an einer Stelle zu pflegen.
+Umgesetzt ist dies über \acs{CSS}-Variablen, die in der globalen
+Stildatei definiert und über die Tailwind-Konfiguration als
+Utility-Klassen verfügbar gemacht werden (vgl.
+Abschnitt~\ref{subsec:ui-bibliotheken}).
+ 
+Die Farbwerte sind nicht als Einzelfarben benannt, sondern nach ihrer
+Funktion in der Oberfläche. Jede Fläche besitzt einen zugehörigen
+Vordergrundwert, etwa \texttt{background} mit \texttt{foreground},
+\texttt{card} mit \texttt{card-foreground} oder \texttt{primary} mit
+\texttt{primary-foreground}. Diese paarweise Definition stellt sicher,
+dass Text und Hintergrund nicht unabhängig voneinander geändert
+werden können und ein Kontrastverhältnis damit nicht versehentlich
+verloren geht. Ergänzt wird das Schema um Tokens für Rahmen,
+Eingabefelder und Fokusringe sowie um einen eigenen Wert
+\texttt{destructive} für zerstörende Aktionen und Fehlerzustände.
+ 
+Als Farbraum wird durchgängig \acs{OKLCH} verwendet. Anders als bei
+hexadezimalen Angaben entspricht die Helligkeitskomponente dort
+näherungsweise der wahrgenommenen Helligkeit, wodurch sich
+Farbabstufungen gleichmäßig ableiten lassen \cite{css_color_4}. Die Palette ist bewusst
+neutral gehalten: Sämtliche Flächen- und Textfarben besitzen keinen
+Buntanteil, allein \texttt{destructive} ist als roter Farbwert
+angelegt. Farbe wird damit ausschließlich dort eingesetzt, wo sie
+eine Bedeutung trägt, während die inhaltliche Gliederung über
+Helligkeit, Abstände und Typografie erfolgt.
+ 
+Ein zweites vollständiges Token-Set ist für die dunkle Darstellung
+hinterlegt und wird über eine Variante am Wurzelelement aktiviert.
+Da die Komponenten ausschließlich die funktionalen Token
+referenzieren und keine festen Farbwerte enthalten, erfordert der
+Wechsel keine Änderung an den Komponenten selbst.
+ 
+Die Eckenradien folgen demselben Prinzip. Definiert ist ein einziger
+Basiswert; die Abstufungen von klein bis sehr groß werden daraus über
+feste Faktoren berechnet. Eine Änderung des Basiswerts wirkt sich
+dadurch proportional auf alle Komponenten aus. Für die Typografie
+wird mit \textit{Geist} eine variable Schriftart eingebunden und über
+die Tokens für Fließtext und Überschriften referenziert.
+ 
+Das Farbschema und die Komponentenbasis entsprechen der neutralen
+Standardkonfiguration von shadcn/ui \cite{shadcn_docs}. Diese wurde
+übernommen, weil sie die in Abschnitt~\ref{subsec:designsysteme}
+genannten Anforderungen an Konsistenz bereits erfüllt; eine eigene
+Gestaltung der Grundelemente war für den Funktionsumfang dieser
+Arbeit nicht erforderlich.
 
 
 \subsection{Seitenstruktur und Navigationsprinzip}

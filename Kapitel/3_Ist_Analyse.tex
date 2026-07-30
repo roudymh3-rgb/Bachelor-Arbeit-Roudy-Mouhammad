@@ -135,13 +135,14 @@ im Frontend gespeichert oder verarbeitet. Abgelaufene Tokens werden
 automatisch erkannt und der Nutzer wird zur erneuten Anmeldung
 weitergeleitet.
 
-Die Anwendung muss responsiv sein und auf gängigen Desktop-
-und Mobilbrowsern korrekt dargestellt werden. Die
-Benutzeroberfläche orientiert sich an den Richtlinien von
-\acs{WCAG}~2.1 hinsichtlich Barrierefreiheit, Kontrast und
-Tastaturnavigation. Wartbarkeit und Erweiterbarkeit werden
-durch eine komponentenbasierte Architektur sowie eine
-feature-orientierte Ordnerstruktur sichergestellt.
+Die Anwendung muss responsiv sein und auf gängigen Desktop- und
+Mobilbrowsern korrekt dargestellt werden (vgl.
+Abschnitt~\ref{subsec:responsive-design}). Die Benutzeroberfläche
+orientiert sich an den Richtlinien von \acs{WCAG}~2.1 hinsichtlich
+Kontrast, Tastaturbedienbarkeit und Umbruchverhalten (vgl.
+Abschnitt~\ref{subsec:barrierefreiheit}). Wartbarkeit und
+Erweiterbarkeit werden durch eine komponentenbasierte Architektur
+sowie eine feature-orientierte Ordnerstruktur sichergestellt.
 
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} gibt
 einen strukturierten Überblick über die nicht-funktionalen
@@ -167,7 +168,8 @@ Responsivität & Korrekte Darstellung auf allen Geräten &
 Responsive Design, \acs{CSS}-Breakpoints \\
 \hline
 Barrierefreiheit & \acs{WCAG}~2.1-Konformität &
-Semantisches \acs{HTML}, Kontrastverhältnisse \\
+Semantisches \acs{HTML}, Kontrastverhältnisse nach
+Erfolgskriterium 1.4.3 \\
 \hline
 Wartbarkeit & Erweiterbare Codestruktur &
 Komponentenarchitektur, feature-basierte Struktur \\

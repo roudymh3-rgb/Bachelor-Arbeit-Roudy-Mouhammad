@@ -596,8 +596,150 @@ Beide lassen sich über einen sogenannten Resolver koppeln, sodass
 Eingaben clientseitig gegen ein Zod-Schema validiert werden, bevor
 eine Anfrage an das Backend gestellt wird
 \cite{react_hook_form_docs}.
+%===========================================================================
+\section{Grundlagen des UI-Designs}
+\label{sec:ui-design}
+\subsection{Gestaltungs- und Interaktionsprinzipien}
+\label{subsec:gestaltungsprinzipien}
+ 
+Die Qualität einer Benutzeroberfläche ist keine Frage des
+Geschmacks. Für ihre Gestaltung existieren etablierte, empirisch
+abgeleitete Prinzipienkataloge, die sich als Entwurfsgrundlage und
+zugleich als Prüfmaßstab verwenden lassen.
+ 
+Der bekannteste davon geht auf Nielsen und Molich zurück, die 1990
+ein Verfahren vorstellten, bei dem Gutachter eine Oberfläche anhand
+einer überschaubaren Zahl allgemeiner Regeln auf Schwachstellen
+untersuchen \cite{nielsen_molich_heuristic}. Nielsen überarbeitete
+diese Regeln 1994 auf Grundlage einer Faktorenanalyse von 249
+dokumentierten Usability-Problemen und leitete daraus neun Heuristiken mit möglichst hoher
+Erklärungskraft ab
+\cite{nielsen_explanatory_power}. Für eine
+Multi-Rollen-Anwendung sind davon vor allem fünf einschlägig:
+die Sichtbarkeit des Systemstatus, also die Rückmeldung darüber,
+was die Anwendung gerade tut; die Übereinstimmung zwischen System
+und realer Welt in Sprache und Begriffen; Nutzerkontrolle und
+Handlungsfreiheit einschließlich der Möglichkeit, einen begonnenen
+Vorgang abzubrechen; Konsistenz und die Einhaltung verbreiteter
+Konventionen; sowie Fehlervermeidung, also die Gestaltung von
+Eingaben derart, dass Fehler gar nicht erst entstehen.
+ 
+Shneiderman formuliert mit den acht goldenen Regeln der
+Schnittstellengestaltung einen inhaltlich verwandten Katalog, der
+Konsistenz, informative Rückmeldung, den erkennbaren Abschluss von
+Handlungsfolgen, einfache Fehlerbehandlung, die Umkehrbarkeit von
+Aktionen sowie eine geringe Belastung des Kurzzeitgedächtnisses
+umfasst \cite{shneiderman_ui}. Beide Kataloge sind unabhängig
+voneinander entstanden, überschneiden sich jedoch deutlich. Der
+wiederkehrende Kern lässt sich auf vier Anforderungen verdichten:
+Die Oberfläche muss über gleichartige Situationen hinweg
+konsistent sein, den Zustand des Systems jederzeit erkennbar
+machen, Fehleingaben nach Möglichkeit verhindern und
+gegebenenfalls verständlich behandeln, und sie muss dem Nutzer die
+Kontrolle über den Ablauf belassen. Diese vier Anforderungen
+bilden den Bezugsrahmen für die Gestaltungsentscheidungen in
+Kapitel~\ref{chap:konzept}.
 
-
+\subsection{Designsysteme und visuelle Konsistenz}
+\label{subsec:designsysteme}
+ 
+Konsistenz als Prinzip lässt sich in einer wachsenden Anwendung
+nicht durch Disziplin allein sicherstellen. Sobald mehrere
+Ansichten unabhängig voneinander entstehen, weichen Farbwerte,
+Abstände und Schriftgrößen auseinander, ohne dass dies bei der
+Entwicklung einer einzelnen Ansicht auffiele.
+ 
+Ein Designsystem verankert Konsistenz deshalb technisch. Es
+definiert die visuellen Grundelemente einer Anwendung, also
+Farbpalette, Typografie, Abstandsraster, Eckenradien und
+Zustandsdarstellungen, als benannte, an einer Stelle gepflegte
+Werte. Diese sogenannten Design Tokens werden in den Komponenten
+nicht als feste Zahlenwerte hinterlegt, sondern über ihren Namen
+referenziert. Eine Änderung an zentraler Stelle wirkt sich dadurch
+auf alle Ansichten zugleich aus, und abweichende Einzelwerte
+entstehen gar nicht erst \cite{shah_design_system_2023}.
+ 
+Von den Grundelementen zu unterscheiden sind die darauf
+aufbauenden Komponenten. Erst deren einheitliche Verwendung
+erzeugt die in Abschnitt~\ref{subsec:gestaltungsprinzipien}
+geforderte Konsistenz über gleichartige Situationen hinweg: Ein
+Bestätigungsdialog, ein Ladezustand oder eine Fehlermeldung soll
+an jeder Stelle der Anwendung gleich aussehen und sich gleich
+verhalten. Die in Abschnitt~\ref{subsec:ui-bibliotheken}
+vorgestellten Styling-Ansätze und Komponentensammlungen bilden die
+technische Grundlage dafür, ersetzen die gestalterische Festlegung
+jedoch nicht.
+ 
+ 
+\subsection{Barrierefreiheit}
+\label{subsec:barrierefreiheit}
+ 
+Die Web Content Accessibility Guidelines (\acfirst{WCAG})~2.1 sind
+eine Empfehlung des World Wide Web Consortium und der
+maßgebliche Standard für die Zugänglichkeit von Webinhalten. Sie
+ordnen ihre Erfolgskriterien vier Prinzipien zu: Inhalte müssen
+wahrnehmbar, bedienbar und verständlich sein, und sie müssen
+robust genug sein, um von unterschiedlichen Benutzeragenten
+einschließlich assistiver Technologien interpretiert werden zu
+können \cite{wcag21}.
+ 
+Die Erfolgskriterien sind drei Konformitätsstufen zugeordnet.
+Stufe A umfasst grundlegende Anforderungen, Stufe AA gilt als
+üblicher Zielwert für öffentlich zugängliche Anwendungen, und
+Stufe AAA enthält weitergehende Kriterien, die nicht für alle
+Inhalte erreichbar sind \cite{wcag21}. Für eine
+E-Commerce-Oberfläche sind auf Stufe AA insbesondere vier
+Kriterien einschlägig:
+ 
+Erfolgskriterium 1.4.3 verlangt für Text ein Kontrastverhältnis
+von mindestens 4,5:1 gegenüber dem Hintergrund, bei großer Schrift
+mindestens 3:1. Kriterium 1.4.11 überträgt diese Anforderung mit
+einem Verhältnis von 3:1 auf Bedienelemente und
+Zustandsanzeigen, die keinen Text enthalten. Kriterium 2.1.1
+fordert, dass sämtliche Funktionen allein über die Tastatur
+erreichbar sind, was insbesondere Dialoge, Auswahlfelder und
+Kalender betrifft. Kriterium 1.4.10 schließlich verlangt, dass
+Inhalte bis zu einer Breite von 320 \acs{CSS}-Pixeln ohne
+horizontales Scrollen nutzbar bleiben \cite{wcag21}.
+ 
+Gegenüber der Vorgängerfassung 2.0 ergänzt \acs{WCAG}~2.1 vor allem
+Kriterien für die Nutzung auf mobilen Geräten und für Nutzer mit
+eingeschränktem Sehvermögen \cite{shah_design_system_2023}. Das
+zuletzt genannte Kriterium 1.4.10 verbindet Barrierefreiheit damit
+unmittelbar mit dem folgenden Abschnitt.
+ 
+ 
+\subsection{Responsive Design und Mobile First}
+\label{subsec:responsive-design}
+ 
+Responsive Design bezeichnet die Gestaltung einer Oberfläche
+derart, dass sie sich der verfügbaren Anzeigefläche anpasst.
+Umgesetzt wird dies über flexible Raster, relative Maßeinheiten
+und Umbruchpunkte, an denen sich die Anordnung der Elemente
+ändert. Anders als bei einer eigenständigen mobilen Anwendung
+existiert dabei nur eine Codebasis, deren Darstellung sich am
+Endgerät ausrichtet.
+ 
+Mobile First bezeichnet die dazugehörige Entwurfsreihenfolge: Der
+Entwurf beginnt bei der kleinsten Zielgröße und wird für größere
+Anzeigeflächen erweitert, nicht umgekehrt. Der Nutzen liegt weniger
+in der Technik als in der erzwungenen Priorisierung, denn auf
+kleiner Fläche muss entschieden werden, welche Informationen und
+Bedienelemente tatsächlich unverzichtbar sind.
+ 
+Für E-Commerce-Anwendungen wurde dieser Ansatz in Form einer
+Richtlinie konkretisiert, die aus der Analyse fünf verbreiteter
+responsiver Verkaufsplattformen abgeleitet und anschließend
+validiert wurde. Sie benennt unter anderem Anforderungen an die
+Erreichbarkeit von Bedienelementen, an die Reduktion von
+Eingabeschritten und an die Darstellung von Produktinformationen
+auf kleinen Anzeigeflächen, und weist einen positiven Effekt auf
+die Nutzererfahrung nach \cite{kumar_mobile_first}. Zusammen mit
+dem in Abschnitt~\ref{subsec:barrierefreiheit} genannten
+Erfolgskriterium 1.4.10 ergibt sich daraus eine gemeinsame
+Anforderung: Die Oberfläche muss auch auf schmalen Anzeigeflächen
+vollständig bedienbar bleiben, ohne dass Inhalte abgeschnitten
+werden oder horizontal gescrollt werden muss.
 % =====================================================================
 \section{Qualitätssicherung in der Frontend-Entwicklung}
 \label{sec:qualitaetssicherung}
@@ -624,13 +766,17 @@ Die auf den einzelnen Ebenen eingesetzten Werkzeuge werden in
 Kapitel~\ref{chap:testen} beschrieben.
 
 
+
 \subsection{Usability und User Experience}
 \label{subsec:usability}
 
 Neben funktionaler Korrektheit ist die Gebrauchstauglichkeit einer
-Webanwendung ein zentrales Qualitätsmerkmal. Bei der heuristischen
-Evaluation untersuchen Experten die Benutzeroberfläche anhand
-definierter Heuristiken auf Usability-Probleme. Für
+Webanwendung ein zentrales Qualitätsmerkmal. Die in
+Abschnitt~\ref{subsec:gestaltungsprinzipien} vorgestellten
+Prinzipien dienen dabei nicht nur dem Entwurf, sondern auch der
+Bewertung: Bei der heuristischen Evaluation untersuchen Gutachter
+eine bestehende Oberfläche systematisch daraufhin, an welchen
+Stellen sie gegen diese Prinzipien verstößt. Für
 E-Commerce-Plattformen wurden hierfür spezifische Heuristiken
 entwickelt, die auf die Anforderungen digitaler Marktplätze
 zugeschnitten sind, darunter Navigationskonsistenz, Transparenz von
