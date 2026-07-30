@@ -89,20 +89,28 @@ Betreibers erheblich reduziert \cite{stripe_security_guide}.
 Im deutschen E-Commerce-Markt dominieren große, international tätige
 Plattformen. Marktführer wie Amazon verbinden Käufer, Verkäufer,
 Logistikpartner und Administratoren in einem Multi-Sided-Modell
-\cite{parker_platform_revolution}. Spezialisierte Anbieter wie
-Booking.com und Fiverr zeigen zugleich, dass auch vertikale
-Marktplätze mit Fokus auf Dienstleistungsbuchungen hohe
-Marktanteile erreichen können \cite{booking_holdings_q4_2024}.
+\cite{parker_platform_revolution}. Dass auch vertikale Marktplätze
+mit Fokus auf Dienstleistungsbuchungen erhebliche Umsätze erzielen,
+zeigt Booking.com: Der Mutterkonzern Booking Holdings wies für das
+Geschäftsjahr 2024 einen Gesamtumsatz von 23,7 Milliarden
+US-Dollar aus \cite{booking_holdings_q4_2024}.
 
 Tabelle~\ref{tab:wettbewerb} vergleicht ausgewählte Plattformen
-hinsichtlich ihrer Kernfunktionen und zeigt die Abgrenzung von
-\textit{Bazario}; die Einordnung orientiert sich an den
-Klassifikationskriterien von \cite{taeuscher_platform_models} und
-\cite{heinemann_online_handel}.
+anhand der vier Merkmale, die den Funktionsumfang von
+\textit{Bazario} kennzeichnen und sich aus den funktionalen
+Anforderungen in Abschnitt~\ref{subsec:funktionale-anforderungen}
+ergeben: das Angebot von Produkten, das Angebot von
+Dienstleistungen, die Unterstützung mehrerer Nutzerrollen sowie ein
+integriertes Buchungssystem. Die ersten drei Merkmale knüpfen an die
+Unterscheidung horizontaler und vertikaler Marktplätze sowie an das
+Konzept mehrseitiger Plattformen an
+\cite{taeuscher_platform_models, parker_platform_revolution}; die
+Einordnung der einzelnen Plattformen beruht auf deren öffentlich
+einsehbarem Funktionsumfang und stellt eine eigene Bewertung dar.
 
 \begin{table}[h]
 \centering
-\caption{Vergleich bestehender Marktplatzplattformen}
+\caption{Vergleich bestehender Marktplatzplattformen (eigene Darstellung)}
 \label{tab:wettbewerb}
 \begin{tabular}{|p{2.8cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|p{2.5cm}|}
 \hline
@@ -134,7 +142,7 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \label{subsec:spa-mpa}
 
 Webbasierte Anwendungen lassen sich zwei Architekturansätzen
-zuordnen: Multi-Page Applications (\acfirst{MPA}) und Single-Page
+zuordnen: Multi-Page Applications (\acfirst{MPA}) und Single-Page 
 Applications (\acfirst{SPA}). Bei \acs{MPA}s lädt der Server für
 jede Nutzerinteraktion eine vollständige \acfirst{HTML}-Seite, die
 der Browser neu rendert, was bei komplexen Anwendungen zu spürbaren
@@ -275,6 +283,11 @@ Stimmigkeit jedoch in das Projekt
 folgenden Abschnitten in dieser Reihenfolge behandelt: Framework,
 Anwendungszustand, clientseitiges Routing, Kommunikation mit dem
 Backend, Gestaltung der Oberfläche und Formularverarbeitung.
+Für einige dieser Bereiche stehen mehrere konkurrierende Ansätze zur
+Verfügung, für andere hat sich im React-Ökosystem eine Lösung als
+De-facto-Standard etabliert; die folgenden Abschnitte stellen daher
+nur dort Alternativen gegenüber, wo eine tatsächliche Auswahl
+bestand.
 
 
 \subsection{React, Angular und Vue.js im Vergleich}

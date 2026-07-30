@@ -124,13 +124,15 @@ minimiert. \acs{API}-Anfragen werden durch geeignete
 Ladezustände und Fehlermeldungen für den Nutzer transparent
 kommuniziert.
 
-Die Sicherheit wird durch tokenbasierte Authentifizierung
-über Laravel Sanctum, rollenbasierten Seitenschutz über
-geschützte Routen sowie die Weiterleitung auf eine
-\acs{PCI-DSS}-konforme Stripe-Zahlungsseite gewährleistet.
-Sensible Daten werden zu keiner Zeit im Frontend gespeichert
-oder verarbeitet. Abgelaufene Tokens werden automatisch
-erkannt und der Nutzer wird zur erneuten Anmeldung
+Die Sicherheit wird serverseitig durch tokenbasierte
+Authentifizierung über Laravel Sanctum sowie die Weiterleitung auf
+eine \acs{PCI-DSS}-konforme Stripe-Zahlungsseite gewährleistet. Der
+rollenbasierte Seitenschutz über geschützte Routen im Frontend
+ergänzt dies auf Ebene der Benutzerführung, ersetzt die
+serverseitige Prüfung jedoch nicht (vgl.
+Abschnitt~\ref{subsec:rbac}). Sensible Daten werden zu keiner Zeit
+im Frontend gespeichert oder verarbeitet. Abgelaufene Tokens werden
+automatisch erkannt und der Nutzer wird zur erneuten Anmeldung
 weitergeleitet.
 
 Die Anwendung muss responsiv sein und auf gängigen Desktop-
@@ -158,8 +160,8 @@ Performance & Schnelle Ladezeiten, flüssige Navigation &
 Lazy Loading, optimiertes State Management \\
 \hline
 Sicherheit & Schutz vor unbefugtem Zugriff &
-Laravel Sanctum, geschützte Routen, PCI-DSS-konforme
-Stripe-Zahlungsseite \\
+Laravel Sanctum (serverseitig), geschützte Routen
+(Benutzerführung), PCI-DSS-konforme Stripe-Zahlungsseite \\
 \hline
 Responsivität & Korrekte Darstellung auf allen Geräten &
 Responsive Design, \acs{CSS}-Breakpoints \\
@@ -274,9 +276,11 @@ Anbindung übernimmt. Im Fall von Stripe erfolgt die
 Zahlungsabwicklung vollständig serverseitig, sodass eine Einbindung
 von Stripe Elements oder React Stripe.js für den aktuellen
 Funktionsumfang nicht erforderlich ist
-\cite{stripe_security_guide}. Alle übrigen Technologien wurden frei
-gewählt; die Gegenüberstellung der jeweils betrachteten
-Alternativen erfolgt in Abschnitt~\ref{sec:technologiestack}. Eine
+\cite{stripe_security_guide}. Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
+Abschnitt~\ref{subsec:framework-funktionen}), waren alle übrigen
+Aufgabenbereiche einzeln zu entscheiden; die Gegenüberstellung der
+jeweils betrachteten Alternativen erfolgt in
+Abschnitt~\ref{sec:technologiestack}. Eine
 Ausnahme bildet Axios, für das kein einzelner Grund ausschlaggebend
 war, da nennenswerte Alternativen kaum vorhanden sind
 \cite{axios_docs}. Tabelle~\ref{tab:technologiestack} fasst die
