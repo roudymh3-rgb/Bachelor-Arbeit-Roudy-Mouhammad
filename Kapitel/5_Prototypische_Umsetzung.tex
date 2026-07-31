@@ -372,6 +372,7 @@ Stelle auf andere Bereiche der Anwendung auswirken.
 % Checkout inhaltlich zusammengehoeren.
 
 \subsection{Stripe-Integration im Frontend}
+\label{subsec:impl_stripe}
 Die Umsetzung des in Abschnitt~\ref{subsec:warenkorb_konzept}
 beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend: das
 Auslösen des Checkouts im Warenkorb und die Verarbeitung des Ergebnisses
@@ -381,7 +382,7 @@ Abbildung~\ref{fig:checkout_ablauf} stellt sie dar.
  
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{Bilder/abb_checkout_ablauf.png}
+\includegraphics[width=0.7\textwidth]{Bilder/abb_checkout_ablauf.png}
 \caption{Ablauf der Zahlung vom Auslösen des Checkouts bis zur
 Rückleitung in die Anwendung}
 \label{fig:checkout_ablauf}
@@ -422,9 +423,21 @@ dadurch auf ihre drei Schritte beschränkt bleibt.
  
 Nach Abschluss der Zahlung führt der Zahlungsdienst den Nutzer auf eine
 der beiden Rückleitungsseiten zurück. Die Erfolgsseite ruft die
-Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an. Vor
-der Darstellung führt sie jedoch eine Folge von Nebenwirkungen aus, die
-in einem Effekt gekapselt sind.
+Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an.
+Darunter bietet sie zwei Wege in die jeweils passende Übersicht an,
+getrennt nach Bestellungen und Buchungen, da ein Auftrag beide
+Positionstypen enthalten kann. Die Handlungsfolge des Checkouts wird
+damit erkennbar abgeschlossen und zugleich der nächste sinnvolle
+Schritt angeboten (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}). Vor der Darstellung
+führt die Seite jedoch eine Folge von Nebenwirkungen aus, die in
+einem Effekt gekapselt sind.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/screenshot_checkout_success.png}
+\caption{Bestätigungsseite nach erfolgreicher Zahlung}
+\label{fig:checkout_success}
+\end{figure}
  
 Der Effekt prüft zunächst, ob die Zahlung tatsächlich erfolgt ist, und
 bricht andernfalls ab. Erst danach wird der Warenkorb geleert. Dieser
@@ -470,6 +483,20 @@ Beide Seiten sind als geschützte Routen eingebunden (vgl.
 Abschnitt~\ref{subsec:routing-konzept}), da das Ergebnis einer Zahlung
 einem bestimmten Nutzer zugeordnet ist und nicht durch bloßes Aufrufen
 der Adresse einsehbar sein soll.
+\subsubsection*{Erprobung}
+ 
+Der Zahlungsdienst stellt für die Entwicklung eine Testumgebung mit
+Kartennummern bereit, die jeweils ein bestimmtes Verhalten auslösen:
+erfolgreiche Zahlung, unzureichende Deckung, abgelaufene Karte sowie
+allgemeine Ablehnung. Damit ließen sich die Rückleitungswege prüfen,
+ohne echte Zahlungen auszulösen.
+ 
+Dabei zeigte sich, dass sämtliche Ablehnungen bereits auf der Seite des
+Zahlungsdienstes abgefangen werden und dort zur Eingabe eines anderen
+Zahlungsmittels führen. Die im Frontend vorgesehene Abbruchseite wird
+folglich nur erreicht, wenn der Nutzer den Vorgang selbst abbricht. Ein
+Fehlerfall aus dem Backend heraus bleibt damit auf Ausnahmesituationen
+beschränkt.
 
 % ----------------------------------------------------------------
 \section{Anbieter- und Verkäufer-Dashboard}
