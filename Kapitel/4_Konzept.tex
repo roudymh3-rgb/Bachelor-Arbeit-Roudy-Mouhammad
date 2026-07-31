@@ -493,8 +493,85 @@ enthaltenen Positionen, getrennt nach Produkten und
 Dienstleistungen, sowie eine Zusammenfassung mit Anzahl je
 Positionstyp und Zwischensumme.
 
-% TODO: Checkout-Ablauf und Stripe-Integration folgen nach dem
-% naechsten Mentor-Meeting.
+Der Checkout setzt eine angemeldete Sitzung voraus. Ist der Nutzer
+nicht angemeldet, öffnet sich der in
+Abschnitt~\ref{subsec:auth-onboarding} beschriebene Anmeldedialog,
+bevor der Vorgang fortgesetzt wird. Diese Einschränkung ist
+begründet: Die Plattform muss den Vorgang einem Nutzer zuordnen
+können, um ihn nachverfolgbar zu machen, dem Anbieter mitzuteilen, wer
+bestellt hat, und dem Kunden die Einsicht in seine Bestellungen zu
+ermöglichen. Bei Verkaufsplattformen, die einen Kauf ohne Anmeldung
+zulassen, wird die Zahlung über die Plattform selbst abgewickelt, die
+dabei zwangsläufig die Daten des Kunden erhält. In \textit{Bazario}
+werden Zahlungsdaten dagegen ausschließlich an den Zahlungsdienst
+übermittelt (vgl. Abschnitt~\ref{subsec:online-zahlung}); ohne
+Anmeldung läge der Plattform daher keinerlei Information über den
+Vorgang vor.
+ 
+Ein Auftrag entsteht bereits vor der Zahlung. Mit dem Auslösen des
+Checkouts legt das Backend einen Auftrag mit dem Status
+\textit{requires payment} an, ergänzt ihn um die Positionen des
+Warenkorbs und fordert anschließend eine Zahlungssitzung an. Bricht
+der Nutzer die Zahlung ab, bleibt der Auftrag unbezahlt bestehen und
+kann später über die Bestellübersicht abgeschlossen werden. Der
+Warenkorb bleibt in diesem Fall unverändert erhalten, damit ein
+abgebrochener Vorgang nicht zum Verlust der bereits
+zusammengestellten Positionen führt.
+ 
+Für die Zahlungsabwicklung selbst bestehen grundsätzlich zwei Wege.
+Entweder wickelt die Plattform die Zahlung eigenständig ab und
+benötigt dafür eine Anbindung an Banken und Zahlungsdienstleister,
+wobei sämtliche Zahlungsdaten über die eigene Infrastruktur laufen und
+den entsprechenden regulatorischen Anforderungen unterliegen. Oder sie
+nutzt einen externen Anbieter, der diese Anbindung bereits
+bereitstellt. \textit{Bazario} verwendet den zweiten Weg über die von
+Stripe gehostete Zahlungsseite (vgl.
+Abschnitt~\ref{subsec:online-zahlung}). Das Frontend gestaltet damit
+keine eigenen Zahlungsformulare, und sensible Kartendaten erreichen
+die Plattform zu keinem Zeitpunkt.
+ 
+Dieser Weg hat eine Konsequenz für den Entwurf: Sobald der Nutzer zur
+Zahlung auf die Seite des Anbieters wechselt, verliert die Plattform
+die unmittelbare Sicht auf den Vorgang. Sie erfährt weder, ob gezahlt
+wurde, noch von wem. Genau deshalb wird der Auftrag vorab im Backend
+angelegt und der Zahlungsstatus im Anschluss mit dem Anbieter
+abgeglichen.
+ 
+Die Kommunikation mit dem Zahlungsdienst erfolgt ausschließlich über
+das Backend, nicht aus dem Browser heraus. Der Grund liegt in der
+Authentifizierung gegenüber dem Dienst: Das Eröffnen einer
+Zahlungssitzung erfordert einen geheimen Schlüssel, der dem
+Plattformbetreiber zugeordnet ist und nicht im Browser des Nutzers
+liegen darf. Hinzu kommt, dass die Plattform eine Vielzahl von Nutzern
+bedient und die Eröffnung von Zahlungssitzungen kontrolliert erfolgen
+muss.
+ 
+Für die Rückleitung nach abgeschlossener oder abgebrochener Zahlung
+stellt das Frontend zwei eigene Seiten bereit. Ihre Adressen werden dem
+Zahlungsdienst über das Backend mitgeteilt, sodass der Nutzer nach dem
+Verlassen der Zahlungsseite auf die passende Seite der Anwendung
+zurückgeführt wird. Beide Seiten sind an eine gültige Sitzung
+gebunden, da der Ausgang einer Zahlung einem bestimmten Nutzer
+zugeordnet ist.
+ 
+Damit Anbieter Zahlungen empfangen können, nutzt \textit{Bazario} das
+Konzept verbundener Konten. Die Plattform unterhält ein eigenes Konto
+beim Zahlungsdienst; jedem Verkäufer und jedem Dienstleister wird
+darunter ein Unterkonto zugeordnet. Dieses Unterkonto wird aus der
+Anwendung heraus angelegt, sodass der Anbieter kein eigenes Konto
+einrichten und verknüpfen muss. Auf dieser Grundlage lässt sich der
+Zahlungsbetrag automatisiert aufteilen: Ein Anteil verbleibt als
+Provision bei der Plattform, der übrige Betrag wird dem Anbieter
+gutgeschrieben (vgl. Abschnitt~\ref{subsec:marktplatztypen}).
+ 
+Voraussetzung für eine Gutschrift ist ein vollständig eingerichtetes
+Unterkonto einschließlich Identitätsprüfung. Solange diese Prüfung
+nicht abgeschlossen ist, weist die Anwendung den Anbieter darauf hin
+und zeigt weder Guthaben noch Transaktionen an. Die Einnahmenübersicht
+stellt anschließend den Verbindungsstatus, das verfügbare Guthaben und
+die noch ausstehenden Beträge dar. Die Auszahlung selbst wird über das
+Administrationsdashboard des Backends ausgelöst und ist damit nicht
+Gegenstand dieser Arbeit (vgl. Abschnitt~\ref{sec:abgrenzung}).
 
 
 \subsection{Anbieter- und Verkäufer-Dashboard}

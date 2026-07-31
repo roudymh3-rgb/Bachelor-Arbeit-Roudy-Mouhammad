@@ -372,7 +372,104 @@ Stelle auf andere Bereiche der Anwendung auswirken.
 % Checkout inhaltlich zusammengehoeren.
 
 \subsection{Stripe-Integration im Frontend}
-% TODO: Weiterleitung auf Stripe-Checkout-Seite, Rückleitung auf Erfolgs-/Abbruchseite (checkout/success, checkout/cancel).
+Die Umsetzung des in Abschnitt~\ref{subsec:warenkorb_konzept}
+beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend: das
+Auslösen des Checkouts im Warenkorb und die Verarbeitung des Ergebnisses
+auf den beiden Rückleitungsseiten. Dazwischen liegt eine Folge von
+Schritten, an denen Frontend, Backend und Zahlungsdienst beteiligt sind;
+Abbildung~\ref{fig:checkout_ablauf} stellt sie dar.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{Bilder/abb_checkout_ablauf.png}
+\caption{Ablauf der Zahlung vom Auslösen des Checkouts bis zur
+Rückleitung in die Anwendung}
+\label{fig:checkout_ablauf}
+\end{figure}
+ 
+Vom Frontend gehen dabei nur drei Anfragen aus: das Anlegen des
+Auftrags, das Hinzufügen der Positionen und das Anfordern der
+Zahlungssitzung. Die Verständigung mit dem Zahlungsdienst erfolgt
+vollständig im Backend.
+ 
+\subsubsection*{Auslösen des Checkouts}
+ 
+Die Schaltfläche in der Warenkorbübersicht ruft eine Funktion auf, die
+zunächst den Anmeldestatus prüft. Ist der Nutzer nicht angemeldet, wird
+über den in Abschnitt~\ref{subsec:state-management-konzept}
+beschriebenen \acs{UI}-Store der Anmeldedialog geöffnet und die
+Funktion verlassen; der Warenkorb bleibt unverändert. Andernfalls wird
+die eigentliche Checkout-Operation ausgeführt.
+ 
+Diese ist als Mutation umgesetzt, da sie den Datenbestand auf dem
+Server verändert und nicht lediglich Daten abruft (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}). Sie durchläuft drei
+Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag angelegt,
+dessen Kennung das Backend zurückgibt. Anschließend wird für jede
+Position des Warenkorbs eine weitere Anfrage gestellt, die die Position
+diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung angefordert;
+das Backend liefert daraufhin die Adresse der Zahlungsseite zurück, auf
+die das Frontend den Browser weiterleitet.
+ 
+Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
+ausgelagert, da sich die zu übertragenden Angaben je nach Positionstyp
+unterscheiden: Für ein Produkt genügen Kennung und Menge, während eine
+Dienstleistungsbuchung zusätzlich den gewählten Termin enthält. Die
+Fallunterscheidung liegt damit nicht in der Mutation selbst, die
+dadurch auf ihre drei Schritte beschränkt bleibt.
+ 
+\subsubsection*{Verarbeitung des Zahlungsergebnisses}
+ 
+Nach Abschluss der Zahlung führt der Zahlungsdienst den Nutzer auf eine
+der beiden Rückleitungsseiten zurück. Die Erfolgsseite ruft die
+Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an. Vor
+der Darstellung führt sie jedoch eine Folge von Nebenwirkungen aus, die
+in einem Effekt gekapselt sind.
+ 
+Der Effekt prüft zunächst, ob die Zahlung tatsächlich erfolgt ist, und
+bricht andernfalls ab. Erst danach wird der Warenkorb geleert. Dieser
+Zeitpunkt ist bewusst gewählt: Ein Warenkorb darf nicht bereits beim
+Auslösen des Checkouts geleert werden, da die Zahlung noch scheitern
+oder abgebrochen werden kann.
+ 
+Im Anschluss werden drei zwischengespeicherte Datenbestände für
+ungültig erklärt: die Detaildaten des betroffenen Auftrags, die Liste
+der eigenen Bestellungen und die Liste der eigenen Buchungen. Der Grund
+ist der in Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene
+Mechanismus: Nach erfolgreicher Zahlung existiert im Backend ein
+Auftrag mehr als im Cache hinterlegt, und der Status des betroffenen
+Auftrags hat sich von \textit{requires payment} auf \textit{paid}
+geändert. Ohne Invalidierung würde die Anwendung weiterhin den
+veralteten Stand anzeigen.
+ 
+\begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung
+(checkout-success-page.tsx)}, label={lst:checkout-success}]
+useEffect(() => {
+  if (!checkoutResultQuery.data?.isPaid) {
+    return
+  }
+ 
+  clearCart()
+ 
+  queryClient.invalidateQueries({ queryKey: ['order', orderId] })
+  queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] })
+  queryClient.invalidateQueries({ queryKey: ['bookings'] })
+}, [checkoutResultQuery.data, clearCart, queryClient, orderId])
+\end{lstlisting}
+ 
+Die Abbruchseite kommt demgegenüber ohne Nebenwirkungen aus. Da keine
+Zahlung stattgefunden hat, hat sich weder der Warenkorb noch der
+Datenbestand auf dem Server verändert; es gibt folglich nichts zu
+leeren und nichts zu invalidieren. Die Seite beschränkt sich darauf,
+den Abbruch zu benennen und zwei Wege anzubieten: zurück zum Warenkorb
+oder zur Bestellübersicht. Der Warenkorb bleibt dabei vollständig
+erhalten, sodass der Nutzer den Vorgang unmittelbar mit einem anderen
+Zahlungsmittel wiederholen kann.
+ 
+Beide Seiten sind als geschützte Routen eingebunden (vgl.
+Abschnitt~\ref{subsec:routing-konzept}), da das Ergebnis einer Zahlung
+einem bestimmten Nutzer zugeordnet ist und nicht durch bloßes Aufrufen
+der Adresse einsehbar sein soll.
 
 % ----------------------------------------------------------------
 \section{Anbieter- und Verkäufer-Dashboard}
