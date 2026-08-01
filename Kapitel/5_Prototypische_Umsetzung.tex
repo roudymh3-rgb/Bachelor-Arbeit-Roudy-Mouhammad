@@ -196,20 +196,37 @@ deren Verhältnis zueinander.
 \begin{lstlisting}[caption={Validierungsschema der Registrierung (register-schema.ts)}, label={lst:register-schema}]
 export const registerSchema = z
   .object({
-    name: z.string().min(1, 'Name is required.'),
-    email: z.string().email('Enter a valid email address.'),
-    phone: z.string().min(1, 'Phone is required.'),
-    password: z.string().min(6, 'Password must be at least 6 characters.'),
-    passwordConfirmation: z
+    name: z
       .string()
-      .min(1, 'Password confirmation is required.'),
+      .min(1, 'Name is required.')
+      .max(255, 'Name must be 255 characters or fewer.'),
+    age: z.union([
+      z
+        .number()
+        .int()
+        .min(12, 'Age must be at least 12.')
+        .max(100, 'Age must be 100 or less.'),
+      z.null(),
+    ]),
+    email: z.preprocess(
+      emptyToUndefined,
+      z
+        .string()
+        .min(1, 'Email is required.')
+        .email('Enter a valid email address.'),
+    ),
+    phone: z.preprocess(emptyToUndefined, z.string().optional()),
+    password: z.string().min(6, 'Password must be at least 6 characters.'),
+    password_confirmation: z
+      .string()
+      .min(6, 'Password confirmation is required.'),
   })
-  .superRefine((values, ctx) => {
-    if (values.password !== values.passwordConfirmation) {
-      ctx.addIssue({
+  .superRefine((values, context) => {
+    if (values.password !== values.password_confirmation) {
+      context.addIssue({
         code: z.ZodIssueCode.custom,
-        path: ['passwordConfirmation'],
         message: 'Passwords do not match.',
+        path: ['password_confirmation'],
       })
     }
   })
@@ -219,8 +236,15 @@ Die einzelnen Feldregeln lassen sich unabhängig voneinander prüfen.
 Die Übereinstimmung von Passwort und Bestätigung dagegen nicht, da sie
 zwei Werte zugleich betrifft; sie wird deshalb über
 \texttt{superRefine} auf der Ebene des gesamten Objekts geprüft und
-dem Bestätigungsfeld zugeordnet. Der praktische Effekt ist, dass bei
-abweichenden Eingaben gar keine Anfrage an das Backend gestellt wird.
+über die Angabe eines Pfades dem Bestätigungsfeld zugeordnet. Der
+praktische Effekt ist, dass bei abweichenden Eingaben gar keine
+Anfrage an das Backend gestellt wird.
+Zwei Felder werden zuvor über \texttt{preprocess} aufbereitet. Die
+Hilfsfunktion \texttt{emptyToUndefined} entfernt umschließende
+Leerzeichen und ersetzt eine leer gebliebene Eingabe durch
+\texttt{undefined}. Dadurch wird das Telefonfeld, das als optional
+vorgesehen ist, bei fehlender Eingabe nicht als leerer Text an das
+Backend übertragen.
  
 \begin{figure}[H]
 \centering
