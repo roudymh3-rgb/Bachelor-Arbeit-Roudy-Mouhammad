@@ -477,21 +477,21 @@ ein entsprechender Hinweis angezeigt.
 \subsection{Warenkorb, Checkout und Zahlung}
 \label{subsec:warenkorb_konzept}
 
-Der Warenkorb bildet Produkte und Dienstleistungsbuchungen in
-einem gemeinsamen Modell ab, das für beide Produkte und Dienstleistungsbuchungen eine
+Der Warenkorb bildet Positionstypen in
+einem gemeinsamen Modell ab, das für beide Positionstypen eine
 gemeinsame Basis aus Titel, Bild, Preis und Kategorie sowie
 typspezifische Zusatzdaten vorsieht; eine Dienstleistungsbuchung
 enthält zusätzlich Beginn, Ende, Zeitzone und Ort der
 Leistungserbringung. Der Warenkorb bleibt über einen erneuten
 Aufruf der Anwendung hinweg erhalten, sodass bereits
-hinzugefügte Artikelarten auch nach einem Neuladen der Seite
+hinzugefügte Positionen auch nach einem Neuladen der Seite
 bestehen bleiben. Wird ein bereits enthaltenes Produkt erneut
 hinzugefügt, erhöht sich lediglich dessen Menge; eine identische
 Dienstleistungsbuchung kann dagegen nicht doppelt hinzugefügt
 werden. Die Warenkorbseite gliedert sich in eine Übersicht der
-enthaltenen Artikelarten, getrennt nach Produkten und
+enthaltenen Positionen, getrennt nach Produkten und
 Dienstleistungen, sowie eine Zusammenfassung mit Anzahl je
-Artikelarten und Zwischensumme.
+Positionstyp und Zwischensumme.
 
 Der Checkout setzt eine angemeldete Sitzung voraus. Ist der Nutzer
 nicht angemeldet, öffnet sich der in
@@ -503,13 +503,13 @@ seine Bestellungen zu ermöglichen.
  
 Ein Auftrag entsteht bereits vor der Zahlung. Mit dem Auslösen des
 Checkouts legt das Backend einen Auftrag mit dem Status
-\textit{requires payment} an, ergänzt ihn um die Artikelarten des
+\textit{requires payment} an, ergänzt ihn um die Positionen des
 Warenkorbs und fordert anschließend eine Zahlungssitzung an. Bricht
 der Nutzer die Zahlung ab, bleibt der Auftrag unbezahlt bestehen und
 kann später über die Bestellübersicht abgeschlossen werden. Der
 Warenkorb bleibt in diesem Fall unverändert erhalten, damit ein
 abgebrochener Vorgang nicht zum Verlust der bereits
-zusammengestellten Artikelarten führt.
+zusammengestellten Positionen führt.
  
 Von den in Abschnitt~\ref{subsec:online-zahlung} beschriebenen
 Einbindungsvarianten nutzt \textit{Bazario} die gehostete
