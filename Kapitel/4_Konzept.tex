@@ -478,57 +478,50 @@ ein entsprechender Hinweis angezeigt.
 \label{subsec:warenkorb_konzept}
 
 Der Warenkorb bildet Produkte und Dienstleistungsbuchungen in
-einem gemeinsamen Modell ab, das für beide Positionstypen eine
+einem gemeinsamen Modell ab, das für beide Produkte und Dienstleistungsbuchungen eine
 gemeinsame Basis aus Titel, Bild, Preis und Kategorie sowie
 typspezifische Zusatzdaten vorsieht; eine Dienstleistungsbuchung
 enthält zusätzlich Beginn, Ende, Zeitzone und Ort der
 Leistungserbringung. Der Warenkorb bleibt über einen erneuten
 Aufruf der Anwendung hinweg erhalten, sodass bereits
-hinzugefügte Positionen auch nach einem Neuladen der Seite
+hinzugefügte Artikelarten auch nach einem Neuladen der Seite
 bestehen bleiben. Wird ein bereits enthaltenes Produkt erneut
 hinzugefügt, erhöht sich lediglich dessen Menge; eine identische
 Dienstleistungsbuchung kann dagegen nicht doppelt hinzugefügt
 werden. Die Warenkorbseite gliedert sich in eine Übersicht der
-enthaltenen Positionen, getrennt nach Produkten und
+enthaltenen Artikelarten, getrennt nach Produkten und
 Dienstleistungen, sowie eine Zusammenfassung mit Anzahl je
-Positionstyp und Zwischensumme.
+Artikelarten und Zwischensumme.
 
 Der Checkout setzt eine angemeldete Sitzung voraus. Ist der Nutzer
 nicht angemeldet, öffnet sich der in
 Abschnitt~\ref{subsec:auth-onboarding} beschriebene Anmeldedialog,
-bevor der Vorgang fortgesetzt wird. Diese Einschränkung ist
-begründet: Die Plattform muss den Vorgang einem Nutzer zuordnen
-können, um ihn nachverfolgbar zu machen, dem Anbieter mitzuteilen, wer
-bestellt hat, und dem Kunden die Einsicht in seine Bestellungen zu
-ermöglichen. Bei Verkaufsplattformen, die einen Kauf ohne Anmeldung
-zulassen, wird die Zahlung über die Plattform selbst abgewickelt, die
-dabei zwangsläufig die Daten des Kunden erhält. In \textit{Bazario}
-werden Zahlungsdaten dagegen ausschließlich an den Zahlungsdienst
-übermittelt (vgl. Abschnitt~\ref{subsec:online-zahlung}); ohne
-Anmeldung läge der Plattform daher keinerlei Information über den
-Vorgang vor.
+bevor der Vorgang fortgesetzt wird. Die Plattform muss den Vorgang
+einem Nutzer zuordnen können, um ihn nachverfolgbar zu machen, dem
+Anbieter mitzuteilen, wer bestellt hat, und dem Kunden die Einsicht in
+seine Bestellungen zu ermöglichen.
  
 Ein Auftrag entsteht bereits vor der Zahlung. Mit dem Auslösen des
 Checkouts legt das Backend einen Auftrag mit dem Status
-\textit{requires payment} an, ergänzt ihn um die Positionen des
+\textit{requires payment} an, ergänzt ihn um die Artikelarten des
 Warenkorbs und fordert anschließend eine Zahlungssitzung an. Bricht
 der Nutzer die Zahlung ab, bleibt der Auftrag unbezahlt bestehen und
 kann später über die Bestellübersicht abgeschlossen werden. Der
 Warenkorb bleibt in diesem Fall unverändert erhalten, damit ein
 abgebrochener Vorgang nicht zum Verlust der bereits
-zusammengestellten Positionen führt.
+zusammengestellten Artikelarten führt.
  
-Für die Zahlungsabwicklung selbst bestehen grundsätzlich zwei Wege.
-Entweder wickelt die Plattform die Zahlung eigenständig ab und
-benötigt dafür eine Anbindung an Banken und Zahlungsdienstleister,
-wobei sämtliche Zahlungsdaten über die eigene Infrastruktur laufen und
-den entsprechenden regulatorischen Anforderungen unterliegen. Oder sie
-nutzt einen externen Anbieter, der diese Anbindung bereits
-bereitstellt. \textit{Bazario} verwendet den zweiten Weg über die von
-Stripe gehostete Zahlungsseite (vgl.
-Abschnitt~\ref{subsec:online-zahlung}). Das Frontend gestaltet damit
+Von den in Abschnitt~\ref{subsec:online-zahlung} beschriebenen
+Einbindungsvarianten nutzt \textit{Bazario} die gehostete
+Zahlungsseite. Das Frontend gestaltet damit
 keine eigenen Zahlungsformulare, und sensible Kartendaten erreichen
 die Plattform zu keinem Zeitpunkt.
+Darin liegt zugleich die Begründung für die
+eingangs genannte Anmeldepflicht: Plattformen, die einen Kauf ohne
+Anmeldung zulassen, wickeln die Zahlung selbst ab und erhalten dabei
+zwangsläufig die Daten des Kunden. Bei \textit{Bazario} gehen diese
+Daten ausschließlich an den Zahlungsdienst; ohne Anmeldung läge der
+Plattform daher keinerlei Information über den Vorgang vor.
  
 Dieser Weg hat eine Konsequenz für den Entwurf: Sobald der Nutzer zur
 Zahlung auf die Seite des Anbieters wechselt, verliert die Plattform
@@ -577,11 +570,50 @@ Gegenstand dieser Arbeit (vgl. Abschnitt~\ref{sec:abgrenzung}).
 \subsection{Anbieter- und Verkäufer-Dashboard}
 \label{subsec:verkaeufer_dashboard_konzept}
 
-Der Zugang zum Dashboard erfolgt über die Kontoübersicht (vgl.
-Abschnitt~\ref{subsec:auth-onboarding}), die zusätzlich zu den
-dort beschriebenen Auth-bezogenen Inhalten zusammenfassende
-Kennzahlen zu Bestellungen und Buchungen sowie Verweise auf die
-Dienstleistungs- und Verfügbarkeitsverwaltung bereitstellt.
+Die Kontoseite bildet den zentralen Einstiegspunkt für alle
+angemeldeten Nutzer. Sie ergänzt die in
+Abschnitt~\ref{subsec:auth-onboarding} beschriebenen Angaben zur
+Sitzung um den Überblick über laufende Vorgänge und den Zugang zu den
+rollenspezifischen Funktionen. Dafür gliedert sie sich in zwei
+Spalten: links der Stand der eigenen Vorgänge, rechts die verfügbaren
+Werkzeuge.
+Die rechte Spalte ist nach Rollen gegliedert, nicht nach Funktionen.
+Jede zugewiesene Rolle erhält einen eigenen Arbeitsbereich; ein
+Dienstleister sieht folglich einen Anbieter- und einen Kundenbereich
+untereinander, da er nach dem Rollenmodell aus
+Abschnitt~\ref{sec:rollenmodell} zugleich Kunde ist. Der
+Anbieterbereich führt zur Verwaltung von Dienstleistungen und
+Verfügbarkeiten, zu den eingegangenen Buchungen sowie zur Anbindung an
+den Zahlungsdienst und zur Einnahmenübersicht (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}), der Kundenbereich zur
+eigenen Bestellhistorie und zur Verfolgung eigener Buchungen; darunter
+folgen rollenunabhängige Funktionen wie Passwortänderung,
+Rollenwechselantrag und Kontolöschung. Nicht zugewiesene Rollen
+erzeugen keinen Arbeitsbereich, sodass die Oberfläche ausschließlich
+die tatsächlich verfügbaren Funktionen zeigt. Damit wird die in
+Abschnitt~\ref{subsec:rbac} beschriebene rollenbasierte
+Zugriffskontrolle auf der Ebene der Benutzerführung umgesetzt.
+ 
+Die linke Spalte trennt entsprechend die Vorgänge, die andere Nutzer
+beim Anbieter ausgelöst haben, von dessen eigenen Bestellungen;
+andernfall würden in einer Liste Vorgänge nebeneinander angezeigt werden, bei denen
+der Nutzer einmal Anbieter und einmal Kunde ist. Beide Listen zeigen
+nur die neuesten Einträge und verweisen für den vollständigen Bestand
+auf eine eigene Seite.
+ 
+Zu jedem Eintrag wird der aktuelle Zustand angezeigt, bei Buchungen
+der Bearbeitungsstand, bei Bestellungen der Zahlungsstatus und beim
+Zahlungsdienst der Verbindungszustand, und daneben genau die Aktion,
+die in diesem Zustand möglich ist, etwa das Bestätigen einer
+angefragten Buchung oder das Nachholen einer offenen Zahlung. Der
+Systemzustand ist damit erkennbar, ohne dass eine Detailansicht
+geöffnet werden muss (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+ 
+Die Kontolöschung ist als eigener, farblich abgesetzter Bereich
+angeordnet und benennt ihre Folgen vorab: Das Konto wird dauerhaft
+deaktiviert, während abgeschlossene Bestellungen und die zugehörigen
+Nachweise erhalten bleiben.
 
 Dienstleister verwalten ihre Verfügbarkeit über feste
 Arbeitszeiten sowie einzelne Abwesenheitszeiträume. Für jeden

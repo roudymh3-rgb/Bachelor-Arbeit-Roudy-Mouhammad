@@ -168,69 +168,92 @@ noch kurz referenziert.
 
 \subsection{Registrierung und Login}
 \label{subsec:impl_registrierung_login}
-
-Die Umsetzung von Registrierung und Login folgt dem in
-Abschnitt~\ref{subsec:auth-onboarding} beschriebenen Konzept: Die
-Registrierung wird als eigenständige Seite realisiert, da hier
-mehr Eingabefelder und eine umfangreichere Interaktion mit dem
-Nutzer nötig sind, während der Login als Dialog umgesetzt ist, der
-von jeder Stelle der Anwendung aus geöffnet werden kann, ohne die
-aktuelle Seite zu verlassen. Beide Formulare nutzen
-react-hook-form zusammen mit Zod-Schemata zur clientseitigen
-Validierung (vgl. Abschnitt~\ref{subsec:formulare-validierung}); serverseitig gemeldete Fehler werden dem betroffenen
-Feld zugeordnet, unspezifische Fehler als allgemeine Meldung
-angezeigt. Während der Bearbeitung wird die Absende-Schaltfläche
-deaktiviert, um ein mehrfaches Absenden zu verhindern. Verläuft
-die Anfrage erfolgreich, wird die Session im globalen
-Authentifizierungszustand gespeichert; beim Login schließt sich
-der Dialog automatisch, bei der Registrierung erfolgt eine
-Weiterleitung auf die Startseite.
-
-\subsection{Token-Verwaltung und Session-Handling}
-\label{subsec:impl_token_session}
-
-Die Session der Anwendung ist als eigenes Modell definiert, das
-Zugriffstoken, Nutzerdaten und die zugewiesenen Rollen als Liste
-enthält, da ein Nutzer mehrere Rollen gleichzeitig besitzen kann.
-Sie wird über einen zentralen Zustand-Store reaktiv bereitgestellt
-und im localStorage des Browsers gespeichert, um den Anmeldestatus
-über Neuladen und erneute Besuche hinweg zu erhalten.
-Listing~\ref{lst:auth-store-state} zeigt die Struktur dieses
-Stores sowie dessen Erzeugung über die \texttt{create}-Funktion
-der Bibliothek Zustand.
-
-\begin{lstlisting}[caption={Struktur und Erzeugung des Auth-Stores (auth-store.ts)}, label={lst:auth-store-state}]
-import { create } from 'zustand'
-
-interface AuthStoreState {
-  session: AuthSession | null
-  isAuthenticated: boolean
-  isBootstrapping: boolean
-  setSession: (session: AuthSession) => void
-  setBootstrapping: (isBootstrapping: boolean) => void
-  syncVerifiedUser: (user: User) => void
-  clearSession: () => void
-}
-
-export const useAuthStore = create<AuthStoreState>((set, get) => ({
-  // ...
-}))
+ 
+Die Umsetzung folgt dem in Abschnitt~\ref{subsec:auth-onboarding}
+beschriebenen Konzept: Die Registrierung ist eine eigenständige Seite,
+da sie mehr Eingabefelder erfordert, während der Login als Dialog
+umgesetzt ist, der von jeder Stelle der Anwendung aus geöffnet werden
+kann.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Bilder/screenshot_login_dialog.png}
+\caption{Login-Dialog mit feldbezogenen Fehlermeldungen}
+\label{fig:login_dialog}
+\end{figure}
+ 
+Der Dialog überlagert die aufrufende Seite, ohne sie zu ersetzen. Der
+Nutzer bleibt damit im Zusammenhang seiner bisherigen Handlung, etwa
+im Warenkorb oder auf einer Produktdetailseite, und kehrt nach der
+Anmeldung ohne Umweg dorthin zurück.
+ 
+Beide Formulare werden clientseitig über \texttt{react-hook-form} in
+Verbindung mit einem Zod-Schema validiert (vgl.
+Abschnitt~\ref{subsec:formulare-validierung}). Das Schema der
+Registrierung prüft dabei nicht nur einzelne Felder, sondern auch
+deren Verhältnis zueinander.
+ 
+\begin{lstlisting}[caption={Validierungsschema der Registrierung (register-schema.ts)}, label={lst:register-schema}]
+export const registerSchema = z
+  .object({
+    name: z.string().min(1, 'Name is required.'),
+    email: z.string().email('Enter a valid email address.'),
+    phone: z.string().min(1, 'Phone is required.'),
+    password: z.string().min(6, 'Password must be at least 6 characters.'),
+    passwordConfirmation: z
+      .string()
+      .min(1, 'Password confirmation is required.'),
+  })
+  .superRefine((values, ctx) => {
+    if (values.password !== values.passwordConfirmation) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['passwordConfirmation'],
+        message: 'Passwords do not match.',
+      })
+    }
+  })
 \end{lstlisting}
-
-Ein gespeicherter Token wird nicht ungeprüft als gültig
-angenommen: Eine Bootstrap-Komponente validiert ihn aktiv beim
-Backend über \texttt{useMeQuery} (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}). Liefert diese Anfrage
-einen Fehler, gilt der Token als ungültig und die Session wird
-über den Store verworfen; liefert sie hingegen aktualisierte
-Nutzerdaten, werden diese im Store synchronisiert, sodass lokal
-gespeicherte und serverseitig bestätigte Daten konsistent
-bleiben. Liegt noch keine Antwort vor, wird zunächst die lokal
-gespeicherte Session verwendet, damit die Oberfläche sofort
-angezeigt werden kann. Auf dieser Grundlage entscheidet eine
-geschützte Routenkomponente, ob der Anmeldestatus noch ermittelt
-wird, der Nutzer zur Startseite weitergeleitet oder der
-geschützte Inhalt angezeigt wird.
+ 
+Die einzelnen Feldregeln lassen sich unabhängig voneinander prüfen.
+Die Übereinstimmung von Passwort und Bestätigung dagegen nicht, da sie
+zwei Werte zugleich betrifft; sie wird deshalb über
+\texttt{superRefine} auf der Ebene des gesamten Objekts geprüft und
+dem Bestätigungsfeld zugeordnet. Der praktische Effekt ist, dass bei
+abweichenden Eingaben gar keine Anfrage an das Backend gestellt wird.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.55\textwidth]{Bilder/screenshot_registrierung_fehler.png}
+\caption{Registrierungsformular mit einem Formatfehler im
+E-Mail-Feld und einer feldübergreifenden Abweichung zwischen Passwort
+und Bestätigung}
+\label{fig:registrierung_fehler}
+\end{figure}
+ 
+Die Meldungen stehen unmittelbar unter dem betroffenen Feld, benennen
+die verletzte Regel in natürlicher Sprache und nicht als Fehlercode,
+und bleiben stehen, bis die Eingabe korrigiert ist. Damit ist
+erkennbar, welches Feld die Ursache ist und was zu tun wäre, ohne dass
+der Nutzer die Regel erraten muss (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}). Die übrigen Eingaben
+bleiben dabei erhalten, sodass ein fehlgeschlagener Versuch nicht zum
+erneuten Ausfüllen des gesamten Formulars zwingt.
+ 
+Nicht alle Prüfungen können jedoch im Frontend stattfinden. Ob eine
+E-Mail-Adresse bereits vergeben ist oder ob ein eingegebenes Passwort
+dem hinterlegten entspricht, kann nur das Backend beantworten.
+Serverseitig gemeldete Fehler werden deshalb demselben Feld zugeordnet
+wie clientseitige und in derselben Form dargestellt, sodass für den
+Nutzer kein Unterschied erkennbar ist, an welcher Stelle die Prüfung
+erfolgt ist; nicht zuordenbare Fehler erscheinen als allgemeine
+Meldung über dem Formular.
+ 
+Während einer laufenden Anfrage wird die Absende-Schaltfläche
+deaktiviert, um ein mehrfaches Absenden zu verhindern. Verläuft die
+Anfrage erfolgreich, wird die Session im Authentifizierungszustand
+gespeichert; beim Login schließt sich der Dialog, bei der
+Registrierung erfolgt eine Weiterleitung auf die Startseite.
 
 \subsection{Rollen-Upgrade-Antrag}
 \label{subsec:impl_rollen_upgrade}
@@ -373,87 +396,93 @@ Stelle auf andere Bereiche der Anwendung auswirken.
 
 \subsection{Stripe-Integration im Frontend}
 \label{subsec:impl_stripe}
+ 
 Die Umsetzung des in Abschnitt~\ref{subsec:warenkorb_konzept}
 beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend: das
-Auslösen des Checkouts im Warenkorb und die Verarbeitung des Ergebnisses
-auf den beiden Rückleitungsseiten. Dazwischen liegt eine Folge von
-Schritten, an denen Frontend, Backend und Zahlungsdienst beteiligt sind;
-Abbildung~\ref{fig:checkout_ablauf} stellt sie dar.
+Auslösen des Checkouts im Warenkorb und die Verarbeitung des
+Ergebnisses auf den beiden Rückleitungsseiten. Dazwischen liegt eine
+Folge von Schritten, an denen Frontend, Backend und Zahlungsdienst
+beteiligt sind; Abbildung~\ref{fig:checkout_ablauf} stellt sie dar.
  
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.7\textwidth]{Bilder/abb_checkout_ablauf.png}
+\includegraphics[width=0.8\textwidth]{Bilder/abb_checkout_ablauf.png}
 \caption{Ablauf der Zahlung vom Auslösen des Checkouts bis zur
 Rückleitung in die Anwendung}
 \label{fig:checkout_ablauf}
 \end{figure}
  
 Vom Frontend gehen dabei nur drei Anfragen aus: das Anlegen des
-Auftrags, das Hinzufügen der Positionen und das Anfordern der
+Auftrags, das Hinzufügen der Artikelarten und das Anfordern der
 Zahlungssitzung. Die Verständigung mit dem Zahlungsdienst erfolgt
 vollständig im Backend.
  
-\subsubsection*{Auslösen des Checkouts}
- 
-Die Schaltfläche in der Warenkorbübersicht ruft eine Funktion auf, die
-zunächst den Anmeldestatus prüft. Ist der Nutzer nicht angemeldet, wird
-über den in Abschnitt~\ref{subsec:state-management-konzept}
-beschriebenen \acs{UI}-Store der Anmeldedialog geöffnet und die
-Funktion verlassen; der Warenkorb bleibt unverändert. Andernfalls wird
-die eigentliche Checkout-Operation ausgeführt.
+Ausgelöst wird der Vorgang über die Schaltfläche in der
+Warenkorbübersicht. Die zugehörige Funktion prüft zunächst den
+Anmeldestatus: Ist der Nutzer nicht angemeldet, wird über den in
+Abschnitt~\ref{subsec:state-management-konzept} beschriebenen
+\acs{UI}-Store der Anmeldedialog geöffnet und die Funktion verlassen,
+wobei der Warenkorb unverändert bleibt. Andernfalls wird die
+eigentliche Checkout-Operation ausgeführt.
  
 Diese ist als Mutation umgesetzt, da sie den Datenbestand auf dem
 Server verändert und nicht lediglich Daten abruft (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Sie durchläuft drei
-Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag angelegt,
-dessen Kennung das Backend zurückgibt. Anschließend wird für jede
-Position des Warenkorbs eine weitere Anfrage gestellt, die die Position
-diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung angefordert;
-das Backend liefert daraufhin die Adresse der Zahlungsseite zurück, auf
-die das Frontend den Browser weiterleitet.
+Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag
+angelegt, dessen Kennung das Backend zurückgibt. Anschließend wird für
+jede Position des Warenkorbs eine weitere Anfrage gestellt, die die
+Position diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung
+angefordert; das Backend liefert daraufhin die Adresse der
+Zahlungsseite zurück, auf die das Frontend den Browser weiterleitet.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Bilder/screenshot_stripe_zahlungsseite.png}
+\caption{Von Stripe bereitgestellte Zahlungsseite, auf die das
+Frontend nach dem Auslösen des Checkouts weiterleitet}
+\label{fig:stripe_zahlungsseite}
+\end{figure}
  
-Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
-ausgelagert, da sich die zu übertragenden Angaben je nach Positionstyp
-unterscheiden: Für ein Produkt genügen Kennung und Menge, während eine
-Dienstleistungsbuchung zusätzlich den gewählten Termin enthält. Die
-Fallunterscheidung liegt damit nicht in der Mutation selbst, die
-dadurch auf ihre drei Schritte beschränkt bleibt.
+Die Aufbereitung der einzelnen Position ist dabei in eine eigene
+Funktion ausgelagert, da sich die zu übertragenden Angaben je nach
+Positionstyp unterscheiden: Für ein Produkt genügen Kennung und Menge,
+während eine Dienstleistungsbuchung zusätzlich den gewählten Termin
+enthält. Die Fallunterscheidung liegt damit nicht in der Mutation
+selbst, die dadurch auf ihre drei Schritte beschränkt bleibt.
  
-\subsubsection*{Verarbeitung des Zahlungsergebnisses}
- 
-Nach Abschluss der Zahlung führt der Zahlungsdienst den Nutzer auf eine
-der beiden Rückleitungsseiten zurück. Die Erfolgsseite ruft die
+Nach Abschluss der Zahlung führt der Zahlungsdienst den Nutzer auf
+eine der beiden Rückleitungsseiten zurück. Die Erfolgsseite ruft die
 Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an.
 Darunter bietet sie zwei Wege in die jeweils passende Übersicht an,
 getrennt nach Bestellungen und Buchungen, da ein Auftrag beide
-Positionstypen enthalten kann. Die Handlungsfolge des Checkouts wird
+Produkte und Dienstleistungsbuchungen enthalten kann. Die Handlungsfolge des Checkouts wird
 damit erkennbar abgeschlossen und zugleich der nächste sinnvolle
 Schritt angeboten (vgl.
-Abschnitt~\ref{subsec:gestaltungsprinzipien}). Vor der Darstellung
-führt die Seite jedoch eine Folge von Nebenwirkungen aus, die in
-einem Effekt gekapselt sind.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Bilder/screenshot_checkout_success.png}
 \caption{Bestätigungsseite nach erfolgreicher Zahlung}
 \label{fig:checkout_success}
 \end{figure}
+
  
-Der Effekt prüft zunächst, ob die Zahlung tatsächlich erfolgt ist, und
-bricht andernfalls ab. Erst danach wird der Warenkorb geleert. Dieser
+Vor der Darstellung führt die Seite jedoch eine Folge von
+Nebenwirkungen aus, die in einem Effekt gekapselt sind. Der Effekt
+prüft zunächst, ob die Zahlung tatsächlich erfolgt ist, und bricht
+andernfalls ab. Erst danach wird der Warenkorb geleert. Dieser
 Zeitpunkt ist bewusst gewählt: Ein Warenkorb darf nicht bereits beim
 Auslösen des Checkouts geleert werden, da die Zahlung noch scheitern
 oder abgebrochen werden kann.
  
 Im Anschluss werden drei zwischengespeicherte Datenbestände für
 ungültig erklärt: die Detaildaten des betroffenen Auftrags, die Liste
-der eigenen Bestellungen und die Liste der eigenen Buchungen. Der Grund
-ist der in Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene
-Mechanismus: Nach erfolgreicher Zahlung existiert im Backend ein
-Auftrag mehr als im Cache hinterlegt, und der Status des betroffenen
-Auftrags hat sich von \textit{requires payment} auf \textit{paid}
-geändert. Ohne Invalidierung würde die Anwendung weiterhin den
-veralteten Stand anzeigen.
+der eigenen Bestellungen und die Liste der eigenen Buchungen. Der
+Grund ist der in Abschnitt~\ref{subsec:impl_tanstackquery}
+beschriebene Mechanismus: Nach erfolgreicher Zahlung existiert im
+Backend ein Auftrag mehr als im Cache hinterlegt, und der Status des
+betroffenen Auftrags hat sich von \textit{requires payment} auf
+\textit{paid} geändert. Ohne Invalidierung würde die Anwendung
+weiterhin den veralteten Stand anzeigen.
  
 \begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung
 (checkout-success-page.tsx)}, label={lst:checkout-success}]
@@ -473,30 +502,27 @@ useEffect(() => {
 Die Abbruchseite kommt demgegenüber ohne Nebenwirkungen aus. Da keine
 Zahlung stattgefunden hat, hat sich weder der Warenkorb noch der
 Datenbestand auf dem Server verändert; es gibt folglich nichts zu
-leeren und nichts zu invalidieren. Die Seite beschränkt sich darauf,
-den Abbruch zu benennen und zwei Wege anzubieten: zurück zum Warenkorb
+leeren und nichts zu invalidieren. Sie beschränkt sich darauf, den
+Abbruch zu benennen und zwei Wege anzubieten: zurück zum Warenkorb
 oder zur Bestellübersicht. Der Warenkorb bleibt dabei vollständig
 erhalten, sodass der Nutzer den Vorgang unmittelbar mit einem anderen
 Zahlungsmittel wiederholen kann.
  
-Beide Seiten sind als geschützte Routen eingebunden (vgl.
-Abschnitt~\ref{subsec:routing-konzept}), da das Ergebnis einer Zahlung
-einem bestimmten Nutzer zugeordnet ist und nicht durch bloßes Aufrufen
-der Adresse einsehbar sein soll.
-\subsubsection*{Erprobung}
+Beide Seiten sind darüber hinaus als geschützte Routen eingebunden
+(vgl. Abschnitt~\ref{subsec:routing-konzept}), da das Ergebnis einer
+Zahlung einem bestimmten Nutzer zugeordnet ist und nicht durch bloßes
+Aufrufen der Adresse einsehbar sein soll.
  
-Der Zahlungsdienst stellt für die Entwicklung eine Testumgebung mit
+Für die Erprobung stellt der Zahlungsdienst eine Testumgebung mit
 Kartennummern bereit, die jeweils ein bestimmtes Verhalten auslösen:
 erfolgreiche Zahlung, unzureichende Deckung, abgelaufene Karte sowie
 allgemeine Ablehnung. Damit ließen sich die Rückleitungswege prüfen,
-ohne echte Zahlungen auszulösen.
- 
-Dabei zeigte sich, dass sämtliche Ablehnungen bereits auf der Seite des
-Zahlungsdienstes abgefangen werden und dort zur Eingabe eines anderen
-Zahlungsmittels führen. Die im Frontend vorgesehene Abbruchseite wird
-folglich nur erreicht, wenn der Nutzer den Vorgang selbst abbricht. Ein
-Fehlerfall aus dem Backend heraus bleibt damit auf Ausnahmesituationen
-beschränkt.
+ohne echte Zahlungen auszulösen. Dabei zeigte sich, dass sämtliche
+Ablehnungen bereits auf der Seite des Zahlungsdienstes abgefangen
+werden und dort zur Eingabe eines anderen Zahlungsmittels führen. Die
+im Frontend vorgesehene Abbruchseite wird folglich nur erreicht, wenn
+der Nutzer den Vorgang selbst abbricht; ein Fehlerfall aus dem Backend
+heraus bleibt damit auf Ausnahmesituationen beschränkt.
 
 % ----------------------------------------------------------------
 \section{Anbieter- und Verkäufer-Dashboard}
@@ -504,31 +530,36 @@ beschränkt.
 
 \subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
 \label{subsec:impl_dienstleistungsverwaltung}
-
+ 
 Dieser Abschnitt beschreibt sowohl die Verwaltung einzelner
-Dienstleistungsangebote als auch die Verwaltung der
-Verfügbarkeit, die als eigener Funktionsbereich
-\texttt{provider-availability/} umgesetzt ist und derselben
-internen Struktur wie die übrigen Funktionsbereiche folgt (vgl.
-Abschnitt~\ref{subsec:komponentenarchitektur}).
-
-% TODO (Roudy): Hier kommt der Screenshot von "My services"
-% hin (Kartenuebersicht der eigenen Dienstleistungen). Screenshots
-% werden erst kurz vor Abgabe final gemacht, siehe Meeting
-% vom 17.07.2026.
-
-Die eigenen Dienstleistungen werden über
-\texttt{useMyServicesQuery} abgerufen und seitenweise
-dargestellt; Seite und Ergebnisse pro Seite sind, wie bereits
-beim Produktlisting beschrieben (vgl.
-Abschnitt~\ref{subsec:impl_produktlisting}), Teil des Query
-Keys. Das Löschen einer Dienstleistung invalidiert dabei
-mehrere zusammenhängende Cache-Einträge zugleich.
-
+Dienstleistungsangebote als auch die Verwaltung der Verfügbarkeit, die
+als eigener Funktionsbereich \texttt{provider-availability/} umgesetzt
+ist und derselben internen Struktur wie die übrigen Funktionsbereiche
+folgt (vgl. Abschnitt~\ref{subsec:komponentenarchitektur}).
+ 
+Die eigenen Dienstleistungen werden über \texttt{useMyServicesQuery}
+abgerufen und seitenweise dargestellt; Seite und Ergebnisse pro Seite
+sind, wie bereits beim Produktlisting beschrieben (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}), Teil des Query Keys. Jede
+Dienstleistung erscheint als Karte mit Kategorie, Preis, Dauer und
+Veröffentlichungsstatus; gegenüber der öffentlichen Katalogansicht
+ergänzt die Verwaltungskarte die Aktionen zum Ansehen, Bearbeiten und
+Löschen.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_my_services.png}
+\caption{Übersicht der eigenen Dienstleistungen mit den Aktionen zum Ansehen, Bearbeiten und Löschen}
+\label{fig:my_services}
+\end{figure}
+ 
+Das Löschen einer Dienstleistung invalidiert dabei mehrere
+zusammenhängende Cache-Einträge zugleich.
+ 
 \begin{lstlisting}[caption={Mutation zum Löschen einer Dienstleistung (use-delete-service-mutation.ts)}, label={lst:delete-service}]
 export function useDeleteServiceMutation() {
   const queryClient = useQueryClient()
-
+ 
   return useMutation({
     mutationFn: (serviceId: number) => deleteService(serviceId),
     onSuccess: (_result, serviceId) => {
@@ -540,67 +571,73 @@ export function useDeleteServiceMutation() {
   })
 }
 \end{lstlisting}
-
-Da eine gelöschte Dienstleistung sowohl aus der eigenen Übersicht
-als auch aus dem öffentlichen Dienstleistungskatalog und der
-Startseite verschwinden muss, werden die jeweiligen Cache-Einträge
-aller drei Bereiche gezielt invalidiert, anstatt sich auf deren
-automatisches Ablaufen zu verlassen.
-
-% TODO (Roudy): Hier kommt der Screenshot vom "Edit service"-
-% Formular hin.
-
-Beim Anlegen und Bearbeiten einer Dienstleistung werden neben
-Titel und Beschreibung, die jeweils auf Englisch und Arabisch
-erfasst werden, auch die Regeln für deren spätere Buchung
-festgelegt, darunter das Buchungsraster, die maximale Anzahl
-gleichzeitiger Buchungen sowie getrennte Fristen und Regelungen
-für Stornierung und Änderung durch den Kunden.
-
+ 
+Eine gelöschte Dienstleistung muss aus der eigenen Übersicht, aus dem
+öffentlichen Dienstleistungskatalog, aus der zugehörigen Detailseite
+und aus der Startseite zugleich verschwinden. Die Cache-Einträge aller
+vier Bereiche werden deshalb gezielt invalidiert, anstatt sich auf
+deren automatisches Ablaufen zu verlassen (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
+davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
+eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
+ 
+Beim Anlegen und Bearbeiten einer Dienstleistung werden neben Titel
+und Beschreibung, die jeweils auf Englisch und Arabisch erfasst
+werden, zugleich die Regeln für deren spätere Buchung festgelegt.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_edit_service.png}
+\caption{Formular zum Bearbeiten einer Dienstleistung mit
+zweisprachigen Inhaltsfeldern und Buchungsregeln}
+\label{fig:edit_service}
+\end{figure}
+ 
+Diese Regeln bestimmen, welche Termine die Buchungsansicht später
+anbietet: Die Dauer legt die Länge eines Termins fest, das Zeitraster
+den Abstand zwischen zwei möglichen Startzeitpunkten, und die maximale
+Anzahl gleichzeitiger Buchungen bestimmt, wie viele Kunden denselben
+Zeitraum belegen können. Hinzu kommen der Ort der Leistungserbringung
+sowie getrennte Fristen für Stornierung und Änderung, jeweils mit der
+Festlegung, wie nach Ablauf der Frist zu verfahren ist.
+ 
+Die Verfügbarkeit wird davon getrennt verwaltet, da sie nicht für eine
+einzelne Dienstleistung, sondern für alle Angebote eines Anbieters
+gemeinsam gilt.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{Bilder/screenshot_availability.png}
+\caption{Verfügbarkeitsverwaltung mit Wochenschema und einzelnen Abwesenheitszeiträumen}
+\label{fig:availability}
+\end{figure}
+ 
 Die festen Arbeitszeiten werden je Wochentag über die
-wiederverwendbare Komponente \texttt{\small WorkingHoursEditor}
-dargestellt, die für jeden Wochentag beliebig viele Zeitintervalle
-mit Start- und Endzeit entgegennimmt und es erlaubt, einzelne
-Intervalle hinzuzufügen oder zu entfernen.
-
-Das zugehörige Formular \texttt{TimeOffForm} für einzelne
-Abwesenheitszeiträume ist als eigene Komponente ausgelagert, da
-es an mehreren Stellen innerhalb des Funktionsbereichs
-wiederverwendet wird. Die Eingaben werden über ein Zod-Schema (vgl.
-Abschnitt~\ref{subsec:formulare-validierung}) validiert, bevor
-sie an das Backend übertragen werden.
-
-\begin{lstlisting}[caption={Validierungsschema für Abwesenheitszeiträume (time-off-form-schema.ts)}, label={lst:time-off-schema}]
-export const timeOffFormSchema = z.object({
-  starts_at: z.string().min(1, 'Start date and time are required.'),
-  ends_at: z.string().min(1, 'End date and time are required.'),
-  is_holiday: z.boolean(),
-  reason: z.string().trim().max(255, 'Maximum 255 characters.'),
-})
-\end{lstlisting}
-
-Das Schema stimmt dabei bewusst mit den Validierungsregeln des
-Backends überein, sodass ein Nutzer, der die
-Formularvalidierung durch eine direkte Manipulation der
-Benutzeroberfläche umgeht, spätestens bei der serverseitigen
-Prüfung denselben Regeln unterliegt.
-
+wiederverwendbare Komponente \small\texttt{WorkingHoursEditor} dargestellt,
+die für jeden Wochentag beliebig viele Zeitintervalle mit Start- und
+Endzeit entgegennimmt und es erlaubt, einzelne Intervalle hinzuzufügen
+oder zu entfernen. Ein Wochentag ohne Intervall gilt als nicht
+verfügbar.
+ 
+Das Formular \texttt{TimeOffForm} für einzelne Abwesenheitszeiträume
+ist als eigene Komponente ausgelagert, da es an mehreren Stellen
+innerhalb des Funktionsbereichs wiederverwendet wird. Seine Eingaben
+werden über ein Zod-Schema validiert (vgl.
+Abschnitt~\ref{subsec:formulare-validierung}), das bewusst mit den
+Validierungsregeln des Backends übereinstimmt, sodass ein Nutzer, der
+die Formularvalidierung durch direkte Manipulation der
+Benutzeroberfläche umgeht, spätestens bei der serverseitigen Prüfung
+denselben Regeln unterliegt.
+ 
 Der Abruf der Verfügbarkeitsdaten erfolgt über
-\texttt{useProviderAvailabilityQuery}, das Hinzufügen eines neuen
+\texttt{useProviderAvailabilityQuery}, das Hinzufügen eines
 Abwesenheitszeitraums über eine Mutation, die den zugehörigen
-Cache-Eintrag im Erfolgsfall invalidiert (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}), sodass die Liste
-automatisch aktualisiert wird. Die Liste der bereits
-eingetragenen Abwesenheitszeiträume wird nach ihrem Beginn
-sortiert angezeigt. Jeder Zeitpunkt wird dabei anhand der beim
-Anbieter hinterlegten Zeitzone formatiert, nicht anhand der
-Zeitzone des aufrufenden Endgeräts, damit Kunden die
-Verfügbarkeit unabhängig vom eigenen Standort korrekt
-einschätzen können.
-
-% TODO (Roudy): Hier kommt der Screenshot von der kompletten
-% Availability-Seite hin (Provider schedule, TimeOffForm und
-% TimeOffList in einem Bild).
+Cache-Eintrag im Erfolgsfall invalidiert, sodass die Liste automatisch
+aktualisiert wird. Die eingetragenen Zeiträume werden nach ihrem
+Beginn sortiert angezeigt und anhand der beim Anbieter hinterlegten
+Zeitzone formatiert, nicht anhand der Zeitzone des aufrufenden
+Endgeräts, damit Kunden die Verfügbarkeit unabhängig vom eigenen
+Standort korrekt einschätzen können.
 \subsection{Produktverwaltung}
 \label{subsec:impl_produktverwaltung}
 
