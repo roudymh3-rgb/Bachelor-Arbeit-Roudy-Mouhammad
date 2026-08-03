@@ -604,6 +604,73 @@ heraus bleibt damit auf Ausnahmesituationen beschränkt.
 \section{Kontobereich und rollenspezifische Funktionen}
 \label{sec:impl_seller}
 
+\subsection{Kontoseite und Arbeitsbereiche}
+\label{subsec:impl_kontoseite}
+ 
+Das in Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}
+beschriebene Konzept ist in einer einzigen Seitenkomponente
+umgesetzt. Es existiert also keine eigene Kontoseite je Rolle;
+stattdessen ermittelt die Komponente aus der Sitzung, welche Rollen
+dem angemeldeten Nutzer zugewiesen sind, und rendert die zugehörigen
+Bereiche bedingt. Die Alternative, für jede Rolle eine eigene Seite
+anzulegen, hätte den gemeinsamen Aufbau dreifach wiederholt und bei
+Nutzern mit mehreren Rollen die Frage aufgeworfen, welche der Seiten
+aufzurufen ist.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/.png}
+\caption{Kontoseite eines Nutzers ohne zusätzliche Rollen}
+\label{fig:kontoseite_kunde}
+\end{figure}
+ 
+Für einen Nutzer ohne zusätzliche Rollen zeigt die rechte Spalte
+allein den Kundenbereich, gefolgt von den rollenunabhängigen
+Funktionen und den Anträgen auf ein Rollen-Upgrade. Die linke Spalte
+enthält die eigene Bestellhistorie mit Datum, Betrag, Anzahl der
+Positionen und Zahlungsstatus.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/screenshot_kontoseite_anbieter.png}
+\caption{Kontoseite eines Nutzers mit den Rollen Seller und
+ServiceProvider}
+\label{fig:kontoseite_anbieter}
+\end{figure}
+ 
+Dieselbe Seite zeigt für einen Nutzer mit beiden anbietenden Rollen
+drei Arbeitsbereiche untereinander: den Verkäuferbereich mit der
+Produktverwaltung, den Anbieterbereich mit Dienstleistungen,
+Verfügbarkeit und eingegangenen Buchungen sowie darunter den
+Kundenbereich, den er als jeder andere Nutzer ebenfalls besitzt.
+Anbindung an den Zahlungsdienst und Einnahmenübersicht erscheinen in
+beiden anbietenden Bereichen, da sie für beide Rollen gelten.
+ 
+Die Anträge auf ein Rollen-Upgrade entfallen hier vollständig. Sie
+werden nur dann gerendert, wenn das Backend die jeweilige Rolle als
+noch verfügbar meldet. Damit zeigt die Oberfläche keine Handlung an,
+die für diesen Nutzer keine Wirkung mehr hätte.
+ 
+Auch die linke Spalte wechselt mit der Rolle. Statt der eigenen
+Bestellhistorie erscheint bei anbietenden Nutzern die
+Geschäftsaktivität mit den eingegangenen Buchungen und
+Produktbestellungen; die eigene Bestellhistorie wird darunter
+zusätzlich eingeblendet, sofern eigene Bestellungen vorliegen.
+Liegen für einen Bereich keine Einträge vor, erscheint an dessen
+Stelle ein Hinweis statt einer leeren Fläche, wie er auch auf den
+Katalogseiten verwendet wird (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}).
+ 
+Sämtliche Einträge der rechten Spalte werden über dieselbe
+wiederverwendbare Komponente dargestellt, die Titel, Beschreibung,
+Ziel und optional eine Zustandsmarkierung entgegennimmt. Aufbau und
+Verhalten aller Einträge sind dadurch nicht durch Sorgfalt bei der
+Umsetzung gleich, sondern durch Konstruktion. Die
+Zustandsmarkierung wird bislang nur beim Zahlungsdienst verwendet
+und zeigt dort an, ob das verbundene Konto eingerichtet ist. Ihre
+Daten stammen aus einer eigenen Anfrage, die ausschließlich für
+anbietende Nutzer ausgeführt wird.
+
 \subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
 \label{subsec:impl_dienstleistungsverwaltung}
  
