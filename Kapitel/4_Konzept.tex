@@ -523,12 +523,7 @@ zwangsläufig die Daten des Kunden. Bei \textit{Bazario} gehen diese
 Daten ausschließlich an den Zahlungsdienst; ohne Anmeldung läge der
 Plattform daher keinerlei Information über den Vorgang vor.
  
-Dieser Weg hat eine Konsequenz für den Entwurf: Sobald der Nutzer zur
-Zahlung auf die Seite des Anbieters wechselt, verliert die Plattform
-die unmittelbare Sicht auf den Vorgang. Sie erfährt weder, ob gezahlt
-wurde, noch von wem. Genau deshalb wird der Auftrag vorab im Backend
-angelegt und der Zahlungsstatus im Anschluss mit dem Anbieter
-abgeglichen.
+Dieser Weg hat eine Konsequenz für den Entwurf: Sobald der Nutzer zur Zahlung auf die Seite des Zahlungsdienstes wechselt, verliert die Plattform die unmittelbare Sicht auf den Vorgang. Sie erfährt weder, ob gezahlt wurde, noch von wem. Genau deshalb wird der Auftrag vorab im Backend angelegt und der Zahlungsstatus im Anschluss beim Zahlungsdienst abgefragt \cite{stripe_checkout_docs}.
  
 Die Kommunikation mit dem Zahlungsdienst erfolgt ausschließlich über
 das Backend, nicht aus dem Browser heraus. Der Grund liegt in der
@@ -567,7 +562,7 @@ Administrationsdashboard des Backends ausgelöst und ist damit nicht
 Gegenstand dieser Arbeit (vgl. Abschnitt~\ref{sec:abgrenzung}).
 
 
-\subsection{Anbieter- und Verkäufer-Dashboard}
+\subsection{Kontobereich und rollenspezifische Funktionen}
 \label{subsec:verkaeufer_dashboard_konzept}
 
 Die Kontoseite bildet den zentralen Einstiegspunkt für alle
@@ -577,44 +572,78 @@ Sitzung um den Überblick über laufende Vorgänge und den Zugang zu den
 rollenspezifischen Funktionen. Dafür gliedert sie sich in zwei
 Spalten: links der Stand der eigenen Vorgänge, rechts die verfügbaren
 Werkzeuge.
-Die rechte Spalte ist nach Rollen gegliedert, nicht nach Funktionen.
-Jede zugewiesene Rolle erhält einen eigenen Arbeitsbereich; ein
-Dienstleister sieht folglich einen Anbieter- und einen Kundenbereich
-untereinander, da er nach dem Rollenmodell aus
-Abschnitt~\ref{sec:rollenmodell} zugleich Kunde ist. Der
-Anbieterbereich führt zur Verwaltung von Dienstleistungen und
-Verfügbarkeiten, zu den eingegangenen Buchungen sowie zur Anbindung an
-den Zahlungsdienst und zur Einnahmenübersicht (vgl.
-Abschnitt~\ref{subsec:warenkorb_konzept}), der Kundenbereich zur
-eigenen Bestellhistorie und zur Verfolgung eigener Buchungen; darunter
-folgen rollenunabhängige Funktionen wie Passwortänderung,
-Rollenwechselantrag und Kontolöschung. Nicht zugewiesene Rollen
-erzeugen keinen Arbeitsbereich, sodass die Oberfläche ausschließlich
-die tatsächlich verfügbaren Funktionen zeigt. Damit wird die in
-Abschnitt~\ref{subsec:rbac} beschriebene rollenbasierte
-Zugriffskontrolle auf der Ebene der Benutzerführung umgesetzt.
+ 
+Die rechte Spalte ist dabei nach Rollen gegliedert, nicht nach
+Funktionen. Jede zugewiesene Rolle erhält einen eigenen
+Arbeitsbereich, und die Darstellung folgt dem Rollenmodell aus
+Abschnitt~\ref{sec:rollenmodell}: Sie beginnt mit dem Kundenbereich,
+den jeder Nutzer besitzt, und ergänzt ihn um die Bereiche der
+zusätzlich zugewiesenen Rollen.
+ 
+Zu jedem Eintrag der linken Spalte wird der aktuelle Zustand
+angezeigt, bei Buchungen der Bearbeitungsstand, bei Bestellungen der
+Zahlungsstatus und beim Zahlungsdienst der Verbindungszustand, und
+daneben genau die Aktion, die in diesem Zustand möglich ist, etwa das
+Bestätigen einer angefragten Buchung oder das Nachholen einer offenen
+Zahlung. Der Systemzustand ist damit erkennbar, ohne dass eine
+Detailansicht geöffnet werden muss (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+ 
+ 
+% --------------------------- KUNDE -------------------------------
+ 
+Der Kundenbereich führt zur eigenen Bestellhistorie und zur
+Verfolgung eigener Buchungen. Beide Ansichten werden getrennt
+geführt, weil sich Bestellungen und Buchungen in ihrem Zustandsumfang
+deutlich unterscheiden: Ein Produkt wird bestellt, bezahlt und
+geliefert, während eine Buchung zusätzlich einen Termin, eine
+Zeitzone und die Möglichkeit zur Stornierung oder Verlegung besitzt.
+ 
+Die Bestellübersicht führt sämtliche Aufträge des Nutzers mit
+Zahlungsstatus, Datum, Gesamtbetrag und Anzahl der Positionen auf. Da
+ein Auftrag bereits vor der Zahlung entsteht (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}), erscheinen dort auch
+unbezahlte Aufträge. Für diese bietet die Übersicht zwei Wege an: die
+Zahlung nachzuholen oder den Auftrag zu verwerfen. Ohne diese beiden
+Möglichkeiten bliebe ein abgebrochener Zahlungsvorgang als Eintrag
+bestehen, den der Nutzer weder abschließen noch entfernen könnte. Die
+Detailansicht eines Auftrags zeigt darüber hinaus die einzelnen
+Positionen und ihren jeweiligen Zustand.
+ 
+Die Buchungsübersicht führt die gebuchten Termine mit
+Bearbeitungsstand, Zeitpunkt und Ort. Zu jeder Buchung werden die
+beim Anlegen der Dienstleistung festgelegten Fristen als
+Buchungsbedingungen angezeigt, getrennt nach Stornierung und
+Verlegung. Der Nutzer erfährt damit bereits vor einer Handlung, bis
+wann sie möglich ist, und nicht erst beim Versuch. Nach Ablauf einer
+Frist wird die zugehörige Schaltfläche deaktiviert und um eine
+Erläuterung ergänzt, die den Grund und das Datum des Fristablaufs
+benennt. Die Alternative, sie auszublenden, wurde verworfen: Ein
+Nutzer, der eine erwartete Funktion nicht vorfindet, sucht sie
+zunächst und erfährt nicht, warum sie fehlt.
+ 
+Eine Stornierung löst über das Backend eine Rückerstattung aus, deren
+Stand in der Buchung nachvollziehbar bleibt. Eine Verlegung verändert
+dagegen ausschließlich den Termin; der bezahlte Betrag bleibt
+unberührt, weshalb hierfür ein eigener Auswahlschritt vorgesehen ist,
+der die verfügbaren Zeitfenster des Anbieters anzeigt.
+ 
+ 
+% ------------------------ DIENSTLEISTER --------------------------
+ 
+Besitzt ein Nutzer zusätzlich die Rolle des Dienstleisters, tritt ein
+Anbieterbereich hinzu. Er führt zur Verwaltung von Dienstleistungen
+und Verfügbarkeiten, zu den eingegangenen Buchungen sowie zur
+Anbindung an den Zahlungsdienst und zur Einnahmenübersicht (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}).
  
 Die linke Spalte trennt entsprechend die Vorgänge, die andere Nutzer
 beim Anbieter ausgelöst haben, von dessen eigenen Bestellungen;
-andernfall würden in einer Liste Vorgänge nebeneinander angezeigt werden, bei denen
-der Nutzer einmal Anbieter und einmal Kunde ist. Beide Listen zeigen
-nur die neuesten Einträge und verweisen für den vollständigen Bestand
-auf eine eigene Seite.
+andernfalls würden in einer Liste Vorgänge nebeneinander angezeigt
+werden, bei denen der Nutzer einmal Anbieter und einmal Kunde ist.
+Beide Listen zeigen nur die neuesten Einträge und verweisen für den
+vollständigen Bestand auf eine eigene Seite.
  
-Zu jedem Eintrag wird der aktuelle Zustand angezeigt, bei Buchungen
-der Bearbeitungsstand, bei Bestellungen der Zahlungsstatus und beim
-Zahlungsdienst der Verbindungszustand, und daneben genau die Aktion,
-die in diesem Zustand möglich ist, etwa das Bestätigen einer
-angefragten Buchung oder das Nachholen einer offenen Zahlung. Der
-Systemzustand ist damit erkennbar, ohne dass eine Detailansicht
-geöffnet werden muss (vgl.
-Abschnitt~\ref{subsec:gestaltungsprinzipien}).
- 
-Die Kontolöschung ist als eigener, farblich abgesetzter Bereich
-angeordnet und benennt ihre Folgen vorab: Das Konto wird dauerhaft
-deaktiviert, während abgeschlossene Bestellungen und die zugehörigen
-Nachweise erhalten bleiben.
-
 Dienstleister verwalten ihre Verfügbarkeit über feste
 Arbeitszeiten sowie einzelne Abwesenheitszeiträume. Für jeden
 Abwesenheitszeitraum werden Beginn und Ende sowie optional ein
@@ -630,7 +659,7 @@ Zusätzlich zu den einzelnen Abwesenheitszeiträumen legen
 Dienstleister ein wiederkehrendes Wochenschema mit mehreren
 Zeitfenstern je Wochentag fest, das die grundsätzliche
 Erreichbarkeit unabhängig von einzelnen Abwesenheiten definiert.
-
+ 
 Ihre einzelnen Dienstleistungsangebote verwalten Dienstleister
 über eine Kartenübersicht, die für jede Dienstleistung Kategorie,
 Preis, Dauer und Status anzeigt und das Anlegen, Bearbeiten und
@@ -645,7 +674,15 @@ maximale Anzahl gleichzeitiger Buchungen, den Ort der
 Leistungserbringung sowie getrennte Fristen und Regelungen für
 die Stornierung und die Änderung einer bereits bestätigten
 Buchung durch den Kunden.
-
+ 
+ 
+% -------------------------- VERKÄUFER ----------------------------
+ 
+Für die Rolle des Verkäufers gilt dasselbe Prinzip. Auch hier tritt
+ein eigener Arbeitsbereich hinzu, der zur Produktverwaltung sowie zu
+Zahlungsdienst und Einnahmenübersicht führt, und auch hier erscheinen
+die eingegangenen Bestellungen getrennt von den eigenen.
+ 
 Verkäufer verwalten ihre Produkte über eine analoge
 Kartenübersicht, die für jedes Produkt Kategorie und Preis
 anzeigt und ebenfalls das Anlegen, Bearbeiten und Löschen
@@ -653,17 +690,30 @@ einzelner Einträge ermöglicht. Titel und Beschreibung werden
 auch hier auf Englisch und Arabisch erfasst, mit bis zu fünf
 Bildern je Produkt. Im Unterschied zu Dienstleistungen entfallen
 dabei jedoch die Buchungsregeln.
+ 
+ 
+% ------------------------ BEIDE ROLLEN ---------------------------
+ 
+Besitzt ein Nutzer beide anbietenden Rollen, erscheinen deren
+Arbeitsbereiche untereinander, jeweils zusätzlich zum Kundenbereich.
+Nicht zugewiesene Rollen erzeugen dagegen keinen Arbeitsbereich,
+sodass die Oberfläche ausschließlich die tatsächlich verfügbaren
+Funktionen zeigt. Damit wird die in Abschnitt~\ref{subsec:rbac}
+beschriebene rollenbasierte Zugriffskontrolle auf der Ebene der
+Benutzerführung umgesetzt.
+ 
+Unterhalb der Arbeitsbereiche folgen die rollenunabhängigen
+Funktionen: Passwortänderung, Rollenwechselantrag und Kontolöschung.
+Die Kontolöschung ist als eigener, farblich abgesetzter Bereich
+angeordnet und benennt ihre Folgen vorab: Das Konto wird dauerhaft
+deaktiviert, während abgeschlossene Bestellungen und die zugehörigen
+Nachweise erhalten bleiben.
 % TODO (Roudy): Die Begruendung "da ein Produkt nicht
 % terminiert gebucht, sondern direkt in den Warenkorb gelegt
 % wird" ist meine eigene Erklaerung, nicht aus dem Meeting oder
 % von dir bestaetigt. Bei Bedarf pruefen/umformulieren oder mit
 % Mentor absichern.
-
 % TODO: Buchungskalender, Bestellübersicht.
-
-\subsection{Benutzeroberfläche}
-% TODO: Bestellhistorie, Buchungsübersicht, Stornierung.
-
 
 \subsection{Werbung und Ankündigungen}
 % TODO: Ankündigungen je Rolle, produktspezifische Werbung,
