@@ -469,10 +469,47 @@ ein entsprechender Hinweis angezeigt.
 
 
 \subsection{Dienstleistungsbuchung}
-% TODO: Anzeige verfügbarer Zeitfenster auf der Dienstleistungs-
-% Detailseite (basierend auf Arbeitszeiten und Abwesenheiten des
-% Anbieters), Auswahl eines Termins, Übernahme der Buchung in den
-% Warenkorb (vgl. 4.3.2 und 4.3.3).
+\label{subsec:buchung_konzept}
+Eine Dienstleistung wird nicht wie ein Produkt in den Warenkorb
+gelegt, sondern zuvor auf einen konkreten Termin festgelegt. Der
+Entwurf muss daher eine Auswahl anbieten, die nur solche Zeitpunkte
+enthält, an denen die Leistung tatsächlich erbracht werden kann.
+ 
+Welche Zeitpunkte das sind, ergibt sich aus zwei Gruppen von Angaben,
+die beide in Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}
+beschrieben sind. Die erste betrifft den Anbieter als Person: sein
+wiederkehrendes Wochenschema und seine eingetragenen
+Abwesenheitszeiträume. Die zweite betrifft die einzelne
+Dienstleistung: ihre Dauer, das Zeitraster, in dem Termine beginnen
+dürfen, und die Anzahl der Kunden, die denselben Zeitraum belegen
+können. Hinzu kommen die bereits vergebenen Buchungen. Die Menge der
+wählbaren Termine ist damit nicht fest hinterlegt, sondern wird für
+jeden Tag neu bestimmt.
+ 
+Die Auswahl erfolgt in zwei Schritten: zuerst der Tag, dann das
+Zeitfenster. Eine gemeinsame Liste aller Termine über mehrere Wochen
+hinweg wäre unübersichtlich, und die Zahl der Einträge stiege mit
+einem feineren Zeitraster weiter an. Erst nach der Wahl eines Tages
+werden dessen Zeitfenster abgerufen und angezeigt.
+ 
+Zu jedem Zeitfenster wird die verbleibende Kapazität angegeben. Bei
+Dienstleistungen, die mehrere Kunden gleichzeitig annehmen können,
+ist andernfalls nicht erkennbar, ob eine Buchung noch möglich ist
+oder das Fenster lediglich noch nicht ausgebucht wirkt.
+ 
+Sämtliche Zeitangaben beziehen sich auf die Zeitzone des Anbieters,
+die zusammen mit dem Termin angezeigt wird. Da Anbieter und Kunde in
+verschiedenen Zeitzonen ansässig sein können, wäre eine Angabe ohne
+Bezugspunkt mehrdeutig; die Zeitzone des aufrufenden Endgeräts als
+Grundlage zu verwenden, würde die Angaben je nach Standort des Kunden
+verschieben.
+ 
+Die abgeschlossene Auswahl führt nicht unmittelbar zu einer Buchung,
+sondern in den Warenkorb. Damit lassen sich Dienstleistungen und
+Produkte in einem gemeinsamen Vorgang bezahlen (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}), und eine verbindliche
+Buchung entsteht erst mit der Zahlung. Solange der Vorgang nicht
+abgeschlossen ist, bleibt das Zeitfenster für andere Kunden verfügbar.
 
 \subsection{Warenkorb, Checkout und Zahlung}
 \label{subsec:warenkorb_konzept}

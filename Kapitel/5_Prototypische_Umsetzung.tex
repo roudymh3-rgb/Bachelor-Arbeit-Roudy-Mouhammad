@@ -405,8 +405,73 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 % sichtbar, z. B. /products?page=2&category=3).
 
 % ----------------------------------------------------------------
-\section{Warenkorb, Checkout und Zahlung}
-\label{sec:impl_checkout}
+\subsection{Terminauswahl auf der Dienstleistungsseite}
+\label{subsec:impl_terminauswahl}
+ 
+Die in Abschnitt~\ref{subsec:buchung_konzept} beschriebene Auswahl
+ist als eigenständige, wiederverwendbare Komponente umgesetzt, die
+auf der Dienstleistungs-Detailseite eingebunden wird. Sie
+durchläuft drei Zustände.
+ 
+Im Ausgangszustand zeigt sie einen Monatskalender und die Zeitzone
+des Anbieters. Jeder Tag lässt sich auswählen; welche Zeitfenster er
+enthält, ergibt sich erst aus der Antwort des Backends. Fällt ein Tag
+in einen Abwesenheitszeitraum oder sieht das Wochenschema für ihn
+keine Arbeitszeit vor, erscheint an Stelle der Liste ein Hinweis, dass
+für dieses Datum keine Zeitfenster verfügbar sind. Ein nicht
+verfügbarer Tag wird damit nicht ausgeblendet, sondern benannt --
+dieselbe Entscheidung wie bei den Fristen für Stornierung und
+Verlegung (vgl.
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}). Die
+Schaltfläche zur Übernahme in den Warenkorb ist zunächst deaktiviert,
+da noch kein Termin feststeht.
+ 
+Mit der Wahl eines Tages wird dessen Zeitfensterliste abgerufen. Die
+Fenster werden nach Tageszeit in Vormittag, Nachmittag und Abend
+gruppiert; jedes trägt seinen Zeitraum und die verbleibende
+Kapazität. Erst mit der Wahl eines Fensters erscheint eine
+Zusammenfassung der ausgewählten Buchung, und die Schaltfläche wird
+aktiv.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.42\textwidth]{Bilder/screenshot_buchung_auswahl.png}
+\caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
+\label{fig:buchung_auswahl}
+\end{figure}
+ 
+Dass die Schaltfläche bis zur vollständigen Auswahl deaktiviert
+bleibt, ist bewusst gewählt: Eine unvollständige Buchung kann nicht
+in den Warenkorb übernommen werden, und der Nutzer erhält diese
+Rückmeldung, bevor er die Aktion auslöst, statt danach als
+Fehlermeldung (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+ 
+Am Zeitraster der Fenster ist die Wirkung der Buchungsregeln
+ablesbar: Bei einer Dauer von drei Stunden und einem Raster von
+dreißig Minuten beginnen aufeinanderfolgende Fenster jeweils eine
+halbe Stunde später und überlappen sich damit. Sie schließen einander
+nicht aus, solange die Kapazität nicht erschöpft ist.
+ 
+Die Übernahme in den Warenkorb erzeugt eine Position, die neben
+Titel, Preis und Kategorie zusätzlich Beginn, Ende, Zeitzone und Ort
+der Leistungserbringung enthält. Diese Angaben werden später mit dem
+Auftrag an das Backend übertragen (vgl.
+Abschnitt~\ref{subsec:impl_stripe}).
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_warenkorb_buchung.png}
+\caption{Dienstleistungsbuchung als Position im Warenkorb}
+\label{fig:warenkorb_buchung}
+\end{figure}
+ 
+Die Zusammenfassung des Warenkorbs weist Produkte und
+Dienstleistungen getrennt aus, obwohl beide dasselbe Modell
+verwenden. Damit bleibt erkennbar, wie viele terminierte Positionen
+der Vorgang enthält -- eine Angabe, die für den weiteren Verlauf
+erheblich ist, da nur diese Positionen später storniert oder verlegt
+werden können.
 
 \subsection{Warenkorb-UI: Produkte und Buchungen kombiniert}
 \label{subsec:impl_warenkorb}
