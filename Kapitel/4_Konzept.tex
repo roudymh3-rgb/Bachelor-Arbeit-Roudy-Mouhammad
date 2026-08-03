@@ -660,13 +660,21 @@ Frist wird die zugehörige Schaltfläche deaktiviert und um eine
 Erläuterung ergänzt, die den Grund und das Datum des Fristablaufs
 benennt. Die Alternative, sie auszublenden, wurde verworfen: Ein
 Nutzer, der eine erwartete Funktion nicht vorfindet, sucht sie
-zunächst und erfährt nicht, warum sie fehlt.
+zunächst und erfährt nicht, warum sie fehlt.Die Frist markiert dabei nicht nur das Ende einer Bedienmöglichkeit,
+sondern den Übergang des wirtschaftlichen Risikos: Nach ihrem Ablauf
+steht der Betrag dem Anbieter zu, unabhängig davon, ob der Kunde die
+Leistung in Anspruch nimmt. Der Anbieter kennzeichnet die Buchung in
+beiden Fällen nach dem Termin als abgeschlossen.
  
 Eine Stornierung löst über das Backend eine Rückerstattung aus, deren
 Stand in der Buchung nachvollziehbar bleibt. Eine Verlegung verändert
 dagegen ausschließlich den Termin; der bezahlte Betrag bleibt
 unberührt, weshalb hierfür ein eigener Auswahlschritt vorgesehen ist,
-der die verfügbaren Zeitfenster des Anbieters anzeigt.
+der die verfügbaren Zeitfenster des Anbieters anzeigt. Diese
+Möglichkeiten bestehen ausschließlich für Dienstleistungen. Eine
+bezahlte Produktbestellung lässt sich nicht mehr rückgängig machen,
+da ihr keine terminierte Leistung zugrunde liegt, deren Absage einen
+Zeitraum wieder freigäbe.
  
  
 % ------------------------ DIENSTLEISTER --------------------------
@@ -683,6 +691,31 @@ andernfalls würden in einer Liste Vorgänge nebeneinander angezeigt
 werden, bei denen der Nutzer einmal Anbieter und einmal Kunde ist.
 Beide Listen zeigen nur die neuesten Einträge und verweisen für den
 vollständigen Bestand auf eine eigene Seite.
+Die eingegangenen Buchungen werden in einer eigenen Ansicht geführt,
+da sie im Gegensatz zu Produktbestellungen eine Handlung des
+Anbieters erfordern. Eine Buchung durchläuft dabei mehrere Zustände:
+Sie erreicht den Anbieter zunächst als Anfrage, wird von ihm
+bestätigt und nach erbrachter Leistung als abgeschlossen
+gekennzeichnet.
+ 
+Dass eine Buchung trotz bereits erfolgter Zahlung zunächst nur
+angefragt ist, ist beabsichtigt. Die Zahlung sichert den Vorgang
+finanziell ab, die Zusage über die Leistung selbst gibt jedoch der
+Anbieter. Erst mit seiner Bestätigung gilt der Termin als
+verbindlich.
+ 
+Zu jeder Buchung werden daher Kunde, Zeitraum und Zeitzone angezeigt
+sowie genau die Aktion, die im jeweiligen Zustand möglich ist: Eine
+angefragte Buchung lässt sich bestätigen, eine bestätigte nach
+erbrachter Leistung abschließen. Der Anbieter muss den Zustand einer
+Buchung damit nicht aus dem Zusammenhang erschließen, sondern findet
+an jedem Eintrag den nächsten möglichen Schritt (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).Der Abschluss ist dabei bewusst nicht an das Ende des Termins
+gebunden. In der Regel erfolgt er danach, doch teilt ein Kunde
+vorher mit, dass er die Leistung nicht in Anspruch nehmen wird,
+kann der Anbieter die Buchung bereits zuvor abschließen. Eine
+zeitliche Sperre hätte diesen Fall ausgeschlossen, ohne einen
+Fehler zu verhindern.
  
 Dienstleister verwalten ihre Verfügbarkeit über feste
 Arbeitszeiten sowie einzelne Abwesenheitszeiträume. Für jeden

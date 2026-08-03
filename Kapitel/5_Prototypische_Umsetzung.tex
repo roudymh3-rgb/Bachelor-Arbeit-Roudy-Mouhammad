@@ -897,13 +897,138 @@ Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
 
 
 \subsection{Eingegangene Buchungen}
-% TODO: Statusübergänge, Benachrichtigungen.
-\subsection{Bestellhistorie und Bestelldetail}
+\label{subsec:impl_provider_bookings}
+Die Ansicht der eingegangenen Buchungen setzt die in
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} beschriebene
+Zustandsfolge um. Jede Buchung erscheint als Eintrag mit Kunde,
+Beginn, Ende und Zeitzone sowie einer Zustandsmarkierung.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_provider_bookings.png}
+\caption{Eingegangene Buchungen mit der jeweils zustandsabhängigen
+Aktion}
+\label{fig:provider_bookings}
+\end{figure}
+ 
+Rechts neben jedem Eintrag steht genau eine Schaltfläche, und welche
+das ist, ergibt sich aus dem Zustand: Bei einer angefragten Buchung
+lautet sie \textit{Buchung bestätigen}, bei einer bereits bestätigten
+\textit{Als abgeschlossen markieren}. Eine abgeschlossene Buchung
+trägt keine Schaltfläche mehr. Die Oberfläche zeigt damit nicht alle
+denkbaren Aktionen mit wechselnder Verfügbarkeit, sondern jeweils nur
+die eine, die im gegenwärtigen Zustand möglich ist.
+ 
+Beide Übergänge sind als Mutationen umgesetzt, die den
+zwischengespeicherten Bestand der Buchungsliste im Erfolgsfall
+invalidieren (vgl. Abschnitt~\ref{subsec:impl_tanstackquery}), sodass
+der neue Zustand unmittelbar erscheint, ohne dass die Seite neu
+geladen werden muss.
 
-% TODO: Kalenderkomponente, Verfügbarkeitslogik.
+
+\subsection{Bestellhistorie und Bestelldetail}
+\label{subsec:impl_bestellungen}
+
+Die Bestellübersicht führt sämtliche Aufträge des Nutzers mit Datum,
+Gesamtbetrag, Anzahl der Positionen und Zahlungsstatus. Der Aufruf
+eines Eintrags führt auf die Detailseite, die den Auftrag in zwei
+Bereiche gliedert: eine Zusammenfassung mit den Kopfdaten und die
+Liste der enthaltenen Positionen.
+ 
+Da ein Auftrag bereits vor der Zahlung entsteht (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}), unterscheidet die
+Detailseite zwei Fälle. Bei einem unbezahlten Auftrag tritt an die
+Stelle der Positionsliste ein eigener Bereich, der den Zustand
+benennt und zwei Wege anbietet.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_bestellung_unbezahlt.png}
+\caption{Detailansicht eines Auftrags, dessen Zahlung nicht
+abgeschlossen wurde}
+\label{fig:bestellung_unbezahlt}
+\end{figure}
+ 
+Verlässt ein Nutzer die Zahlungsseite, ohne den Vorgang
+abzuschließen, bleibt der Auftrag in diesem Zustand bestehen. Er
+lässt sich entweder nachträglich bezahlen oder verwerfen. Ohne diese
+beiden Möglichkeiten entstünde bei jedem abgebrochenen
+Zahlungsvorgang ein Eintrag, den der Nutzer weder abschließen noch
+entfernen könnte. Der Fall betrifft Produkte und
+Dienstleistungsbuchungen gleichermaßen.
+ 
+Bei einem bezahlten Auftrag erscheint dagegen die vollständige
+Positionsliste. Jede Position trägt ihren eigenen Zustand, da
+Produkte und Dienstleistungen unabhängig voneinander bearbeitet
+werden.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{Bilder/screenshot_bestelldetail.png}
+\caption{Detailansicht eines bezahlten Auftrags mit Produkt- und
+Dienstleistungspositionen}
+\label{fig:bestelldetail}
+\end{figure}
+ 
+Eine Dienstleistungsposition führt dabei die zugehörige Buchung mit:
+Termin, Zeitzone und Ort der Leistungserbringung erscheinen innerhalb
+der Position, zusammen mit den Schaltflächen zum Umbuchen und
+Stornieren. Dieselben Aktionen sind auch über die Buchungsübersicht
+erreichbar (vgl. Abschnitt~\ref{subsec:impl_buchungen}). Die
+doppelte Erreichbarkeit ist beabsichtigt: Ein Nutzer, der von einer
+Bestellung ausgeht, soll die zugehörige Buchung nicht in einer
+anderen Ansicht suchen müssen.
 
 \subsection{Buchungsübersicht, Stornierung und Umbuchung}
-%TOOD Buchungsübersicht, Stornierung und Umbuchung
+\label{subsec:impl_buchungen}
+
+Die Buchungsübersicht führt die gebuchten Termine des Nutzers mit
+Dienstleistung, Anbieter, Zeitraum, Zeitzone, Ort und Zustand. Unter
+jedem Eintrag stehen zwei Blöcke, einer für die Stornierung und einer
+für die Umbuchung, in denen die beim Anlegen der Dienstleistung
+festgelegten Fristen wiedergegeben werden (vgl.
+Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}).
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_buchung_offen.png}
+\caption{Buchung innerhalb der Fristen: beide Aktionen verfügbar,
+jeweils mit Angabe des Fristendes}
+\label{fig:buchung_offen}
+\end{figure}
+ 
+Solange eine Frist läuft, nennt der zugehörige Block den Zeitpunkt
+ihres Endes, und die Schaltfläche ist auslösbar. Der Nutzer erfährt
+damit vor der Handlung, bis wann sie möglich ist.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_buchung_frist_abgelaufen.png}
+\caption{Buchung nach Ablauf beider Fristen: die Schaltflächen sind
+deaktiviert, der Grund steht darüber}
+\label{fig:buchung_frist_abgelaufen}
+\end{figure}
+ 
+Nach Ablauf einer Frist wird die zugehörige Schaltfläche deaktiviert,
+und an die Stelle des Fristendes tritt der Hinweis, dass der Zeitraum
+verstrichen ist. Beide Schaltflächen bleiben dabei sichtbar. Die
+Alternative, sie zu entfernen, wäre technisch einfacher gewesen,
+hätte dem Nutzer aber nicht mitgeteilt, warum eine erwartete Funktion
+fehlt. Dieselbe Entscheidung liegt der Terminauswahl zugrunde, in der
+ein nicht verfügbarer Tag ebenfalls benannt statt ausgeblendet wird
+(vgl. Abschnitt~\ref{subsec:impl_terminauswahl}).
+ 
+Die Umbuchung führt auf eine eigene Seite, die dieselbe
+Terminauswahl verwendet wie die Erstbuchung. Die Komponente wird
+damit an zwei Stellen der Anwendung eingesetzt, ohne dass die Logik
+zur Ermittlung verfügbarer Zeitfenster ein zweites Mal umgesetzt
+werden musste. Neben der Auswahl zeigt die Seite den bisherigen
+Termin, sodass der Wechsel nachvollziehbar bleibt.
+ 
+Eine Stornierung löst dagegen keine erneute Auswahl aus, sondern eine
+Rückerstattung über das Backend. Deren Stand wird anschließend an der
+Buchung selbst geführt, sodass der Nutzer den Vorgang bis zum
+Abschluss verfolgen kann.
 
 % ----------------------------------------------------------------
 
