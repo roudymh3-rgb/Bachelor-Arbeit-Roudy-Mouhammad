@@ -279,6 +279,50 @@ Anfrage erfolgreich, wird die Session im Authentifizierungszustand
 gespeichert; beim Login schließt sich der Dialog, bei der
 Registrierung erfolgt eine Weiterleitung auf die Startseite.
 
+\subsection{Token-Verwaltung und Session-Handling}
+\label{subsec:impl_token_session}
+Die Session der Anwendung ist als eigenes Modell definiert, das
+Zugriffstoken, Nutzerdaten und die zugewiesenen Rollen als Liste
+enthält, da ein Nutzer mehrere Rollen gleichzeitig besitzen kann. Sie
+wird über einen zentralen Zustand-Store reaktiv bereitgestellt und im
+\texttt{localStorage} des Browsers gespeichert, um den Anmeldestatus
+über Neuladen und erneute Besuche hinweg zu erhalten.
+Listing~\ref{lst:auth-store-state} zeigt die Struktur dieses Stores
+sowie dessen Erzeugung über die \texttt{create}-Funktion der
+Bibliothek Zustand.
+ 
+\begin{lstlisting}[caption={Struktur und Erzeugung des Auth-Stores (auth-store.ts)}, label={lst:auth-store-state}]
+import { create } from 'zustand'
+ 
+interface AuthStoreState {
+  session: AuthSession | null
+  isAuthenticated: boolean
+  isBootstrapping: boolean
+  setSession: (session: AuthSession) => void
+  setBootstrapping: (isBootstrapping: boolean) => void
+  syncVerifiedUser: (user: User) => void
+  clearSession: () => void
+}
+ 
+export const useAuthStore = create<AuthStoreState>((set, get) => ({
+  // ...
+}))
+\end{lstlisting}
+ 
+Ein gespeicherter Token wird nicht ungeprüft als gültig angenommen:
+Eine Bootstrap-Komponente validiert ihn aktiv beim Backend über
+\texttt{useMeQuery} (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}). Liefert diese Anfrage
+einen Fehler, gilt der Token als ungültig und die Session wird über
+den Store verworfen; liefert sie hingegen aktualisierte Nutzerdaten,
+werden diese im Store synchronisiert, sodass lokal gespeicherte und
+serverseitig bestätigte Daten konsistent bleiben. Liegt noch keine
+Antwort vor, wird zunächst die lokal gespeicherte Session verwendet,
+damit die Oberfläche sofort angezeigt werden kann. Auf dieser
+Grundlage entscheidet eine geschützte Routenkomponente, ob der
+Anmeldestatus noch ermittelt wird, der Nutzer zur Startseite
+weitergeleitet oder der geschützte Inhalt angezeigt wird.
+
 \subsection{Rollen-Upgrade-Antrag}
 \label{subsec:impl_rollen_upgrade}
 
@@ -498,29 +542,37 @@ Zeitpunkt ist bewusst gewählt: Ein Warenkorb darf nicht bereits beim
 Auslösen des Checkouts geleert werden, da die Zahlung noch scheitern
 oder abgebrochen werden kann.
  
-Im Anschluss werden drei zwischengespeicherte Datenbestände für
-ungültig erklärt: die Detaildaten des betroffenen Auftrags, die Liste
-der eigenen Bestellungen und die Liste der eigenen Buchungen. Der
-Grund ist der in Abschnitt~\ref{subsec:impl_tanstackquery}
-beschriebene Mechanismus: Nach erfolgreicher Zahlung existiert im
-Backend ein Auftrag mehr als im Cache hinterlegt, und der Status des
-betroffenen Auftrags hat sich von \textit{requires payment} auf
-\textit{paid} geändert. Ohne Invalidierung würde die Anwendung
-weiterhin den veralteten Stand anzeigen.
+Zusätzlich sichert eine Referenz ab, dass der Effekt nur einmal
+ausgeführt wird. Ohne diese Sperre könnte ein erneutes Rendern der
+Seite den Warenkorb ein zweites Mal leeren und die Invalidierung
+wiederholen, obwohl derselbe Zahlungsvorgang zugrunde liegt. Eine
+Referenz eignet sich dafür, weil ihre Änderung im Gegensatz zu einem
+Zustandswert kein erneutes Rendern auslöst.
  
-\begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung
-(checkout-success-page.tsx)}, label={lst:checkout-success}]
+Im Anschluss werden vier zwischengespeicherte Datenbestände für
+ungültig erklärt: die Daten des betroffenen Auftrags, der zuletzt
+angelegte Auftrag, die Liste der eigenen Bestellungen und die Liste
+der eigenen Buchungen. Der Grund ist der in
+Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene Mechanismus:
+Nach erfolgreicher Zahlung existiert im Backend ein Auftrag mehr als
+im Cache hinterlegt, und der Status des betroffenen Auftrags hat sich
+von \textit{requires payment} auf \textit{paid} geändert. Ohne
+Invalidierung würde die Anwendung weiterhin den veralteten Stand
+anzeigen.
+ 
+\begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung (checkout-success-page.tsx)}, label={lst:checkout-success}]
 useEffect(() => {
-  if (!checkoutResultQuery.data?.isPaid) {
+  if (!checkoutResultQuery.data?.is_paid || hasHandledSuccessRef.current) {
     return
   }
  
+  hasHandledSuccessRef.current = true
   clearCart()
- 
-  queryClient.invalidateQueries({ queryKey: ['order', orderId] })
+  queryClient.invalidateQueries({ queryKey: ['orders', orderId] })
+  queryClient.invalidateQueries({ queryKey: ['orders', 'current'] })
   queryClient.invalidateQueries({ queryKey: ['orders', 'mine'] })
-  queryClient.invalidateQueries({ queryKey: ['bookings'] })
-}, [checkoutResultQuery.data, clearCart, queryClient, orderId])
+  queryClient.invalidateQueries({ queryKey: ['bookings', 'mine'] })
+}, [checkoutResultQuery.data?.is_paid, clearCart, orderId, queryClient])
 \end{lstlisting}
  
 Die Abbruchseite kommt demgegenüber ohne Nebenwirkungen aus. Da keine
