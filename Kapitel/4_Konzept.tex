@@ -363,7 +363,85 @@ Arbeit nicht erforderlich.
 
 
 \subsection{Seitenstruktur und Navigationsprinzip}
-% TODO: Wireframes oder Mockups der wichtigsten Ansichten.
+Sämtliche Ansichten der Anwendung sind in einen gemeinsamen Rahmen
+eingefasst, der aus der in Abschnitt~\ref{subsec:routing-konzept}
+beschriebenen Routenhierarchie folgt: Die Layout-Komponente bildet
+die oberste Ebene, alle Seiten werden als deren Kindrouten
+dargestellt. Was sich beim Wechsel einer Seite ändert, ist damit
+allein der Inhaltsbereich; die Kopfzeile bleibt bestehen.
+Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_rahmen.png}
+\caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
+(Strukturskizze, eigene Darstellung)}
+\label{fig:rahmen}
+\end{figure}
+ 
+Die Kopfzeile ist in zwei Gruppen geteilt. Links steht neben dem
+Namen der Plattform die fachliche Navigation mit den vier
+öffentlichen Katalogbereichen -- Produkte, Dienstleistungen,
+Verkäufer und Anbieter (vgl.
+Abschnitt~\ref{subsec:katalog_konzept}). Rechts stehen die
+Werkzeuge, die den Nutzer selbst betreffen: die Sprachwahl (vgl.
+Abschnitt~\ref{subsec:mehrsprachigkeit_konzept}), der Zugang zu den
+Nachrichten (vgl. Abschnitt~\ref{subsec:messaging_konzept}), der
+Warenkorb und der Kontobereich.
+ 
+Zwischen den beiden Anmeldezuständen ändert sich nur diese rechte
+Gruppe: An die Stelle der Schaltfläche zur Anmeldung treten der Name
+des Nutzers und die Abmeldung. Die fachliche Navigation bleibt
+unverändert, da die Katalogbereiche allen Nutzern offenstehen. Der
+Rahmen erfüllt damit die in
+Abschnitt~\ref{subsec:gestaltungsprinzipien} genannte Anforderung
+nach Konsistenz über gleichartige Situationen hinweg: Ein Nutzer, der
+sich anmeldet, findet dieselbe Oberfläche vor und muss sich nicht neu
+orientieren.
+ 
+Eine Fußzeile besteht nicht. Der Inhaltsbereich endet mit dem letzten
+Abschnitt der jeweiligen Seite, sodass sämtliche Navigation an einer
+einzigen Stelle zusammenläuft.
+ 
+Wie sich eine konkrete Seite in diesen Rahmen einfügt, zeigt
+Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_startseite.png}
+\caption{Struktur der Startseite und Aufbau einer Vorschaukarte
+(Strukturskizze, eigene Darstellung)}
+\label{fig:startseite}
+\end{figure}
+ 
+Auf den Seitentitel mit einem einleitenden Satz folgen zwei
+gleichartig aufgebaute Abschnitte, einer für die zuletzt
+eingestellten Produkte und einer für die zuletzt eingestellten
+Dienstleistungen. Beide bestehen aus einer Überschrift und einem
+Raster aus Vorschaukarten.
+ 
+Die Karte ist dabei das durchgehende Gestaltungselement des
+Katalogbereichs. Sie führt von oben nach unten die Bildfläche, den
+Titel, eine Kurzbeschreibung, die Kategorie zusammen mit dem Preis
+und schließlich den Anbieter. Produkte und Dienstleistungen
+verwenden dieselbe Karte in derselben Anordnung; sie unterscheiden
+sich allein in der Hintergrundfarbe der Bildfläche. Dieselbe Karte
+wird auf den Katalogseiten und den Profilseiten der Anbieter erneut
+verwendet, sodass ein Angebot überall in derselben Form erscheint --
+die technische Grundlage dafür bildet das in
+Abschnitt~\ref{subsec:komponentenarchitektur} beschriebene
+Komponentenmodell.
+ 
+Die Zahl der Karten je Zeile richtet sich nach der verfügbaren
+Anzeigefläche und verringert sich auf schmalen Bildschirmen, ohne
+dass der Aufbau der einzelnen Karte sich ändert. Das entspricht dem
+in Abschnitt~\ref{subsec:responsive-design} beschriebenen Vorgehen,
+die Anordnung der Elemente an Umbruchpunkten anzupassen, statt eine
+zweite Oberfläche vorzuhalten.
+ 
+Am Fuß der Seite ist ein Bereich für Werbung und Ankündigungen
+vorgesehen (vgl. Abschnitt~\ref{subsec:werbung_konzept}); er ist in
+der Abbildung gestrichelt dargestellt.
 
 
 \subsection{Mehrsprachigkeit und Sprachwahl}
