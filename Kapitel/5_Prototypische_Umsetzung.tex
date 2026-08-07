@@ -190,7 +190,7 @@ const de = {
   },
   checkout: {
     successTitle: 'Checkout erfolgreich',
-    paymentConfirmed: 'Zahlung bestätigt',
+    paymentConfirmed: 'Zahlung bestaetigt',
   },
 }
 \end{lstlisting}
@@ -1105,3 +1105,192 @@ Abschluss verfolgen kann.
 % ----------------------------------------------------------------
 \section{Messaging}
 \label{sec:impl_messaging}
+Die Umsetzung des in Abschnitt~\ref{subsec:messaging_konzept}
+beschriebenen Nachrichtenbereichs besteht aus zwei Teilen, die
+unabhängig voneinander arbeiten: dem gewöhnlichen, anfragebasierten
+Zugriff auf Unterhaltungen und Nachrichten und der Anbindung an den
+Echtzeitdienst. Der erste Teil folgt dem in
+Abschnitt~\ref{subsec:impl_featureapi} beschriebenen Aufbau und
+verwendet dieselbe \acs{HTTP}-Instanz wie alle übrigen
+Funktionsbereiche; er liefert die Liste der Unterhaltungen, den
+Verlauf einer Unterhaltung und den Zählerstand ungelesener
+Nachrichten und nimmt gesendete Nachrichten entgegen. Der zweite
+Teil ist Gegenstand dieses Abschnitts.
+ 
+ 
+\subsection{Anbindung des Echtzeitdienstes}
+\label{subsec:impl_pusher_client}
+ 
+Die Verbindung wird in einem eigenen Modul gekapselt, das als
+einzige Stelle der Anwendung die Bibliothek des Dienstanbieters
+kennt. Es hält die Verbindung in einer Modulvariablen und gibt eine
+bereits bestehende Verbindung zurück, statt eine zweite aufzubauen.
+Diese Festlegung ist notwendig, weil mehrere Stellen der Anwendung
+unabhängig voneinander Kanäle abonnieren: die Chatseite für jede
+Unterhaltung und die Kopfzeile für den Zählerstand. Ohne die
+Bündelung entstünde je Aufruf eine eigene Verbindung.
+ 
+\begin{lstlisting}[language=TypeScript,caption={Aufbau der Verbindung
+zum Echtzeitdienst},label={lst:pusher-client}]
+let client: Pusher | null = null
+ 
+export function getPusherClient() {
+  const token = getAuthToken()
+  const config = getPusherConfig()
+ 
+  if (!token || !config) {
+    return null
+  }
+ 
+  if (client) {
+    return client
+  }
+ 
+  client = new Pusher(config.key, {
+    cluster: config.cluster,
+    authEndpoint: getBroadcastAuthEndpoint(),
+    auth: {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  })
+ 
+  return client
+}
+\end{lstlisting}
+ 
+Drei Angaben bestimmen die Verbindung. Der Schlüssel identifiziert
+das Projekt beim Dienstanbieter. Der \emph{Cluster} benennt die
+Region, in der die Kanäle betrieben werden, und ist damit für die
+Laufzeit einer Nachricht maßgeblich. Der dritte Wert ist die
+Adresse, an die der Dienst seine Freigabeanfragen richtet: Meldet
+sich der Client für einen privaten Kanal an, fragt die Bibliothek
+zunächst beim Backend nach, ob er dazu berechtigt ist. Da diese
+Anfrage nicht über die zentrale \acs{HTTP}-Instanz aus
+Abschnitt~\ref{subsec:impl_httpclient} läuft, sondern von der
+Bibliothek selbst gestellt wird, muss der Authentifizierungstoken
+hier ein zweites Mal ausdrücklich mitgegeben werden.
+ 
+Ohne angemeldeten Nutzer liefert die Funktion keinen Client. Der
+Nachrichtenbereich ist damit auch technisch an die Anmeldung
+gebunden und nicht allein über den Routenschutz aus
+Abschnitt~\ref{subsec:impl_token_session}.
+ 
+ 
+\subsection{Nachrichtenoberfläche}
+\label{subsec:impl_chat_ui}
+ 
+Die Chatseite ist zweispaltig aufgebaut. Links steht die Liste der
+Unterhaltungen mit Name des Gegenübers, Zeitpunkt und Anfang der
+letzten Nachricht, rechts der Verlauf der ausgewählten Unterhaltung.
+Die gewählte Unterhaltung steht als Bestandteil der Adresse
+(\texttt{/chat/:conversationId}), sodass eine einzelne Unterhaltung
+verlinkbar bleibt -- dieselbe Entscheidung wie bei den Katalogseiten,
+auf denen Seite und Kategorie ebenfalls in der Adresse stehen (vgl.
+Abschnitt~\ref{subsec:impl_produktlisting}).
+Ist keine Unterhaltung angegeben, wird auf die zuletzt aktive
+umgeleitet.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_chat.png}
+\caption{Nachrichtenbereich mit Liste der Unterhaltungen und
+Verlauf}
+\label{fig:chat_seite}
+\end{figure}
+ 
+Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
+und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern
+über den Vergleich der Absenderkennung mit der Kennung des
+angemeldeten Nutzers -- eine Nachricht, die über den Kanal
+eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank
+geladene und wird deshalb gleich behandelt.
+ 
+Die Unterhaltungen werden nach dem Zeitpunkt der letzten Nachricht
+sortiert, sodass die zuletzt genutzte oben steht. Da diese
+Sortierung sowohl beim Laden als auch beim Eintreffen einer
+Nachricht über den Kanal angewendet werden muss, ist sie als eigene
+Funktion ausgelagert.
+ 
+ 
+\subsection{Abonnement der Kanäle und Aktualisierung des
+Zwischenspeichers}
+\label{subsec:impl_chat_realtime}
+ 
+Sobald die Liste der Unterhaltungen vorliegt, meldet sich die Seite
+für jede darin enthaltene Unterhaltung beim zugehörigen Kanal an.
+Die Kanalnamen ergeben sich unmittelbar aus der Kennung der
+Unterhaltung, sodass keine gesonderte Zuordnung geführt werden muss.
+Auf jedem Kanal werden drei Ereignisse ausgewertet: das Eintreffen
+einer Nachricht sowie die Bestätigung ihrer Zustellung und ihres
+Lesens.
+ 
+Entscheidend ist, was beim Eintreffen eines Ereignisses geschieht.
+Die Anwendung stellt keine neue Anfrage an das Backend, sondern
+schreibt die empfangene Nachricht unmittelbar in den
+Zwischenspeicher von TanStack Query (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}). Eine erneute Anfrage wäre
+überflüssig, da die Nachricht bereits vollständig vorliegt; sie
+würde die Ersparnis, die die dauerhafte Verbindung gerade bewirkt,
+wieder aufheben.
+ 
+\begin{lstlisting}[language=TypeScript,caption={Eintragen einer über
+den Kanal empfangenen Nachricht in den Zwischenspeicher},
+label={lst:chat-cache}]
+queryClient.setQueryData<ChatMessagesResponse | undefined>(
+  ['chat', 'messages', conversationId],
+  (currentData) => {
+    if (!currentData?.result) {
+      return currentData
+    }
+ 
+    if (currentData.result.data.some((m) => m.id === normalizedMessage.id)) {
+      return currentData
+    }
+ 
+    return {
+      ...currentData,
+      result: {
+        ...currentData.result,
+        data: [...currentData.result.data, normalizedMessage],
+        total: currentData.result.total + 1,
+      },
+    }
+  },
+)
+\end{lstlisting}
+ 
+Die Prüfung auf eine bereits vorhandene Kennung ist erforderlich,
+weil der Absender seine eigene Nachricht auf zwei Wegen erhält:
+einmal als Antwort auf die absendende Anfrage und einmal über den
+Kanal, auf dem sie veröffentlicht wird. Ohne diese Prüfung erschiene
+sie doppelt.
+ 
+Parallel dazu wird die Liste der Unterhaltungen fortgeschrieben:
+Vorschautext und Zeitpunkt der betroffenen Unterhaltung werden
+ersetzt, die Liste neu sortiert und der Zähler ungelesener
+Nachrichten erhöht -- letzteres nur dann, wenn die Nachricht nicht
+vom Nutzer selbst stammt und die betroffene Unterhaltung nicht gerade
+geöffnet ist.
+ 
+Die Anmeldung an den Kanälen erfolgt in einem Effekt, dessen
+Aufräumfunktion die Ereignisbindungen löst und die Kanäle wieder
+abmeldet. Unterbleibt dies, laufen nach einem Wechsel der Seite
+weiterhin Ereignisse in Funktionen, die auf einen nicht mehr
+dargestellten Zustand zugreifen; zugleich blieben die Kanäle
+abonniert und die Zahl der Abonnements stiege mit jedem Aufruf der
+Seite. Aus demselben Grund wird die Liste der Unterhaltungen mit
+\texttt{useMemo} stabil gehalten: Entstünde bei jedem Rendern ein
+neues Feld, liefe der Effekt jedes Mal erneut und meldete sämtliche
+Kanäle ab und wieder an.
+ 
+Der Zähler ungelesener Nachrichten in der Kopfzeile ist in einem
+eigenen Hook gekapselt, der den auf den Nutzer bezogenen Kanal
+abonniert und den empfangenen Gesamtstand in denselben
+Zwischenspeicher schreibt, aus dem die Anzeige liest. Er ist
+unabhängig von der Chatseite und damit in der gesamten Anwendung
+wirksam.
+ 
+Wird eine Unterhaltung geöffnet, prüft die Seite, ob sie ungelesene
+Nachrichten des Gegenübers enthält, meldet sie gegebenenfalls als
+gelesen und setzt den Zähler der betroffenen Unterhaltung
+anschließend lokal auf null, ohne die Liste erneut abzurufen

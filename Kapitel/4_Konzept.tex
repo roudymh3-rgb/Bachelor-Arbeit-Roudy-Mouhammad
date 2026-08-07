@@ -810,4 +810,72 @@ Nachweise erhalten bleiben.
 % Genehmigungsprozesse.
 
 \subsection{Messaging}
-% TODO: Inbox, Konversationsliste, Chat-UI.
+\label{subsec:messaging_konzept}
+Der Nachrichtenbereich dient der Kommunikation in Echtzeit zwischen
+einem Kunden und einem Verkäufer oder Dienstleister, etwa wenn der
+Kunde vor einer Bestellung oder Buchung Fragen zu einem Produkt oder
+einer Dienstleistung hat.
+ 
+Die maßgebliche Anforderung ist dabei nicht der Austausch selbst,
+sondern der Zeitpunkt: Eine Nachricht soll beim Empfänger erscheinen,
+während er die Seite geöffnet hat, ohne dass er sie neu lädt. Damit
+verlässt dieser Funktionsbereich als einziger das anfragebasierte
+Modell, das allen übrigen Bereichen zugrunde liegt. Wie in
+Abschnitt~\ref{subsec:rest-api} dargestellt, geht bei \acs{REST}
+jede Übertragung vom Client aus; der Server kann eine Nachricht nicht
+von sich aus zustellen. Wiederholtes Nachfragen in kurzen Abständen
+wäre die einfachere Lösung, erzeugt aber dauerhaft Anfragen ohne
+Ergebnis und verzögert die Zustellung dennoch. Der Entwurf setzt
+deshalb auf eine dauerhafte Verbindung.
+ 
+Eine solche Verbindung selbst zu betreiben, bedeutet, für jeden
+gleichzeitig angemeldeten Nutzer eine offene Verbindung zu halten und
+diese Infrastruktur skalieren und überwachen zu müssen. Aus demselben
+Grund, der in Abschnitt~\ref{subsec:checkout_konzept} zur Einbindung
+eines externen Zahlungsdienstes geführt hat, wird auch hier ein
+externer Dienst eingebunden, statt die Fähigkeit selbst aufzubauen.
+ 
+Der Dienst stellt benannte Kanäle bereit. Ein Client meldet sich für
+einen Kanal an und erhält anschließend alles, was auf diesem Kanal
+veröffentlicht wird; wer nicht angemeldet ist, erhält nichts. Für
+den Entwurf folgen daraus zwei Festlegungen. Erstens erhält jede
+Unterhaltung einen eigenen Kanal, denn eine Nachricht darf nur die
+beiden Beteiligten erreichen. Zweitens muss der Zugang zu einem
+solchen Kanal geprüft werden -- die Prüfung, ob ein Nutzer Teilnehmer
+einer Unterhaltung ist, kann nur das Backend beantworten, da nur dort
+die Unterhaltung gespeichert ist. Der Kanal ist damit nicht
+öffentlich, sondern setzt eine Freigabe durch das Backend voraus.
+ 
+Daraus ergibt sich der in Abbildung~\ref{fig:messaging_ablauf}
+dargestellte Weg einer Nachricht. Der Absender überträgt sie nicht
+unmittelbar an den Kanal, sondern an das Backend. Dieses speichert
+sie und veröffentlicht sie anschließend auf dem Kanal. Der Umweg ist
+erforderlich, weil der Echtzeitdienst nichts speichert: Er stellt
+zu, was in dem Augenblick zugestellt werden kann, in dem gesendet
+wird. Wer zu diesem Zeitpunkt nicht verbunden ist, erhielte die
+Nachricht sonst nie. Der Verlauf einer Unterhaltung stammt deshalb
+stets aus der Datenbank und wird beim Öffnen der Seite abgerufen; der
+Kanal ergänzt lediglich, was währenddessen hinzukommt.
+ 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_messaging.png}
+\caption{Weg einer Nachricht zwischen Absender und Empfänger
+(eigene Darstellung)}
+\label{fig:messaging_ablauf}
+\end{figure}
+ 
+Neben der Unterhaltung selbst ist eine zweite Angabe in Echtzeit zu
+übertragen: die Anzahl ungelesener Nachrichten. Sie wird in der
+Kopfzeile angezeigt und muss sich auch dann aktualisieren, wenn der
+Nutzer sich an einer beliebigen anderen Stelle der Anwendung
+befindet. Da die Kanäle der Unterhaltungen dort nicht abonniert
+sind, erhält jeder Nutzer zusätzlich einen auf ihn bezogenen Kanal,
+über den ausschließlich dieser Zählerstand übermittelt wird.
+ 
+Schließlich sieht der Entwurf drei Zustände je Nachricht vor:
+gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob
+seine Nachricht angekommen ist -- eine Rückmeldung, die bei einem
+Austausch zwischen Fremden den Unterschied ausmacht zwischen einem
+schweigenden Gegenüber und einer Nachricht, die ihn nicht erreicht
+hat (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).

@@ -498,11 +498,19 @@ stabiler \cite{lawi_graphql_rest, lloyd_graphql_rest}.
 Beiden Ansätzen gemeinsam ist, dass die Kommunikation vom Client
 ausgeht. Muss der Server seinerseits Daten übermitteln, ohne dass
 eine Anfrage vorliegt, etwa bei Benachrichtigungen oder Nachrichten
-in Echtzeit, ist ein anfragebasiertes Verfahren ungeeignet.
-WebSockets stellen hierfür eine dauerhafte, bidirektionale
-Verbindung bereit, über die beide Seiten jederzeit Daten senden
-können. Sie treten damit nicht an die Stelle von \acs{REST} oder
-GraphQL, sondern ergänzen diese für Anwendungsfälle mit
+in Echtzeit, ist ein anfragebasiertes Verfahren ungeeignet. Ein
+naheliegender Behelf besteht darin, den Client in kurzen Abständen
+wiederholt anfragen zu lassen, ob neue Daten vorliegen. Dieses als
+Polling bezeichnete Verfahren kommt ohne zusätzliche Technik aus,
+erzeugt jedoch überwiegend Anfragen ohne Ergebnis, belastet den
+Server mit einer Last, die mit der Zahl der verbundenen Clients
+wächst, und liefert Daten dennoch nur mit der Verzögerung eines
+Abfrageintervalls \cite{loreto_http_realtime}. WebSockets stellen
+demgegenüber eine dauerhafte, bidirektionale Verbindung bereit, die
+aus einer gewöhnlichen \acs{HTTP}-Verbindung hervorgeht und über die
+anschließend beide Seiten jederzeit Daten senden können
+\cite{rfc6455}. Sie treten damit nicht an die Stelle von \acs{REST}
+oder GraphQL, sondern ergänzen diese für Anwendungsfälle mit
 Echtzeitanforderung.
 
 Der Zugriff im Browser erfolgt unabhängig vom gewählten Ansatz über
