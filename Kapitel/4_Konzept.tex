@@ -831,7 +831,7 @@ deshalb auf eine dauerhafte Verbindung.
 Eine solche Verbindung selbst zu betreiben, bedeutet, für jeden
 gleichzeitig angemeldeten Nutzer eine offene Verbindung zu halten und
 diese Infrastruktur skalieren und überwachen zu müssen. Aus demselben
-Grund, der in Abschnitt~\ref{subsec:checkout_konzept} zur Einbindung
+Grund, der in Abschnitt~\ref{subsec:warenkorb_konzept} zur Einbindung
 eines externen Zahlungsdienstes geführt hat, wird auch hier ein
 externer Dienst eingebunden, statt die Fähigkeit selbst aufzubauen.
  
@@ -875,7 +875,5 @@ sind, erhält jeder Nutzer zusätzlich einen auf ihn bezogenen Kanal,
  
 Schließlich sieht der Entwurf drei Zustände je Nachricht vor:
 gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob
-seine Nachricht angekommen ist -- eine Rückmeldung, die bei einem
-Austausch zwischen Fremden den Unterschied ausmacht zwischen einem
-schweigenden Gegenüber und einer Nachricht, die ihn nicht erreicht
-hat (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+seine Nachricht angekommen ist und ob der Empfänger sie gelesen hat
+(vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).
