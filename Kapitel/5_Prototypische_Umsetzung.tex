@@ -473,43 +473,30 @@ Preis, Kategorie und Verkäuferinformationen dargestellt.
 \label{subsec:impl_terminauswahl}
  
 Die in Abschnitt~\ref{subsec:buchung_konzept} beschriebene Auswahl
-ist als eigenständige, wiederverwendbare Komponente umgesetzt, die
-auf der Dienstleistungs-Detailseite eingebunden wird. Sie
-durchläuft drei Zustände.
+ist als eigenständige, wiederverwendbare Komponente umgesetzt und auf
+der Dienstleistungs-Detailseite eingebunden. Sie durchläuft drei
+Zustände.
  
 Im Ausgangszustand zeigt sie einen Monatskalender und die Zeitzone
-des Anbieters. Jeder Tag lässt sich auswählen; welche Zeitfenster er
-enthält, ergibt sich erst aus der Antwort des Backends. Fällt ein Tag
-in einen Abwesenheitszeitraum oder sieht das Wochenschema für ihn
-keine Arbeitszeit vor, erscheint an Stelle der Liste ein Hinweis, dass
-für dieses Datum keine Zeitfenster verfügbar sind. Ein nicht
-verfügbarer Tag wird damit nicht ausgeblendet, sondern benannt --
-dieselbe Entscheidung wie bei den Fristen für Stornierung und
-Verlegung (vgl.
-Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}). Die
-Schaltfläche zur Übernahme in den Warenkorb ist zunächst deaktiviert,
-da noch kein Termin feststeht.
+des Anbieters. Welche Zeitfenster ein Tag enthält, ergibt sich erst
+aus der Antwort des Backends; die Schaltfläche zur Übernahme in den
+Warenkorb bleibt zunächst deaktiviert. Jeder Tag ist anwählbar, auch
+ein solcher ohne Arbeitszeit -- an Stelle der Liste erscheint dann
+der Hinweis, dass für dieses Datum keine Zeitfenster verfügbar sind
+(vgl. Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
  
 Mit der Wahl eines Tages wird dessen Zeitfensterliste abgerufen. Die
 Fenster werden nach Tageszeit in Vormittag, Nachmittag und Abend
 gruppiert; jedes trägt seinen Zeitraum und die verbleibende
 Kapazität. Erst mit der Wahl eines Fensters erscheint eine
-Zusammenfassung der ausgewählten Buchung, und die Schaltfläche wird
-aktiv.
+Zusammenfassung der Buchung, und die Schaltfläche wird aktiv.
  
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.42\textwidth]{Bilder/screenshot_buchung_auswahl.png}
+\includegraphics[width=0.60\textwidth]{Bilder/screenshot_buchung_auswahl.png}
 \caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
 \label{fig:buchung_auswahl}
 \end{figure}
- 
-Dass die Schaltfläche bis zur vollständigen Auswahl deaktiviert
-bleibt, ist bewusst gewählt: Eine unvollständige Buchung kann nicht
-in den Warenkorb übernommen werden, und der Nutzer erhält diese
-Rückmeldung, bevor er die Aktion auslöst, statt danach als
-Fehlermeldung (vgl.
-Abschnitt~\ref{subsec:gestaltungsprinzipien}).
  
 Am Zeitraster der Fenster ist die Wirkung der Buchungsregeln
 ablesbar: Bei einer Dauer von drei Stunden und einem Raster von
@@ -519,23 +506,8 @@ nicht aus, solange die Kapazität nicht erschöpft ist.
  
 Die Übernahme in den Warenkorb erzeugt eine Position, die neben
 Titel, Preis und Kategorie zusätzlich Beginn, Ende, Zeitzone und Ort
-der Leistungserbringung enthält. Diese Angaben werden später mit dem
-Auftrag an das Backend übertragen (vgl.
-Abschnitt~\ref{subsec:impl_stripe}).
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_warenkorb_buchung.png}
-\caption{Dienstleistungsbuchung als Position im Warenkorb}
-\label{fig:warenkorb_buchung}
-\end{figure}
- 
-Die Zusammenfassung des Warenkorbs weist Produkte und
-Dienstleistungen getrennt aus, obwohl beide dasselbe Modell
-verwenden. Damit bleibt erkennbar, wie viele terminierte Positionen
-der Vorgang enthält -- eine Angabe, die für den weiteren Verlauf
-erheblich ist, da nur diese Positionen später storniert oder verlegt
-werden können.
+der Leistungserbringung trägt (vgl.
+Abschnitt~\ref{subsec:impl_warenkorb}).
 
 
 \section{Warenkorb, Checkout und Zahlung}
@@ -545,66 +517,52 @@ werden können.
 \subsection{Warenkorb-UI: Produkte und Buchungen kombiniert}
 \label{subsec:impl_warenkorb}
 
-Der Warenkorb wird über einen zentralen Zustand-Store verwaltet,
-dessen Inhalt zunächst nur im Arbeitsspeicher gehalten wird. Jede
-Änderung, etwa das Hinzufügen eines Elements, wird dabei dort
-abgelegt. Da dieser Speicher jedoch nur besteht, solange die
-Seite geöffnet ist, muss
-der Inhalt des Warenkorbs zusätzlich dauerhaft gesichert werden,
-damit er einen Seitenwechsel, ein erneutes Laden oder ein
-Schließen der Anwendung übersteht. Der Grund dafür liegt in der
-Nutzererfahrung: Legt ein Nutzer Artikel in den Warenkorb und
-kann er den Checkout nicht sofort abschließen, etwa weil er die
-Anwendung verlassen muss, wäre es eine schlechte
-Nutzererfahrung, wenn diese Artikel beim erneuten Öffnen der
-Anwendung verschwunden wären. Aus diesem Grund wird der
-Warenkorbinhalt zusätzlich im localStorage des Browsers
-gespeichert. Technisch erfolgt dies über die persist-Middleware von Zustand,
-die den Inhalt des Stores automatisch mit dem localStorage
-synchronisiert \cite{zustand_docs}.
-
-Darüber hinaus muss jede Änderung am Warenkorb unmittelbar an
-allen Stellen der Anwendung sichtbar werden, an denen sie
-relevant ist, etwa der Positionsanzahl im Header oder der
-Zusammenfassung auf der Warenkorbseite selbst. Innerhalb der
-Komponentenstruktur von React muss eine Änderung, die an einer
-Stelle vorgenommen wird, ohne Verzögerung an eine andere Stelle
-weitergegeben werden, ohne dass die betroffenen Komponenten
-direkt miteinander verbunden sind. Diese unmittelbare,
-anwendungsweite Aktualisierung wird durch die Bibliothek Zustand
-ermöglicht, wofür ein eigener Store für den Warenkorb definiert
-wurde.
-
-Die Funktionen des Warenkorbs wurden dabei bewusst nicht in den
-bereits bestehenden \acs{UI}-Store aufgenommen, sondern in einem
-eigenständigen Store zusammengefasst. Diese Trennung folgt dem
-bereits in Abschnitt~\ref{subsec:komponentenbasiert} eingeführten
-Prinzip der Separation of Concerns: Der Auth-Store ist
-ausschließlich für die Authentifizierung zuständig, der \acs{UI}-Store
-ausschließlich für rein darstellungsbezogene Zustände wie das
-Ein- und Ausblenden von Dialogen, während alle Funktionen mit
-Bezug zum Warenkorb in einem eigenen Store gebündelt sind.
-Dadurch lässt sich jeder Store unabhängig von den übrigen
-bearbeiten und erweitern, ohne dass sich Änderungen an einer
-Stelle auf andere Bereiche der Anwendung auswirken.
-
-% TODO (Roudy): Absicht laut Meeting vom 19.07.2026 -- Cart-Code
-% bewusst nicht Zeile fuer Zeile erklaeren, sondern nur die drei
-% oben stehenden Punkte (Cache/localStorage-Begruendung,
-% State-Management-Reaktivitaet, Separation of Concerns).
-% Ausserdem selbst geaeussert: eventuell erst nach Fertigstellung
-% der Stripe-Integration ausfuehrlicher schreiben, da Cart und
-% Checkout inhaltlich zusammengehoeren.
+Der Warenkorb ist als eigener Zustand-Store umgesetzt, getrennt vom
+Auth- und vom \acs{UI}-Store (vgl.
+Abschnitt~\ref{subsec:state-management-konzept}). Seine Persistenz
+übernimmt die \texttt{persist}-Middleware von Zustand, die den Inhalt
+unter dem Schlüssel \texttt{bazario-cart} im \texttt{localStorage}
+ablegt \cite{zustand_docs}. Gespeichert wird dabei nicht der gesamte
+Store, sondern über \texttt{partialize} nur der übertragbare Teil:
+die Positionen, die Währung und die Zuordnung zum Besitzer. Die
+abgeleiteten Funktionen für Zwischensumme und Positionszahl bleiben
+ausgeschlossen, da sie sich aus den Positionen jederzeit neu
+berechnen lassen.
+ 
+Die beiden Positionstypen werden beim Hinzufügen unterschiedlich
+behandelt. Ein Produkt wird über seine Kennung erkannt; ist es
+bereits enthalten, erhöht sich lediglich dessen Menge. Eine
+Dienstleistungsbuchung besitzt dagegen keine Menge, sondern einen
+Termin. Zwei Buchungen gelten deshalb nur dann als dieselbe, wenn
+sechs Angaben übereinstimmen: die Dienstleistung, Beginn, Ende,
+Zeitzone, die Art des Ortes und dessen nähere Bestimmung. Trifft das
+zu, bleibt der Warenkorb unverändert; dieselbe Dienstleistung zu
+einem anderen Termin ist dagegen eine eigene Position.
+ 
+Ein dritter Punkt ergibt sich daraus, dass der Warenkorb im Browser
+verbleibt und nicht am Konto hängt. Er führt deshalb mit, wem er
+gehört, und gleicht diese Zuordnung bei jeder Änderung des
+Anmeldestatus ab: Meldet sich ein zuvor nicht angemeldeter Nutzer
+an, bleiben seine Positionen erhalten und werden ihm zugeordnet.
+Wechselt dagegen der angemeldete Nutzer, wird der Warenkorb geleert.
+Andernfalls fände ein Nutzer, der sich am selben Gerät anmeldet, die
+Positionen seines Vorgängers vor.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_warenkorb_buchung.png}
+\caption{Dienstleistungsbuchung als Position im Warenkorb}
+\label{fig:warenkorb_buchung}
+\end{figure}
 
 \subsection{Stripe-Integration im Frontend}
 \label{subsec:impl_stripe}
  
 Die Umsetzung des in Abschnitt~\ref{subsec:warenkorb_konzept}
-beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend: das
-Auslösen des Checkouts im Warenkorb und die Verarbeitung des
+beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend:
+das Auslösen des Checkouts im Warenkorb und die Verarbeitung des
 Ergebnisses auf den beiden Rückleitungsseiten. Dazwischen liegt eine
 Folge von Schritten, an denen Frontend, Backend und Zahlungsdienst
-beteiligt sind; Abbildung~\ref{fig:checkout_ablauf} stellt sie dar.
+beteiligt sind.
  
 \begin{figure}[H]
 \centering
@@ -620,22 +578,19 @@ Zahlungssitzung. Die Verständigung mit dem Zahlungsdienst erfolgt
 vollständig im Backend.
  
 Ausgelöst wird der Vorgang über die Schaltfläche in der
-Warenkorbübersicht. Die zugehörige Funktion prüft zunächst den
-Anmeldestatus: Ist der Nutzer nicht angemeldet, wird über den in
-Abschnitt~\ref{subsec:state-management-konzept} beschriebenen
-\acs{UI}-Store der Anmeldedialog geöffnet und die Funktion verlassen,
-wobei der Warenkorb unverändert bleibt. Andernfalls wird die
-eigentliche Checkout-Operation ausgeführt.
- 
-Diese ist als Mutation umgesetzt, da sie den Datenbestand auf dem
-Server verändert und nicht lediglich Daten abruft (vgl.
+Warenkorbübersicht. Ist der Nutzer nicht angemeldet, öffnet die
+Funktion über den \acs{UI}-Store den Anmeldedialog und bricht ab; der
+Warenkorb bleibt dabei unverändert. Andernfalls läuft die
+Checkout-Operation an, die als Mutation umgesetzt ist, da sie den
+Datenbestand auf dem Server verändert (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Sie durchläuft drei
 Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag
-angelegt, dessen Kennung das Backend zurückgibt. Anschließend wird für
-jede Position des Warenkorbs eine weitere Anfrage gestellt, die die
-Position diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung
-angefordert; das Backend liefert daraufhin die Adresse der
-Zahlungsseite zurück, auf die das Frontend den Browser weiterleitet.
+angelegt, dessen Kennung das Backend zurückgibt. Anschließend wird
+für jede Position des Warenkorbs eine weitere Anfrage gestellt, die
+sie diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung
+angefordert; das Backend liefert die Adresse der Zahlungsseite
+zurück, auf die das Frontend den Browser weiterleitet.
+ 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{Bilder/screenshot_stripe_zahlungsseite.png}
@@ -644,55 +599,50 @@ Frontend nach dem Auslösen des Checkouts weiterleitet}
 \label{fig:stripe_zahlungsseite}
 \end{figure}
  
-Die Aufbereitung der einzelnen Position ist dabei in eine eigene
-Funktion ausgelagert, da sich die zu übertragenden Angaben je nach
-Positionstyp unterscheiden: Für ein Produkt genügen Kennung und Menge,
-während eine Dienstleistungsbuchung zusätzlich den gewählten Termin
-enthält. Die Fallunterscheidung liegt damit nicht in der Mutation
-selbst, die dadurch auf ihre drei Schritte beschränkt bleibt.
+Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
+ausgelagert, da sich die zu übertragenden Angaben je nach
+Positionstyp unterscheiden: Für ein Produkt genügen Kennung und
+Menge, während eine Dienstleistungsbuchung zusätzlich den gewählten
+Termin enthält. Die Fallunterscheidung liegt damit nicht in der
+Mutation, die dadurch auf ihre drei Schritte beschränkt bleibt.
  
 Nach Abschluss der Zahlung führt der Zahlungsdienst den Nutzer auf
 eine der beiden Rückleitungsseiten zurück. Die Erfolgsseite ruft die
-Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an.
-Darunter bietet sie zwei Wege in die jeweils passende Übersicht an,
-getrennt nach Bestellungen und Buchungen, da ein Auftrag beide
-Positionstypen enthalten kann. Die Handlungsfolge des Checkouts wird
-damit erkennbar abgeschlossen und zugleich der nächste sinnvolle
-Schritt angeboten (vgl.
+Auftragsdaten ab und zeigt Auftragsnummer, Status und Betrag an;
+darunter bietet sie zwei Wege in die Übersichten an, getrennt nach
+Bestellungen und Buchungen, da ein Auftrag beide Positionstypen
+enthalten kann (vgl.
 Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+ 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Bilder/screenshot_checkout_success.png}
 \caption{Bestätigungsseite nach erfolgreicher Zahlung}
 \label{fig:checkout_success}
 \end{figure}
-
  
-Vor der Darstellung führt die Seite jedoch eine Folge von
-Nebenwirkungen aus, die in einem Effekt gekapselt sind. Der Effekt
-prüft zunächst, ob die Zahlung tatsächlich erfolgt ist, und bricht
-andernfalls ab. Erst danach wird der Warenkorb geleert. Dieser
-Zeitpunkt ist bewusst gewählt: Ein Warenkorb darf nicht bereits beim
-Auslösen des Checkouts geleert werden, da die Zahlung noch scheitern
-oder abgebrochen werden kann.
+Vor der Darstellung führt die Seite eine Folge von Nebenwirkungen
+aus, die in einem Effekt gekapselt sind. Der Effekt prüft zunächst,
+ob die Zahlung tatsächlich erfolgt ist, und bricht andernfalls ab.
+Erst danach wird der Warenkorb geleert -- nicht schon beim Auslösen
+des Checkouts, da die Zahlung bis zuletzt scheitern oder abgebrochen
+werden kann.
  
 Zusätzlich sichert eine Referenz ab, dass der Effekt nur einmal
-ausgeführt wird. Ohne diese Sperre könnte ein erneutes Rendern der
-Seite den Warenkorb ein zweites Mal leeren und die Invalidierung
-wiederholen, obwohl derselbe Zahlungsvorgang zugrunde liegt. Eine
-Referenz eignet sich dafür, weil ihre Änderung im Gegensatz zu einem
-Zustandswert kein erneutes Rendern auslöst.
+ausgeführt wird. Ohne diese Sperre könnte ein erneutes Rendern den
+Warenkorb ein zweites Mal leeren und die Invalidierung wiederholen,
+obwohl derselbe Zahlungsvorgang zugrunde liegt. Eine Referenz eignet
+sich dafür, weil ihre Änderung im Gegensatz zu einem Zustandswert
+kein erneutes Rendern auslöst.
  
 Im Anschluss werden vier zwischengespeicherte Datenbestände für
 ungültig erklärt: die Daten des betroffenen Auftrags, der zuletzt
 angelegte Auftrag, die Liste der eigenen Bestellungen und die Liste
-der eigenen Buchungen. Der Grund ist der in
-Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene Mechanismus:
-Nach erfolgreicher Zahlung existiert im Backend ein Auftrag mehr als
-im Cache hinterlegt, und der Status des betroffenen Auftrags hat sich
-von \textit{requires payment} auf \textit{paid} geändert. Ohne
-Invalidierung würde die Anwendung weiterhin den veralteten Stand
-anzeigen.
+der eigenen Buchungen. Nach erfolgreicher Zahlung existiert im
+Backend ein Auftrag mehr als im Zwischenspeicher hinterlegt, und der
+Status des betroffenen Auftrags hat von \textit{requires payment} auf
+\textit{paid} gewechselt (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}).
  
 \begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung (checkout-success-page.tsx)}, label={lst:checkout-success}]
 useEffect(() => {
@@ -709,30 +659,21 @@ useEffect(() => {
 }, [checkoutResultQuery.data?.is_paid, clearCart, orderId, queryClient])
 \end{lstlisting}
  
-Die Abbruchseite kommt demgegenüber ohne Nebenwirkungen aus. Da keine
-Zahlung stattgefunden hat, hat sich weder der Warenkorb noch der
-Datenbestand auf dem Server verändert; es gibt folglich nichts zu
-leeren und nichts zu invalidieren. Sie beschränkt sich darauf, den
-Abbruch zu benennen und zwei Wege anzubieten: zurück zum Warenkorb
-oder zur Bestellübersicht. Der Warenkorb bleibt dabei vollständig
-erhalten, sodass der Nutzer den Vorgang unmittelbar mit einem anderen
-Zahlungsmittel wiederholen kann.
- 
-Beide Seiten sind darüber hinaus als geschützte Routen eingebunden
-(vgl. Abschnitt~\ref{subsec:routing-konzept}), da das Ergebnis einer
-Zahlung einem bestimmten Nutzer zugeordnet ist und nicht durch bloßes
-Aufrufen der Adresse einsehbar sein soll.
+Die Abbruchseite kommt ohne Nebenwirkungen aus: Da keine Zahlung
+stattgefunden hat, hat sich weder der Warenkorb noch der Datenbestand
+auf dem Server verändert. Sie benennt den Abbruch und bietet zwei
+Wege an, zurück zum Warenkorb oder zur Bestellübersicht. Beide
+Rückleitungsseiten sind als geschützte Routen eingebunden (vgl.
+Abschnitt~\ref{subsec:routing-konzept}).
  
 Für die Erprobung stellt der Zahlungsdienst eine Testumgebung mit
 Kartennummern bereit, die jeweils ein bestimmtes Verhalten auslösen:
 erfolgreiche Zahlung, unzureichende Deckung, abgelaufene Karte sowie
-allgemeine Ablehnung. Damit ließen sich die Rückleitungswege prüfen,
-ohne echte Zahlungen auszulösen. Dabei zeigte sich, dass sämtliche
-Ablehnungen bereits auf der Seite des Zahlungsdienstes abgefangen
-werden und dort zur Eingabe eines anderen Zahlungsmittels führen. Die
-im Frontend vorgesehene Abbruchseite wird folglich nur erreicht, wenn
-der Nutzer den Vorgang selbst abbricht; ein Fehlerfall aus dem Backend
-heraus bleibt damit auf Ausnahmesituationen beschränkt.
+allgemeine Ablehnung. Dabei zeigte sich, dass sämtliche Ablehnungen
+bereits auf der Seite des Zahlungsdienstes abgefangen werden und dort
+zur Eingabe eines anderen Zahlungsmittels führen. Die Abbruchseite
+wird folglich nur erreicht, wenn der Nutzer den Vorgang selbst
+abbricht.
 
 % ----------------------------------------------------------------
 \section{Kontobereich und rollenspezifische Funktionen}
@@ -830,30 +771,14 @@ Löschen.
 \label{fig:my_services}
 \end{figure}
  
-Das Löschen einer Dienstleistung invalidiert dabei mehrere
-zusammenhängende Cache-Einträge zugleich.
- 
-\begin{lstlisting}[caption={Mutation zum Löschen einer Dienstleistung (use-delete-service-mutation.ts)}, label={lst:delete-service}]
-export function useDeleteServiceMutation() {
-  const queryClient = useQueryClient()
- 
-  return useMutation({
-    mutationFn: (serviceId: number) => deleteService(serviceId),
-    onSuccess: (_result, serviceId) => {
-      queryClient.invalidateQueries({ queryKey: ['my-services'] })
-      queryClient.invalidateQueries({ queryKey: ['services'] })
-      queryClient.invalidateQueries({ queryKey: ['service', serviceId] })
-      queryClient.invalidateQueries({ queryKey: ['home'] })
-    },
-  })
-}
-\end{lstlisting}
- 
-Eine gelöschte Dienstleistung muss aus der eigenen Übersicht, aus dem
-öffentlichen Dienstleistungskatalog, aus der zugehörigen Detailseite
-und aus der Startseite zugleich verschwinden. Die Cache-Einträge aller
-vier Bereiche werden deshalb gezielt invalidiert, anstatt sich auf
-deren automatisches Ablaufen zu verlassen (vgl.
+Das Löschen einer Dienstleistung folgt demselben Muster wie die
+Nebenwirkungen der Erfolgsseite (vgl.
+Listing~\ref{lst:checkout-success}), betrifft jedoch vier
+Zwischenspeicher zugleich: die eigene Übersicht, den öffentlichen
+Dienstleistungskatalog, die zugehörige Detailseite und die
+Startseite. Aus allen vieren muss der Eintrag zugleich verschwinden,
+weshalb sie gezielt invalidiert werden, anstatt sich auf ein
+automatisches Ablaufen zu verlassen (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
 davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
 eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
@@ -932,24 +857,10 @@ abgerufen und nach demselben Kartenprinzip dargestellt, das auch
 auf der öffentlichen Katalogseite zum Einsatz kommt (vgl.
 Abschnitt~\ref{subsec:impl_produktlisting}); die
 Verwaltungskarte ergänzt dabei Aktionen zum Bearbeiten
-und Löschen. Das Löschen eines
-Produkts invalidiert dabei, analog zur Dienstleistungsverwaltung,
-mehrere zusammenhängende Cache-Einträge zugleich.
-
-\begin{lstlisting}[caption={Mutation zum Löschen eines Produkts (use-delete-product-mutation.ts)}, label={lst:delete-product}]
-export function useDeleteProductMutation() {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (productId: number) => deleteProduct(productId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['my-products'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
-      queryClient.invalidateQueries({ queryKey: ['seller-products'] })
-    },
-  })
-}
-\end{lstlisting}
+und Löschen. Das Löschen eines Produkts verfährt ebenso, betrifft aber nur drei
+Zwischenspeicher, da eine eigene Detailseite im Zwischenspeicher
+nicht gesondert geführt wird: die eigene Produktliste, den
+öffentlichen Katalog und die Produkte des Verkäuferprofils.
 
 % TODO (Roudy): Hier kommt der Screenshot vom "Edit product"-
 % Formular hin.
@@ -1051,7 +962,9 @@ Dienstleistung, Anbieter, Zeitraum, Zeitzone, Ort und Zustand. Unter
 jedem Eintrag stehen zwei Blöcke, einer für die Stornierung und einer
 für die Umbuchung, in denen die beim Anlegen der Dienstleistung
 festgelegten Fristen wiedergegeben werden (vgl.
-Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}).
+Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}). Solange eine
+Frist läuft, nennt der zugehörige Block den Zeitpunkt ihres Endes,
+und die Schaltfläche ist auslösbar.
  
 \begin{figure}[H]
 \centering
@@ -1061,9 +974,12 @@ jeweils mit Angabe des Fristendes}
 \label{fig:buchung_offen}
 \end{figure}
  
-Solange eine Frist läuft, nennt der zugehörige Block den Zeitpunkt
-ihres Endes, und die Schaltfläche ist auslösbar. Der Nutzer erfährt
-damit vor der Handlung, bis wann sie möglich ist.
+Nach Ablauf einer Frist wird die zugehörige Schaltfläche deaktiviert,
+und an die Stelle des Fristendes tritt der Hinweis, dass der Zeitraum
+verstrichen ist. Beide Schaltflächen bleiben dabei sichtbar --
+dieselbe Entscheidung wie bei der Terminauswahl, in der ein nicht
+verfügbarer Tag benannt statt ausgeblendet wird (vgl.
+Abschnitt~\ref{subsec:impl_terminauswahl}).
  
 \begin{figure}[H]
 \centering
@@ -1073,26 +989,16 @@ deaktiviert, der Grund steht darüber}
 \label{fig:buchung_frist_abgelaufen}
 \end{figure}
  
-Nach Ablauf einer Frist wird die zugehörige Schaltfläche deaktiviert,
-und an die Stelle des Fristendes tritt der Hinweis, dass der Zeitraum
-verstrichen ist. Beide Schaltflächen bleiben dabei sichtbar. Die
-Alternative, sie zu entfernen, wäre technisch einfacher gewesen,
-hätte dem Nutzer aber nicht mitgeteilt, warum eine erwartete Funktion
-fehlt. Dieselbe Entscheidung liegt der Terminauswahl zugrunde, in der
-ein nicht verfügbarer Tag ebenfalls benannt statt ausgeblendet wird
-(vgl. Abschnitt~\ref{subsec:impl_terminauswahl}).
- 
 Die Umbuchung führt auf eine eigene Seite, die dieselbe
-Terminauswahl verwendet wie die Erstbuchung. Die Komponente wird
-damit an zwei Stellen der Anwendung eingesetzt, ohne dass die Logik
-zur Ermittlung verfügbarer Zeitfenster ein zweites Mal umgesetzt
-werden musste. Neben der Auswahl zeigt die Seite den bisherigen
-Termin, sodass der Wechsel nachvollziehbar bleibt.
+Terminauswahl verwendet wie die Erstbuchung. Die Komponente ist damit
+an zwei Stellen der Anwendung eingesetzt, ohne dass die Ermittlung
+verfügbarer Zeitfenster ein zweites Mal umgesetzt werden musste.
+Neben der Auswahl zeigt die Seite den bisherigen Termin, sodass der
+Wechsel nachvollziehbar bleibt.
  
 Eine Stornierung löst dagegen keine erneute Auswahl aus, sondern eine
-Rückerstattung über das Backend. Deren Stand wird anschließend an der
-Buchung selbst geführt, sodass der Nutzer den Vorgang bis zum
-Abschluss verfolgen kann.
+Rückerstattung über das Backend, deren Stand anschließend an der
+Buchung selbst geführt wird.
 
 % ----------------------------------------------------------------
 
