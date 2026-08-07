@@ -163,6 +163,70 @@ Key, Cache und einheitlichen Verbindungszuständen kommt bei
 sämtlichen weiteren Datenabrufen der Anwendung in gleicher Form
 zum Einsatz und wird in den folgenden Abschnitten jeweils nur
 noch kurz referenziert.
+\section{Mehrsprachigkeit der Oberfläche}
+\label{sec:impl_i18n}
+ 
+Die Umsetzung des in
+Abschnitt~\ref{subsec:mehrsprachigkeit_konzept} beschriebenen
+Konzepts stützt sich auf \textit{i18next} mit der React-Anbindung
+\textit{react-i18next} \cite{i18next_docs}. Die Oberflächentexte
+liegen in zwei Modulen, je eines für Deutsch und Englisch; beide
+enthalten dieselben Schlüssel und unterscheiden sich allein in den
+Werten. Die Schlüssel sind nicht alphabetisch, sondern nach ihrem
+Verwendungsbereich gruppiert -- etwa \texttt{header},
+\texttt{cart} oder \texttt{checkout} --, wobei ein Bereich
+\texttt{common} die mehrfach verwendeten Texte aufnimmt. Dieselbe
+Bezeichnung kann dadurch in verschiedenen Bereichen einen eigenen
+Wert tragen.
+ 
+\begin{lstlisting}[caption={Auszug aus der deutschen Ressourcendatei (de.ts)}, label={lst:i18n-messages}]
+const de = {
+  common: {
+    cart: 'Warenkorb',
+    noDescriptionYet: 'Noch keine Beschreibung.',
+  },
+  catalog: {
+    bySeller: 'von {{name}}',
+  },
+  checkout: {
+    successTitle: 'Checkout erfolgreich',
+    paymentConfirmed: 'Zahlung bestätigt',
+  },
+}
+\end{lstlisting}
+ 
+Der Eintrag \texttt{bySeller} zeigt die Behandlung veränderlicher
+Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, sodass der
+Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext
+zusammengesetzt wird -- was nötig ist, da die Stellung eines
+eingesetzten Wortes von Sprache zu Sprache verschieden ist.
+ 
+Die Konfiguration erfolgt an einer Stelle und wird beim Start noch
+vor der ersten Darstellung ausgeführt. Sie legt die Ressourcen, die
+Rückfallsprache und die Reihenfolge fest, in der die Sprache
+ermittelt wird: zunächst der gespeicherte Wert, andernfalls die
+Spracheinstellung des Browsers. Die Wahl wird im
+\texttt{localStorage} abgelegt, derselben Ablage wie die Sitzung
+(vgl. Abschnitt~\ref{subsec:impl_token_session}), und ist in einem
+eigenen Hook gekapselt; der Umschalter greift ausschließlich darauf
+zu und kennt weder die Bibliothek noch die Art der Speicherung.
+ 
+Die Inhalte aus dem Backend werden dagegen nicht übersetzt, sondern
+angefordert: Der in Abschnitt~\ref{subsec:impl_httpclient}
+beschriebene zentrale \acs{HTTP}-Client führt bei jeder Anfrage einen
+Header mit der gewählten Sprache mit. Der Wert wird im Interceptor
+gesetzt und nicht bei der Erzeugung der Instanz, da er sonst auf dem
+Stand des Anwendungsstarts bliebe. Eine einzige Stelle genügt damit,
+um die Sprachwahl auf sämtliche Inhalte wirken zu lassen.
+ 
+Sichtbar wird dies gegenwärtig gleichwohl nicht: Die
+Erfassungsformulare sehen Englisch und Arabisch vor (vgl.
+Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}), sodass keine
+deutsche Fassung der Inhalte entsteht und das Backend auf die
+deutsche Anforderung mit der englischen antwortet. Die Übertragung
+der Sprachwahl ist im Frontend somit vollständig umgesetzt, wirkt
+sich auf die Inhalte jedoch erst aus, sobald das Datenmodell eine
+deutsche Fassung vorsieht.
 \section{Authentifizierung und Onboarding}
 \label{sec:impl_auth}
 

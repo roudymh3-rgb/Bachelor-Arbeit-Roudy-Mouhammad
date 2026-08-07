@@ -365,6 +365,36 @@ Arbeit nicht erforderlich.
 \subsection{Seitenstruktur und Navigationsprinzip}
 % TODO: Wireframes oder Mockups der wichtigsten Ansichten.
 
+
+\subsection{Mehrsprachigkeit und Sprachwahl}
+\label{subsec:mehrsprachigkeit_konzept}
+ 
+\textit{Bazario} folgt der in
+Abschnitt~\ref{subsec:mehrsprachigkeit} beschriebenen Zweiteilung:
+Die Oberflächentexte werden im Frontend übersetzt, die Angaben zu
+Produkten, Dienstleistungen und Anbietern liefert das Backend bereits
+in der angeforderten Sprache. Diese Aufteilung folgt aus der Herkunft
+der Daten, nicht aus einer Entwurfsentscheidung -- ein Anbieter
+erfasst Titel und Beschreibung mehrsprachig (vgl.
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}), weshalb nur das
+Backend beide Fassungen kennt.
+ 
+Die Sprachwahl ist im Anwendungsrahmen angeordnet und damit von jeder
+Seite aus erreichbar. Sie wirkt ohne erneutes Laden, da ein Neuladen
+den Zustand der Ansicht verwerfen würde, etwa eine begonnene Eingabe.
+Beim ersten Aufruf gilt die im Browser eingestellte Sprache, sofern
+sie unterstützt wird, andernfalls Englisch; die anschließend
+getroffene Wahl wird gespeichert und bei späteren Besuchen
+wiederhergestellt.
+ 
+Angeboten werden Deutsch und Englisch, für die Oberflächentexte
+vollständig umgesetzt. Bei den Inhalten reicht die Wahl gegenwärtig
+nicht so weit: Die Erfassungsformulare sehen Englisch und Arabisch
+vor, sodass eine deutsche Fassung nicht entsteht. Anforderung und
+Verfügbarkeit einer Sprache sind damit zwei getrennte Fragen -- das
+Frontend kann jede Sprache anfordern, geliefert wird nur, was zuvor
+erfasst wurde.
+
 % ----------------------------------------------------------------
 \section{Konzept der einzelnen Funktionsbereiche}
 \subsection{Authentifizierung und Onboarding}

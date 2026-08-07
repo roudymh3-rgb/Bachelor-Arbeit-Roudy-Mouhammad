@@ -279,10 +279,10 @@ Anbieters; eine Bibliothek lässt Freiheit bei der Zusammenstellung
 des Technologiestacks, verlagert die Verantwortung für dessen
 Stimmigkeit jedoch in das Projekt
 \cite{repolust_frontend_frameworks}. Im zweiten Fall sind die
-übrigen Aufgabenbereiche einzeln zu entscheiden; sie werden in den
-folgenden Abschnitten in dieser Reihenfolge behandelt: Framework,
-Anwendungszustand, clientseitiges Routing, Kommunikation mit dem
-Backend, Gestaltung der Oberfläche und Formularverarbeitung.
+übrigen Aufgabenbereiche einzeln zu entscheiden; sie werden in den folgenden Abschnitten in dieser Reihenfolge
+behandelt: Framework, Anwendungszustand, clientseitiges Routing,
+Kommunikation mit dem Backend, Gestaltung der Oberfläche,
+Formularverarbeitung und Mehrsprachigkeit.
 Für einige dieser Bereiche stehen mehrere konkurrierende Ansätze zur
 Verfügung, für andere hat sich im React-Ökosystem eine Lösung als
 De-facto-Standard etabliert; die folgenden Abschnitte stellen daher
@@ -596,6 +596,33 @@ Beide lassen sich über einen sogenannten Resolver koppeln, sodass
 Eingaben clientseitig gegen ein Zod-Schema validiert werden, bevor
 eine Anfrage an das Backend gestellt wird
 \cite{react_hook_form_docs}.
+
+\subsection{Mehrsprachigkeit der Oberfläche}
+\label{subsec:mehrsprachigkeit}
+ 
+Soll eine Anwendung in mehreren Sprachen bedienbar sein, sind zwei
+Arten von Texten zu unterscheiden. Beschriftungen, Hinweise und
+Meldungen stehen im Anwendungscode; ihre Übersetzung ist Aufgabe des
+Frontends. Die dargestellten Inhalte stammen dagegen aus einer
+Datenquelle, weshalb die Übersetzung dort liegt und das Frontend
+lediglich mitteilt, in welcher Sprache es die Antwort erwartet --
+üblicherweise über den \acs{HTTP}-Header \texttt{Accept-Language}
+\cite{fielding_rest}.
+ 
+Für die erste Art werden Texte nicht unmittelbar in die Komponenten
+geschrieben, sondern über einen Schlüssel referenziert, zu dem je
+Sprache ein Wert in einer Ressourcendatei vorliegt; eine Änderung
+erfolgt damit an einer Stelle und wirkt überall. Hinzu kommen
+Platzhalter für veränderliche Bestandteile wie Namen oder Anzahlen
+sowie eine Rückfallsprache für den Fall, dass ein Schlüssel fehlt. Im
+JavaScript-Umfeld ist \textit{i18next} die verbreitetste Lösung
+hierfür; die React-Anbindung \textit{react-i18next} stellt die
+betroffenen Komponenten bei einem Sprachwechsel unmittelbar neu dar,
+ohne die Seite neu zu laden \cite{i18next_docs}. Alternativen wie
+\textit{react-intl} folgen demselben Grundgedanken. Davon abzugrenzen
+ist die im Browser eingebaute \texttt{Intl}-Schnittstelle, die
+Zahlen, Daten und Währungsangaben sprachgerecht formatiert, jedoch
+keine Texte übersetzt.
 %===========================================================================
 \section{Grundlagen des UI-Designs}
 \label{sec:ui-design}
