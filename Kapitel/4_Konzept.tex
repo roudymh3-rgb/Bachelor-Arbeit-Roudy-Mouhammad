@@ -308,6 +308,70 @@ synchronisiert wird.
 
 \section{UI/UX-Konzept}
 \label{sec:uiux_konzept}
+\subsection{Gestaltungsansatz und Leitlinien}
+\label{subsec:gestaltungsansatz}
+ 
+Die Oberfläche von \textit{Bazario} ist nicht als gestalterische
+Schicht über der Anwendung entworfen, sondern als Teil ihrer
+Struktur. Da die Plattform Produktkauf, Dienstleistungsbuchung,
+Zahlung, Nachrichten und Kontoverwaltung in einem System vereint,
+muss sie mehrere voneinander unabhängige Arbeitsabläufe tragen, ohne
+dass die Bedienung mit jedem hinzukommenden Bereich unübersichtlicher
+wird.
+ 
+Maßgeblich für den Entwurf ist deshalb die Funktion einer Ansicht,
+nicht ihr Erscheinungsbild. Jede Seite ist um diejenige Handlung
+herum aufgebaut, die auf ihr im Vordergrund steht: Produktseiten um
+das Sichten eines Angebots, Dienstleistungsseiten um die Wahl eines
+Termins, Kontoseiten um die Verwaltung laufender Vorgänge. Das
+Bedienmodell bleibt dadurch über die Anwendung hinweg gleich, auch
+wenn die zugrunde liegenden Abläufe unterschiedlich komplex sind.
+ 
+Die vier in Abschnitt~\ref{subsec:gestaltungsprinzipien} verdichteten
+Anforderungen gelten dabei durchgehend: Konsistenz über gleichartige
+Situationen hinweg, Erkennbarkeit des Systemzustands, Vermeidung von
+Fehleingaben und Kontrolle des Nutzers über den Ablauf.
+ 
+Hinzu tritt eine fünfte Leitlinie, die sich aus dem Rollenmodell
+ergibt und in den allgemeinen Prinzipienkatalogen nicht vorkommt:
+Rollensensitivität. Kunde, Verkäufer und Dienstleister rufen dieselbe
+Anwendung aus unterschiedlichen Gründen auf. Einen Kunden beschäftigen
+Katalog, Bestellung und Buchung; einen Verkäufer seine Produkte, die
+eingegangenen Bestellungen und die Einnahmen; einen Dienstleister
+zusätzlich Verfügbarkeit und Terminanfragen. Die Oberfläche gewichtet
+daher je nach zugewiesener Rolle anders, ohne das gemeinsame
+gestalterische System zu verlassen: Es ändert sich, was zuerst
+erscheint, nicht wie es aussieht (vgl.
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
+ 
+Aus diesem Ansatz folgen vier Vorgaben, die den in den nächsten
+Abschnitten beschriebenen Entscheidungen zugrunde liegen:
+ 
+\begin{itemize}
+\item Wiederkehrende Muster -- Karten, Schaltflächen, Dialoge,
+      Zustandsmarkierungen, Formularabschnitte -- folgen denselben
+      Regeln, statt je Ansicht neu festgelegt zu werden.
+\item Der jeweils nächste sinnvolle Schritt einer Seite ist
+      hervorgehoben; ergänzende Angaben treten zurück.
+\item Farbe trägt Bedeutung und wird nicht zur Verzierung eingesetzt.
+\item Eine nicht verfügbare Handlung wird benannt und begründet,
+      statt stillschweigend zu entfallen.
+\end{itemize}
+ 
+Die letzte Vorgabe wiegt schwerer, als sie zunächst wirkt: Sie
+betrifft die Fristen für Stornierung und Verlegung ebenso wie nicht
+belegbare Tage in der Terminauswahl und ist an beiden Stellen
+unabhängig voneinander angewandt worden (vgl.
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} und
+Abschnitt~\ref{subsec:buchung_konzept}).
+ 
+Ergänzend gilt ein Grundsatz der Beschränkung: Bestandteile, die
+lediglich vorhandene Wege wiederholen, entfallen. Eine Fußzeile
+etwa nähme üblicherweise Angaben zum Betreiber, Verweise auf soziale
+Netzwerke und Schnellzugriffe auf -- Inhalte, die entweder bereits in
+der Kopfzeile erreichbar sind oder für den Funktionsumfang der
+Plattform keine Rolle spielen. Verzichtet wird damit nicht auf
+Gestaltung, sondern auf Doppelung.
 
 \subsection{Designsystem und Farbschema}
 \label{subsec:designsystem}
@@ -334,12 +398,32 @@ Eingabefelder und Fokusringe sowie um einen eigenen Wert
 Als Farbraum wird durchgängig \acs{OKLCH} verwendet. Anders als bei
 hexadezimalen Angaben entspricht die Helligkeitskomponente dort
 näherungsweise der wahrgenommenen Helligkeit, wodurch sich
-Farbabstufungen gleichmäßig ableiten lassen \cite{css_color_4}. Die Palette ist bewusst
-neutral gehalten: Sämtliche Flächen- und Textfarben besitzen keinen
-Buntanteil, allein \texttt{destructive} ist als roter Farbwert
-angelegt. Farbe wird damit ausschließlich dort eingesetzt, wo sie
-eine Bedeutung trägt, während die inhaltliche Gliederung über
-Helligkeit, Abstände und Typografie erfolgt.
+Farbabstufungen gleichmäßig ableiten lassen \cite{css_color_4}. Die
+Palette ist bewusst neutral gehalten: Sämtliche Flächen- und
+Textfarben besitzen keinen Buntanteil, allein \texttt{destructive}
+ist als roter Farbwert angelegt. Farbe wird damit ausschließlich dort
+eingesetzt, wo sie eine Bedeutung trägt, während die inhaltliche
+Gliederung über Helligkeit, Abstände und Typografie erfolgt.
+ 
+Diese Zurückhaltung erklärt eine Entscheidung, die auf den ersten
+Blick überrascht: Karten tragen dieselbe Flächenfarbe wie die Seite,
+auf der sie liegen. Ihre Abgrenzung entsteht allein über den Rahmen.
+Eine zweite Flächenfarbe hätte die Palette erweitert und müsste mit
+sämtlichen darauf erscheinenden Texten und Schaltflächen abgestimmt
+werden; der Rahmen leistet dieselbe Trennung, ohne einen weiteren
+Farbwert einzuführen. Er ist deshalb bewusst nahe am Hintergrund
+gewählt -- deutlich genug, um zu trennen, zurückhaltend genug, um
+nicht mit dem Inhalt zu konkurrieren.
+ 
+Der Wert \texttt{primary} kennzeichnet die jeweils vorrangige
+Handlung einer Ansicht, also diejenige, die weitere Vorgänge erst
+ermöglicht: die Anmeldung, das Auslösen des Checkouts, die Übernahme
+einer Buchung in den Warenkorb. Handlungen ohne diese Wirkung
+erhalten die zurückhaltendere Darstellung über \texttt{secondary} --
+die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb
+anders dargestellt als die Anmeldung an derselben Stelle.
+\texttt{muted} kennzeichnet Elemente ohne gegenwärtige Wirkung, also
+insbesondere deaktivierte Schaltflächen.
  
 Ein zweites vollständiges Token-Set ist für die dunkle Darstellung
 hinterlegt und wird über eine Variante am Wurzelelement aktiviert.
@@ -348,11 +432,27 @@ referenzieren und keine festen Farbwerte enthalten, erfordert der
 Wechsel keine Änderung an den Komponenten selbst.
  
 Die Eckenradien folgen demselben Prinzip. Definiert ist ein einziger
-Basiswert; die Abstufungen von klein bis sehr groß werden daraus über
-feste Faktoren berechnet. Eine Änderung des Basiswerts wirkt sich
-dadurch proportional auf alle Komponenten aus. Für die Typografie
-wird mit \textit{Geist} eine variable Schriftart eingebunden und über
-die Tokens für Fließtext und Überschriften referenziert.
+Basiswert von 0,625\,rem; die Abstufungen von klein bis sehr groß
+ergeben sich daraus über feste Zuschläge in Schritten von vier
+Pixeln. Dass überhaupt mehrere Stufen nötig sind, liegt an der
+Wahrnehmung: Derselbe Radius wirkt an einer bildschirmbreiten Fläche
+kaum, an einer kleinen Schaltfläche dagegen stark. Elemente
+vergleichbarer Größe erhalten deshalb denselben Wert, größere und
+kleinere jeweils eine benachbarte Stufe.
+ 
+Für die Typografie wird mit \textit{Geist} eine variable Schriftart
+eingebunden und über die Tokens für Fließtext und Überschriften
+referenziert. Die Größen folgen einer Staffel: Seitentitel benennen
+die aufgerufene Ansicht, Abschnittstitel gliedern sie, Kartentitel
+bezeichnen einzelne Gegenstände wie Bestellungen oder
+Dienstleistungen; darunter stehen der Fließtext in einer einzigen
+Größe sowie gedämpfte Angaben für Metadaten und Hilfetexte. Die
+Unterscheidung erfolgt dabei nicht ausschließlich über die Größe:
+Wo zwei Angaben gleich groß erscheinen, etwa eine Feldbeschriftung
+und der zugehörige Hinweis, trennt sie die Farbe. Diese Staffelung ist
+auf den Konto- und Bestellseiten maßgeblich, wo zahlreiche
+gleichrangig wirkende Angaben nebeneinander stehen und ohne
+Gliederung schwer zu überblicken wären.
  
 Das Farbschema und die Komponentenbasis entsprechen der neutralen
 Standardkonfiguration von shadcn/ui \cite{shadcn_docs}. Diese wurde
@@ -360,6 +460,15 @@ Standardkonfiguration von shadcn/ui \cite{shadcn_docs}. Diese wurde
 genannten Anforderungen an Konsistenz bereits erfüllt; eine eigene
 Gestaltung der Grundelemente war für den Funktionsumfang dieser
 Arbeit nicht erforderlich.
+ 
+Die paarweise Definition von Fläche und Vordergrund erlaubt es, die
+Anforderungen aus Abschnitt~\ref{subsec:barrierefreiheit} unmittelbar
+am Farbsystem zu prüfen. Für den Fließtext auf heller Fläche ergibt
+sich ein Kontrastverhältnis von 19,8:1, für gedämpften Text 4,6:1;
+beide erfüllen Erfolgskriterium 1.4.3 der Stufe AA. Für
+Bedienelemente und Zustandsanzeigen gilt mit Kriterium 1.4.11 ein
+eigener Schwellenwert von 3:1, dessen Prüfung in
+Kapitel~\ref{chap:testen} erfolgt.
 
 
 \subsection{Seitenstruktur und Navigationsprinzip}
@@ -400,9 +509,10 @@ nach Konsistenz über gleichartige Situationen hinweg: Ein Nutzer, der
 sich anmeldet, findet dieselbe Oberfläche vor und muss sich nicht neu
 orientieren.
  
-Eine Fußzeile besteht nicht. Der Inhaltsbereich endet mit dem letzten
-Abschnitt der jeweiligen Seite, sodass sämtliche Navigation an einer
-einzigen Stelle zusammenläuft.
+Eine Fußzeile besteht nicht (vgl.
+Abschnitt~\ref{subsec:gestaltungsansatz}); der Inhaltsbereich endet
+mit dem letzten Abschnitt der jeweiligen Seite, sodass sämtliche
+Navigation an einer einzigen Stelle zusammenläuft.
  
 Wie sich eine konkrete Seite in diesen Rahmen einfügt, zeigt
 Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
@@ -440,11 +550,69 @@ in Abschnitt~\ref{subsec:responsive-design} beschriebenen Vorgehen,
 die Anordnung der Elemente an Umbruchpunkten anzupassen, statt eine
 zweite Oberfläche vorzuhalten.
  
+Auf schmalen Anzeigeflächen ändert sich jedoch nicht nur die
+Spaltenzahl. Die Kopfzeile trägt nebeneinander die Navigation, die
+Sprachwahl, den Zugang zu Nachrichten und Warenkorb sowie den
+Kontobereich; auf geringer Breite würde diese Reihe umbrechen und die
+Bedienung erschweren. Sie wird deshalb unterhalb eines Umbruchpunkts
+zu einem aufklappbaren Menü zusammengefasst, sodass die obere Leiste
+kompakt bleibt.
+ 
+Ebenso ändert sich die Reihenfolge innerhalb der Karten. Eine
+Anordnung, die auf breiter Fläche übersichtlich wirkt, führt auf
+schmaler entweder zu übermäßiger Breite oder zu leeren Bereichen.
+Titel, Preis, Zeitangabe und die zugehörige Handlung bleiben deshalb
+zuerst sichtbar, während ergänzende Angaben darunter rücken. Die
+Terminauswahl ist dabei der empfindlichste Fall: Tageswahl,
+Zeitfensterliste, Zeitzone und Zusammenfassung müssen auch auf
+geringer Breite zusammenhängend erkennbar bleiben, da eine
+unvollständig erfasste Auswahl unmittelbar zu einer falschen Buchung
+führen würde.
+ 
 Am Fuß der Seite ist ein Bereich für Werbung und Ankündigungen
-vorgesehen (vgl. Abschnitt~\ref{subsec:werbung_konzept}); er ist in
-der Abbildung gestrichelt dargestellt.
+vorgesehen; er ist in Abbildung~\ref{fig:startseite} gestrichelt
+dargestellt.
 
-
+\subsection{Barrierefreiheit im Entwurf}
+\label{subsec:barrierefreiheit_konzept}
+ 
+Barrierefreiheit ist im Entwurf als Qualitätsanforderung behandelt,
+nicht als Nachweisziel. Maßgeblich sind die vier in
+Abschnitt~\ref{subsec:barrierefreiheit} genannten Erfolgskriterien;
+ihre Prüfung erfolgt in Kapitel~\ref{chap:testen}.
+ 
+Vier Festlegungen ergeben sich daraus für den Entwurf.
+ 
+Erstens werden Bedienelemente ihrer Bedeutung entsprechend gewählt:
+Navigation als Verweis, eine auslösende Handlung als Schaltfläche,
+eine Rückfrage als Dialogkomponente und nicht als browsereigene
+Abfrage. Damit ist die Bedeutung eines Elements nicht nur visuell,
+sondern auch im Dokument hinterlegt und für assistive Technologien
+zugänglich. Handlungen mit nicht umkehrbarer Wirkung -- das Löschen
+einer Dienstleistung, eines Produkts oder des eigenen Kontos --
+werden zusätzlich über einen Bestätigungsdialog geführt, sodass der
+Nutzer die Kontrolle über den Ablauf behält (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+ 
+Zweitens erhält jedes bedienbare Element einen sichtbaren
+Fokuszustand. In Abläufen mit mehreren aufeinanderfolgenden
+Bedienschritten -- Anmeldung, Terminauswahl, Kontoverwaltung -- muss
+ohne Zeigegerät erkennbar bleiben, welches Element gerade angesteuert
+ist.
+ 
+Drittens tragen Eingabefelder eine eigene Beschriftung statt
+lediglich eines Platzhaltertextes, und Fehlermeldungen erscheinen an
+einer festen Stelle unterhalb des betroffenen Feldes. Ein
+Platzhalter verschwindet mit der ersten Eingabe; die Angabe, was das
+Feld erwartet, wäre damit genau dann nicht mehr verfügbar, wenn sie
+überprüft werden soll.
+ 
+Viertens bleibt eine nicht verfügbare Handlung sichtbar und wird
+begründet, statt entfernt zu werden. Diese bereits in
+Abschnitt~\ref{subsec:gestaltungsansatz} genannte Vorgabe hat hier
+eine zweite Begründung: Ein Bedienelement, das erst nach dem Auslösen
+fehlschlägt, teilt den Systemzustand später mit als eines, das seinen
+Zustand von vornherein anzeigt.
 \subsection{Mehrsprachigkeit und Sprachwahl}
 \label{subsec:mehrsprachigkeit_konzept}
  
