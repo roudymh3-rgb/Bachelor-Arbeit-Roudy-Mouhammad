@@ -115,12 +115,22 @@ Backend-Dashboard (vgl. Abschnitt~\ref{sec:abgrenzung}) \\
 Neben den funktionalen Anforderungen wurden folgende
 nicht-funktionale Anforderungen an das Frontend definiert.
 
-Die Anwendung soll flüssig bedienbar sein. Seitenwechsel
-erfolgen ohne vollständigen Seitenneuladen, Ladezeiten
-werden durch Lazy Loading und effizientes State Management
-minimiert. \acs{API}-Anfragen werden durch geeignete
-Ladezustände und Fehlermeldungen für den Nutzer transparent
-kommuniziert.
+Die Anwendung soll flüssig bedienbar sein. Seitenwechsel erfolgen
+ohne vollständigen Seitenneuladen. Als Maßstab für die Antwortzeiten
+dienen die von Nielsen beschriebenen Schwellenwerte: Unterhalb von
+etwa 0,1 Sekunden wird eine Reaktion als unmittelbar wahrgenommen,
+bis etwa einer Sekunde bleibt der Gedankenfluss der Nutzerin
+erhalten, ab etwa zehn Sekunden ist ihre Aufmerksamkeit nicht mehr
+auf die Aufgabe gerichtet \cite{nielsen_response_times}.
+ 
+Daraus ergeben sich zwei Klassen von Vorgängen. Interaktionen, die ohne Anfrage an das Backend auskommen, sollen innerhalb dieser Schwellen bleiben: das Filtern einer bereits geladenen Liste oder die Prüfung einer Formulareingabe unterhalb der ersten, der Wechsel zwischen Ansichten unterhalb der zweiten. Hierfür wird der Programmcode der Anwendung in Abschnitte
+zerlegt und erst bei Aufruf der zugehörigen Ansicht nachgeladen
+(vgl. Abschnitt~\ref{subsec:spa-mpa}). Bei Vorgängen mit Anfrage an
+das Backend hängt die Dauer zusätzlich von der Antwortzeit der
+Schnittstelle ab, die nach Abschnitt~\ref{sec:abgrenzung} nicht
+Gegenstand dieser Arbeit ist; für sie wird gefordert, dass ab etwa
+einer Sekunde Wartezeit ein Ladezustand und im Fehlerfall eine
+verständliche Meldung dargestellt wird.
 
 Die Sicherheit wird serverseitig durch tokenbasierte
 Authentifizierung über Laravel Sanctum sowie die Weiterleitung auf
@@ -155,8 +165,9 @@ Anforderungen und deren Umsetzungsmaßnahmen im Frontend.
 \textbf{Anforderung} & \textbf{Beschreibung} &
 \textbf{Maßnahme im Frontend} \\
 \hline
-Performance & Schnelle Ladezeiten, flüssige Navigation &
-Lazy Loading, optimiertes State Management \\
+Performance & Direkte Rückmeldung unter 0,1~s, Ansichtswechsel unter 1~s; Ladezustand ab etwa 1~s Wartezeit &
+Nachladen der Ansichten bei Bedarf, zwischengespeicherte
+Abfragen, einheitliche Ladezustände \\
 \hline
 Sicherheit & Schutz vor unbefugtem Zugriff &
 Laravel Sanctum (serverseitig), geschützte Routen

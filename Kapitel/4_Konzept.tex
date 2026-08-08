@@ -219,6 +219,26 @@ Routen wie
 \texttt{/account\allowbreak/upgrade\allowbreak/seller}
 zusätzlich an die Rolle \textit{Customer}
 gebunden sind.
+Mit der Zahl der Routen wächst der Umfang des Programmcodes, den eine
+\acs{SPA} beim ersten Aufruf überträgt. Da die Routenkonfiguration
+festlegt, welche Komponente zu welcher Adresse gehört, ist sie
+zugleich die Stelle, an der sich dieser Code aufteilen lässt: Jede
+Ansicht wird als eigener Abschnitt geführt und erst beim Aufruf ihrer
+Route nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}).
+ 
+Ausgenommen bleiben der Anwendungsrahmen, die Wrapper-Komponente des
+Seitenschutzes und die Startseite. Die ersten beiden sind an jeder
+Route beteiligt, die Startseite ist der häufigste Einstiegspunkt --
+ein Nachladen würde den ersten Aufruf in allen drei Fällen
+verlangsamen statt ihn zu beschleunigen.
+ 
+Da eine nachgeladene Ansicht nicht sofort verfügbar ist, muss für die
+Dauer des Ladens ein Platzhalter dargestellt werden. Dessen Grenze
+wird bewusst um den Inhaltsbereich gelegt und nicht um die gesamte
+Anwendung, damit Kopfzeile und Navigation während des Wechsels
+sichtbar bleiben. Die Anforderung an die Sichtbarkeit des
+Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
+gilt damit auch für den Wechsel zwischen Ansichten.
 
 \subsection{Globales State Management}
 \label{subsec:state-management-konzept}

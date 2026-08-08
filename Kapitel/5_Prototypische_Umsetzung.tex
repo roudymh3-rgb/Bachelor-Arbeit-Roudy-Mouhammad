@@ -9,6 +9,96 @@ Stellen der Anwendung wiederkehrt, oder eine Entscheidung, die sich
 aus dem Code allein nicht erschließt. Die eingesetzten Werkzeuge
 sind in Abschnitt~\ref{sec:technologieauswahl} beschrieben, die
 Ordnerstruktur in Abschnitt~\ref{subsec:komponentenarchitektur}.
+\section{Nachladen der Ansichten}
+\label{sec:impl_lazyloading}
+ 
+Eine \acs{SPA} wird einmalig geladen (vgl.
+Abschnitt~\ref{subsec:spa-mpa}). Ohne weitere Maßnahme enthält das
+ausgelieferte Paket damit den Code sämtlicher Ansichten, auch
+derjenigen, die eine Nutzerin nie aufruft. Eine Messung ohne diese
+Maßnahme belegt das: Der Übersetzungsvorgang erzeugt eine einzige
+JavaScript-Datei von 899,80~kB, komprimiert 255,28~kB. Das
+Build-Werkzeug weist in seiner Ausgabe zugleich darauf hin, dass
+Pakete oberhalb von 500~kB durch dynamische Importe aufgeteilt werden
+sollten.
+ 
+Umgesetzt wird die Aufteilung in der Routenkonfiguration. Statt die
+Seitenkomponenten am Dateikopf statisch zu importieren, werden sie in
+\lstinline|lazy()| eingeschlossen:
+ 
+\begin{lstlisting}[language=TypeScript,caption={Nachladen einer Seitenkomponente (router/index.tsx)},label={lst:lazy_route}]
+const AccountPage = lazy(() =>
+  import('@/features/account/pages/account-page')
+    .then((m) => ({ default: m.AccountPage })),
+)
+\end{lstlisting}
+ 
+Die in Abschnitt~\ref{subsec:routing-konzept} beschriebenen
+Routendefinitionen bleiben davon unberührt. Der Aufruf
+\lstinline|.then()| ist erforderlich, weil \lstinline|lazy()| einen
+Standardexport erwartet, die Seitenkomponenten der Anwendung jedoch
+benannte Exporte sind.
+ 
+Drei Bausteine sind ausgenommen: Der Anwendungsrahmen ist auf jeder
+Seite sichtbar, die Wrapper-Komponente des rollenbasierten
+Seitenschutzes umschließt nahezu jede Route, und die Startseite ist
+der häufigste Einstiegspunkt. Ein Nachladen dieser drei würde den
+ersten Aufruf verlangsamen statt ihn zu beschleunigen.
+ 
+Während eine Ansicht nachlädt, wird ein Platzhalter dargestellt. Die
+dafür vorgesehene Grenze liegt im Anwendungsrahmen um den
+Inhaltsbereich und nicht um die gesamte Anwendung:
+ 
+\begin{lstlisting}[language=TypeScript,caption={Ladegrenze im Anwendungsrahmen (main-layout.tsx)},label={lst:suspense_boundary}]
+<main>
+  <Suspense fallback={<PageFallback />}>
+    <Outlet />
+  </Suspense>
+</main>
+\end{lstlisting}
+ 
+Dadurch bleiben Kopfzeile, Navigation und Warenkorb während des
+Wechsels sichtbar; ersetzt wird nur der Inhaltsbereich. Der
+Platzhalter ist ein Gerüst aus Flächen in der Farbe
+\lstinline|muted| -- ein Balken für die Überschrift und vier Kacheln
+für ein Kartenraster -- und verwendet damit ausschließlich die in
+Abschnitt~\ref{subsec:designsystem} festgelegten Tokens. Er
+verzichtet auf Text, sodass keine Übersetzung erforderlich ist, und
+trägt \lstinline|aria-busy|, um den Ladevorgang assistiven
+Technologien mitzuteilen (vgl.
+Abschnitt~\ref{subsec:barrierefreiheit_konzept}).
+ 
+Der Effekt ist messbar. Der Übersetzungsvorgang erzeugt statt einer
+Datei rund 56 Dateien. Das beim Start geladene Paket sinkt von
+899,80~kB auf 532,68~kB, komprimiert von 255,28~kB auf 164,86~kB --
+eine Verringerung um 40,8~\% beziehungsweise 35,4~\%. Die Summe aller
+erzeugten Dateien steigt dabei geringfügig auf etwa 922~kB, da jede
+Datei einen eigenen Rahmen benötigt. Dieser Zuwachs von rund 2,5~\%
+fällt nur an, wenn eine Nutzerin tatsächlich alle Ansichten aufruft.
+ 
+Neben den Ansichten trennt das Build-Werkzeug auch gemeinsam genutzte
+Bausteine ab, etwa Schaltflächen, Bestätigungsdialoge oder einzelne
+Abfragen. Diese werden einmal geladen und von mehreren Ansichten
+verwendet.
+ 
+Abbildung~\ref{abb:lazy_network} zeigt den Vorgang im Betrieb: Beim
+Wechsel auf die Produktseite lädt der Browser fünf zuvor nicht
+übertragene Dateien von zusammen etwa 5~kB nach.
+ 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{Bilder/abb_lazy_network.png}
+  \caption{Nachgeladene Dateien beim Wechsel auf die Produktseite}
+  \label{abb:lazy_network}
+\end{figure}
+ 
+Der verbleibende Umfang des Startpakets entfällt im Wesentlichen auf
+Bibliotheken, die jede Ansicht benötigt: React, der Router, die
+Verwaltung des Server-State, die Internationalisierung und die
+Oberflächenbausteine. Eine weitere Aufteilung dieser Bibliotheken
+wäre möglich, ist im Rahmen dieser Arbeit jedoch nicht umgesetzt
+worden.
+
 \section{Netzwerkkommunikation und Server-State}
 \label{sec:impl_netzwerk}
  
