@@ -40,8 +40,8 @@ vier Nutzerrollen der Plattform.
 
 Alle Nutzer müssen sich registrieren, anmelden und abmelden
 können. Die Registrierung erfolgt mit der Standardrolle
-	extit{Customer}. Nutzer können einen Antrag auf Rollenwechsel zu
-	extit{Seller} oder 	extit{ServiceProvider} stellen, indem sie ein Formular
+\textit{Customer}. Nutzer können einen Antrag auf Rollenwechsel zu
+\textit{Seller} oder \textit{ServiceProvider} stellen, indem sie ein Formular
 ausfüllen und notwendige Dokumente hochladen. Der
 Antragsstatus ist für den Nutzer jederzeit einsehbar.
 Zusätzlich unterstützt die Plattform eine
@@ -72,7 +72,7 @@ Die administrativen Funktionen, darunter die Prüfung von
 Rollenwechselanträgen, die Freigabe oder Ablehnung von
 Werbeanzeigen, die Konfiguration der Plattformgebühren sowie
 das Auslösen von Auszahlungen, werden über das vom Backend
-bereitgestellte 	extit{Admin}-Dashboard abgedeckt und stellen daher
+bereitgestellte \textit{Admin}-Dashboard abgedeckt und stellen daher
 keine Anforderungen an das hier entwickelte Frontend. Alle Nutzer können Konversationen
 starten und in Echtzeit Nachrichten austauschen. Die Inbox
 zeigt alle aktiven Konversationen mit Ungelesen-Zähler an.
@@ -91,20 +91,20 @@ funktionalen Anforderungen je Rolle zusammen.
 Alle Nutzer & Registrierung, Login, Logout,
 Passwort zurücksetzen, Messaging, Rollenwechselantrag \\
 \hline
-	extit{Customer} & Produktfilterung, Produktdetail,
+\textit{Customer} & Produktfilterung, Produktdetail,
 Warenkorb, Checkout mit Stripe, Bestellhistorie,
 Buchungsübersicht, Stornierung \\
 \hline
-	extit{Seller} & Anlegen, Ansehen, Bearbeiten und Löschen von Produkten,
+\textit{Seller} & Anlegen, Ansehen, Bearbeiten und Löschen von Produkten,
 Bildupload, Bestellübersicht, Statusverwaltung, Werbeanzeigen
 erstellen, Stripe-Connect-Onboarding \\
 \hline
-	extit{ServiceProvider} & Dienstleistungsverwaltung, Arbeitszeiten
+\textit{ServiceProvider} & Dienstleistungsverwaltung, Arbeitszeiten
 und Abwesenheiten definieren, Buchungskalender,
 Buchungsanfragen verwalten, Werbeanzeigen erstellen,
 Stripe-Connect-Onboarding \\
 \hline
-	extit{Admin} & Keine Frontend-Anforderungen; Administration über das
+\textit{Admin} & Keine Frontend-Anforderungen; Administration über das
 Backend-Dashboard (vgl. Abschnitt~\ref{sec:abgrenzung}) \\
 \hline
 \end{tabular}
@@ -183,8 +183,8 @@ Komponentenarchitektur, feature-basierte Struktur \\
 Die Plattform \textit{Bazario} implementiert ein
 rollenbasiertes Zugriffskontrollmodell mit vier
 Nutzerrollen. Jeder registrierte Nutzer erhält zunächst
-die Rolle 	extit{Customer}. Ein Wechsel zu 	extit{Seller} oder
-	extit{ServiceProvider} ist durch einen Rollenwechselantrag
+die Rolle \textit{Customer}. Ein Wechsel zu \textit{Seller} oder
+\textit{ServiceProvider} ist durch einen Rollenwechselantrag
 möglich, der durch einen Administrator genehmigt werden
 muss. Der Ablauf dieses Prozesses basiert auf dem im Backend
 implementierten \acs{RBAC}-Konzept. Das Frontend stellt dem
@@ -195,7 +195,7 @@ dynamisch an.
 
 Ein Nutzer kann dabei mehrere Rollen gleichzeitig
 besitzen. So kann ein Nutzer beispielsweise sowohl als
-	extit{Customer} einkaufen als auch als 	extit{Seller} Produkte anbieten.
+\textit{Customer} einkaufen als auch als \textit{Seller} Produkte anbieten.
 Das Frontend passt die Navigationselemente und verfügbaren
 Funktionsbereiche dynamisch an die aktiven Rollen des
 eingeloggten Nutzers an. Tabelle~\ref{tab:rollenmodell}
@@ -210,19 +210,19 @@ Funktionsbereiche im Frontend.
 \hline
 \textbf{Rolle} & \textbf{Funktionsbereiche im Frontend} \\
 \hline
-	extit{Customer} & Produktfilterung, Warenkorb, Checkout,
+\textit{Customer} & Produktfilterung, Warenkorb, Checkout,
 Bestellhistorie, Buchungsübersicht, Messaging,
 Rollenwechselantrag \\
 \hline
-	extit{Seller} & Produktverwaltung, Bestellübersicht,
+\textit{Seller} & Produktverwaltung, Bestellübersicht,
 Statusverwaltung, Werbeanzeigen,
 Stripe-Connect-Onboarding \\
 \hline
-	extit{ServiceProvider} & Dienstleistungsverwaltung, Arbeitszeiten,
+\textit{ServiceProvider} & Dienstleistungsverwaltung, Arbeitszeiten,
 Abwesenheiten, Buchungskalender, Werbeanzeigen,
 Stripe-Connect-Onboarding \\
 \hline
-	extit{Admin} & Keine eigenen Frontend-Bereiche; administrative
+\textit{Admin} & Keine eigenen Frontend-Bereiche; administrative
 Funktionen über das Backend-Dashboard \\
 \hline
 \end{tabular}
