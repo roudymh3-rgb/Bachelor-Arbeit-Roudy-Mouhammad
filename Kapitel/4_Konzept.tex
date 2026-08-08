@@ -29,7 +29,7 @@ Components wider: Komponenten im Verzeichnis
 ausschließlich die Darstellung, während Datenzugriff und
 Geschäftslogik in den zugehörigen Ordnern \texttt{api/} und
 \texttt{hooks/} gekapselt sind.
-
+ 
 Das Projekt wird mit Vite als Build-Tool
 initialisiert, das eine schnelle
 Entwicklungsumgebung und optimierte
@@ -75,8 +75,9 @@ den Anwendungs-Header enthält. Das Verzeichnis
 \texttt{assets/} enthält statische
 Ressourcen, während \texttt{lib/} die
 technische Infrastruktur bereitstellt,
-darunter die Anbindung an das Backend und die
-Validierung der Authentifizierung. Im
+darunter die Anbindung an das Backend, die
+Validierung der Authentifizierung und die
+Sprachressourcen der Oberfläche. Im
 Verzeichnis \texttt{stores/} sind die
 globalen Zustand-Stores gebündelt (vgl.
 Abschnitt~\ref{subsec:state-management-konzept}).
@@ -87,8 +88,7 @@ Design-Tokens des Designsystems ein
 \cite{tailwindcss_docs}.
  
 Abbildung~\ref{fig:ordnerstruktur} zeigt die
-Ordnerstruktur des Projekts zum aktuellen
-Stand der Konzeption. Jeder Funktionsbereich
+Ordnerstruktur des Projekts. Jeder Funktionsbereich
 unter \texttt{features/} folgt intern
 einer einheitlichen Grundstruktur, die je
 nach Bedarf die Ordner
@@ -118,6 +118,7 @@ BAZARIO/
 |   |   |-- auth/
 |   |   |-- cart/
 |   |   |-- categories/
+|   |   |-- chat/
 |   |   |-- connect/
 |   |   |-- earnings/
 |   |   |-- home/
@@ -130,15 +131,15 @@ BAZARIO/
 |   |-- layouts/
 |   |-- lib/
 |   |   |-- api/
-|   |   `-- auth/
+|   |   |-- auth/
+|   |   `-- i18n/
 |   |-- stores/
 |   |-- App.tsx
 |   |-- index.css
 |   `-- main.tsx
 `-- (Konfigurationsdateien, vgl. Text)
 \end{verbatim}
-\caption{Ordnerstruktur des Frontends von
-Bazario zum aktuellen Stand der Konzeption}
+\caption{Ordnerstruktur des Frontends von Bazario}
 \label{fig:ordnerstruktur}
 \end{figure}
  
@@ -157,10 +158,11 @@ Dienstleister-Profile sowie die Verwaltung von
 Arbeitszeiten und Abwesenheiten der
 Dienstleister abbilden. Hinzu kommen die Funktionsbereiche \texttt{cart/} für den
 Warenkorb, \texttt{orders/} für die Bestellabwicklung,
-\texttt{connect/} für das Stripe-Connect-Onboarding der Anbieter
-sowie \texttt{earnings/} für deren Einnahmenübersicht. Für
-Messaging und Werbeanzeigen sind weitere Funktionsbereiche
-vorgesehen.
+\texttt{connect/} für das Stripe-Connect-Onboarding der Anbieter,
+\texttt{earnings/} für deren Einnahmenübersicht sowie
+\texttt{chat/} für den Nachrichtenbereich (vgl.
+Abschnitt~\ref{subsec:messaging_konzept}). Für Werbeanzeigen ist
+ein weiterer Funktionsbereich vorgesehen.
 
 \subsection{Routing-Konzept und
 rollenbasierter Seitenschutz}
