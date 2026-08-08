@@ -154,12 +154,22 @@ anschließend nur die betroffenen Teile der Oberfläche. Die
 Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
 \cite{jonathan_react_spa}.
+Damit die einmalig geladene Anwendung nicht mit ihrem Funktionsumfang
+wächst, wird ihr Programmcode in Abschnitte zerlegt, die erst beim
+Aufruf der zugehörigen Ansicht nachgeladen werden. Dieses als Lazy
+Loading bezeichnete Verfahren verkürzt die Wartezeit beim ersten
+Aufruf, da zunächst nur der tatsächlich benötigte Teil übertragen
+wird \cite{bhalla_spa_architecture}.
 
 Der wesentliche Nachteil betrifft die Auffindbarkeit durch
-Suchmaschinen: Da die Inhalte erst im Browser entstehen, liefert der
-erste Abruf nur ein leeres Grundgerüst. Anwendungen, die über
-Suchmaschinen gefunden werden sollen, benötigen daher serverseitiges
-Rendering; für Inhalte hinter einer Anmeldung entfällt der Nachteil
+Suchmaschinen, die sogenannte \acfirst{SEO}. Da die Inhalte einer
+\acs{SPA} erst im Browser entstehen, liefert der erste Abruf nur ein
+leeres Grundgerüst, das eine Suchmaschine nicht auswerten kann.
+Anwendungen, die über Suchmaschinen gefunden werden sollen, benötigen
+daher serverseitiges Rendering (\acfirst{SSR}), bei dem der Server
+die fertige Seite ausliefert und der Browser sie anschließend um die
+clientseitige Interaktivität ergänzt. Für Inhalte, die ohnehin nur
+angemeldeten Nutzern zugänglich sind, entfällt der Nachteil
 weitgehend \cite{bhalla_spa_architecture}.
 Tabelle~\ref{tab:spa-mpa} stellt beide Ansätze gegenüber.
 
