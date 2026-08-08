@@ -154,6 +154,20 @@ anschließend nur die betroffenen Teile der Oberfläche. Die
 Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
 \cite{jonathan_react_spa}.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_spa_mpa.png}
+\caption{Ablauf der Kommunikation bei einer Multi-Page und einer
+Single-Page Application (eigene Darstellung nach
+\cite{bhalla_spa_architecture})}
+\label{fig:spa_mpa}
+\end{figure}
+ 
+Abbildung~\ref{fig:spa_mpa} zeigt den Unterschied im Ablauf: Während
+eine \acs{MPA} auf jede Interaktion mit einer vollständigen Seite
+antwortet, überträgt eine \acs{SPA} nach dem ersten Aufruf nur noch
+die benötigten Daten.
+
 Damit die einmalig geladene Anwendung nicht mit ihrem Funktionsumfang
 wächst, wird ihr Programmcode in Abschnitte zerlegt, die erst beim
 Aufruf der zugehörigen Ansicht nachgeladen werden. Dieses als Lazy
@@ -383,6 +397,20 @@ Datenbestand ist dagegen nur eine zwischengespeicherte Abbildung von
 Daten, deren Quelle auf dem Server liegt und die veralten kann; er
 muss über eine Programmierschnittstelle (\acfirst{API}) abgerufen,
 zwischengespeichert und mit der Quelle synchronisiert werden.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_zustandsarten.png}
+\caption{Clientseitiger Anwendungszustand und serverseitiger
+Datenbestand im Browser (eigene Darstellung)}
+\label{fig:zustandsarten}
+\end{figure}
+ 
+Wie Abbildung~\ref{fig:zustandsarten} verdeutlicht, liegen beide
+Arten im Browser; sie unterscheiden sich darin, wo ihre Quelle liegt.
+Daraus folgt der unterschiedliche Verwaltungsaufwand: Ein
+clientseitiger Wert ist mit dem Setzen abgeschlossen, ein
+serverseitiger muss abgerufen, zwischengespeichert und bei Änderungen
+erneut abgeglichen werden.
 
 Für den clientseitigen Zustand bietet React mit der Context
 \acs{API} eine eingebaute Lösung, die Daten ohne Weiterreichen über
@@ -522,6 +550,18 @@ anschließend beide Seiten jederzeit Daten senden können
 \cite{rfc6455}. Sie treten damit nicht an die Stelle von \acs{REST}
 oder GraphQL, sondern ergänzen diese für Anwendungsfälle mit
 Echtzeitanforderung.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{Bilder/abb_kommunikation.png}
+\caption{Anfragebasierte Kommunikation im Vergleich zu einer
+dauerhaften Verbindung (eigene Darstellung nach \cite{rfc6455})}
+\label{fig:kommunikation}
+\end{figure}
+ 
+Abbildung~\ref{fig:kommunikation} macht den Kern des Unterschieds
+sichtbar: Im anfragebasierten Modell besitzt der Server keine
+Möglichkeit, den Client von sich aus zu erreichen; neu vorliegende
+Daten bleiben liegen, bis die nächste Anfrage eintrifft.
 
 Der Zugriff im Browser erfolgt unabhängig vom gewählten Ansatz über
 einen \acs{HTTP}-Client. Axios ist ein verbreiteter,
