@@ -132,6 +132,17 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \hline
 \end{tabular}
 \end{table}
+Die Einstufung \enquote{eingeschränkt} bezeichnet dabei jeweils eine
+teilweise Erfüllung des Merkmals. Bei Amazon werden Dienstleistungen
+nicht als eigenständig buchbare Kategorie angeboten, sondern
+ausschließlich als Ergänzung zu einem Produkt, etwa Aufbau oder
+Installation; eine Terminvereinbarung mit einem Anbieter ist nicht
+Bestandteil der Plattform. Bei Etsy, Booking.com und Fiverr bezieht
+sich die Einschränkung auf die Nutzerrollen: Alle drei kennen
+lediglich zwei Rollen, nämlich Nachfrager und Anbieter. Bei
+Booking.com kommt hinzu, dass die Anbieterseite über ein getrenntes
+Partnerportal bedient wird und nicht Bestandteil derselben Anwendung
+ist.
 
 
 % =====================================================================
@@ -702,19 +713,62 @@ zugleich als Prüfmaßstab verwenden lassen.
 Der bekannteste davon geht auf Nielsen und Molich zurück, die 1990
 ein Verfahren vorstellten, bei dem Gutachter eine Oberfläche anhand
 einer überschaubaren Zahl allgemeiner Regeln auf Schwachstellen
-untersuchen \cite{nielsen_molich_heuristic}. Nielsen überarbeitete
-diese Regeln 1994 auf Grundlage einer Faktorenanalyse von 249
-dokumentierten Usability-Problemen und leitete daraus neun Heuristiken mit möglichst hoher
-Erklärungskraft ab
-\cite{nielsen_explanatory_power}. Für eine
-Multi-Rollen-Anwendung sind davon vor allem fünf einschlägig:
-die Sichtbarkeit des Systemstatus, also die Rückmeldung darüber,
-was die Anwendung gerade tut; die Übereinstimmung zwischen System
-und realer Welt in Sprache und Begriffen; Nutzerkontrolle und
-Handlungsfreiheit einschließlich der Möglichkeit, einen begonnenen
-Vorgang abzubrechen; Konsistenz und die Einhaltung verbreiteter
-Konventionen; sowie Fehlervermeidung, also die Gestaltung von
-Eingaben derart, dass Fehler gar nicht erst entstehen.
+untersuchen \cite{nielsen_molich_heuristic}. Nielsen überarbeitete diese Regeln 1994 auf Grundlage von 249
+dokumentierten Usability-Problemen aus elf Projekten. Eine
+Faktorenanalyse ergab sieben wiederkehrende Faktoren; ergänzt um
+zwei weitere Prinzipien mit hoher Erklärungsabdeckung --
+ästhetisches Design sowie die Unterstützung beim Beheben von
+Fehlern -- entstand daraus ein Satz von neun Heuristiken
+\cite{nielsen_explanatory_power}. Tabelle~\ref{tab:heuristiken} führt die neun Heuristiken auf. Sie
+bilden zugleich das Ordnungsraster für die Evaluation in
+Kapitel~\ref{chap:testen}.
+
+\begin{table}[H]
+\centering
+\caption{Heuristiken nach \cite{nielsen_explanatory_power}}
+\label{tab:heuristiken}
+\small
+\begin{tabular}{|p{4.2cm}|p{8.3cm}|}
+\hline
+\textbf{Heuristik} & \textbf{Kern} \\
+\hline
+Sichtbarkeit des System\-status & Das System hält den Nutzer
+darüber auf dem Laufenden, was gerade geschieht \\
+\hline
+Übereinstimmung von System und realer Welt & Sprache und Begriffe
+folgen der Vorstellungswelt des Nutzers, nicht der internen
+Umsetzung \\
+\hline
+Nutzerkontrolle und Handlungs\-freiheit & Begonnene Vorgänge
+lassen sich abbrechen und rückgängig machen \\
+\hline
+Konsistenz und Standards & Gleichartige Situationen sehen gleich
+aus und verhalten sich gleich; verbreitete Konventionen werden
+eingehalten \\
+\hline
+Fehler\-vermeidung & Eingaben sind so gestaltet, dass Fehler gar
+nicht erst entstehen \\
+\hline
+Wieder\-erkennung statt Erinnerung & Notwendige Angaben sind
+sichtbar, statt vom Nutzer erinnert werden zu müssen \\
+\hline
+Flexibilität und Effizienz der Nutzung & Geübte Nutzer können
+Abkürzungen verwenden, ohne ungeübte zu behindern \\
+\hline
+Ästhetisches und minimalistisches Design & Jede zusätzliche
+Angabe konkurriert mit den wesentlichen um Aufmerksamkeit \\
+\hline
+Hilfe beim Erkennen und Beheben von Fehlern & Meldungen benennen
+das Problem verständlich und weisen einen Weg zur Lösung \\
+\hline
+\end{tabular}
+\end{table}
+
+Für eine Multi-Rollen-Anwendung sind davon insbesondere die
+Sichtbarkeit des Systemstatus, die Übereinstimmung mit der realen
+Welt, die Konsistenz, die Fehlervermeidung sowie die
+Nutzerkontrolle einschlägig, da sich Funktionsumfang und
+Navigation je nach Rolle unterscheiden.
  
 Shneiderman formuliert mit den acht goldenen Regeln der
 Schnittstellengestaltung einen inhaltlich verwandten Katalog, der
@@ -877,8 +931,14 @@ Preisen und Prozessen sowie die Effizienz des Checkout-Vorgangs
 
 User Experience umfasst über die Gebrauchstauglichkeit hinaus auch
 emotionale und wahrnehmungsbezogene Aspekte der Nutzung. Die für
-E-Commerce-Websites erarbeiteten \acs{UX}-Heuristiken
-berücksichtigen entsprechend Vertrauen, Orientierung und visuelle
-Konsistenz \cite{bonastre_ux_heuristics}. Beide Kriterienkataloge
-bilden die Grundlage für die Usability-Evaluation in
-Kapitel~\ref{chap:testen}.
+E-Commerce-Websites erarbeiteten \acs{UX}-Heuristiken berücksichtigen
+entsprechend Vertrauen, Orientierung und visuelle Konsistenz
+\cite{bonastre_ux_heuristics}. Als Ordnungsraster für die Evaluation
+in Kapitel~\ref{chap:testen} dienen die neun Heuristiken aus
+Tabelle~\ref{tab:heuristiken}. Ausschlaggebend dafür ist, dass sich
+die von \cite{nielsen_molich_heuristic} berichtete Erkennungsrate
+eines einzelnen Gutachters auf eben dieses Verfahren bezieht; Methode
+und Einschätzung ihrer Aussagekraft bleiben damit aneinander
+gebunden. Die genannten E-Commerce-Kataloge ergänzen die Bewertung
+einzelner Befunde um marktplatzspezifische Gesichtspunkte, bilden
+jedoch nicht das Ordnungsraster.
