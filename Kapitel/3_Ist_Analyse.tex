@@ -255,12 +255,13 @@ Anhand dieser Kriterien lassen sich die eingesetzten Technologien
 in zwei Gruppen einteilen. Laravel Sanctum, Pusher und Stripe sind
 durch das Backend vorgegeben; hier bestand keine eigenständige
 Auswahlentscheidung, da das Frontend lediglich die clientseitige
-Anbindung übernimmt. Im Fall von Stripe erfolgt die
-Zahlungsabwicklung vollständig serverseitig, sodass eine Einbindung
-von Stripe Elements oder React Stripe.js für den aktuellen
-Funktionsumfang nicht erforderlich ist
-\cite{stripe_security_guide}. Da das Frontend lediglich die vom Backend übermittelte
-Weiterleitungsadresse aufruft, wäre ein Wechsel des
+Anbindung übernimmt. Im Fall von Stripe erfolgt die Zahlungsabwicklung vollständig
+serverseitig. Von den in Abschnitt~\ref{subsec:online-zahlung}
+dargestellten Einbindungsvarianten kommt daher die Weiterleitung auf
+eine vom Dienstleister gehostete Zahlungsseite zum Einsatz; eigene
+Eingabefelder sind für den aktuellen Funktionsumfang nicht erforderlich
+\cite{stripe_security_guide}. Da das Frontend lediglich die vom Backend
+übermittelte Weiterleitungsadresse aufruft, wäre ein Wechsel des
 Zahlungsdienstleisters ohne Änderung am Frontend möglich; die Auswahl
 des Anbieters ist damit keine Entscheidung der vorliegenden Arbeit.
 Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
@@ -339,7 +340,7 @@ pusher-js & Echtzeit\-kommunikation &
 \multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
 WebSocket-Anbindung über Pusher \cite{pusher_docs}} \\
 \hline
-Stripe(Redirect) & Zahlungs\-abwicklung &
+Stripe & Zahlungs\-abwicklung &
 \multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
 Weiterleitung auf \acs{PCI-DSS}-konforme Zahlungsseite
 \cite{stripe_security_guide}} \\
