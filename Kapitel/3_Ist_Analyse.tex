@@ -259,7 +259,11 @@ Anbindung übernimmt. Im Fall von Stripe erfolgt die
 Zahlungsabwicklung vollständig serverseitig, sodass eine Einbindung
 von Stripe Elements oder React Stripe.js für den aktuellen
 Funktionsumfang nicht erforderlich ist
-\cite{stripe_security_guide}. Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
+\cite{stripe_security_guide}. Da das Frontend lediglich die vom Backend übermittelte
+Weiterleitungsadresse aufruft, wäre ein Wechsel des
+Zahlungsdienstleisters ohne Änderung am Frontend möglich; die Auswahl
+des Anbieters ist damit keine Entscheidung der vorliegenden Arbeit.
+Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
 Abschnitt~\ref{subsec:framework-funktionen}), waren alle übrigen
 Aufgabenbereiche einzeln zu entscheiden; die Gegenüberstellung der
 jeweils betrachteten Alternativen erfolgt in

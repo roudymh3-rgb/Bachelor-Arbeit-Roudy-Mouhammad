@@ -61,26 +61,46 @@ nicht Gegenstand dieser Arbeit.
 \label{subsec:online-zahlung}
 
 Die Zahlungsabwicklung ist ein zentraler Bestandteil jeder
-E-Commerce-Plattform. Moderne Zahlungssysteme basieren häufig auf
-einer intentionsbasierten Architektur, bei der eine Zahlung zunächst
-als sogenannter Payment Intent vorbereitet und autorisiert wird,
-bevor sie ausgeführt wird. Dieser Ansatz erlaubt es, den
-Zahlungsprozess flexibel an Geschäftsprozesse wie Reservierungen,
-Buchungen oder Bestellbestätigungen zu koppeln
-\cite{stripe_security_guide}.
+E-Commerce-Plattform. Moderne Zahlungssysteme basieren häufig auf einer
+intentionsbasierten Architektur, bei der eine Zahlung zunächst als
+sogenannter Payment Intent vorbereitet und autorisiert wird, bevor sie
+ausgeführt wird. Dieser Ansatz erlaubt es, den Zahlungsprozess flexibel
+an Geschäftsprozesse wie Reservierungen, Buchungen oder
+Bestellbestätigungen zu koppeln \cite{stripe_security_guide}.
+
+Die im Online-Handel eingesetzten Zahlungsverfahren lassen sich in
+Kartenverfahren der Geldinstitute, intermediäre Verfahren wie PayPal
+oder Amazon Payments, Verfahren des Online-Bankings wie Giropay und die
+Sofortüberweisung sowie Guthabenkarten gliedern
+\cite{heinemann_online_handel}. Die technische Anbindung dieser
+Verfahren übernimmt in der Regel ein externer Zahlungsdienstleister,
+der sie bündelt und dem Betreiber als einheitliche Schnittstelle
+bereitstellt \cite{heinemann_online_handel}.
 
 Der \acfirst{PCI-DSS} definiert Anforderungen an die sichere
-Verarbeitung, Speicherung und Übertragung von Kartendaten. Für die
-Einbindung im Frontend bestehen zwei Wege: Stripe Elements stellt
-vorgefertigte, \acs{PCI-DSS}-konforme Eingabekomponenten bereit, die
-Kartendaten direkt im Browser erfassen, ohne dass diese den eigenen
-Server passieren \cite{stripe_elements_docs}; Stripe Checkout leitet
-den Nutzer stattdessen auf eine von Stripe gehostete Zahlungsseite
-weiter und verarbeitet lediglich die Rückleitung auf eine Erfolgs-
-oder Abbruchseite \cite{stripe_checkout_docs}. In beiden Fällen
-werden sensible Zahlungsdaten ausschließlich auf den Servern von
-Stripe verarbeitet, wodurch sich der \acs{PCI-DSS}-Scope des
-Betreibers erheblich reduziert \cite{stripe_security_guide}.
+Verarbeitung, Speicherung und Übertragung von Kartendaten. Für das
+Frontend folgt daraus, dass Kartendaten den eigenen Server nicht
+passieren sollen. Die Dienstleister bieten hierfür zwei
+Einbindungsvarianten an.
+
+Bei der ersten werden die Eingabefelder vom Dienstleister
+bereitgestellt und in die eigene Oberfläche eingebettet; die
+eingegebenen Daten werden unmittelbar an dessen Server übertragen, ohne
+den Betreiber zu berühren \cite{stripe_elements_docs}. Bei der zweiten
+wird der Nutzer auf eine vom Dienstleister gehostete Zahlungsseite
+weitergeleitet und nach Abschluss auf eine Erfolgs- oder Abbruchseite
+zurückgeführt; die Anwendung verarbeitet lediglich diese Rückleitung
+\cite{stripe_checkout_docs}.
+
+In beiden Fällen werden sensible Zahlungsdaten ausschließlich beim
+Dienstleister verarbeitet, wodurch sich der \acs{PCI-DSS}-Scope des
+Betreibers erheblich reduziert \cite{stripe_security_guide}. Die
+Varianten unterscheiden sich im Aufwand und in der Gestaltungsfreiheit:
+Eingebettete Felder fügen sich in das Erscheinungsbild der Anwendung
+ein und halten den Nutzer im gewohnten Ablauf, erfordern jedoch eine
+umfangreichere Einbindung; die Weiterleitung ist mit geringem Aufwand
+umzusetzen, unterbricht den Ablauf jedoch sichtbar und überlässt die
+Gestaltung dem Dienstleister.
 
 
 \subsection{Wettbewerbsanalyse bestehender Marktplatzplattformen}
@@ -764,11 +784,11 @@ das Problem verständlich und weisen einen Weg zur Lösung \\
 \end{tabular}
 \end{table}
 
-Für eine Multi-Rollen-Anwendung sind davon insbesondere die
-Sichtbarkeit des Systemstatus, die Übereinstimmung mit der realen
-Welt, die Konsistenz, die Fehlervermeidung sowie die
-Nutzerkontrolle einschlägig, da sich Funktionsumfang und
-Navigation je nach Rolle unterscheiden.
+Für eine Multi-Rollen-Anwendung stehen davon vor allem, wenn auch
+nicht ausschließlich, die Sichtbarkeit des Systemstatus, die
+Übereinstimmung mit der realen Welt, die Konsistenz, die
+Fehlervermeidung sowie die Nutzerkontrolle im Vordergrund, da sich
+Funktionsumfang und Navigation je nach Rolle unterscheiden.
  
 Shneiderman formuliert mit den acht goldenen Regeln der
 Schnittstellengestaltung einen inhaltlich verwandten Katalog, der
@@ -935,9 +955,9 @@ E-Commerce-Websites erarbeiteten \acs{UX}-Heuristiken berücksichtigen
 entsprechend Vertrauen, Orientierung und visuelle Konsistenz
 \cite{bonastre_ux_heuristics}. Als Ordnungsraster für die Evaluation
 in Kapitel~\ref{chap:testen} dienen die neun Heuristiken aus
-Tabelle~\ref{tab:heuristiken}. Ausschlaggebend dafür ist, dass sich
-die von \cite{nielsen_molich_heuristic} berichtete Erkennungsrate
-eines einzelnen Gutachters auf eben dieses Verfahren bezieht; Methode
+Tabelle~\ref{tab:heuristiken}. Ausschlaggebend dafür ist, dass sich die berichtete Erkennungsrate
+eines einzelnen Gutachters \cite{nielsen_molich_heuristic} auf eben
+dieses Verfahren bezieht; Methode
 und Einschätzung ihrer Aussagekraft bleiben damit aneinander
 gebunden. Die genannten E-Commerce-Kataloge ergänzen die Bewertung
 einzelner Befunde um marktplatzspezifische Gesichtspunkte, bilden
