@@ -85,12 +85,12 @@ Abbildung~\ref{abb:lazy_network} zeigt den Vorgang im Betrieb: Beim
 Wechsel auf die Produktseite lädt der Browser fünf zuvor nicht
 übertragene Dateien von zusammen etwa 5~kB nach.
  
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.95\textwidth]{Bilder/abb_lazy_network.png}
-  \caption{Nachgeladene Dateien beim Wechsel auf die Produktseite}
-  \label{abb:lazy_network}
-\end{figure}
+%\begin{figure}[htbp]
+%  \centering
+%  \includegraphics[width=0.95\textwidth]{Bilder/abb_lazy_network.png}
+%  \caption{Nachgeladene Dateien beim Wechsel auf die Produktseite}
+%  \label{abb:lazy_network}
+%\end{figure}
  
 Der verbleibende Umfang des Startpakets entfällt im Wesentlichen auf
 Bibliotheken, die jede Ansicht benötigt: React, der Router, die
@@ -326,13 +326,6 @@ eigene Seite umgesetzt, der Login als Dialog. Dieser überlagert die
 aufrufende Seite, ohne sie zu ersetzen, sodass der Nutzer nach der
 Anmeldung ohne Umweg an die Stelle zurückkehrt, an der er sich befand.
  
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{Bilder/screenshot_login_dialog.png}
-\caption{Login-Dialog}
-\label{fig:login_dialog}
-\end{figure}
- 
 Beide Formulare werden über \texttt{react-hook-form} in Verbindung
 mit einem Zod-Schema validiert (vgl.
 Abschnitt~\ref{subsec:formulare-validierung}). Das Schema der
@@ -396,7 +389,7 @@ Eingabe gerade der Fehlerfall und darf nicht in einen fehlenden Wert
 umgedeutet werden, weil die zugehörige Regel sonst nicht mehr
 greifen könnte.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.55\textwidth]{Bilder/screenshot_registrierung_fehler.png}
 \caption{Registrierungsformular mit einem Formatfehler im
@@ -573,9 +566,9 @@ gruppiert; jedes trägt seinen Zeitraum und die verbleibende
 Kapazität. Erst mit der Wahl eines Fensters erscheint eine
 Zusammenfassung der Buchung, und die Schaltfläche wird aktiv.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.60\textwidth]{Bilder/screenshot_buchung_auswahl.png}
+\includegraphics[width=0.70\textwidth]{Bilder/screenshot_buchung_auswahl.png}
 \caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
 \label{fig:buchung_auswahl}
 \end{figure}
@@ -629,7 +622,7 @@ an, bleiben seine Positionen erhalten und werden ihm zugeordnet.
 Wechselt dagegen der angemeldete Nutzer, wird der Warenkorb geleert.
 Andernfalls fände ein Nutzer, der sich am selben Gerät anmeldet, die
 Positionen seines Vorgängers vor.
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_warenkorb_buchung.png}
 \caption{Dienstleistungsbuchung als Position im Warenkorb}
@@ -646,7 +639,7 @@ Ergebnisses auf den beiden Rückleitungsseiten. Dazwischen liegt eine
 Folge von Schritten, an denen Frontend, Backend und Zahlungsdienst
 beteiligt sind.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{Bilder/abb_checkout_ablauf.png}
 \caption{Ablauf der Zahlung vom Auslösen des Checkouts bis zur
@@ -672,15 +665,10 @@ für jede Position des Warenkorbs eine weitere Anfrage gestellt, die
 sie diesem Auftrag zuordnet. Zuletzt wird die Zahlungssitzung
 angefordert; das Backend liefert die Adresse der Zahlungsseite
 zurück, auf die das Frontend den Browser weiterleitet.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.7\textwidth]{Bilder/screenshot_stripe_zahlungsseite.png}
-\caption{Von Stripe bereitgestellte Zahlungsseite, auf die das
-Frontend nach dem Auslösen des Checkouts weiterleitet}
-\label{fig:stripe_zahlungsseite}
-\end{figure}
- 
+Die Zahlungsseite selbst wird vom Zahlungsdienstleister bereitgestellt
+und ist damit nicht Gegenstand der Umsetzung; das Frontend nimmt
+lediglich die Rückleitung entgegen (vgl.
+Abschnitt~\ref{subsec:online-zahlung}).
 Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
 ausgelagert, da sich die zu übertragenden Angaben je nach
 Positionstyp unterscheiden: Für ein Produkt genügen Kennung und
@@ -696,7 +684,7 @@ Bestellungen und Buchungen, da ein Auftrag beide Positionstypen
 enthalten kann (vgl.
 Abschnitt~\ref{subsec:gestaltungsprinzipien}).
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{Bilder/screenshot_checkout_success.png}
 \caption{Bestätigungsseite nach erfolgreicher Zahlung}
@@ -773,28 +761,12 @@ Bereiche bedingt. Die Alternative, für jede Rolle eine eigene Seite
 anzulegen, hätte den gemeinsamen Aufbau dreifach wiederholt und bei
 Nutzern mit mehreren Rollen die Frage aufgeworfen, welche der Seiten
 aufzurufen ist.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{Bilder/screenshot_kontoseite_kunde.png}
-\caption{Kontoseite eines Nutzers ohne zusätzliche Rollen}
-\label{fig:kontoseite_kunde}
-\end{figure}
- 
+
 Für einen Nutzer ohne zusätzliche Rollen zeigt die rechte Spalte
 allein den Kundenbereich, gefolgt von den rollenunabhängigen
 Funktionen und den Anträgen auf ein Rollen-Upgrade. Die linke Spalte
 enthält die eigene Bestellhistorie mit Datum, Betrag, Anzahl der
 Positionen und Zahlungsstatus.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{Bilder/screenshot_kontoseite_anbieter.png}
-\caption{Kontoseite eines Nutzers mit den Rollen \textit{Seller} und
-\textit{ServiceProvider}}
-\label{fig:kontoseite_anbieter}
-\end{figure}
- 
 Dieselbe Seite zeigt für einen Nutzer mit beiden anbietenden Rollen
 drei Arbeitsbereiche untereinander: den Verkäuferbereich mit der
 Produktverwaltung, den Anbieterbereich mit Dienstleistungen,
@@ -802,12 +774,26 @@ Verfügbarkeit und eingegangenen Buchungen sowie darunter den
 Kundenbereich, den er als jeder andere Nutzer ebenfalls besitzt.
 Anbindung an den Zahlungsdienst und Einnahmenübersicht erscheinen in
 beiden anbietenden Bereichen, da sie für beide Rollen gelten.
- 
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_kontoseite_kunde.png}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_kontoseite_anbieter.png}
+\end{minipage}
+\caption{Dieselbe Kontoseite für einen Nutzer ohne zusätzliche Rollen
+  (links) und für einen Nutzer mit den Rollen \textit{Seller} und
+  \textit{ServiceProvider} (rechts)}
+\label{fig:kontoseite_vergleich}
+\end{figure}
 Die Anträge auf ein Rollen-Upgrade entfallen hier vollständig. Sie
 werden nur dann gerendert, wenn das Backend die jeweilige Rolle als
 noch verfügbar meldet. Damit zeigt die Oberfläche keine Handlung an,
 die für diesen Nutzer keine Wirkung mehr hätte.
- 
+
 Auch die linke Spalte wechselt mit der Rolle. Statt der eigenen
 Bestellhistorie erscheint bei anbietenden Nutzern die
 Geschäftsaktivität mit den eingegangenen Buchungen und
@@ -817,7 +803,6 @@ Liegen für einen Bereich keine Einträge vor, erscheint an dessen
 Stelle ein Hinweis statt einer leeren Fläche, wie er auch auf den
 Katalogseiten verwendet wird (vgl.
 Abschnitt~\ref{subsec:impl_produktlisting}).
- 
 Sämtliche Einträge der rechten Spalte werden über dieselbe
 wiederverwendbare Komponente dargestellt, die Titel, Beschreibung,
 Ziel und optional eine Zustandsmarkierung entgegennimmt. Aufbau und
@@ -830,13 +815,11 @@ anbietende Nutzer ausgeführt wird.
 
 \subsection{Dienstleistungsverwaltung: Zeitfenster und Abdeckungsbereich}
 \label{subsec:impl_dienstleistungsverwaltung}
- 
 Dieser Abschnitt beschreibt sowohl die Verwaltung einzelner
 Dienstleistungsangebote als auch die Verwaltung der Verfügbarkeit, die
 als eigener Funktionsbereich \texttt{provider-availability/} umgesetzt
 ist und derselben internen Struktur wie die übrigen Funktionsbereiche
 folgt (vgl. Abschnitt~\ref{subsec:komponentenarchitektur}).
- 
 Die eigenen Dienstleistungen werden über \texttt{useMyServicesQuery}
 abgerufen und seitenweise dargestellt; Seite und Ergebnisse pro Seite
 sind, wie bereits beim Produktlisting beschrieben (vgl.
@@ -845,14 +828,6 @@ Dienstleistung erscheint als Karte mit Kategorie, Preis, Dauer und
 Veröffentlichungsstatus; gegenüber der öffentlichen Katalogansicht
 ergänzt die Verwaltungskarte die Aktionen zum Ansehen, Bearbeiten und
 Löschen.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_my_services.png}
-\caption{Übersicht der eigenen Dienstleistungen mit den Aktionen zum Ansehen, Bearbeiten und Löschen}
-\label{fig:my_services}
-\end{figure}
- 
 Das Löschen einer Dienstleistung folgt demselben Muster wie die
 Nebenwirkungen der Erfolgsseite (vgl.
 Listing~\ref{lst:checkout-success}), betrifft jedoch vier
@@ -864,14 +839,13 @@ automatisches Ablaufen zu verlassen (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
 davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
 eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
- 
 Beim Anlegen und Bearbeiten einer Dienstleistung werden neben Titel
 und Beschreibung, die jeweils auf Englisch und Arabisch erfasst
 werden, zugleich die Regeln für deren spätere Buchung festgelegt.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_edit_service.png}
+\includegraphics[width=0.50\textwidth]{Bilder/screenshot_edit_service.png}
 \caption{Formular zum Bearbeiten einer Dienstleistung mit
 zweisprachigen Inhaltsfeldern und Buchungsregeln}
 \label{fig:edit_service}
@@ -889,9 +863,9 @@ Die Verfügbarkeit wird davon getrennt verwaltet, da sie nicht für eine
 einzelne Dienstleistung, sondern für alle Angebote eines Anbieters
 gemeinsam gilt.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.7\textwidth]{Bilder/screenshot_availability.png}
+\includegraphics[width=0.50\textwidth]{Bilder/screenshot_availability.png}
 \caption{Verfügbarkeitsverwaltung mit Wochenschema und einzelnen Abwesenheitszeiträumen}
 \label{fig:availability}
 \end{figure}
@@ -960,7 +934,7 @@ Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} beschriebene
 Zustandsfolge um. Jede Buchung erscheint als Eintrag mit Kunde,
 Beginn, Ende und Zeitzone sowie einer Zustandsmarkierung.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_provider_bookings.png}
 \caption{Eingegangene Buchungen mit der jeweils zustandsabhängigen
@@ -997,15 +971,6 @@ Abschnitt~\ref{subsec:warenkorb_konzept}), unterscheidet die
 Detailseite zwei Fälle. Bei einem unbezahlten Auftrag tritt an die
 Stelle der Positionsliste ein eigener Bereich, der den Zustand
 benennt und zwei Wege anbietet.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_bestellung_unbezahlt.png}
-\caption{Detailansicht eines Auftrags, dessen Zahlung nicht
-abgeschlossen wurde}
-\label{fig:bestellung_unbezahlt}
-\end{figure}
- 
 Verlässt ein Nutzer die Zahlungsseite, ohne den Vorgang
 abzuschließen, bleibt der Auftrag in diesem Zustand bestehen. Er
 lässt sich entweder nachträglich bezahlen oder verwerfen. Ohne diese
@@ -1013,19 +978,27 @@ beiden Möglichkeiten entstünde bei jedem abgebrochenen
 Zahlungsvorgang ein Eintrag, den der Nutzer weder abschließen noch
 entfernen könnte. Der Fall betrifft Produkte und
 Dienstleistungsbuchungen gleichermaßen.
- 
 Bei einem bezahlten Auftrag erscheint dagegen die vollständige
 Positionsliste. Jede Position trägt ihren eigenen Zustand, da
 Produkte und Dienstleistungen unabhängig voneinander bearbeitet
 werden.
- 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{Bilder/screenshot_bestelldetail.png}
-\caption{Detailansicht eines bezahlten Auftrags mit Produkt- und
-Dienstleistungspositionen}
-\label{fig:bestelldetail}
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_bestellung_unbezahlt.png}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_bestelldetail.png}
+\end{minipage}
+\caption{Detailansicht eines Auftrags mit nicht abgeschlossener Zahlung
+  (links) und eines bezahlten Auftrags mit Produkt- und
+  Dienstleistungspositionen (rechts)}
+\label{fig:auftrag_vergleich}
 \end{figure}
+ 
+
  
 Eine Dienstleistungsposition führt dabei die zugehörige Buchung mit:
 Termin, Zeitzone und Ort der Leistungserbringung erscheinen innerhalb
@@ -1047,30 +1020,28 @@ festgelegten Fristen wiedergegeben werden (vgl.
 Abschnitt~\ref{subsec:impl_dienstleistungsverwaltung}). Solange eine
 Frist läuft, nennt der zugehörige Block den Zeitpunkt ihres Endes,
 und die Schaltfläche ist auslösbar.
- 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_buchung_offen.png}
-\caption{Buchung innerhalb der Fristen: beide Aktionen verfügbar,
-jeweils mit Angabe des Fristendes}
-\label{fig:buchung_offen}
-\end{figure}
- 
+
 Nach Ablauf einer Frist wird die zugehörige Schaltfläche deaktiviert,
 und an die Stelle des Fristendes tritt der Hinweis, dass der Zeitraum
 verstrichen ist. Beide Schaltflächen bleiben dabei sichtbar --
 dieselbe Entscheidung wie bei der Terminauswahl, in der ein nicht
 verfügbarer Tag benannt statt ausgeblendet wird (vgl.
 Abschnitt~\ref{subsec:impl_terminauswahl}).
- 
-\begin{figure}[H]
+ \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_buchung_frist_abgelaufen.png}
-\caption{Buchung nach Ablauf beider Fristen: die Schaltflächen sind
-deaktiviert, der Grund steht darüber}
-\label{fig:buchung_frist_abgelaufen}
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=1.52\textwidth]{Bilder/screenshot_buchung_offen.png}
+\end{minipage}\hfill
+\begin{minipage}{0.48\textwidth}
+  \centering
+  \includegraphics[width=1.60\textwidth]{Bilder/screenshot_buchung_frist_abgelaufen.png}
+\end{minipage}
+\caption{Buchung innerhalb der Fristen mit auslösbaren Schaltflächen und
+  Angabe des Fristendes (links); nach Ablauf beider Fristen sind die
+  Schaltflächen deaktiviert und der Grund steht darüber (rechts)}
+\label{fig:buchung_fristen}
 \end{figure}
- 
 Die Umbuchung führt auf eine eigene Seite, die dieselbe
 Terminauswahl verwendet wie die Erstbuchung. Die Komponente ist damit
 an zwei Stellen der Anwendung eingesetzt, ohne dass die Ermittlung
@@ -1178,7 +1149,7 @@ Abschnitt~\ref{subsec:impl_produktlisting}).
 Ist keine Unterhaltung angegeben, wird auf die zuletzt aktive
 umgeleitet.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_chat.png}
 \caption{Nachrichtenbereich mit Liste der Unterhaltungen und

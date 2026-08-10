@@ -45,7 +45,7 @@ ausfüllen und notwendige Dokumente hochladen. Der
 Antragsstatus ist für den Nutzer jederzeit einsehbar.
 Zusätzlich unterstützt die Plattform eine
 Passwort-Zurücksetzen-Funktion auf Basis eines
-\acfirst{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
+\acs{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
 
 Käufer müssen Produkte und Dienstleistungen nach Kategorie
 filtern und in einer Detailansicht einsehen können. Produkte
@@ -79,7 +79,7 @@ zeigt alle aktiven Konversationen mit Ungelesen-Zähler an.
 Tabelle~\ref{tab:funktionale-anforderungen} fasst die
 funktionalen Anforderungen je Rolle zusammen.
 
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
 \caption{Funktionale Anforderungen je Nutzerrolle}
 \label{tab:funktionale-anforderungen}
@@ -107,7 +107,7 @@ Stripe-Connect-Onboarding \\
 Backend-Dashboard (vgl. Abschnitt~\ref{sec:abgrenzung}) \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 \subsection{Nicht-funktionale Anforderungen}
 \label{subsec:nichtfunktionale-anforderungen}
@@ -156,7 +156,7 @@ Tabelle~\ref{tab:nichtfunktionale-anforderungen} gibt
 einen strukturierten Überblick über die nicht-funktionalen
 Anforderungen und deren Umsetzungsmaßnahmen im Frontend.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Nicht-funktionale Anforderungen und Maßnahmen}
 \label{tab:nichtfunktionale-anforderungen}
@@ -165,26 +165,32 @@ Anforderungen und deren Umsetzungsmaßnahmen im Frontend.
 \textbf{Anforderung} & \textbf{Beschreibung} &
 \textbf{Maßnahme im Frontend} \\
 \hline
-Performance & Direkte Rückmeldung unter 0,1~s, Ansichtswechsel unter 1~s; Ladezustand ab etwa 1~s Wartezeit &
+Performance & Direkte Rückmeldung unter 0,1~s, Ansichtswechsel
+unter 1~s; Ladezustand ab etwa 1~s Wartezeit &
 Nachladen der Ansichten bei Bedarf, zwischengespeicherte
 Abfragen, einheitliche Ladezustände \\
 \hline
-Sicherheit & Schutz vor unbefugtem Zugriff &
-Laravel Sanctum (serverseitig), geschützte Routen
-(Benutzerführung), PCI-DSS-konforme Stripe-Zahlungsseite \\
+Sicherheit & Kein Zugriff auf Bereiche, für die keine Rolle
+vorliegt; keine Speicherung sensibler Daten im Browser &
+Geschützte Routen als Benutzerführung, Weiterleitung bei
+abgelaufener Sitzung, keine Verarbeitung von Zahlungsdaten im
+Frontend \\
 \hline
-Responsivität & Korrekte Darstellung auf allen Geräten &
-Responsive Design, \acs{CSS}-Breakpoints \\
+Responsivität & Nutzbar bis 320 \acs{CSS}-Pixel Breite ohne
+horizontales Scrollen (\acs{WCAG}~2.1, Kriterium 1.4.10) &
+Responsive Design mit flexiblen Rastern und Umbruchpunkten \\
 \hline
-Barrierefreiheit & Orientierung an \acs{WCAG}~2.1 &
-Semantisches \acs{HTML}, Kontrastverhältnisse nach
-Erfolgskriterium 1.4.3 \\
+Barrierefreiheit & Erfolgskriterien 1.4.3, 1.4.11 und 2.1.1 der
+\acs{WCAG}~2.1 &
+Semantisches \acs{HTML}, Farbwerte aus dem Designsystem,
+Tastaturbedienbarkeit der Dialoge und Auswahlfelder \\
 \hline
-Wartbarkeit & Erweiterbare Codestruktur &
-Komponentenarchitektur, feature-basierte Struktur \\
+Wartbarkeit & Funktionsbereiche unabhängig voneinander
+erweiterbar &
+Komponentenarchitektur, feature-basierte Ordnerstruktur \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 
 \section{Rollenmodell}
@@ -212,7 +218,7 @@ eingeloggten Nutzers an. Tabelle~\ref{tab:rollenmodell}
 gibt einen Überblick über die Rollen und ihre jeweiligen
 Funktionsbereiche im Frontend.
 
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
 \caption{Rollenmodell der Plattform Bazario}
 \label{tab:rollenmodell}
@@ -236,7 +242,7 @@ Stripe-Connect-Onboarding \\
 Funktionen über das Backend-Dashboard \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 \section{Technologieauswahl und Begründung}
 \label{sec:technologieauswahl}
@@ -274,7 +280,7 @@ war, da nennenswerte Alternativen kaum vorhanden sind
 \cite{axios_docs}. Tabelle~\ref{tab:technologiestack} fasst die
 getroffene Auswahl zusammen.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Technologiestack des Frontends von Bazario}
 \label{tab:technologiestack}
@@ -296,20 +302,19 @@ TanStack Query & Server-State & manuelle Cache-Verwaltung &
 Einheitliche Verbindungszustände, Caching und gezielte
 Invalidierung \\
 \hline
-React Router & Routing & --- &
+React Router & Routing & TanStack Router &
 Deklaratives Routing, rollenbasierter Seitenschutz \\
 \hline
 Axios & \acs{HTTP}-Kom\-mu\-ni\-ka\-tion & Fetch \acs{API} &
 Zentrale Instanz mit Interceptors, automatische
 Token-Anbindung \\
 \hline
-React Hook Form & Formular\-verwaltung & --- &
+React-Hook-Form & Formular\-verwaltung & Formik &
 Hook-basiert, geringe Neu-Renderings, koppelbar mit
 Schema-Validierung \\
 \hline
-Zod & Validierung & --- &
-Deklarative Schemata, konsistent mit
-Backend-Validierungsregeln \\
+Zod & Validierung & Yup &
+Deklarative Schemata, konsistent mit Backend- Validierungsregeln \\
 \hline
 Tailwind CSS & Styling & Bootstrap, CSS-in-JS &
 Utility-first, konsistentes Erscheinungsbild ohne separates
@@ -319,15 +324,15 @@ shadcn/ui & \acs{UI}-Kom\-po\-nen\-ten & klassische
 Komponenten\-bibliothek &
 Barrierefrei, vollständig anpassbar, kein Paket-Lock-in \\
 \hline
-Vite & Build-Tool & --- &
+Vite & Build-Tool & Webpack &
 Schnelle Entwicklungsumgebung, optimierte
 Produktions-Builds \cite{vite_docs} \\
 \hline
-Vitest & Unit- und Integra\-tions\-tests & --- &
+Vitest & Unit-und Integra\-tions\-tests & Jest &
 Nativer Test-Runner für Vite, keine zusätzliche Konfiguration
 \cite{vitest_docs} \\
 \hline
-Playwright & End-to-End-Tests & --- &
+Playwright & End-to-End-Tests & Cypress, Selenium &
 Automatisierte Nutzerflows in mehreren Browsern
 \cite{playwright_docs} \\
 \hline
@@ -346,4 +351,4 @@ Weiterleitung auf \acs{PCI-DSS}-konforme Zahlungsseite
 \cite{stripe_security_guide}} \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}

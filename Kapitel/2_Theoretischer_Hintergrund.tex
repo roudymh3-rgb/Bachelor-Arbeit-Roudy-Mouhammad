@@ -128,7 +128,7 @@ Konzept mehrseitiger Plattformen an
 Einordnung der einzelnen Plattformen beruht auf deren öffentlich
 einsehbarem Funktionsumfang und stellt eine eigene Bewertung dar.
 
-\begin{table}[h]
+\begin{figure}[htbp]
 \centering
 \caption{Vergleich bestehender Marktplatzplattformen (eigene Darstellung)}
 \label{tab:wettbewerb}
@@ -151,7 +151,7 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \checkmark \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 Die Einstufung \enquote{eingeschränkt} bezeichnet dabei jeweils eine
 teilweise Erfüllung des Merkmals. Bei Amazon werden Dienstleistungen
 nicht als eigenständig buchbare Kategorie angeboten, sondern
@@ -185,7 +185,7 @@ anschließend nur die betroffenen Teile der Oberfläche. Die
 Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
 \cite{jonathan_react_spa}.
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_spa_mpa.png}
 \caption{Ablauf der Kommunikation bei einer Multi-Page und einer
@@ -218,7 +218,7 @@ angemeldeten Nutzern zugänglich sind, entfällt der Nachteil
 weitgehend \cite{bhalla_spa_architecture}.
 Tabelle~\ref{tab:spa-mpa} stellt beide Ansätze gegenüber.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Vergleich SPA und MPA}
 \label{tab:spa-mpa}
@@ -241,7 +241,7 @@ Inhaltsreiche Webseiten, deren Inhalte über Suchmaschinen
 auffindbar sein müssen \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 Der Umfang der Inhalte allein ist dabei kein hinreichendes
 Kriterium: Auch ein Marktplatz mit umfangreichem Produktkatalog ist
 inhaltsreich. Maßgeblich ist vielmehr, ob diese Inhalte über
@@ -308,6 +308,57 @@ Benutzerführung; die verbindliche Durchsetzung der Zugriffsrechte
 muss serverseitig an der Schnittstelle erfolgen
 \cite{ferraiolo_rbac_arxiv}.
 
+\subsection{Authentifizierung und Sitzungsverwaltung}
+\label{subsec:authentifizierung}
+
+Die im vorangehenden Abschnitt beschriebene Zugriffskontrolle setzt
+voraus, dass feststeht, wer die Anwendung bedient. Davon zu
+unterscheiden ist daher der Nachweis der Identität selbst: Die
+Authentifizierung klärt, wer ein Nutzer ist, die Autorisierung, was er
+tun darf \cite{ferraiolo_rbac_arxiv}.
+
+Für den Nachweis über mehrere Anfragen hinweg bestehen zwei Ansätze.
+Bei der sitzungsbasierten Variante legt der Server nach der Anmeldung
+einen Sitzungsdatensatz an und übergibt dem Client lediglich dessen
+Kennung; bei jeder weiteren Anfrage schlägt der Server anhand dieser
+Kennung nach, um wen es sich handelt. Bei der tokenbasierten Variante
+stellt der Server bei der Anmeldung stattdessen einen Nachweis aus,
+den der Client bei jeder Anfrage mitsendet und der für sich genommen
+ausreicht. Der Server muss dabei keinen Sitzungszustand vorhalten,
+weshalb dieser Ansatz zur Zustandslosigkeit \acs{REST}-basierter
+Schnittstellen passt (vgl. Abschnitt~\ref{subsec:rest-api})
+\cite{fielding_rest}.
+
+Für das Frontend folgt daraus dreierlei. Der Nachweis muss im Browser
+abgelegt werden, er muss jeder ausgehenden Anfrage beigefügt werden,
+und sein Ablauf muss erkannt werden, um den Nutzer zur erneuten
+Anmeldung zu führen; die Gültigkeitsdauer eines Nachweises ist dabei
+bewusst begrenzt \cite{nist_digital_identity}. Das Beifügen lässt sich
+sinnvoll an einer zentralen Stelle lösen statt in jeder einzelnen
+Anfrage (vgl. Abschnitt~\ref{subsec:rest-api}).
+
+Für die Ablage bestehen zwei Wege. Wird der Nachweis im Speicher des
+Browsers gehalten, ist er für den Anwendungscode lesbar und wird von
+diesem selbst an die Anfragen angefügt, üblicherweise über ein
+Kopfzeilenfeld. Alternativ lässt er sich in einem Cookie mit dem
+Merkmal \texttt{HttpOnly} ablegen; ein solches Cookie ist für Skripte
+im Browser nicht zugänglich und wird vom Browser automatisch
+mitgesendet \cite{rfc6265}. Der zweite Weg setzt voraus, dass die
+Schnittstelle den Nachweis aus dem Cookie und nicht aus einem
+Kopfzeilenfeld entnimmt, und ist damit nicht allein im Frontend zu
+entscheiden.
+
+Kann ein Nutzer sein Passwort nicht mehr angeben, ist eine Anmeldung
+über den gewohnten Weg ausgeschlossen; der Nachweis muss dann über
+einen zweiten, getrennten Kanal erfolgen. Verbreitet ist hierfür ein
+\acfirst{OTP}: Der Dienst erzeugt ein kurzlebiges Geheimnis und
+übermittelt es an eine zuvor hinterlegte Adresse, üblicherweise die
+E-Mail-Adresse des Nutzers. Wer es vorweisen kann, weist damit den
+Zugriff auf diesen zweiten Kanal nach. Das Kennwort ist nur einmal
+und nur für einen begrenzten Zeitraum gültig
+\cite{nist_digital_identity}. Für das Frontend ergeben sich daraus
+zwei Ansichten: eine zum Anfordern des Kennworts und eine zur Eingabe
+des Kennworts zusammen mit dem neuen Passwort.
 
 % =====================================================================
 \section{Frameworks und Kommunikationsansätze im Frontend}
@@ -389,7 +440,7 @@ erhöhen jedoch die Komplexität der Betriebsumgebung
 \cite{pati_react_nextjs_2025}. Tabelle~\ref{tab:frameworks} fasst
 die Gegenüberstellung zusammen.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Gegenüberstellung von React, Angular und Vue.js}
 \label{tab:frameworks}
@@ -415,7 +466,7 @@ Nutzwert nach \cite{repolust_frontend_frameworks} &
 75,15 \% & 57,30 \% & 60,14 \% \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 
 \subsection{Verwaltung des Anwendungszustands}
@@ -435,7 +486,7 @@ Datenbestand ist dagegen nur eine zwischengespeicherte Abbildung von
 Daten, deren Quelle auf dem Server liegt und die veralten kann; er
 muss über eine Programmierschnittstelle (\acfirst{API}) abgerufen,
 zwischengespeichert und mit der Quelle synchronisiert werden.
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_zustandsarten.png}
 \caption{Clientseitiger Anwendungszustand und serverseitiger
@@ -486,7 +537,7 @@ bereitgestellt \cite{tanstack_query_docs}.
 Tabelle~\ref{tab:state-management} stellt die Ansätze für den
 clientseitigen Zustand gegenüber.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Gegenüberstellung der Ansätze für clientseitiges State
 Management}
@@ -512,7 +563,7 @@ Komplexe, nachvollziehbare Zustandsflüsse &
 Überschaubare Anzahl fachlich getrennter Stores \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 
 \subsection{Clientseitiges Routing}
@@ -522,27 +573,36 @@ Da \acs{SPA}s keine serverseitigen Seitennavigationen durchführen,
 stellt clientseitiges Routing die Ansichten der Anwendung anhand der
 \acfirst{URL} dar. Die \acs{URL} bleibt damit die maßgebliche
 Beschreibung des Anwendungszustands: Derselbe Aufruf führt zu
-derselben Ansicht, und einzelne Ansichten bleiben verlinkbar,
-obwohl kein Seitenwechsel im herkömmlichen Sinne stattfindet
+derselben Ansicht, und einzelne Ansichten bleiben verlinkbar, obwohl
+kein Seitenwechsel im herkömmlichen Sinne stattfindet
 \cite{bhalla_spa_architecture}. Wie in
 Abschnitt~\ref{subsec:framework-funktionen} dargestellt, übernimmt
 diese Aufgabe in React nicht das Framework selbst, sondern eine
 ergänzende Bibliothek.
 
 React Router ist die im React-Ökosystem etablierte Lösung hierfür.
-Routen werden deklarativ als Zuordnung zwischen \acs{URL}-Mustern
-und darzustellenden Komponenten definiert und lassen sich
-hierarchisch verschachteln, sodass gemeinsame Bestandteile wie ein
+Routen werden deklarativ als Zuordnung zwischen \acs{URL}-Mustern und
+darzustellenden Komponenten definiert und lassen sich hierarchisch
+verschachteln, sodass gemeinsame Bestandteile wie ein
 Anwendungsrahmen nur einmal festgelegt werden müssen
 \cite{reactrouter_docs}.
 
+Alternativen bestehen zum einen in neueren Bibliotheken wie TanStack
+Router, die den Schwerpunkt auf typsichere Routen legen und
+Abweichungen zwischen \acs{URL}-Muster und erwarteten Parametern
+bereits bei der Übersetzung melden \cite{tanstack_router_docs}. Zum
+anderen ließe sich das Routing über die im Browser eingebaute
+History-Schnittstelle auch selbst umsetzen; der Abgleich der
+\acs{URL} mit den Mustern, die Verschachtelung der Ansichten und das
+Verhalten der Vor- und Zurück-Schaltflächen wären dann jedoch
+vollständig zu entwickeln.
+
 Der in Abschnitt~\ref{subsec:rbac} beschriebene rollenbasierte
-Zugriffsschutz wird dabei nicht von der Bibliothek übernommen,
-sondern als Wrapper-Komponente umgesetzt: Eine vorgeschaltete
-Komponente prüft Authentifizierungsstatus und Rolle des Nutzers,
-bevor die eigentliche Ansicht gerendert wird, und leitet
-andernfalls auf eine zulässige Route um
-\cite{wieruch_protected_routes}.
+Zugriffsschutz wird dabei nicht von der Bibliothek übernommen, sondern
+als Wrapper-Komponente umgesetzt: Eine vorgeschaltete Komponente prüft
+Authentifizierungsstatus und Rolle des Nutzers, bevor die eigentliche
+Ansicht gerendert wird, und leitet andernfalls auf eine zulässige
+Route um \cite{wieruch_protected_routes}.
 
 
 \subsection{Kommunikationsansätze zwischen Frontend und Backend}
@@ -588,7 +648,7 @@ anschließend beide Seiten jederzeit Daten senden können
 \cite{rfc6455}. Sie treten damit nicht an die Stelle von \acs{REST}
 oder GraphQL, sondern ergänzen diese für Anwendungsfälle mit
 Echtzeitanforderung.
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_kommunikation.png}
 \caption{Anfragebasierte Kommunikation im Vergleich zu einer
@@ -615,7 +675,7 @@ und ohne Interceptors, sodass diese Aufgaben selbst umgesetzt werden
 müssen. Tabelle~\ref{tab:kommunikation} fasst die
 Kommunikationsansätze zusammen.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Gegenüberstellung der Kommunikationsansätze}
 \label{tab:kommunikation}
@@ -642,7 +702,7 @@ Schwächere Skalierung unter hoher Last &
 Dauerhafte Verbindung erforderlich \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 
 \subsection{Styling-Ansätze und UI-Bibliotheken}
@@ -681,17 +741,25 @@ beim Projekt verbleibt \cite{shadcn_docs}.
 
 Formulare bilden in E-Commerce-Anwendungen einen zentralen
 Interaktionspunkt, etwa bei Registrierung und Anmeldung oder der
-Verwaltung von Produkten und Dienstleistungen. React Hook Form
-registriert Eingabefelder über Hooks und verwaltet den
-Formularzustand mit möglichst wenigen Neu-Renderings
-\cite{react_hook_form_docs}. Zod ist eine TypeScript-orientierte
-Bibliothek zur Schema-Validierung, mit der Datenstrukturen
-deklarativ definiert und zur Laufzeit geprüft werden; aus den
-Schemata leiten sich zugleich statische Typen ab \cite{zod_docs}.
-Beide lassen sich über einen sogenannten Resolver koppeln, sodass
-Eingaben clientseitig gegen ein Zod-Schema validiert werden, bevor
-eine Anfrage an das Backend gestellt wird
-\cite{react_hook_form_docs}.
+Verwaltung von Produkten und Dienstleistungen. Für ihre Verwaltung
+bestehen zwei Ansätze. Der ältere, wie ihn etwa Formik verfolgt, hält
+den Wert jedes Feldes im Zustand der Komponente; jede Eingabe löst
+damit eine erneute Darstellung aus \cite{formik_docs}. React Hook Form
+registriert die Eingabefelder stattdessen über Hooks und liest ihre
+Werte erst bei Bedarf aus, wodurch der Formularzustand mit möglichst
+wenigen Neu-Renderings verwaltet wird \cite{react_hook_form_docs}.
+
+Von der Verwaltung zu unterscheiden ist die Prüfung der Eingaben. Zod
+ist eine TypeScript-orientierte Bibliothek zur Schema-Validierung, mit
+der Datenstrukturen deklarativ definiert und zur Laufzeit geprüft
+werden; aus den Schemata leiten sich zugleich statische Typen ab
+\cite{zod_docs}. Ältere Bibliotheken wie Yup folgen demselben Prinzip,
+sind jedoch nicht auf TypeScript ausgerichtet, sodass die Typen nicht
+aus dem Schema hervorgehen, sondern getrennt zu pflegen sind
+\cite{yup_docs}. Verwaltung und Prüfung lassen sich über einen
+sogenannten Resolver koppeln, sodass Eingaben clientseitig gegen ein
+Schema validiert werden, bevor eine Anfrage an das Backend gestellt
+wird \cite{react_hook_form_docs}.
 
 \subsection{Mehrsprachigkeit der Oberfläche}
 \label{subsec:mehrsprachigkeit}
@@ -719,6 +787,34 @@ ohne die Seite neu zu laden \cite{i18next_docs}. Alternativen wie
 ist die im Browser eingebaute \texttt{Intl}-Schnittstelle, die
 Zahlen, Daten und Währungsangaben sprachgerecht formatiert, jedoch
 keine Texte übersetzt.
+
+\subsection{Build-Werkzeuge}
+\label{subsec:build-werkzeuge}
+
+Der Quelltext einer React-Anwendung ist im Browser nicht unmittelbar
+ausführbar: TypeScript und die JSX-Schreibweise müssen in gültiges
+JavaScript übersetzt, die zahlreichen Einzeldateien zu wenigen
+auslieferbaren Dateien zusammengefasst und für den produktiven Einsatz
+verkleinert werden. Diese Aufgaben übernimmt ein Build-Werkzeug, das
+zugleich einen Entwicklungsserver bereitstellt, der Änderungen am
+Quelltext ohne vollständiges Neuladen in den Browser überträgt.
+
+Webpack ist die über lange Zeit etablierte Lösung. Es fasst den
+gesamten Quelltext auch während der Entwicklung zu einem Paket
+zusammen und ist über eine umfangreiche Konfiguration an nahezu jede
+Projektstruktur anpassbar \cite{webpack_docs}. Vite verfolgt einen
+anderen Ansatz: Während der Entwicklung liefert es die Dateien einzeln
+als native ES-Module aus und verzichtet auf das vorherige
+Zusammenfassen; erst für die Auslieferung wird ein Paket erzeugt
+\cite{vite_docs}. Der Aufwand für die Einrichtung fällt dadurch
+geringer aus, die Anpassbarkeit ist dafür stärker an die Vorgaben des
+Werkzeugs gebunden. Daneben existieren Lösungen wie Parcel, die
+gänzlich ohne Konfiguration auskommen.
+
+Vom Build-Werkzeug hängt auch ab, wie der Programmcode für das in
+Abschnitt~\ref{subsec:spa-mpa} beschriebene Nachladen aufgeteilt wird:
+Es erkennt die dynamischen Importe und erzeugt daraus getrennte
+Dateien.
 %===========================================================================
 \section{Grundlagen des UI-Designs}
 \label{sec:ui-design}
@@ -743,7 +839,7 @@ Fehlern -- entstand daraus ein Satz von neun Heuristiken
 bilden zugleich das Ordnungsraster für die Evaluation in
 Kapitel~\ref{chap:testen}.
 
-\begin{table}[H]
+\begin{figure}[htbp]
 \centering
 \caption{Heuristiken nach \cite{nielsen_explanatory_power}}
 \label{tab:heuristiken}
@@ -782,7 +878,7 @@ Hilfe beim Erkennen und Beheben von Fehlern & Meldungen benennen
 das Problem verständlich und weisen einen Weg zur Lösung \\
 \hline
 \end{tabular}
-\end{table}
+\end{figure}
 
 Für eine Multi-Rollen-Anwendung stehen davon vor allem, wenn auch
 nicht ausschließlich, die Sichtbarkeit des Systemstatus, die
@@ -913,23 +1009,48 @@ werden oder horizontal gescrollt werden muss.
 \subsection{Teststrategie: Unit-, Integrations- und E2E-Tests}
 \label{subsec:teststrategie}
 
-Eine strukturierte Teststrategie ist ein wesentlicher Bestandteil
-der Qualitätssicherung. Agile Entwicklungsansätze empfehlen die
+Eine strukturierte Teststrategie ist ein wesentlicher Bestandteil der
+Qualitätssicherung. Agile Entwicklungsansätze empfehlen die
 Kombination mehrerer Testebenen, häufig als Testpyramide bezeichnet
-\cite{cohn_agile}: An der Basis stehen zahlreiche schnelle
-Unit-Tests, die einzelne Komponenten und Funktionen isoliert prüfen,
-darüber Integrationstests, die das Zusammenspiel mehrerer
-Komponenten abdecken, etwa die Interaktion eines Formulars mit dem
-globalen Anwendungszustand, und an der Spitze eine begrenzte Zahl
-von End-to-End-Tests, die vollständige Nutzerabläufe im Browser
+\cite{cohn_agile}: An der Basis stehen zahlreiche schnelle Unit-Tests,
+die einzelne Komponenten und Funktionen isoliert prüfen, darüber
+Integrationstests, die das Zusammenspiel mehrerer Komponenten
+abdecken, etwa die Interaktion eines Formulars mit dem globalen
+Anwendungszustand, und an der Spitze eine begrenzte Zahl von
+End-to-End-Tests, die vollständige Nutzerabläufe im Browser
 simulieren.
 
-Die Gewichtung folgt dem Aufwand: Unit-Tests sind schnell zu
-schreiben und auszuführen, End-to-End-Tests bilden realistische
-Abläufe ab, reagieren jedoch empfindlich auf Änderungen an der
-Oberfläche und benötigen deutlich mehr Laufzeit \cite{cohn_agile}.
-Die auf den einzelnen Ebenen eingesetzten Werkzeuge werden in
-Kapitel~\ref{chap:testen} beschrieben.
+Die Gewichtung folgt dem Aufwand: Unit-Tests sind schnell zu schreiben
+und auszuführen, End-to-End-Tests bilden realistische Abläufe ab,
+reagieren jedoch empfindlich auf Änderungen an der Oberfläche und
+benötigen deutlich mehr Laufzeit \cite{cohn_agile}.
+
+Für die beiden unteren Ebenen wird ein Test-Runner eingesetzt, der die
+Testdateien einliest, die Prüfungen durchführt und das Ergebnis
+berichtet. Im JavaScript-Umfeld ist Jest weit verbreitet; das Werkzeug
+bringt eine eigene Verarbeitungskette mit, die in Projekten mit einem
+Bündler getrennt zu konfigurieren ist \cite{jest_docs}. Vitest
+verfolgt denselben Ansatz, verwendet jedoch die bereits vorhandene
+Konfiguration des Bündlers Vite mit und übernimmt weitgehend dieselbe
+Schreibweise für Testfälle, sodass sich Testsuiten zwischen beiden
+übertragen lassen \cite{vitest_docs}.
+
+End-to-End-Tests benötigen dagegen einen automatisiert gesteuerten
+Browser. Etabliert ist hier Selenium, das über ein standardisiertes
+Protokoll eine Vielzahl von Browsern anspricht \cite{selenium_docs};
+neuere Lösungen sind Cypress, das die Tests innerhalb des Browsers
+ausführt \cite{cypress_docs}, und Playwright, das mehrere Browser über
+eine einheitliche Schnittstelle steuert \cite{playwright_docs}. Eine
+vergleichende Untersuchung der drei Werkzeuge anhand von
+Testszenarien unterschiedlicher Komplexität kommt zu dem Ergebnis,
+dass Playwright bei dynamischen Webanwendungen die kürzesten
+Ausführungszeiten erzielt, während Cypress bei lokal ausgeführten
+Testsuiten vergleichbare Werte erreicht
+\cite{tymoshchuk_test_automation}.
+
+Welche dieser Werkzeuge eingesetzt werden, wird in
+Abschnitt~\ref{sec:technologieauswahl} begründet; ihre Anwendung
+beschreibt Kapitel~\ref{chap:testen}.
 
 
 

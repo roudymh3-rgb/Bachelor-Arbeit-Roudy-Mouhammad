@@ -100,7 +100,7 @@ wird in Kapitel~\ref{chap:umsetzung} am
 Beispiel einzelner Funktionsbereiche im
 Detail gezeigt.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering \small
 \begin{verbatim}
 BAZARIO/
@@ -289,7 +289,7 @@ die den aufrufenden Komponenten den Zustand der Verbindung
 bereitstellen. Die konkrete Umsetzung dieser drei Schichten wird
 in Kapitel~\ref{chap:umsetzung} beschrieben.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{Bilder/abb_netzwerk_schichten.png}
 \caption{Drei-Schichten-Modell der Netzwerkkommunikation im Frontend von Bazario}
@@ -503,7 +503,7 @@ dargestellt. Was sich beim Wechsel einer Seite ändert, ist damit
 allein der Inhaltsbereich; die Kopfzeile bleibt bestehen.
 Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.png}
 \caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
@@ -539,7 +539,7 @@ Navigation an einer einzigen Stelle zusammenläuft.
 Wie sich eine konkrete Seite in diesen Rahmen einfügt, zeigt
 Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
  
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_startseite.png}
 \caption{Struktur der Startseite und Aufbau einer Vorschaukarte
@@ -1114,7 +1114,7 @@ solchen Kanal geprüft werden -- die Prüfung, ob ein Nutzer Teilnehmer
 einer Unterhaltung ist, kann nur das Backend beantworten, da nur dort
 die Unterhaltung gespeichert ist. Der Kanal ist damit nicht
 öffentlich, sondern setzt eine Freigabe durch das Backend voraus.
- 
+
 Daraus ergibt sich der in Abbildung~\ref{fig:messaging_ablauf}
 dargestellte Weg einer Nachricht. Der Absender überträgt sie nicht
 unmittelbar an den Kanal, sondern an das Backend. Dieses speichert
@@ -1125,8 +1125,7 @@ wird. Wer zu diesem Zeitpunkt nicht verbunden ist, erhielte die
 Nachricht sonst nie. Der Verlauf einer Unterhaltung stammt deshalb
 stets aus der Datenbank und wird beim Öffnen der Seite abgerufen; der
 Kanal ergänzt lediglich, was währenddessen hinzukommt.
- 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_messaging.png}
 \caption{Weg einer Nachricht zwischen Absender und Empfänger
