@@ -100,7 +100,7 @@ wird in Kapitel~\ref{chap:umsetzung} am
 Beispiel einzelner Funktionsbereiche im
 Detail gezeigt.
  
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering \small
 \begin{verbatim}
 BAZARIO/
@@ -141,7 +141,7 @@ BAZARIO/
 \end{verbatim}
 \caption{Ordnerstruktur des Frontends von Bazario}
 \label{fig:ordnerstruktur}
-\end{figure}
+\end{table}
  
 Das Verzeichnis \texttt{features/} enthält
 die Funktionsbereiche \texttt{auth/},
@@ -289,12 +289,12 @@ die den aufrufenden Komponenten den Zustand der Verbindung
 bereitstellen. Die konkrete Umsetzung dieser drei Schichten wird
 in Kapitel~\ref{chap:umsetzung} beschrieben.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{Bilder/abb_netzwerk_schichten.png}
 \caption{Drei-Schichten-Modell der Netzwerkkommunikation im Frontend von Bazario}
 \label{fig:netzwerk_schichten}
-\end{figure}
+\end{table}
 
 
 
@@ -503,13 +503,13 @@ dargestellt. Was sich beim Wechsel einer Seite ändert, ist damit
 allein der Inhaltsbereich; die Kopfzeile bleibt bestehen.
 Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
  
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.png}
 \caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
 (Strukturskizze, eigene Darstellung)}
 \label{fig:rahmen}
-\end{figure}
+\end{table}
  
 Die Kopfzeile ist in zwei Gruppen geteilt. Links steht neben dem
 Namen der Plattform die fachliche Navigation mit den vier
@@ -539,13 +539,13 @@ Navigation an einer einzigen Stelle zusammenläuft.
 Wie sich eine konkrete Seite in diesen Rahmen einfügt, zeigt
 Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
  
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_startseite.png}
 \caption{Struktur der Startseite und Aufbau einer Vorschaukarte
 (Strukturskizze, eigene Darstellung)}
 \label{fig:startseite}
-\end{figure}
+\end{table}
  
 Auf den Seitentitel mit einem einleitenden Satz folgen zwei
 gleichartig aufgebaute Abschnitte, einer für die zuletzt
@@ -723,14 +723,11 @@ Dienstleistungen sowie die öffentlichen
 Profilseiten einzelner Verkäufer und
 Dienstleister.
 
-Die Startseite zeigt eine Vorschau der
-zuletzt hinzugefügten Produkte und
-Dienstleistungen. Die zugehörigen
-Daten werden über eine einzelne,
-gebündelte Anfrage an das Backend
-abgerufen, die sowohl Produkte als
-auch Dienstleistungen in einer
-Antwort liefert.
+Die Startseite fasst Ankündigungen, Werbeplatzierungen sowie
+eine Vorschau der zuletzt hinzugefügten Produkte und
+Dienstleistungen in aufeinanderfolgenden Abschnitten zusammen.
+Sämtliche Inhalte der Startseite werden über eine einzelne,
+gebündelte Anfrage an das Backend abgerufen.
 
 Über eigenständige Katalogseiten
 lassen sich alle Produkte
@@ -1125,13 +1122,13 @@ wird. Wer zu diesem Zeitpunkt nicht verbunden ist, erhielte die
 Nachricht sonst nie. Der Verlauf einer Unterhaltung stammt deshalb
 stets aus der Datenbank und wird beim Öffnen der Seite abgerufen; der
 Kanal ergänzt lediglich, was währenddessen hinzukommt.
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_messaging.png}
 \caption{Weg einer Nachricht zwischen Absender und Empfänger
 (eigene Darstellung)}
 \label{fig:messaging_ablauf}
-\end{figure}
+\end{table}
  
 Neben der Unterhaltung selbst ist eine zweite Angabe in Echtzeit zu
 übertragen: die Anzahl ungelesener Nachrichten. Sie wird in der

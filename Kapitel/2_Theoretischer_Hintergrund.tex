@@ -128,7 +128,7 @@ Konzept mehrseitiger Plattformen an
 Einordnung der einzelnen Plattformen beruht auf deren öffentlich
 einsehbarem Funktionsumfang und stellt eine eigene Bewertung dar.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Vergleich bestehender Marktplatzplattformen (eigene Darstellung)}
 \label{tab:wettbewerb}
@@ -151,7 +151,7 @@ Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
 \checkmark \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 Die Einstufung \enquote{eingeschränkt} bezeichnet dabei jeweils eine
 teilweise Erfüllung des Merkmals. Bei Amazon werden Dienstleistungen
 nicht als eigenständig buchbare Kategorie angeboten, sondern
@@ -185,14 +185,14 @@ anschließend nur die betroffenen Teile der Oberfläche. Die
 Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
 \cite{jonathan_react_spa}.
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_spa_mpa.png}
 \caption{Ablauf der Kommunikation bei einer Multi-Page und einer
 Single-Page Application (eigene Darstellung nach
 \cite{bhalla_spa_architecture})}
 \label{fig:spa_mpa}
-\end{figure}
+\end{table}
  
 Abbildung~\ref{fig:spa_mpa} zeigt den Unterschied im Ablauf: Während
 eine \acs{MPA} auf jede Interaktion mit einer vollständigen Seite
@@ -218,7 +218,7 @@ angemeldeten Nutzern zugänglich sind, entfällt der Nachteil
 weitgehend \cite{bhalla_spa_architecture}.
 Tabelle~\ref{tab:spa-mpa} stellt beide Ansätze gegenüber.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Vergleich SPA und MPA}
 \label{tab:spa-mpa}
@@ -241,7 +241,7 @@ Inhaltsreiche Webseiten, deren Inhalte über Suchmaschinen
 auffindbar sein müssen \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 Der Umfang der Inhalte allein ist dabei kein hinreichendes
 Kriterium: Auch ein Marktplatz mit umfangreichem Produktkatalog ist
 inhaltsreich. Maßgeblich ist vielmehr, ob diese Inhalte über
@@ -440,7 +440,7 @@ erhöhen jedoch die Komplexität der Betriebsumgebung
 \cite{pati_react_nextjs_2025}. Tabelle~\ref{tab:frameworks} fasst
 die Gegenüberstellung zusammen.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Gegenüberstellung von React, Angular und Vue.js}
 \label{tab:frameworks}
@@ -466,7 +466,7 @@ Nutzwert nach \cite{repolust_frontend_frameworks} &
 75,15 \% & 57,30 \% & 60,14 \% \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 
 
 \subsection{Verwaltung des Anwendungszustands}
@@ -486,13 +486,13 @@ Datenbestand ist dagegen nur eine zwischengespeicherte Abbildung von
 Daten, deren Quelle auf dem Server liegt und die veralten kann; er
 muss über eine Programmierschnittstelle (\acfirst{API}) abgerufen,
 zwischengespeichert und mit der Quelle synchronisiert werden.
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_zustandsarten.png}
 \caption{Clientseitiger Anwendungszustand und serverseitiger
 Datenbestand im Browser (eigene Darstellung)}
 \label{fig:zustandsarten}
-\end{figure}
+\end{table}
  
 Wie Abbildung~\ref{fig:zustandsarten} verdeutlicht, liegen beide
 Arten im Browser; sie unterscheiden sich darin, wo ihre Quelle liegt.
@@ -537,7 +537,7 @@ bereitgestellt \cite{tanstack_query_docs}.
 Tabelle~\ref{tab:state-management} stellt die Ansätze für den
 clientseitigen Zustand gegenüber.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Gegenüberstellung der Ansätze für clientseitiges State
 Management}
@@ -563,7 +563,7 @@ Komplexe, nachvollziehbare Zustandsflüsse &
 Überschaubare Anzahl fachlich getrennter Stores \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 
 
 \subsection{Clientseitiges Routing}
@@ -648,13 +648,13 @@ anschließend beide Seiten jederzeit Daten senden können
 \cite{rfc6455}. Sie treten damit nicht an die Stelle von \acs{REST}
 oder GraphQL, sondern ergänzen diese für Anwendungsfälle mit
 Echtzeitanforderung.
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_kommunikation.png}
 \caption{Anfragebasierte Kommunikation im Vergleich zu einer
 dauerhaften Verbindung (eigene Darstellung nach \cite{rfc6455})}
 \label{fig:kommunikation}
-\end{figure}
+\end{table}
  
 Abbildung~\ref{fig:kommunikation} macht den Kern des Unterschieds
 sichtbar: Im anfragebasierten Modell besitzt der Server keine
@@ -675,7 +675,7 @@ und ohne Interceptors, sodass diese Aufgaben selbst umgesetzt werden
 müssen. Tabelle~\ref{tab:kommunikation} fasst die
 Kommunikationsansätze zusammen.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Gegenüberstellung der Kommunikationsansätze}
 \label{tab:kommunikation}
@@ -702,7 +702,7 @@ Schwächere Skalierung unter hoher Last &
 Dauerhafte Verbindung erforderlich \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 
 
 \subsection{Styling-Ansätze und UI-Bibliotheken}
@@ -839,7 +839,7 @@ Fehlern -- entstand daraus ein Satz von neun Heuristiken
 bilden zugleich das Ordnungsraster für die Evaluation in
 Kapitel~\ref{chap:testen}.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
 \caption{Heuristiken nach \cite{nielsen_explanatory_power}}
 \label{tab:heuristiken}
@@ -878,7 +878,7 @@ Hilfe beim Erkennen und Beheben von Fehlern & Meldungen benennen
 das Problem verständlich und weisen einen Weg zur Lösung \\
 \hline
 \end{tabular}
-\end{figure}
+\end{table}
 
 Für eine Multi-Rollen-Anwendung stehen davon vor allem, wenn auch
 nicht ausschließlich, die Sichtbarkeit des Systemstatus, die
