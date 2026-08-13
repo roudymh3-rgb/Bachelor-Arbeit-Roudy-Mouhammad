@@ -389,14 +389,14 @@ Eingabe gerade der Fehlerfall und darf nicht in einen fehlenden Wert
 umgedeutet werden, weil die zugehörige Regel sonst nicht mehr
 greifen könnte.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.55\textwidth]{Bilder/screenshot_registrierung_fehler.png}
 \caption{Registrierungsformular mit einem Formatfehler im
 E-Mail-Feld und einer feldübergreifenden Abweichung zwischen Passwort
 und Bestätigung}
 \label{fig:registrierung_fehler}
-\end{table}
+\end{figure}
 
 Die Meldungen stehen unmittelbar unter dem betroffenen Feld,
 benennen die verletzte Regel und bleiben stehen, bis die Eingabe
@@ -508,12 +508,12 @@ Abschnitt~\ref{sec:impl_werbung} beschrieben.
 Der Aufruf einer Vorschau-Karte führt, wie in
 Abschnitt~\ref{subsec:katalog_konzept} beschrieben, auf die
 zugehörige Detailseite. Produkte und Dienstleistungen folgen
-dabei derselben Umsetzung: Die jeweilige Kennung wird als
+dabei derselben Umsetzung: Die jeweilige ID wird als
 validierter Routenparameter übergeben (vgl.
 Abschnitt~\ref{subsec:routing-konzept}) und an den zugehörigen
 Query-Hook weitergereicht. Beide Seiten unterscheiden vier
-Zustände: eine ungültige Kennung, den Ladezustand, einen Fehler
-bei der Anfrage sowie den Fall, dass zu der angefragten Kennung
+Zustände: eine ungültige ID, den Ladezustand, einen Fehler
+bei der Anfrage sowie den Fall, dass zu der angefragten ID
 kein Eintrag existiert. Liegen die Daten vor, werden sie in
 einer Bildergalerie sowie einer Übersicht mit Preis, Kategorie
 und Angaben zum Anbieter dargestellt.
@@ -535,35 +535,19 @@ wird.
 \label{subsec:impl_terminauswahl}
 
 Die in Abschnitt~\ref{subsec:buchung_konzept} beschriebene Auswahl
-ist als eigenständige, wiederverwendbare Komponente umgesetzt und auf
-der Dienstleistungs-Detailseite eingebunden. Sie durchläuft drei
-Zustände.
-
-Im Ausgangszustand zeigt sie einen Monatskalender und die Zeitzone
-des Anbieters. Welche Zeitfenster ein Tag enthält, ergibt sich erst
-aus der Antwort des Backends; die Schaltfläche zur Übernahme in den
-Warenkorb bleibt zunächst deaktiviert. Jeder Tag ist anwählbar, auch
-ein solcher ohne Arbeitszeit -- an Stelle der Liste erscheint dann
-der Hinweis, dass für dieses Datum keine Zeitfenster verfügbar sind.
-
-Mit der Wahl eines Tages wird dessen Zeitfensterliste abgerufen. Die
-Fenster werden nach Tageszeit in Vormittag, Nachmittag und Abend
-gruppiert; jedes trägt seinen Zeitraum und die verbleibende
-Kapazität. Erst mit der Wahl eines Fensters erscheint eine
-Zusammenfassung der Buchung, und die Schaltfläche wird aktiv.
-
-\begin{table}[htbp]
+ist als eigenständige, wiederverwendbare Komponente umgesetzt und
+auf der Dienstleistungs-Detailseite eingebunden; dieselbe Komponente
+wird später für die Umbuchung eingesetzt (vgl.
+Abschnitt~\ref{subsec:impl_buchungen}).
+Abbildung~\ref{fig:buchung_auswahl} zeigt sie nach Wahl von Tag und
+Zeitfenster.
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.70\textwidth]{Bilder/screenshot_buchung_auswahl.png}
+\includegraphics[width=0.50\textwidth]{Bilder/screenshot_buchung_auswahl.png}
 \caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
 \label{fig:buchung_auswahl}
-\end{table}
+\end{figure}
 
-Am Zeitraster der Fenster ist die Wirkung der Buchungsregeln
-ablesbar: Bei einer Dauer von drei Stunden und einem Raster von
-dreißig Minuten beginnen aufeinanderfolgende Fenster jeweils eine
-halbe Stunde später und überlappen sich damit. Sie schließen einander
-nicht aus, solange die Kapazität nicht erschöpft ist.
 
 
 \section{Warenkorb, Checkout und Zahlung}
@@ -587,7 +571,7 @@ berechnen lassen.
 Die in Abschnitt~\ref{subsec:warenkorb_konzept} beschriebene
 Unterscheidung der beiden Positionstypen wird beim Hinzufügen über
 zwei verschiedene Vergleiche umgesetzt. Ein Produkt wird allein
-über seine Kennung erkannt. Zwei Dienstleistungsbuchungen gelten
+über seine ID erkannt. Zwei Dienstleistungsbuchungen gelten
 dagegen nur dann als dieselbe, wenn sechs Angaben übereinstimmen: die
 Dienstleistung, Beginn, Ende, Zeitzone, die Art des Ortes und dessen
 nähere Bestimmung. Dieselbe Dienstleistung zu einem anderen Termin
@@ -638,7 +622,7 @@ Andernfalls läuft die Checkout-Operation an, die als Mutation
 umgesetzt ist, da sie den Datenbestand auf dem Server verändert (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Sie durchläuft drei
 Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag
-angelegt, dessen Kennung das Backend zurückgibt. Anschließend wird
+angelegt, dessen ID das Backend zurückgibt. Anschließend wird
 für jede Position eine weitere Anfrage gestellt, die sie diesem
 Auftrag zuordnet. Zuletzt wird die Zahlungssitzung angefordert; das
 Backend liefert die Adresse der Zahlungsseite zurück, auf die das
@@ -646,7 +630,7 @@ Frontend den Browser weiterleitet.
 
 Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
 ausgelagert, da sich die zu übertragenden Angaben je nach
-Positionstyp unterscheiden: Für ein Produkt genügen Kennung und
+Positionstyp unterscheiden: Für ein Produkt genügen ID und
 Menge, während eine Dienstleistungsbuchung zusätzlich den gewählten
 Termin enthält. Die Fallunterscheidung liegt damit nicht in der
 Mutation, die dadurch auf ihre drei Schritte beschränkt bleibt.
@@ -1030,7 +1014,7 @@ Verlauf}
 
 Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
 und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern
-über den Vergleich der Absenderkennung mit der Kennung des
+über den Vergleich der AbsenderID mit der ID des
 angemeldeten Nutzers -- eine Nachricht, die über den Kanal
 eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank
 geladene und wird deshalb gleich behandelt.
@@ -1046,7 +1030,7 @@ Zwischenspeichers}
 
 Sobald die Liste der Unterhaltungen vorliegt, meldet sich die Seite
 für jede darin enthaltene Unterhaltung beim zugehörigen Kanal an.
-Die Kanalnamen ergeben sich unmittelbar aus der Kennung der
+Die Kanalnamen ergeben sich unmittelbar aus der ID der
 Unterhaltung, sodass keine gesonderte Zuordnung geführt werden muss.
 Auf jedem Kanal werden drei Ereignisse ausgewertet: das Eintreffen
 einer Nachricht sowie die Bestätigung ihrer Zustellung und ihres
@@ -1087,7 +1071,7 @@ queryClient.setQueryData<ChatMessagesResponse | undefined>(
 )
 \end{lstlisting}
 
-Die Prüfung auf eine bereits vorhandene Kennung ist erforderlich,
+Die Prüfung auf eine bereits vorhandene ID ist erforderlich,
 weil der Absender seine eigene Nachricht auf zwei Wegen erhält:
 einmal als Antwort auf die absendende Anfrage und einmal über den
 Kanal, auf dem sie veröffentlicht wird. Ohne diese Prüfung erschiene

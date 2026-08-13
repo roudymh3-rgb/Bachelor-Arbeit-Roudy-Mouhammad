@@ -78,10 +78,13 @@ der sie bündelt und dem Betreiber als einheitliche Schnittstelle
 bereitstellt \cite{heinemann_online_handel}.
 
 Der \acfirst{PCI-DSS} definiert Anforderungen an die sichere
-Verarbeitung, Speicherung und Übertragung von Kartendaten. Für das
-Frontend folgt daraus, dass Kartendaten den eigenen Server nicht
-passieren sollen. Die Dienstleister bieten hierfür zwei
-Einbindungsvarianten an.
+Verarbeitung, Speicherung und Übertragung von Kartendaten
+\cite{pci_dss_401}. Für das Frontend folgt daraus, dass Kartendaten
+den eigenen Server nicht passieren sollen, da sich der
+Geltungsbereich des Standards dadurch erheblich verringert
+\cite{stripe_security_guide}. Die Dienstleister bieten hierfür zwei
+Einbindungsvarianten an \cite{stripe_elements_docs,
+stripe_checkout_docs}.
 
 Bei der ersten werden die Eingabefelder vom Dienstleister
 bereitgestellt und in die eigene Oberfläche eingebettet; die
@@ -320,8 +323,8 @@ tun darf \cite{ferraiolo_rbac_arxiv}.
 Für den Nachweis über mehrere Anfragen hinweg bestehen zwei Ansätze.
 Bei der sitzungsbasierten Variante legt der Server nach der Anmeldung
 einen Sitzungsdatensatz an und übergibt dem Client lediglich dessen
-Kennung; bei jeder weiteren Anfrage schlägt der Server anhand dieser
-Kennung nach, um wen es sich handelt. Bei der tokenbasierten Variante
+ID; bei jeder weiteren Anfrage schlägt der Server anhand dieser
+ID nach, um wen es sich handelt. Bei der tokenbasierten Variante
 stellt der Server bei der Anmeldung stattdessen einen Nachweis aus,
 den der Client bei jeder Anfrage mitsendet und der für sich genommen
 ausreicht. Der Server muss dabei keinen Sitzungszustand vorhalten,
@@ -486,13 +489,13 @@ Datenbestand ist dagegen nur eine zwischengespeicherte Abbildung von
 Daten, deren Quelle auf dem Server liegt und die veralten kann; er
 muss über eine Programmierschnittstelle (\acfirst{API}) abgerufen,
 zwischengespeichert und mit der Quelle synchronisiert werden.
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_zustandsarten.png}
 \caption{Clientseitiger Anwendungszustand und serverseitiger
 Datenbestand im Browser (eigene Darstellung)}
 \label{fig:zustandsarten}
-\end{table}
+\end{figure}
  
 Wie Abbildung~\ref{fig:zustandsarten} verdeutlicht, liegen beide
 Arten im Browser; sie unterscheiden sich darin, wo ihre Quelle liegt.
@@ -648,13 +651,13 @@ anschließend beide Seiten jederzeit Daten senden können
 \cite{rfc6455}. Sie treten damit nicht an die Stelle von \acs{REST}
 oder GraphQL, sondern ergänzen diese für Anwendungsfälle mit
 Echtzeitanforderung.
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_kommunikation.png}
 \caption{Anfragebasierte Kommunikation im Vergleich zu einer
 dauerhaften Verbindung (eigene Darstellung nach \cite{rfc6455})}
 \label{fig:kommunikation}
-\end{table}
+\end{figure}
  
 Abbildung~\ref{fig:kommunikation} macht den Kern des Unterschieds
 sichtbar: Im anfragebasierten Modell besitzt der Server keine
