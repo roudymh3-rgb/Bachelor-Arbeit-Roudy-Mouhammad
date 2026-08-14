@@ -287,7 +287,7 @@ const de = {
 \end{lstlisting}
 
 Der Eintrag \texttt{bySeller} zeigt die Behandlung veränderlicher
-Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, …sodass der Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext zusammengesetzt wird, was nötig ist, da die Stellung eines eingesetzten Wortes von Sprache zu Sprache verschieden ist.
+Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, sodass der Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext zusammengesetzt wird, was nötig ist, da die Stellung eines eingesetzten Wortes von Sprache zu Sprache verschieden ist.
 
 Die Konfiguration erfolgt an einer Stelle und wird beim Start noch
 vor der ersten Darstellung ausgeführt. Sie legt die Ressourcen, die
@@ -583,12 +583,12 @@ dagegen der angemeldete Nutzer, wird der Warenkorb geleert.
 Andernfalls fände ein Nutzer, der sich am selben Gerät anmeldet, die
 Positionen seines Vorgängers vor.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_warenkorb_buchung.png}
 \caption{Dienstleistungsbuchung als Position im Warenkorb}
 \label{fig:warenkorb_buchung}
-\end{table}
+\end{figure}
 
 \subsection{Stripe-Integration im Frontend}
 \label{subsec:impl_stripe}
@@ -615,8 +615,9 @@ der einzelnen Position in eine eigene Funktion ausgelagert, da
 sich die zu übertragenden Angaben je nach Positionstyp
 unterscheiden: Für ein Produkt genügen ID und Menge, während eine
 Dienstleistungsbuchung zusätzlich den gewählten Termin enthält.
-Die Fallunterscheidung liegt damit nicht in der Mutation, die
-dadurch auf ihre drei Schritte beschränkt bleibt.
+Die Fallunterscheidung liegt damit nicht in der Mutation, die dadurch
+auf die in Abbildung~\ref{fig:checkout_ablauf} dargestellten Schritte
+beschränkt bleibt.
 
 \begin{figure}[H]
 \centering
@@ -666,7 +667,7 @@ erreicht, wenn der Nutzer den Vorgang selbst abbricht.
 
 
 \section{Kontobereich und rollenspezifische Funktionen}
-\label{8}
+\label{sec:impl_seller}
 
 \subsection{Kontoseite und Arbeitsbereiche}
 \label{subsec:impl_kontoseite}
@@ -953,7 +954,7 @@ Verlauf}
 \end{figure}
 
 Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
-und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, …sondern über den Vergleich der Absender-ID mit der ID des angemeldeten Nutzers: Eine Nachricht, die über den Kanal eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank geladene und wird deshalb gleich behandelt.
+und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern über den Vergleich der Absender-ID mit der ID des angemeldeten Nutzers: Eine Nachricht, die über den Kanal eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank geladene und wird deshalb gleich behandelt.
 
 Die Unterhaltungen werden nach dem Zeitpunkt der letzten Nachricht
 sortiert. Da diese Sortierung sowohl beim Laden als auch beim
