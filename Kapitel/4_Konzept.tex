@@ -4,7 +4,6 @@
 % Dieses Kapitel beschreibt das geplante Frontend-Konzept auf Basis
 % der Anforderungen aus Kapitel~\ref{chap:ist_analyse}.
 
-% ----------------------------------------------------------------
 \section{Architekturkonzept}
 \label{sec:architekturkonzept}
 
@@ -390,7 +389,7 @@ Abschnitt~\ref{subsec:buchung_konzept}).
 Ergänzend gilt ein Grundsatz der Beschränkung: Bestandteile, die
 lediglich vorhandene Wege wiederholen, entfallen. Eine Fußzeile
 etwa nähme üblicherweise Angaben zum Betreiber, Verweise auf soziale
-Netzwerke und Schnellzugriffe auf -- Inhalte, die entweder bereits in
+Netzwerke und Schnellzugriffe auf. Inhalte, die entweder bereits in
 der Kopfzeile erreichbar sind oder für den Funktionsumfang der
 Plattform keine Rolle spielen. Verzichtet wird damit nicht auf
 Gestaltung, sondern auf Doppelung.
@@ -433,17 +432,12 @@ auf der sie liegen. Ihre Abgrenzung entsteht allein über den Rahmen.
 Eine zweite Flächenfarbe hätte die Palette erweitert und müsste mit
 sämtlichen darauf erscheinenden Texten und Schaltflächen abgestimmt
 werden; der Rahmen leistet dieselbe Trennung, ohne einen weiteren
-Farbwert einzuführen. Er ist deshalb bewusst nahe am Hintergrund
-gewählt -- deutlich genug, um zu trennen, zurückhaltend genug, um
-nicht mit dem Inhalt zu konkurrieren.
+Farbwert einzuführen. Er ist deshalb bewusst nahe am Hintergrund gewählt: deutlich genug, um zu trennen, zurückhaltend genug, um nicht mit dem Inhalt zu konkurrieren.
  
 Der Wert \texttt{primary} kennzeichnet die jeweils vorrangige
 Handlung einer Ansicht, also diejenige, die weitere Vorgänge erst
 ermöglicht: die Anmeldung, das Auslösen des Checkouts, die Übernahme
-einer Buchung in den Warenkorb. Handlungen ohne diese Wirkung
-erhalten die zurückhaltendere Darstellung über \texttt{secondary} --
-die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb
-anders dargestellt als die Anmeldung an derselben Stelle.
+einer Buchung in den Warenkorb.Handlungen ohne diese Wirkung erhalten die zurückhaltendere Darstellung über \texttt{secondary}; die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb anders dargestellt als die Anmeldung an derselben Stelle.
 \texttt{muted} kennzeichnet Elemente ohne gegenwärtige Wirkung, also
 insbesondere deaktivierte Schaltflächen.
  
@@ -523,8 +517,7 @@ Warenkorb und der Kontobereich.
  
 Zwischen den beiden Anmeldezuständen ändert sich nur diese rechte
 Gruppe: An die Stelle der Schaltfläche zur Anmeldung treten der Name
-des Nutzers und die Abmeldung. Die fachliche Navigation bleibt
-unverändert, da die Katalogbereiche allen Nutzern offenstehen. Der
+des Nutzers und die Abmeldung…die fachliche Navigation mit den vier öffentlichen Katalogbereichen: Produkte, Dienstleistungen, Verkäufer und Anbieter (vgl. Abschnitt~\ref{subsec:katalog_konzept}). Der
 Rahmen erfüllt damit die in
 Abschnitt~\ref{subsec:gestaltungsprinzipien} genannte Anforderung
 nach Konsistenz über gleichartige Situationen hinweg: Ein Nutzer, der
@@ -560,10 +553,7 @@ und schließlich den Anbieter. Produkte und Dienstleistungen
 verwenden dieselbe Karte in derselben Anordnung; sie unterscheiden
 sich allein in der Hintergrundfarbe der Bildfläche. Dieselbe Karte
 wird auf den Katalogseiten und den Profilseiten der Anbieter erneut
-verwendet, sodass ein Angebot überall in derselben Form erscheint --
-die technische Grundlage dafür bildet das in
-Abschnitt~\ref{subsec:komponentenarchitektur} beschriebene
-Komponentenmodell.
+verwendet, …sodass ein Angebot überall in derselben Form erscheint; die technische Grundlage dafür bildet das in Abschnitt~\ref{subsec:komponentenarchitektur} beschriebene Komponentenmodell.
  
 Die Zahl der Karten je Zeile richtet sich nach der verfügbaren
 Anzeigefläche und verringert sich auf schmalen Bildschirmen, ohne
@@ -642,11 +632,7 @@ Zustand von vornherein anzeigt.
 Abschnitt~\ref{subsec:mehrsprachigkeit} beschriebenen Zweiteilung:
 Die Oberflächentexte werden im Frontend übersetzt, die Angaben zu
 Produkten, Dienstleistungen und Anbietern liefert das Backend bereits
-in der angeforderten Sprache. Diese Aufteilung folgt aus der Herkunft
-der Daten, nicht aus einer Entwurfsentscheidung -- ein Anbieter
-erfasst Titel und Beschreibung mehrsprachig (vgl.
-Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}), weshalb nur das
-Backend beide Fassungen kennt.
+in der angeforderten Sprache. Diese Aufteilung folgt aus der Herkunft der Daten, nicht aus einer Entwurfsentscheidung: Ein Anbieter erfasst Titel und Beschreibung mehrsprachig (vgl. Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}), weshalb nur das Backend beide Fassungen kennt.
  
 Die Sprachwahl ist im Anwendungsrahmen angeordnet und damit von jeder
 Seite aus erreichbar. Sie wirkt ohne erneutes Laden, da ein Neuladen
@@ -659,12 +645,9 @@ wiederhergestellt.
 Angeboten werden Deutsch und Englisch, für die Oberflächentexte
 vollständig umgesetzt. Bei den Inhalten reicht die Wahl gegenwärtig
 nicht so weit: Die Erfassungsformulare sehen Englisch und Arabisch
-vor, sodass eine deutsche Fassung nicht entsteht. Anforderung und
-Verfügbarkeit einer Sprache sind damit zwei getrennte Fragen -- das
-Frontend kann jede Sprache anfordern, geliefert wird nur, was zuvor
-erfasst wurde.
+vor, sodass eine deutsche Fassung nicht entsteht. Anforderung und Verfügbarkeit einer Sprache sind damit zwei getrennte Fragen: Das Frontend kann jede Sprache anfordern, geliefert wird nur, was zuvor erfasst wurde.
 
-% ----------------------------------------------------------------
+
 \section{Konzept der einzelnen Funktionsbereiche}
 \subsection{Authentifizierung und Onboarding}
 \label{subsec:auth-onboarding}
@@ -925,8 +908,7 @@ Zahlung. Der Systemzustand ist damit erkennbar, ohne dass eine
 Detailansicht geöffnet werden muss (vgl.
 Abschnitt~\ref{subsec:gestaltungsprinzipien}).
  
- 
-% --------------------------- KUNDE -------------------------------
+
  
 Der Kundenbereich führt zur eigenen Bestellhistorie und zur
 Verfolgung eigener Buchungen. Beide Ansichten werden getrennt
@@ -970,7 +952,7 @@ da ihr keine terminierte Leistung zugrunde liegt, deren Absage einen
 Zeitraum wieder freigäbe.
  
  
-% ------------------------ DIENSTLEISTER --------------------------
+
  
 Besitzt ein Nutzer zusätzlich die Rolle des Dienstleisters, tritt ein
 Anbieterbereich hinzu. Er führt zur Verwaltung von Dienstleistungen
@@ -1001,9 +983,7 @@ Zu jeder Buchung werden daher Kunde, Zeitraum und Zeitzone angezeigt
 sowie genau die Aktion, die im jeweiligen Zustand möglich ist: Eine
 angefragte Buchung lässt sich bestätigen, eine bestätigte nach
 erbrachter Leistung abschließen. Der Anbieter muss den Zustand einer
-Buchung damit nicht aus dem Zusammenhang erschließen, sondern findet
-an jedem Eintrag den nächsten möglichen Schritt (vgl.
-Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+Buchung damit nicht aus dem Zusammenhang erschließen, …sondern findet an jedem Eintrag den nächsten möglichen Schritt. Sichtbarkeit des Systemstatus und Wiedererkennung statt Erinnerung greifen hier ineinander (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).
 Der Abschluss ist dabei bewusst nicht an das Ende des Termins gebunden. In der Regel erfolgt er danach, doch teilt ein Kunde vorher mit, dass er die Leistung nicht in Anspruch nehmen wird, kann der Anbieter die Buchung bereits zuvor abschließen. Eine zeitliche Sperre hätte diesen Fall ausgeschlossen, ohne einen Fehler zu verhindern.
  
 Dienstleister verwalten ihre Verfügbarkeit über feste Arbeitszeiten
@@ -1034,7 +1014,7 @@ die Stornierung und die Änderung einer bereits bestätigten
 Buchung durch den Kunden.
  
  
-% -------------------------- VERKÄUFER ----------------------------
+
  
 Für die Rolle des Verkäufers gilt dasselbe Prinzip. Auch hier tritt
 ein eigener Arbeitsbereich hinzu, der zur Produktverwaltung sowie zu
@@ -1050,7 +1030,7 @@ Bildern je Produkt. Im Unterschied zu Dienstleistungen entfallen
 dabei jedoch die Buchungsregeln.
  
  
-% ------------------------ BEIDE ROLLEN ---------------------------
+
  
 Besitzt ein Nutzer beide anbietenden Rollen, erscheinen deren
 Arbeitsbereiche untereinander, jeweils zusätzlich zum Kundenbereich.
@@ -1095,18 +1075,16 @@ Eine solche Verbindung selbst zu betreiben, bedeutet, für jeden
 gleichzeitig angemeldeten Nutzer eine offene Verbindung zu halten und
 diese Infrastruktur skalieren und überwachen zu müssen. Aus demselben
 Grund, der in Abschnitt~\ref{subsec:warenkorb_konzept} zur Einbindung
-eines externen Zahlungsdienstes geführt hat, wird auch hier ein
-externer Dienst eingebunden, statt die Fähigkeit selbst aufzubauen.
+eines externen Zahlungsdienstes geführt hat,wird auch hier ein externer Dienst eingebunden, statt die
+Fähigkeit selbst aufzubauen; welcher, ist in
+Abschnitt~\ref{sec:technologieauswahl} festgelegt.
  
 Der Dienst stellt benannte Kanäle bereit. Ein Client meldet sich für
 einen Kanal an und erhält anschließend alles, was auf diesem Kanal
 veröffentlicht wird; wer nicht angemeldet ist, erhält nichts. Für
 den Entwurf folgen daraus zwei Festlegungen. Erstens erhält jede
 Unterhaltung einen eigenen Kanal, denn eine Nachricht darf nur die
-beiden Beteiligten erreichen. Zweitens muss der Zugang zu einem
-solchen Kanal geprüft werden -- die Prüfung, ob ein Nutzer Teilnehmer
-einer Unterhaltung ist, kann nur das Backend beantworten, da nur dort
-die Unterhaltung gespeichert ist. Der Kanal ist damit nicht
+beiden Beteiligten erreichen. Zweitens muss der Zugang zu einem solchen Kanal geprüft werden. Ob ein Nutzer Teilnehmer einer Unterhaltung ist, kann nur das Backend beantworten, da nur dort die Unterhaltung gespeichert ist. Der Kanal ist damit nicht
 öffentlich, sondern setzt eine Freigabe durch das Backend voraus.
 
 Daraus ergibt sich der in Abbildung~\ref{fig:messaging_ablauf}
@@ -1136,6 +1114,5 @@ sind, erhält jeder Nutzer zusätzlich einen auf ihn bezogenen Kanal,
 über den ausschließlich dieser Zählerstand übermittelt wird.
  
 Schließlich sieht der Entwurf drei Zustände je Nachricht vor:
-gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob
-seine Nachricht angekommen ist und ob der Empfänger sie gelesen hat
-(vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).
+gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob der Empfänger sie gelesen hat -- ein Fall der Sichtbarkeit des
+Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).

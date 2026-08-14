@@ -287,10 +287,7 @@ const de = {
 \end{lstlisting}
 
 Der Eintrag \texttt{bySeller} zeigt die Behandlung veränderlicher
-Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, sodass der
-Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext
-zusammengesetzt wird -- was nötig ist, da die Stellung eines
-eingesetzten Wortes von Sprache zu Sprache verschieden ist.
+Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, …sodass der Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext zusammengesetzt wird, was nötig ist, da die Stellung eines eingesetzten Wortes von Sprache zu Sprache verschieden ist.
 
 Die Konfiguration erfolgt an einer Stelle und wird beim Start noch
 vor der ersten Darstellung ausgeführt. Sie legt die Ressourcen, die
@@ -522,14 +519,14 @@ Auswahl eines Buchungstermins, deren Umsetzung in
 Abschnitt~\ref{subsec:impl_terminauswahl} beschrieben
 wird.
 
-% ----------------------------------------------------------------
+
 % TODO (Roudy): Screenshot der Startseite mit den
 % Vorschau-Karten (Produkte und Dienstleistungen,
 % inkl. "New"-Kennzeichnung).
 % TODO (Roudy): Screenshot der Produkt-Katalogseite mit
 % Kategoriefilter und Paginierung (Seite/Kategorie in der URL
 % sichtbar, z. B. /products?page=2&category=3).
-% ----------------------------------------------------------------
+
 
 \subsection{Terminauswahl auf der Dienstleistungsseite}
 \label{subsec:impl_terminauswahl}
@@ -725,12 +722,7 @@ wird.
 \label{subsec:impl_dienstleistungsverwaltung}
 \label{subsec:impl_produktverwaltung}
 
-Dieser Abschnitt beschreibt die Verwaltung einzelner
-Dienstleistungsangebote, die Verwaltung der Verfügbarkeit -- als
-eigener Funktionsbereich \texttt{provider-availability/} umgesetzt,
-der derselben internen Struktur folgt wie die übrigen (vgl.
-Abschnitt~\ref{subsec:komponentenarchitektur}) -- sowie die
-Produktverwaltung, die demselben Muster folgt.
+Dieser Abschnitt beschreibt die Verwaltung einzelner Dienstleistungsangebote, die Verwaltung der Verfügbarkeit sowie die Produktverwaltung, die demselben Muster folgt. Die Verfügbarkeit ist als eigener Funktionsbereich \texttt{provider-availability/} umgesetzt, der derselben internen Struktur folgt wie die übrigen (vgl. Abschnitt~\ref{subsec:komponentenarchitektur}).
 
 Die eigenen Dienstleistungen werden über \texttt{useMyServicesQuery}
 abgerufen und seitenweise dargestellt; Seite und Ergebnisse pro Seite
@@ -961,11 +953,7 @@ Verlauf}
 \end{figure}
 
 Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
-und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern
-über den Vergleich der AbsenderID mit der ID des
-angemeldeten Nutzers -- eine Nachricht, die über den Kanal
-eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank
-geladene und wird deshalb gleich behandelt.
+und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, …sondern über den Vergleich der Absender-ID mit der ID des angemeldeten Nutzers: Eine Nachricht, die über den Kanal eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank geladene und wird deshalb gleich behandelt.
 
 Die Unterhaltungen werden nach dem Zeitpunkt der letzten Nachricht
 sortiert. Da diese Sortierung sowohl beim Laden als auch beim
@@ -1027,10 +1015,7 @@ sie doppelt.
 
 Parallel dazu wird die Liste der Unterhaltungen fortgeschrieben:
 Vorschautext und Zeitpunkt der betroffenen Unterhaltung werden
-ersetzt, die Liste neu sortiert und der Zähler ungelesener
-Nachrichten erhöht -- letzteres nur dann, wenn die Nachricht nicht
-vom Nutzer selbst stammt und die betroffene Unterhaltung nicht gerade
-geöffnet ist.
+ersetzt, die Liste neu sortiert und der Zähler ungelesener Nachrichten erhöht; letzteres nur dann, wenn die Nachricht nicht vom Nutzer selbst stammt und die betroffene Unterhaltung nicht gerade geöffnet ist.
 
 Die Anmeldung an den Kanälen erfolgt in einem Effekt, dessen
 Aufräumfunktion die Ereignisbindungen löst und die Kanäle wieder
