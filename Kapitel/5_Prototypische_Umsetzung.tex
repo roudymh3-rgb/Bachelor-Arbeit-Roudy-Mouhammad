@@ -1008,10 +1008,11 @@ queryClient.setQueryData<ChatMessagesResponse | undefined>(
 )
 \end{lstlisting}
 
-Die Prüfung auf eine bereits vorhandene ID ist erforderlich,
-weil der Absender seine eigene Nachricht auf zwei Wegen erhält:
-einmal als Antwort auf die absendende Anfrage und einmal über den
-Kanal, auf dem sie veröffentlicht wird. Ohne diese Prüfung erschiene
+Die Prüfung auf eine bereits vorhandene ID ist erforderlich, weil der
+Absender seine eigene Nachricht auf zwei Wegen erhält: einmal als
+Antwort auf die absendende Anfrage und einmal über den Kanal, den er
+selbst abonniert hat (vgl. Schritte~9 und~12 in
+Abbildung~\ref{fig:messaging_ablauf}). Ohne diese Prüfung erschiene
 sie doppelt.
 
 Parallel dazu wird die Liste der Unterhaltungen fortgeschrieben:
