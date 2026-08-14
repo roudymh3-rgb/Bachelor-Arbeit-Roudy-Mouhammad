@@ -886,8 +886,7 @@ kennt (vgl. Abschnitt~\ref{sec:technologieauswahl}). Es hält die Verbindung in 
 bereits bestehende Verbindung zurück, statt eine zweite aufzubauen.
 Diese Festlegung ist notwendig, weil mehrere Stellen der Anwendung
 unabhängig voneinander Kanäle abonnieren: die Chatseite für jede
-Unterhaltung und die Kopfzeile für den Zählerstand. Ohne die
-Bündelung entstünde je Aufruf eine eigene Verbindung.
+Unterhaltung und die Kopfzeile für den Zählerstand. Ohne diese zentrale Verwaltung würde jeder Aufruf eine eigene Verbindung herstellen.
 
 \begin{lstlisting}[language=TypeScript,caption={Aufbau der Verbindung
 zum Echtzeitdienst},label={lst:pusher-client}]
@@ -941,8 +940,8 @@ Unterhaltungen mit Name des Gegenübers, Zeitpunkt und Anfang der
 letzten Nachricht, rechts der Verlauf der ausgewählten Unterhaltung.
 Die gewählte Unterhaltung steht als Bestandteil der Adresse
 (\texttt{/chat/:conversationId}), sodass eine einzelne Unterhaltung
-verlinkbar bleibt -- dieselbe Entscheidung wie bei den Katalogseiten
-(vgl. Abschnitt~\ref{subsec:impl_produktlisting}). Ist keine
+verlinkbar bleibt -- dieselbe Entscheidung wie bei den Detailseiten
+(vgl. Abschnitt~\ref{subsec:impl_produktdetail}). Ist keine
 Unterhaltung angegeben, wird auf die zuletzt aktive umgeleitet.
 
 \begin{figure}[H]
@@ -966,21 +965,18 @@ Zwischenspeichers}
 \label{subsec:impl_chat_realtime}
 
 Sobald die Liste der Unterhaltungen vorliegt, meldet sich die Seite
-für jede darin enthaltene Unterhaltung beim zugehörigen Kanal an.
-Die Kanalnamen ergeben sich unmittelbar aus der ID der
-Unterhaltung, sodass keine gesonderte Zuordnung geführt werden muss.
-Auf jedem Kanal werden drei Ereignisse ausgewertet: das Eintreffen
-einer Nachricht sowie die Bestätigung ihrer Zustellung und ihres
-Lesens.
+für jede darin enthaltene Unterhaltung beim zugehörigen Kanal an; die
+Kanalnamen ergeben sich unmittelbar aus der ID der Unterhaltung. Auf
+jedem Kanal werden drei Ereignisse ausgewertet: das Eintreffen einer
+Nachricht sowie die Bestätigung ihrer Zustellung und ihres Lesens.
 
-Entscheidend ist, was beim Eintreffen eines Ereignisses geschieht.
-Die Anwendung stellt keine neue Anfrage an das Backend, sondern
-schreibt die empfangene Nachricht unmittelbar in den
-Zwischenspeicher von TanStack Query (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}). Eine erneute Anfrage wäre
-überflüssig, da die Nachricht bereits vollständig vorliegt; sie
-würde die Ersparnis, die die dauerhafte Verbindung gerade bewirkt,
-wieder aufheben.
+Entscheidend ist, was beim Eintreffen eines Ereignisses geschieht. Die
+Anwendung stellt keine neue Anfrage an das Backend, sondern schreibt
+die empfangene Nachricht unmittelbar in den Zwischenspeicher von
+TanStack Query (vgl. Abschnitt~\ref{subsec:impl_tanstackquery}). Eine
+erneute Anfrage wäre überflüssig, da die Nachricht bereits vollständig
+vorliegt; sie würde die Ersparnis, die die dauerhafte Verbindung
+gerade bewirkt, wieder aufheben.
 
 \begin{lstlisting}[language=TypeScript,caption={Eintragen einer über
 den Kanal empfangenen Nachricht in den Zwischenspeicher},
@@ -1015,29 +1011,15 @@ selbst abonniert hat (vgl. Schritte~9 und~12 in
 Abbildung~\ref{fig:messaging_ablauf}). Ohne diese Prüfung erschiene
 sie doppelt.
 
-Parallel dazu wird die Liste der Unterhaltungen fortgeschrieben:
-Vorschautext und Zeitpunkt der betroffenen Unterhaltung werden
-ersetzt, die Liste neu sortiert und der Zähler ungelesener Nachrichten erhöht; letzteres nur dann, wenn die Nachricht nicht vom Nutzer selbst stammt und die betroffene Unterhaltung nicht gerade geöffnet ist.
+Dieselben Ereignisse schreiben zugleich die Liste der Unterhaltungen
+fort, deren Aufbau Abbildung~\ref{fig:chat_seite}  zeigt: Vorschautext,
+Zeitpunkt, Reihenfolge und der Zähler ungelesener Nachrichten. Der
+Zähler steigt nur bei fremden Nachrichten in nicht geöffneten
+Unterhaltungen; wird eine Unterhaltung geöffnet, meldet die Seite
+deren ungelesene Nachrichten als gelesen und setzt den Zähler lokal
+auf null.
 
-Die Anmeldung an den Kanälen erfolgt in einem Effekt, dessen
-Aufräumfunktion die Ereignisbindungen löst und die Kanäle wieder
-abmeldet. Unterbleibt dies, laufen nach einem Wechsel der Seite
-weiterhin Ereignisse in Funktionen, die auf einen nicht mehr
-dargestellten Zustand zugreifen; zugleich blieben die Kanäle
-abonniert und die Zahl der Abonnements stiege mit jedem Aufruf der
-Seite. Aus demselben Grund wird die Liste der Unterhaltungen mit
-\texttt{useMemo} stabil gehalten: Entstünde bei jedem Rendern ein
-neues Feld, liefe der Effekt jedes Mal erneut und meldete sämtliche
-Kanäle ab und wieder an.
-
-Der Zähler ungelesener Nachrichten in der Kopfzeile ist in einem
-eigenen Hook gekapselt, der den auf den Nutzer bezogenen Kanal
-abonniert und den empfangenen Gesamtstand in denselben
-Zwischenspeicher schreibt, aus dem die Anzeige liest. Er ist
-unabhängig von der Chatseite und damit in der gesamten Anwendung
-wirksam.
-
-Wird eine Unterhaltung geöffnet, prüft die Seite, ob sie ungelesene
-Nachrichten des Gegenübers enthält, meldet sie gegebenenfalls als
-gelesen und setzt den Zähler der betroffenen Unterhaltung
-anschließend lokal auf null, ohne die Liste erneut abzurufen.
+Die Anmeldung erfolgt in einem Effekt, dessen Aufräumfunktion die
+Kanäle wieder abmeldet -- andernfalls stiege die Zahl der Abonnements
+mit jedem Aufruf der Seite. Aus demselben Grund wird die Liste der
+Unterhaltungen mit \texttt{useMemo} gehalten.
