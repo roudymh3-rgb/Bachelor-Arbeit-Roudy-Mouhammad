@@ -600,73 +600,43 @@ Die Umsetzung des in Abschnitt~\ref{subsec:warenkorb_konzept}
 beschriebenen Konzepts verteilt sich auf zwei Stellen im Frontend:
 das Auslösen des Checkouts im Warenkorb und die Verarbeitung des
 Ergebnisses auf den beiden Rückleitungsseiten.
+Abbildung~\ref{fig:checkout_ablauf} zeigt den vollständigen Ablauf.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{Bilder/abb_checkout_ablauf.png}
+\includegraphics[width=\textwidth]{Bilder/abb_checkout_ablauf.png}
 \caption{Ablauf der Zahlung vom Auslösen des Checkouts bis zur
 Rückleitung in die Anwendung}
 \label{fig:checkout_ablauf}
-\end{table}
+\end{figure}
 
-Vom Frontend gehen dabei nur drei Anfragen aus: das Anlegen des
-Auftrags, das Hinzufügen der Positionen und das Anfordern der
-Zahlungssitzung. Die Verständigung mit dem Zahlungsdienst erfolgt
-vollständig im Backend, und die Zahlungsseite selbst wird von diesem
-bereitgestellt (vgl. Abschnitt~\ref{sec:technologieauswahl}).
+Zwei Entscheidungen sind der Abbildung nicht zu entnehmen. Zum
+einen prüft die auslösende Funktion zunächst den Anmeldestatus:
+Ist der Nutzer nicht angemeldet, öffnet sie über den \acs{UI}-Store
+den Anmeldedialog und bricht ab. Zum anderen ist die Aufbereitung
+der einzelnen Position in eine eigene Funktion ausgelagert, da
+sich die zu übertragenden Angaben je nach Positionstyp
+unterscheiden: Für ein Produkt genügen ID und Menge, während eine
+Dienstleistungsbuchung zusätzlich den gewählten Termin enthält.
+Die Fallunterscheidung liegt damit nicht in der Mutation, die
+dadurch auf ihre drei Schritte beschränkt bleibt.
 
-Ausgelöst wird der Vorgang über die Schaltfläche in der
-Warenkorbübersicht. Ist der Nutzer nicht angemeldet, öffnet die
-Funktion über den \acs{UI}-Store den Anmeldedialog und bricht ab.
-Andernfalls läuft die Checkout-Operation an, die als Mutation
-umgesetzt ist, da sie den Datenbestand auf dem Server verändert (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}). Sie durchläuft drei
-Schritte: Zunächst wird über die Feature-\acs{API} ein Auftrag
-angelegt, dessen ID das Backend zurückgibt. Anschließend wird
-für jede Position eine weitere Anfrage gestellt, die sie diesem
-Auftrag zuordnet. Zuletzt wird die Zahlungssitzung angefordert; das
-Backend liefert die Adresse der Zahlungsseite zurück, auf die das
-Frontend den Browser weiterleitet.
-
-Die Aufbereitung der einzelnen Position ist in eine eigene Funktion
-ausgelagert, da sich die zu übertragenden Angaben je nach
-Positionstyp unterscheiden: Für ein Produkt genügen ID und
-Menge, während eine Dienstleistungsbuchung zusätzlich den gewählten
-Termin enthält. Die Fallunterscheidung liegt damit nicht in der
-Mutation, die dadurch auf ihre drei Schritte beschränkt bleibt.
-
-Die Erfolgsseite ruft die Auftragsdaten ab und zeigt Auftragsnummer,
-Status und Betrag an; darunter stehen die beiden Wege in die
-Übersichten für Bestellungen und Buchungen.
-
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{Bilder/screenshot_checkout_success.png}
 \caption{Bestätigungsseite nach erfolgreicher Zahlung}
 \label{fig:checkout_success}
-\end{table}
+\end{figure}
 
-Vor der Darstellung führt die Seite eine Folge von Nebenwirkungen
-aus, die in einem Effekt gekapselt sind. Der Effekt prüft zunächst,
-ob die Zahlung tatsächlich erfolgt ist, und bricht andernfalls ab.
-Erst danach wird der Warenkorb geleert -- nicht schon beim Auslösen
-des Checkouts, da die Zahlung bis zuletzt scheitern kann.
-
-Zusätzlich sichert eine Referenz ab, dass der Effekt nur einmal
-ausgeführt wird. Ohne diese Sperre könnte ein erneutes Rendern den
-Warenkorb ein zweites Mal leeren und die Invalidierung wiederholen,
-obwohl derselbe Zahlungsvorgang zugrunde liegt. Eine Referenz eignet
-sich dafür, weil ihre Änderung im Gegensatz zu einem Zustandswert
-kein erneutes Rendern auslöst.
-
-Im Anschluss werden vier zwischengespeicherte Datenbestände für
-ungültig erklärt: die Daten des betroffenen Auftrags, der zuletzt
-angelegte Auftrag, die Liste der eigenen Bestellungen und die Liste
-der eigenen Buchungen. Nach erfolgreicher Zahlung existiert im
-Backend ein Auftrag mehr als im Zwischenspeicher hinterlegt, und der
-Status des betroffenen Auftrags hat von \textit{requires payment} auf
-\textit{paid} gewechselt (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}).
+Die Nebenwirkungen der Erfolgsseite sind in einem Effekt
+gekapselt. Er prüft zunächst, ob die Zahlung tatsächlich erfolgt
+ist, und bricht andernfalls ab. Erst danach wird der Warenkorb
+geleert, nicht schon beim Auslösen des Checkouts, da die Zahlung
+bis zuletzt abgebrochen werden kann. Eine Referenz sichert zusätzlich ab,
+dass der Effekt nur einmal ausgeführt wird; ohne diese Sperre
+könnte ein erneutes Rendern den Warenkorb ein zweites Mal leeren.
+Eine Referenz eignet sich dafür, weil ihre Änderung im Gegensatz
+zu einem Zustandswert kein erneutes Rendern auslöst.
 
 \begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung (checkout-success-page.tsx)}, label={lst:checkout-success}]
 useEffect(() => {
@@ -684,18 +654,18 @@ useEffect(() => {
 \end{lstlisting}
 
 Die Abbruchseite kommt ohne Nebenwirkungen aus, da weder der
-Warenkorb noch der Datenbestand auf dem Server verändert wurde. Beide
-Rückleitungsseiten sind als geschützte Routen eingebunden (vgl.
-Abschnitt~\ref{subsec:routing-konzept}).
+Warenkorb noch der Datenbestand auf dem Server verändert wurde.
+Beide Rückleitungsseiten sind als geschützte Routen eingebunden
+(vgl. Abschnitt~\ref{subsec:routing-konzept}).
 
-Für die Erprobung stellt der Zahlungsdienst eine Testumgebung mit
-Kartennummern bereit, die jeweils ein bestimmtes Verhalten auslösen:
-erfolgreiche Zahlung, unzureichende Deckung, abgelaufene Karte sowie
-allgemeine Ablehnung. Dabei zeigte sich, dass sämtliche Ablehnungen
-bereits auf der Seite des Zahlungsdienstes abgefangen werden und dort
-zur Eingabe eines anderen Zahlungsmittels führen. Die Abbruchseite
-wird folglich nur erreicht, wenn der Nutzer den Vorgang selbst
-abbricht.
+Zur Validierung stellt der Zahlungsdienst eine Testumgebung mit
+Kartennummern bereit, die jeweils ein bestimmtes Verhalten
+auslösen: erfolgreiche Zahlung, unzureichende Deckung, abgelaufene
+Karte sowie allgemeine Ablehnung. Dabei zeigte sich, dass
+sämtliche Ablehnungen bereits auf der Seite des Zahlungsdienstes
+abgefangen werden und dort zur Eingabe eines anderen
+Zahlungsmittels führen. Die Abbruchseite wird folglich nur
+erreicht, wenn der Nutzer den Vorgang selbst abbricht.
 
 
 \section{Kontobereich und rollenspezifische Funktionen}
@@ -714,7 +684,7 @@ anzulegen, hätte den gemeinsamen Aufbau dreifach wiederholt und bei
 Nutzern mit mehreren Rollen die Frage aufgeworfen, welche der Seiten
 aufzurufen ist.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \begin{minipage}{0.48\textwidth}
   \centering
@@ -728,7 +698,7 @@ aufzurufen ist.
   (links) und für einen Nutzer mit den Rollen \textit{Seller} und
   \textit{ServiceProvider} (rechts)}
 \label{fig:kontoseite_vergleich}
-\end{table}
+\end{figure}
 
 Die Anträge auf ein Rollen-Upgrade werden nur gerendert, wenn das
 Backend die jeweilige Rolle als noch verfügbar meldet (vgl.
@@ -780,13 +750,13 @@ Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
 davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
 eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
 
-\begin{table}[htbp]
-\centering
-\includegraphics[width=0.50\textwidth]{Bilder/screenshot_edit_service.png}
-\caption{Formular zum Bearbeiten einer Dienstleistung mit
-zweisprachigen Inhaltsfeldern und Buchungsregeln}
-\label{fig:edit_service}
-\end{table}
+%\begin{figure}[H]
+%%%%%%%%%%%%%\centering
+%%%%%%%%%%%%\includegraphics[width=0.50\textwidth]{Bilder/screenshot_edit_service.png}
+%%%%%%%%%%%\caption{Formular zum Bearbeiten einer Dienstleistung mit
+%%%%%%%%%%zweisprachigen Inhaltsfeldern und Buchungsregeln}
+%%%%%%%%%\label{fig:edit_service}
+%%%%%%%%\end{figure}
 
 Die Produktverwaltung ist strukturgleich, aber einfacher, da Produkte
 keine Buchungsregeln benötigen: Die eigenen Produkte werden über
@@ -795,16 +765,16 @@ dargestellt. Beim Löschen sind drei Zwischenspeicher betroffen statt
 vier, da für Produkte keine eigene Detailseite zwischengespeichert
 wird.
 
-\begin{table}[htbp]
-\centering
-\includegraphics[width=0.50\textwidth]{Bilder/screenshot_availability.png}
-\caption{Verfügbarkeitsverwaltung mit Wochenschema und einzelnen
-Abwesenheitszeiträumen}
-\label{fig:availability}
-\end{table}
+%%%%%%%\begin{figure}[H]
+%%%%%%\centering
+%%%%%\includegraphics[width=0.50\textwidth]{Bilder/screenshot_availability.png}
+%%%%\caption{Verfügbarkeitsverwaltung mit Wochenschema und einzelnen
+%%%Abwesenheitszeiträumen}
+%%\label{fig:availability}
+%\end{figure}
 
 Die festen Arbeitszeiten werden je Wochentag über die
-wiederverwendbare Komponente \texttt{WorkingHoursEditor} dargestellt,
+wiederverwendbare Komponente \texttt {\small WorkingHoursEditor} dargestellt,
 die beliebig viele Zeitintervalle mit Start- und Endzeit
 entgegennimmt und es erlaubt, einzelne Intervalle hinzuzufügen oder
 zu entfernen. Ein Wochentag ohne Intervall gilt als nicht verfügbar.
@@ -824,74 +794,52 @@ eingetragenen Zeiträume werden nach ihrem Beginn sortiert und anhand
 der beim Anbieter hinterlegten Zeitzone formatiert (vgl.
 Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
 
-\subsection{Eingegangene Buchungen}
+\subsection{Übersichten für Bestellungen und Buchungen}
 \label{subsec:impl_provider_bookings}
+\label{subsec:impl_bestellungen}
+\label{subsec:impl_buchungen}
 
-Die Ansicht der eingegangenen Buchungen setzt die in
-Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} beschriebene
-Zustandsfolge um.
+Die Übersichten für eingegangene Buchungen, eigene Bestellungen und
+eigene Buchungen folgen demselben Aufbau: Jeder Eintrag trägt seinen
+Zustand und daneben genau die Aktion, die in diesem Zustand möglich
+ist (vgl. Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}). Jede
+dieser Aktionen ist als Mutation umgesetzt, die den zugehörigen
+Zwischenspeicher im Erfolgsfall invalidiert (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}), sodass der neue Zustand
+unmittelbar erscheint. Sie unterscheiden sich damit nicht im
+Mechanismus, sondern in den Zuständen und den daraus folgenden
+Aktionen.
 
-\begin{table}[htbp]
+Bei den eingegangenen Buchungen lautet die Aktion bei einer
+angefragten Buchung \textit{Buchung bestätigen}, bei einer bereits
+bestätigten \textit{Als abgeschlossen markieren}; eine abgeschlossene
+Buchung trägt keine Schaltfläche mehr.
+
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_provider_bookings.png}
 \caption{Eingegangene Buchungen mit der jeweils zustandsabhängigen
 Aktion}
 \label{fig:provider_bookings}
-\end{table}
+\end{figure}
 
-Rechts neben jedem Eintrag steht genau eine Schaltfläche, und welche
-das ist, ergibt sich aus dem Zustand: Bei einer angefragten Buchung
-lautet sie \textit{Buchung bestätigen}, bei einer bereits bestätigten
-\textit{Als abgeschlossen markieren}. Eine abgeschlossene Buchung
-trägt keine Schaltfläche mehr. Beide Übergänge sind als Mutationen
-umgesetzt, die den zwischengespeicherten Bestand im Erfolgsfall
-invalidieren (vgl. Abschnitt~\ref{subsec:impl_tanstackquery}), sodass
-der neue Zustand unmittelbar erscheint.
+Bei den eigenen Bestellungen führt die Übersicht auf eine
+Detailseite, die den Auftrag in eine Zusammenfassung mit den
+Kopfdaten und die Liste der enthaltenen Positionen gliedert. Bleibt
+ein Auftrag unbezahlt, tritt an die Stelle der Positionsliste ein
+Bereich, der den Zustand benennt und die beiden dort vorgesehenen
+Wege anbietet; bei einem bezahlten Auftrag erscheint die vollständige
+Liste mit dem Zustand je Position. Dieselben Wege stehen bereits in
+der Übersicht an jedem unbezahlten Eintrag.
 
-\subsection{Bestellungen und Buchungen im Kontobereich}
-\label{subsec:impl_bestellungen}
-\label{subsec:impl_buchungen}
+Bei den eigenen Buchungen tritt an die Stelle einer einzelnen Aktion
+ein Paar aus Stornierung und Umbuchung, jeweils an eine eigene Frist
+gebunden. Solange eine Frist läuft, nennt der zugehörige Block ihr
+Ende und die Schaltfläche ist auslösbar; nach Ablauf wird sie
+deaktiviert, und an die Stelle des Fristendes tritt der Hinweis, dass
+der Zeitraum verstrichen ist. Sichtbar bleiben beide Schaltflächen.
 
-Die Bestellübersicht führt sämtliche Aufträge des Nutzers mit Datum,
-Gesamtbetrag, Anzahl der Positionen und Zahlungsstatus. Der Aufruf
-eines Eintrags führt auf die Detailseite, die den Auftrag in eine
-Zusammenfassung mit den Kopfdaten und die Liste der enthaltenen
-Positionen gliedert.
-
-Da ein Auftrag bereits vor der Zahlung entsteht (vgl.
-Abschnitt~\ref{subsec:warenkorb_konzept}), unterscheidet die
-Detailseite zwei Fälle. Bleibt ein Auftrag unbezahlt, tritt an die
-Stelle der Positionsliste ein Bereich, der den Zustand benennt und
-die beiden in Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}
-vorgesehenen Wege anbietet. Bei einem bezahlten Auftrag erscheint
-dagegen die vollständige Positionsliste, in der jede Position ihren
-eigenen Zustand trägt, da Produkte und Dienstleistungen unabhängig
-voneinander bearbeitet werden.
-
-\begin{table}[htbp]
-\centering
-\begin{minipage}{0.48\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{Bilder/screenshot_bestellung_unbezahlt.png}
-\end{minipage}\hfill
-\begin{minipage}{0.48\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{Bilder/screenshot_bestelldetail.png}
-\end{minipage}
-\caption{Detailansicht eines Auftrags mit nicht abgeschlossener
-  Zahlung (links) und eines bezahlten Auftrags mit Produkt- und
-  Dienstleistungspositionen (rechts)}
-\label{fig:auftrag_vergleich}
-\end{table}
-
-Dienstleistungspositionen führen die zugehörige Buchung mit Termin,
-Zeitzone und Ort der Leistungserbringung mit. Dieselben Buchungen
-sind zusätzlich über eine eigene Übersicht erreichbar. Die doppelte
-Erreichbarkeit ist beabsichtigt: Wer von einer Bestellung ausgeht,
-soll die zugehörige Buchung nicht in einer anderen Ansicht suchen
-müssen.
-
-\begin{table}[htbp]
+\begin{figure}[htbp]
 \centering
 \begin{minipage}{0.48\textwidth}
   \centering
@@ -905,16 +853,16 @@ müssen.
   und Angabe des Fristendes (links); nach Ablauf beider Fristen sind
   die Schaltflächen deaktiviert und der Grund steht darüber (rechts)}
 \label{fig:buchung_fristen}
-\end{table}
+\end{figure}
 
-Die Umbuchung führt auf eine eigene Seite, die dieselbe Terminauswahl
-verwendet wie die Erstbuchung; die Komponente ist damit an zwei
-Stellen eingesetzt, ohne dass die Ermittlung verfügbarer Zeitfenster
-ein zweites Mal umgesetzt werden musste. Neben der Auswahl zeigt die
-Seite den bisherigen Termin, sodass der Wechsel nachvollziehbar
-bleibt. Eine Stornierung löst dagegen keine erneute Auswahl aus,
-sondern eine Rückerstattung über das Backend, deren Stand
-anschließend an der Buchung geführt wird.
+Dieselben Buchungen sind zusätzlich über die zugehörige
+Auftragsposition erreichbar; wer von einer Bestellung ausgeht, soll
+sie nicht in einer anderen Ansicht suchen müssen. Die Umbuchung führt
+auf eine eigene Seite, die dieselbe Terminauswahl verwendet wie die
+Erstbuchung, ohne dass die Ermittlung verfügbarer Zeitfenster ein
+zweites Mal umgesetzt werden musste; neben der Auswahl zeigt sie den
+bisherigen Termin. Eine Stornierung löst dagegen eine Rückerstattung
+über das Backend aus, deren Stand an der Buchung geführt wird.
 
 
 \section{Werbung und Ankündigungen}
@@ -1004,13 +952,13 @@ verlinkbar bleibt -- dieselbe Entscheidung wie bei den Katalogseiten
 (vgl. Abschnitt~\ref{subsec:impl_produktlisting}). Ist keine
 Unterhaltung angegeben, wird auf die zuletzt aktive umgeleitet.
 
-\begin{table}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/screenshot_chat.png}
 \caption{Nachrichtenbereich mit Liste der Unterhaltungen und
 Verlauf}
 \label{fig:chat_seite}
-\end{table}
+\end{figure}
 
 Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
 und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern
