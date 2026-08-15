@@ -431,18 +431,18 @@ auf. Die Palette ist damit einfarbig angelegt; allein
 diesem Schema also nicht zwischen Bereichen, sondern zwischen Rängen
 von Handlungen.
  
-Die Werte sind hexadezimal notiert. Eine Ausnahme bildet
-\texttt{destructive}, das in \acs{OKLCH} angegeben ist; in diesem
-Farbraum entspricht die Helligkeitskomponente näherungsweise der
-wahrgenommenen Helligkeit, wodurch sich die hellere Fassung für die
-dunkle Darstellung unmittelbar ableiten lässt \cite{css_color_4}.
+Die Werte sind hexadezimal notiert; allein \texttt{destructive} ist
+in \acs{OKLCH} angegeben, einem Farbraum, dessen
+Helligkeitskomponente näherungsweise der wahrgenommenen Helligkeit
+entspricht \cite{css_color_4}. Abstufungen desselben Farbtons lassen
+sich darin gleichmäßig ableiten, was für einen Warnwert nützlich ist,
+der in mehreren Sättigungen erscheinen kann.
  
 Karten heben sich von der Seite ab, auf der sie liegen: Der
 Seitenhintergrund trägt den aufgehellten Farbton, die Karte selbst
-Weiß. In der dunklen Darstellung kehrt sich das Verhältnis um, die
-Karte ist dort geringfügig heller als die Seite. Der Rahmen ist
-deshalb bewusst schwach gesetzt; er verstärkt eine Trennung, die
-bereits über die Fläche entsteht, statt sie allein zu tragen.
+Weiß. Der Rahmen ist deshalb bewusst schwach gesetzt; er verstärkt
+eine Trennung, die bereits über die Fläche entsteht, statt sie allein
+zu tragen.
  
 Der Wert \texttt{primary} kennzeichnet die jeweils vorrangige
 Handlung einer Ansicht, also diejenige, die weitere Vorgänge erst
@@ -453,23 +453,6 @@ die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb
 anders dargestellt als die Anmeldung an derselben Stelle.
 \texttt{muted} kennzeichnet Elemente ohne gegenwärtige Wirkung, also
 insbesondere deaktivierte Schaltflächen.
- 
-Ein zweites vollständiges Token-Set ist für die dunkle Darstellung
-hinterlegt und wird über eine Variante am Wurzelelement aktiviert.
-Da die Komponenten überwiegend die funktionalen Token referenzieren,
-erfordert der Wechsel keine Änderung an den Komponenten selbst. Zwei
-Ausnahmen bestehen: Die Zustandsmarkierungen für Bestellungen,
-Buchungen und Werbeanzeigen greifen auf feste Farbwerte zurück, da
-sie eine Bedeutung tragen, die von der Darstellungsvariante
-unabhängig ist -- eine bezahlte Bestellung ist in beiden Fassungen
-grün. Die Kopfzeile enthält ebenfalls feste Werte; sie folgt dem
-Token-System bislang nicht.
- 
-% ---------------------------------------------------------------
-% TODO (Roudy): Falls du die Kopfzeile noch auf Tokens umstellst
-% (13 feste Hexwerte in components/shared/app-header.tsx), entfaellt
-% der letzte Satz und der Absatz endet nach "gruen".
-% ---------------------------------------------------------------
  
 Die Eckenradien folgen demselben Prinzip. Definiert ist ein einziger
 Basiswert von 0,625\,rem, also zehn Pixel; sämtliche Abstufungen
@@ -528,9 +511,10 @@ Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
  
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.png}
-\caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
-(Strukturskizze, eigene Darstellung)}
+\includegraphics[width=0.90\textwidth]{Bilder/abb_rahmen.png}
+\caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen;
+gestrichelt hervorgehoben ist der einzige Bereich, der sich zwischen
+ihnen unterscheidet (Strukturskizze, eigene Darstellung)}
 \label{fig:rahmen}
 \end{figure}
  
@@ -562,16 +546,34 @@ Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_startseite.png}
-\caption{Struktur der Startseite und Aufbau einer Vorschaukarte
-(Strukturskizze, eigene Darstellung)}
+\caption{Struktur der Startseite und Aufbau einer Vorschaukarte;
+getönt dargestellt sind die vier Bereiche für Ankündigungen und
+Werbung, der angeschnittene Block am rechten Rand deutet den nächsten
+Eintrag der Schleife an (Strukturskizze, eigene Darstellung)}
 \label{fig:startseite}
 \end{figure}
  
-Auf den Seitentitel mit einem einleitenden Satz folgen zwei
-gleichartig aufgebaute Abschnitte, einer für die zuletzt
-eingestellten Produkte und einer für die zuletzt eingestellten
-Dienstleistungen. Beide bestehen aus einer Überschrift und einem
-Raster aus Vorschaukarten.
+Die Startseite gliedert sich in bis zu sechs aufeinanderfolgende
+Abschnitte. Einen eigenen Seitentitel trägt sie nicht: Sie ist der
+Einstiegspunkt der Anwendung, und die Überschrift jedes Abschnitts
+benennt bereits, was in ihm zu finden ist.
+ 
+Den Anfang bilden die Ankündigungen des Marktplatzes, darauf folgen
+die drei Werbebereiche in absteigender Sponsorenstufe und erst danach
+der Katalog. Reihenfolge und Größe der Platzierungen ergeben sich
+dabei aus dem Werbemodell und sind in
+Abschnitt~\ref{subsec:werbung_konzept} beschrieben. Für die
+Seitenstruktur ist zweierlei maßgeblich: Ein Bereich ohne Einträge
+wird nicht dargestellt, sodass die Startseite ohne Werbung unmittelbar
+mit dem Katalog beginnt; und die vier oberen Bereiche sind als
+Schleife ausgeführt, in der die Einträge in festem Takt von rechts
+nach links wandern, statt untereinander zu stehen. Beides hält die
+Seite unabhängig davon kurz, wie viele Platzierungen gebucht sind.
+ 
+Den Abschluss bilden zwei gleichartig aufgebaute Abschnitte, einer für
+die zuletzt eingestellten Produkte und einer für die zuletzt
+eingestellten Dienstleistungen. Beide bestehen aus einer Überschrift
+und einem Raster aus Vorschaukarten.
  
 Die Karte ist dabei das durchgehende Gestaltungselement des
 Katalogbereichs. Sie führt von oben nach unten die Bildfläche, den
@@ -610,10 +612,6 @@ Zeitfensterliste, Zeitzone und Zusammenfassung müssen auch auf
 geringer Breite zusammenhängend erkennbar bleiben, da eine
 unvollständig erfasste Auswahl unmittelbar zu einer falschen Buchung
 führen würde.
- 
-Am Fuß der Seite ist ein Bereich für Werbung und Ankündigungen
-vorgesehen; er ist in Abbildung~\ref{fig:startseite} gestrichelt
-dargestellt.
 
 \subsection{Barrierefreiheit im Entwurf}
 \label{subsec:barrierefreiheit_konzept}
@@ -930,9 +928,9 @@ Im Folgenden wird er dennoch zuerst beschrieben, da er die
 gemeinsame Grundlage aller Rollen bildet.
  
 Zu jedem Eintrag der linken Spalte wird der aktuelle Zustand
-angezeigt, bei Buchungen der Bearbeitungsstand, bei Bestellungen der
-Zahlungsstatus und beim Zahlungsdienst der Verbindungszustand, und
-daneben genau die Aktion, die in diesem Zustand möglich ist, etwa das
+angezeigt: Bei Buchungen der Bearbeitungsstand, bei Bestellungen der
+Zahlungsstatus und beim Zahlungsdienst der Verbindungszustand. Daneben
+wird genau die Aktion angezeigt, die in diesem Zustand möglich ist, etwa das
 Bestätigen einer angefragten Buchung oder das Nachholen einer offenen
 Zahlung. Der Systemzustand ist damit erkennbar, ohne dass eine
 Detailansicht geöffnet werden muss (vgl.
@@ -957,6 +955,13 @@ Möglichkeiten bliebe ein abgebrochener Zahlungsvorgang als Eintrag
 bestehen, den der Nutzer weder abschließen noch entfernen könnte. Die
 Detailansicht eines Auftrags zeigt darüber hinaus die einzelnen
 Positionen und ihren jeweiligen Zustand.
+Der Zustand einer Bestellung oder Buchung wird dabei ausgeschrieben
+und lediglich zusätzlich farblich unterlegt. Die in
+Abschnitt~\ref{subsec:gestaltungsansatz} genannte Vorgabe, dass Farbe
+Bedeutung trägt, gilt hier also mit einer Einschränkung: Sie
+beschleunigt das Erfassen, trägt die Angabe aber nicht allein; eine
+Unterscheidung, die für Nutzer mit eingeschränktem Farbsehen den
+Ausschlag gibt.
  
 Die Buchungsübersicht führt die gebuchten Termine mit
 Bearbeitungsstand, Zeitpunkt und Ort. Zu jeder Buchung werden die
