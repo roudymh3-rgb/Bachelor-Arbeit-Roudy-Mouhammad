@@ -416,41 +416,66 @@ verloren geht. Ergänzt wird das Schema um Tokens für Rahmen,
 Eingabefelder und Fokusringe sowie um einen eigenen Wert
 \texttt{destructive} für zerstörende Aktionen und Fehlerzustände.
  
-Als Farbraum wird durchgängig \acs{OKLCH} verwendet. Anders als bei
-hexadezimalen Angaben entspricht die Helligkeitskomponente dort
-näherungsweise der wahrgenommenen Helligkeit, wodurch sich
-Farbabstufungen gleichmäßig ableiten lassen \cite{css_color_4}. Die
-Palette ist bewusst neutral gehalten: Sämtliche Flächen- und
-Textfarben besitzen keinen Buntanteil, allein \texttt{destructive}
-ist als roter Farbwert angelegt. Farbe wird damit ausschließlich dort
-eingesetzt, wo sie eine Bedeutung trägt, während die inhaltliche
-Gliederung über Helligkeit, Abstände und Typografie erfolgt.
+% ---------------------------------------------------------------
+% TODO (Roudy): Der folgende Absatz beschreibt, WAS im Code steht.
+% WARUM du dich fuer dieses Schema entschieden hast, fehlt und muss
+% von dir kommen -- etwa aus dem Gespraech mit dem Mentor.
+% ---------------------------------------------------------------
  
-Diese Zurückhaltung erklärt eine Entscheidung, die auf den ersten
-Blick überrascht: Karten tragen dieselbe Flächenfarbe wie die Seite,
-auf der sie liegen. Ihre Abgrenzung entsteht allein über den Rahmen.
-Eine zweite Flächenfarbe hätte die Palette erweitert und müsste mit
-sämtlichen darauf erscheinenden Texten und Schaltflächen abgestimmt
-werden; der Rahmen leistet dieselbe Trennung, ohne einen weiteren
-Farbwert einzuführen. Er ist deshalb bewusst nahe am Hintergrund gewählt: deutlich genug, um zu trennen, zurückhaltend genug, um nicht mit dem Inhalt zu konkurrieren.
+Die Palette ruht auf drei Werten derselben Farbfamilie: einem dunklen
+Blau für Text und Schrift, einem gedeckten Petrolton für vorrangige
+Handlungen und einem helleren Petrol für nachgeordnete. Der
+Seitenhintergrund nimmt denselben Farbton in stark aufgehellter Form
+auf. Die Palette ist damit einfarbig angelegt; allein
+\texttt{destructive} tritt als Rot heraus. Farbe unterscheidet in
+diesem Schema also nicht zwischen Bereichen, sondern zwischen Rängen
+von Handlungen.
+ 
+Die Werte sind hexadezimal notiert. Eine Ausnahme bildet
+\texttt{destructive}, das in \acs{OKLCH} angegeben ist; in diesem
+Farbraum entspricht die Helligkeitskomponente näherungsweise der
+wahrgenommenen Helligkeit, wodurch sich die hellere Fassung für die
+dunkle Darstellung unmittelbar ableiten lässt \cite{css_color_4}.
+ 
+Karten heben sich von der Seite ab, auf der sie liegen: Der
+Seitenhintergrund trägt den aufgehellten Farbton, die Karte selbst
+Weiß. In der dunklen Darstellung kehrt sich das Verhältnis um, die
+Karte ist dort geringfügig heller als die Seite. Der Rahmen ist
+deshalb bewusst schwach gesetzt; er verstärkt eine Trennung, die
+bereits über die Fläche entsteht, statt sie allein zu tragen.
  
 Der Wert \texttt{primary} kennzeichnet die jeweils vorrangige
 Handlung einer Ansicht, also diejenige, die weitere Vorgänge erst
 ermöglicht: die Anmeldung, das Auslösen des Checkouts, die Übernahme
-einer Buchung in den Warenkorb. Handlungen ohne diese Wirkung erhalten die zurückhaltendere Darstellung über \texttt{secondary}; die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb anders dargestellt als die Anmeldung an derselben Stelle.
+einer Buchung in den Warenkorb. Handlungen ohne diese Wirkung
+erhalten die zurückhaltendere Darstellung über \texttt{secondary};
+die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb
+anders dargestellt als die Anmeldung an derselben Stelle.
 \texttt{muted} kennzeichnet Elemente ohne gegenwärtige Wirkung, also
 insbesondere deaktivierte Schaltflächen.
  
 Ein zweites vollständiges Token-Set ist für die dunkle Darstellung
 hinterlegt und wird über eine Variante am Wurzelelement aktiviert.
-Da die Komponenten ausschließlich die funktionalen Token
-referenzieren und keine festen Farbwerte enthalten, erfordert der
-Wechsel keine Änderung an den Komponenten selbst.
+Da die Komponenten überwiegend die funktionalen Token referenzieren,
+erfordert der Wechsel keine Änderung an den Komponenten selbst. Zwei
+Ausnahmen bestehen: Die Zustandsmarkierungen für Bestellungen,
+Buchungen und Werbeanzeigen greifen auf feste Farbwerte zurück, da
+sie eine Bedeutung tragen, die von der Darstellungsvariante
+unabhängig ist -- eine bezahlte Bestellung ist in beiden Fassungen
+grün. Die Kopfzeile enthält ebenfalls feste Werte; sie folgt dem
+Token-System bislang nicht.
+ 
+% ---------------------------------------------------------------
+% TODO (Roudy): Falls du die Kopfzeile noch auf Tokens umstellst
+% (13 feste Hexwerte in components/shared/app-header.tsx), entfaellt
+% der letzte Satz und der Absatz endet nach "gruen".
+% ---------------------------------------------------------------
  
 Die Eckenradien folgen demselben Prinzip. Definiert ist ein einziger
-Basiswert von 0,625\,rem; die Abstufungen von klein bis sehr groß
-ergeben sich daraus über feste Zuschläge in Schritten von vier
-Pixeln. Dass überhaupt mehrere Stufen nötig sind, liegt an der
+Basiswert von 0,625\,rem, also zehn Pixel; sämtliche Abstufungen
+leiten sich daraus über feste Faktoren ab und ergeben die Werte sechs,
+acht, zehn, vierzehn, achtzehn, zweiundzwanzig und sechsundzwanzig
+Pixel. Dass überhaupt mehrere Stufen nötig sind, liegt an der
 Wahrnehmung: Derselbe Radius wirkt an einer bildschirmbreiten Fläche
 kaum, an einer kleinen Schaltfläche dagegen stark. Elemente
 vergleichbarer Größe erhalten deshalb denselben Wert, größere und
@@ -465,26 +490,30 @@ Dienstleistungen; darunter stehen der Fließtext in einer einzigen
 Größe sowie gedämpfte Angaben für Metadaten und Hilfetexte. Die
 Unterscheidung erfolgt dabei nicht ausschließlich über die Größe:
 Wo zwei Angaben gleich groß erscheinen, etwa eine Feldbeschriftung
-und der zugehörige Hinweis, trennt sie die Farbe. Diese Staffelung ist
-auf den Konto- und Bestellseiten maßgeblich, wo zahlreiche
+und der zugehörige Hinweis, trennt sie die Farbe. Diese Staffelung
+ist auf den Konto- und Bestellseiten maßgeblich, wo zahlreiche
 gleichrangig wirkende Angaben nebeneinander stehen und ohne
 Gliederung schwer zu überblicken wären.
  
-Das Farbschema und die Komponentenbasis entsprechen der neutralen
-Standardkonfiguration von shadcn/ui \cite{shadcn_docs}. Diese wurde
+Die Komponentenbasis entstammt shadcn/ui \cite{shadcn_docs} und wurde
 übernommen, weil sie die in Abschnitt~\ref{subsec:designsysteme}
 genannten Anforderungen an Konsistenz bereits erfüllt; eine eigene
-Gestaltung der Grundelemente war für den Funktionsumfang dieser
-Arbeit nicht erforderlich.
+Umsetzung der Grundelemente war für den Funktionsumfang dieser Arbeit
+nicht erforderlich. Ersetzt wurde allein deren neutrale
+Standardpalette durch die oben beschriebenen Werte -- die Struktur des
+Token-Systems blieb dabei unverändert, ausgetauscht wurden nur die
+Farben, auf die es verweist.
  
 Die paarweise Definition von Fläche und Vordergrund erlaubt es, die
 Anforderungen aus Abschnitt~\ref{subsec:barrierefreiheit} unmittelbar
 am Farbsystem zu prüfen. Für den Fließtext auf heller Fläche ergibt
-sich ein Kontrastverhältnis von 19,8:1, für gedämpften Text 4,6:1;
-beide erfüllen Erfolgskriterium 1.4.3 der Stufe AA. Für
-Bedienelemente und Zustandsanzeigen gilt mit Kriterium 1.4.11 ein
-eigener Schwellenwert von 3:1, dessen Prüfung in
-Kapitel~\ref{chap:testen} erfolgt.
+sich ein Kontrastverhältnis von 16,5:1, für gedämpften Text 5,3:1 auf
+der Karte und 4,7:1 auf dem Seitenhintergrund; sämtliche Werte
+erfüllen Erfolgskriterium 1.4.3 der Stufe AA. Für Bedienelemente und
+Zustandsanzeigen gilt mit Kriterium 1.4.11 ein eigener Schwellenwert
+von 3:1; der Fokusring erreicht 3,6:1 gegenüber einer Karte und
+3,2:1 gegenüber dem Seitenhintergrund. Die Prüfung der übrigen
+Bedienelemente erfolgt in Kapitel~\ref{chap:testen}.
 
 
 \subsection{Seitenstruktur und Navigationsprinzip}
@@ -516,8 +545,7 @@ Warenkorb und der Kontobereich.
  
 Zwischen den beiden Anmeldezuständen ändert sich nur diese rechte
 Gruppe: An die Stelle der Schaltfläche zur Anmeldung treten der Name
-des Nutzers und die Abmeldung, die fachliche Navigation mit den vier öffentlichen Katalogbereichen: Produkte, Dienstleistungen, Verkäufer und Anbieter (vgl. Abschnitt~\ref{subsec:katalog_konzept}). Der
-Rahmen erfüllt damit die in
+des Nutzers und die Abmeldung. Der Rahmen erfüllt damit die in
 Abschnitt~\ref{subsec:gestaltungsprinzipien} genannte Anforderung
 nach Konsistenz über gleichartige Situationen hinweg: Ein Nutzer, der
 sich anmeldet, findet dieselbe Oberfläche vor und muss sich nicht neu
@@ -552,7 +580,10 @@ und schließlich den Anbieter. Produkte und Dienstleistungen
 verwenden dieselbe Karte in derselben Anordnung; sie unterscheiden
 sich allein in der Hintergrundfarbe der Bildfläche. Dieselbe Karte
 wird auf den Katalogseiten und den Profilseiten der Anbieter erneut
-verwendet, sodass ein Angebot überall in derselben Form erscheint; die technische Grundlage dafür bildet das in Abschnitt~\ref{subsec:komponentenarchitektur} beschriebene Komponentenmodell.
+verwendet, sodass ein Angebot überall in derselben Form erscheint;
+die technische Grundlage dafür bildet das in
+Abschnitt~\ref{subsec:komponentenarchitektur} beschriebene
+Komponentenmodell.
  
 Die Zahl der Karten je Zeile richtet sich nach der verfügbaren
 Anzeigefläche und verringert sich auf schmalen Bildschirmen, ohne
