@@ -18,8 +18,7 @@ Funktionsbereiche unabhängig voneinander entwickelt und erweitert
 werden können \cite{ijlrp_react_components}.
  
 Innerhalb dieser Struktur spiegelt sich das in
-Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte Prinzip der
-Trennung von Presentational und Container Components wider:
+Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte Prinzip der Trennung von Darstellung und Datenbeschaffung wider:
 Komponenten im Verzeichnis \texttt{components/} eines
 Funktionsbereichs übernehmen ausschließlich die Darstellung, während
 Datenzugriff und Geschäftslogik in den zugehörigen Ordnern
@@ -908,10 +907,18 @@ Konzept verbundener Konten. Die Plattform unterhält ein eigenes Konto
 beim Zahlungsdienst; jedem Verkäufer und jedem Dienstleister wird
 darunter ein Unterkonto zugeordnet. Dieses Unterkonto wird aus der
 Anwendung heraus angelegt, sodass der Anbieter kein eigenes Konto
-einrichten und verknüpfen muss. Auf dieser Grundlage lässt sich der
-Zahlungsbetrag automatisiert aufteilen: Ein Anteil verbleibt als
-Provision bei der Plattform, der übrige Betrag wird dem Anbieter
-gutgeschrieben (vgl. Abschnitt~\ref{subsec:marktplatztypen}).
+einrichten und verknüpfen muss. Auf dieser Grundlage lässt sich der Zahlungsbetrag automatisiert
+aufteilen: Ein Anteil verbleibt als Provision bei der Plattform, der
+übrige Betrag wird dem Anbieter gutgeschrieben (vgl.
+Abschnitt~\ref{subsec:marktplatztypen}). Die Provision ist als
+prozentualer Anteil am Transaktionswert festgelegt und beträgt
+gegenwärtig zehn Prozent. Sie wird, ebenso wie die Preise der bezahlten Platzierungen, über das
+Admin-Dashboard des Backends gepflegt (vgl.
+Abschnitt~\ref{subsec:werbung_konzept}) und ist damit ein
+konfigurierbarer Wert und keine feste Größe der Anwendung. Das
+Frontend berechnet den Anteil nicht, sondern führt je Auftragsposition
+den vom Backend gelieferten Nettobetrag mit; dieser erscheint in der
+Übersicht der Verkäufe auf der Kontoseite.
  
 Voraussetzung für eine Gutschrift ist ein vollständig eingerichtetes
 Unterkonto einschließlich Identitätsprüfung. Solange diese Prüfung
@@ -1193,8 +1200,8 @@ Betrag hält den Vorgang für den Kunden ohne zusätzliche Rolle so
 einfach wie möglich: Titel, Beschreibung, Bild, ein Preis.
  
 Die genannten Beträge sind nicht im Frontend hinterlegt, sondern
-werden im Verwaltungsbereich festgelegt. Sie gehören zur
-Geschäftslogik der Plattform und lassen sich ändern, ohne dass die
+werden über das Admin-Dashboard des Backends festgelegt. Sie gehören
+zur Geschäftslogik der Plattform und lassen sich ändern, ohne dass die
 Oberfläche davon berührt wäre.
  
 Jede Platzierung wird nach der Zahlung geprüft und erst nach

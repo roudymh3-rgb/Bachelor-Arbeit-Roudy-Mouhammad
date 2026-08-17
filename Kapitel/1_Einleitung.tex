@@ -5,69 +5,82 @@
 \label{sec:motivation}
 
 Der digitale Handel hat sich in den vergangenen Jahren zu einem
-zentralen Bestandteil des wirtschaftlichen Lebens entwickelt.
-Laut dem Bundesverband E-Commerce und Versandhandel Deutschland 
-erzielte der deutsche E-Commerce-Markt im Jahr 2024 einen 
-Bruttoumsatz von rund 80,6 Milliarden Euro \cite{bevh_2025} 
-und gilt damit als einer der umsatzstärksten E-Commerce-Märkte
-Europas \cite{trade_gov_germany_ecommerce}. Trotz dieses Wachstums konzentriert sich
-der Markt auf wenige große Plattformen wie Amazon oder Otto, die
-über erhebliche technische und finanzielle Ressourcen verfügen.
+zentralen Bestandteil des wirtschaftlichen Lebens entwickelt. Laut dem
+Bundesverband E-Commerce und Versandhandel Deutschland erzielte der
+deutsche E-Commerce-Markt im Jahr 2024 einen Bruttoumsatz mit Waren
+von rund 80,6 Milliarden Euro \cite{bevh_2025}. Deutschland zählt zu
+den größten E-Commerce-Märkten Europas
+\cite{trade_gov_germany_ecommerce}.
 
-Insbesondere kleine und mittelständische Unternehmen stehen vor
-der Herausforderung, ihre Produkte und Dienstleistungen digital
-zugänglich zu machen, ohne dabei in kostspielige eigene Systeme
-oder aufwendige Marketinginfrastrukturen investieren zu müssen
-\cite{digitalization_barrier_smes}. Hinzu kommt, dass bestehende Plattformen häufig entweder den
-Produkthandel oder die Buchung von Dienstleistungen abdecken, selten
-jedoch beides in einem einheitlichen System. So beschränken sich
-Amazon und Etsy im Wesentlichen auf den Produkthandel, während
-Booking.com und Fiverr ausschließlich Dienstleistungen vermitteln;
-eine systematische Gegenüberstellung dieser Plattformen anhand von
-vier Merkmalen findet sich in
+Der Umsatz verteilt sich dabei ungleich. Auf Marktplätze allein
+entfielen 44 Milliarden Euro, während Pure Player,
+Multichannel-Händler und D2C-Anbieter zurückgingen \cite{bevh_2025};
+unter den einzelnen Anbietern führen amazon.de und otto.de die
+Rangliste an, mit Nettoumsätzen von 15,76 beziehungsweise 4,54
+Milliarden US-Dollar \cite{trade_gov_germany_ecommerce}. Der Markt
+konzentriert sich damit auf wenige große Plattformen, die über
+erhebliche technische und finanzielle Ressourcen verfügen.
+
+Insbesondere kleine und mittelständische Unternehmen stehen dabei vor
+einer Hürde: Die Einführung digitaler Lösungen, ausdrücklich auch von
+E-Commerce-Systemen, verlangt Investitionen in Hardware, Software und
+Schulung, die für kleinere Unternehmen unerschwinglich sein können. In
+einer Erhebung unter 4531 kolumbianischen KMU zählen hohe
+Investitionskosten branchenübergreifend zu den drei am stärksten
+bewerteten Hürden der Digitalisierung
+\cite{digitalization_barrier_smes}. Hinzu kommt, dass bestehende
+Plattformen häufig entweder den Produkthandel oder die Buchung von
+Dienstleistungen abdecken, selten jedoch beides in einem einheitlichen
+System. So beschränken sich Amazon und Etsy im Wesentlichen auf den
+Produkthandel, während Booking.com und Fiverr ausschließlich
+Dienstleistungen vermitteln; eine systematische Gegenüberstellung
+dieser Plattformen anhand von vier Merkmalen findet sich in
 Abschnitt~\ref{subsec:wettbewerbsanalyse}.
 
 Aus dieser Marktlücke entstand die Idee zur Plattform
-\textit{Bazario}, die bei SahemTech entwickelt wird. \textit{Bazario} verfolgt das Ziel,
-Händlern und Dienstleistern eine gemeinsame digitale Infrastruktur
-bereitzustellen, auf der Produkte verkauft und Dienstleistungen
-gebucht werden können, ohne dass die Anbieter eigene Systeme
-betreiben müssen. Gleichzeitig ermöglicht die Plattform Käufern,
-beide Angebotsformen in einem einzigen Bestellprozess zu
+\textit{Bazario}, die bei SahemTech entwickelt wird. \textit{Bazario}
+verfolgt das Ziel, Händlern und Dienstleistern eine gemeinsame
+digitale Infrastruktur bereitzustellen, auf der Produkte verkauft und
+Dienstleistungen gebucht werden können, ohne dass die Anbieter eigene
+Systeme betreiben müssen. Gleichzeitig ermöglicht die Plattform
+Käufern, beide Angebotsformen in einem einzigen Bestellprozess zu
 kombinieren.
 
 Die technische Umsetzung einer solchen Plattform stellt hohe
-Anforderungen an das Frontend. Es muss drei Nutzerrollen mit jeweils eigenen Funktionsbereichen
-und Zugriffsrechten bedienen, nämlich Käufer, Verkäufer und
-Dienstleister; die vierte Rolle, der Administrator, greift über
-das vom Backend bereitgestellte Dashboard auf die Plattform zu. Im weiteren Verlauf
-der Arbeit werden für diese Rollen die plattforminternen
-Bezeichnungen \textit{Customer}, \textit{Seller}, \textit{ServiceProvider} und \textit{Admin}
-verwendet. Gleichzeitig soll die
-Oberfläche konsistent, intuitiv und performant sein. Die
-Entwicklung eines solchen Multi-Rollen-Frontends bildet den
-Kern dieser Arbeit.
+Anforderungen an das Frontend. Es muss drei Nutzerrollen mit jeweils
+eigenen Funktionsbereichen und Zugriffsrechten bedienen, nämlich
+Käufer, Verkäufer und Dienstleister; die vierte Rolle, der
+Administrator, greift über das vom Backend bereitgestellte Dashboard
+auf die Plattform zu. Im weiteren Verlauf der Arbeit werden für diese
+Rollen die plattforminternen Bezeichnungen \textit{Customer},
+\textit{Seller}, \textit{ServiceProvider} und \textit{Admin}
+verwendet. Gleichzeitig soll die Oberfläche konsistent, intuitiv und
+performant sein; was darunter im Einzelnen zu verstehen ist, legt
+Abschnitt~\ref{subsec:nichtfunktionale-anforderungen} in messbaren
+Größen fest. Die Entwicklung eines solchen Multi-Rollen-Frontends
+bildet den Kern dieser Arbeit.
 
 \section{Ziel der Arbeit}
 \label{sec:ziel}
 
 Ziel dieser Bachelorarbeit ist der Entwurf und die prototypische
-Entwicklung des Frontends der Webanwendung \textit{Bazario},
-einer Multi-Rollen-Plattform, die E-Commerce und
-Dienstleistungsbuchungen in einem einheitlichen System
-zusammenführt. Im Fokus steht die Konzeption einer rollenbasierten
-Single-Page Application, die alle relevanten Funktionsbereiche
-der Plattform abdeckt und eine konsistente, benutzerfreundliche
-Oberfläche für die drei im Frontend abgebildeten Nutzerrollen
-bereitstellt.
+Entwicklung des Frontends der Webanwendung \textit{Bazario}, einer
+Multi-Rollen-Plattform, die E-Commerce und Dienstleistungsbuchungen in
+einem einheitlichen System zusammenführt. Im Fokus steht die
+Konzeption einer rollenbasierten Single-Page Application, die alle
+relevanten Funktionsbereiche der Plattform abdeckt und eine
+konsistente, benutzerfreundliche Oberfläche für die drei im Frontend
+abgebildeten Nutzerrollen bereitstellt.
 
-Das Frontend kommuniziert vollständig über die vom Backend
-bereitgestellten \acfirst{REST}-API-Schnittstellen und setzt dabei moderne Webtechnologien wie React, Zustand, React Router,
-Tailwind \acfirst{CSS} und Stripe ein.
-Die gewonnenen Erkenntnisse münden in einen lauffähigen
-Prototypen, der die zentralen Nutzerflows aller drei Rollen
-vollständig abbildet und anhand funktionaler sowie
-nicht-funktionaler Kriterien bewertet wird.
+Das Frontend bezieht seine Daten über die vom Backend bereitgestellten
+\acfirst{REST}-API-Schnittstellen; allein der Nachrichtenbereich nutzt
+zusätzlich eine dauerhafte Verbindung über einen Echtzeitdienst. Zum
+Einsatz kommen dabei moderne Webtechnologien wie React, die Bibliothek
+\textit{Zustand}, React Router und Tailwind \acfirst{CSS}.
+
+Die gewonnenen Erkenntnisse münden in einen lauffähigen Prototypen,
+der die zentralen Nutzerflows aller drei Rollen abbildet und anhand
+funktionaler sowie nicht-funktionaler Kriterien bewertet wird.
 
 \section{Abgrenzung}
 \label{sec:abgrenzung}
@@ -94,11 +107,13 @@ Die Plattform ist mehrsprachig ausgelegt. Dabei sind zwei Arten von
 Texten zu unterscheiden: die Beschriftungen und Meldungen der
 Oberfläche, die im Frontend liegen, und die inhaltlichen Angaben zu
 Produkten, Dienstleistungen und Anbietern, die das Backend liefert.
-Die Übersetzung der Oberfläche ist Gegenstand dieser Arbeit; die
-Übersetzung der Inhalte erfolgt im Backend, das Frontend teilt ihm
-lediglich die gewählte Sprache mit. Umgesetzt sind Deutsch und
-Englisch; die im Backend zusätzlich vorhandene arabische Fassung
-wird im Frontend nicht angeboten.
+Die Oberfläche ist Gegenstand dieser Arbeit und in Deutsch und
+Englisch umgesetzt; Arabisch wird als Oberflächensprache nicht
+angeboten. Die inhaltlichen Angaben werden vom Backend in der
+angeforderten Sprache ausgeliefert, wobei die Formulare der Anbieter
+Titel und Beschreibung in Englisch und Arabisch erfassen. Welche
+Sprachfassungen eines Inhalts entstehen, ist damit eine Frage des
+Datenmodells und nicht der Sprachwahl in der Oberfläche.
 
 Die administrativen Funktionen der Plattform, etwa die Prüfung
 von Rollenwechselanträgen und die Freigabe von Werbeanzeigen,

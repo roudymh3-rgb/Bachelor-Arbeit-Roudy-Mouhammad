@@ -4,31 +4,34 @@
 \section{Grundlagen von E-Commerce und Online-Marktplätzen}
 \label{sec:grundlagen-ecommerce}
 
-\subsection{Begriffsdefinitionen: E-Commerce, Marktplatz und Multi-Rollen-Modell}
+\subsection{Begriffsdefinitionen: E-Commerce, Marktplatz und
+Multi-Rollen-Modell}
 \label{subsec:begriffe}
 
 E-Commerce bezeichnet den elektronischen Handel mit Waren und
 Dienstleistungen über digitale Netzwerke. Er umfasst
 Geschäftstransaktionen zwischen Unternehmen und Konsumenten
-(\acfirst{B2C}) ebenso wie zwischen Unternehmen untereinander
-(\acfirst{B2B}), einschließlich der Vermittlung von Dienstleistungen
-und der Abwicklung zugehöriger Geschäftsprozesse
-\cite{turban_ecommerce}.
+(\acfirst{B2C}), zwischen Unternehmen untereinander (\acfirst{B2B})
+sowie zwischen Konsumenten (\acfirst{C2C}), einschließlich der
+Vermittlung von Dienstleistungen und der Abwicklung zugehöriger
+Geschäftsprozesse \cite{turban_ecommerce}.
 
 Ein Online-Marktplatz ist eine Form des E-Commerce, bei der eine
-Plattform als Intermediär zwischen Anbietern und Nachfragern
-auftritt. Anders als der Webshop eines einzelnen Händlers bündelt er
-das Angebot mehrerer Anbieter und stellt die Infrastruktur für deren
-Interaktion bereit \cite{parker_platform_revolution}, darunter
-Authentifizierung, Zahlungsabwicklung, Bewertungssysteme und
-Zugriffskontrolle \cite{tiwana_platform_ecosystems}.
+Plattform als Intermediär zwischen Anbietern und Nachfragern auftritt.
+Anders als der Webshop eines einzelnen Händlers bündelt er das Angebot
+mehrerer Anbieter und stellt die Infrastruktur für deren Interaktion
+bereit \cite{parker_platform_revolution}, darunter Authentifizierung,
+Zahlungsabwicklung, Bewertungssysteme und Zugriffskontrolle
+\cite{tiwana_platform_ecosystems}.
 
-Ein Multi-Rollen-Modell erweitert dieses Konzept um weitere
-Akteursgruppen wie Dienstleister und Administratoren. Jede Rolle
-besitzt eigene Rechte und Interaktionsmöglichkeiten, was eine
-rollenbasierte Zugriffskontrolle und klar definierte Workflows
-erfordert \cite{parker_platform_revolution,
-tiwana_platform_ecosystems}.
+Der in dieser Arbeit verwendete Begriff des Multi-Rollen-Modells baut
+auf dem Konzept mehrseitiger Plattformen auf
+\cite{parker_platform_revolution, tiwana_platform_ecosystems} und
+bezeichnet dessen Erweiterung um weitere Akteursgruppen wie
+Dienstleister und Administratoren. Jede Rolle besitzt eigene Rechte
+und Interaktionsmöglichkeiten, was eine rollenbasierte
+Zugriffskontrolle (vgl. Abschnitt~\ref{subsec:rbac}) und klar
+definierte Workflows erfordert.
 
 
 \subsection{Marktplatztypen und Geschäftsmodelle}
@@ -37,73 +40,68 @@ tiwana_platform_ecosystems}.
 Digitale Marktplätze lassen sich nach der Anzahl der beteiligten
 Marktseiten unterscheiden. Einseitige Marktplätze verbinden einen
 Anbieter direkt mit Endkunden, zweiseitige führen zwei voneinander
-abhängige Nutzergruppen zusammen, und Multi-Sided-Plattformen
+abhängige Nutzergruppen zusammen, und mehrseitige Plattformen
 verbinden mehr als zwei Gruppen miteinander
 \cite{heinemann_online_handel}.
 
 Eine zweite Klassifikation unterscheidet vertikale Marktplätze, die
 sich auf eine Branche spezialisieren, von horizontalen, die
-branchenübergreifend anbieten. \textit{Bazario} folgt dem
-horizontalen Modell, da es Produkte und Dienstleistungen
-verschiedener Anbieter in einem einheitlichen System zusammenführt
-\cite{taeuscher_platform_models}.
+branchenübergreifend anbieten \cite{taeuscher_platform_models}.
+\textit{Bazario} folgt dem horizontalen Modell, da es Produkte und
+Dienstleistungen verschiedener Anbieter in einem einheitlichen System
+zusammenführt.
 
-Hinsichtlich der Geschäftsmodelle lassen sich provisionsbasierte
-Modelle, feste Transaktionsgebühren und hybride Ansätze
-unterscheiden, die beide Varianten kombinieren
-\cite{taeuscher_platform_models, heinemann_online_handel}.
-\textit{Bazario} setzt ein hybrides Modell ein; dessen
-Provisionssätze werden über das Backend konfiguriert und sind damit
-nicht Gegenstand dieser Arbeit.
+Hinsichtlich der Erlösform lassen sich provisionsbasierte Modelle, bei
+denen die Plattform einen Anteil am Transaktionswert einbehält, feste
+Transaktionsgebühren je Vorgang sowie Erlöse aus bezahlten
+Platzierungen unterscheiden; kombinierte Modelle setzen mehrere
+Formen nebeneinander ein \cite{taeuscher_platform_models,
+heinemann_online_handel}. Welche dieser Formen \textit{Bazario}
+verwendet, ist an zwei Stellen beschrieben: die Beteiligung am
+Transaktionswert in Abschnitt~\ref{subsec:warenkorb_konzept}, die
+bezahlten Platzierungen in Abschnitt~\ref{subsec:werbung_konzept}. Die zugehörigen Sätze werden über das Admin-Dashboard des Backends
+gepflegt und sind nach Abschnitt~\ref{sec:abgrenzung} nicht Gegenstand
+dieser Arbeit.
 
 
 \subsection{Grundlagen der Online-Zahlung}
 \label{subsec:online-zahlung}
 
 Die Zahlungsabwicklung ist ein zentraler Bestandteil jeder
-E-Commerce-Plattform. Moderne Zahlungssysteme basieren häufig auf einer
-intentionsbasierten Architektur, bei der eine Zahlung zunächst als
-sogenannte \textbf {Zahlungsabsicht} (Payment Intent) vorbereitet und autorisiert wird, bevor sie
-ausgeführt wird. Dieser Ansatz erlaubt es, den Zahlungsprozess flexibel
-an Geschäftsprozesse wie Reservierungen, Buchungen oder
-Bestellbestätigungen zu koppeln \cite{stripe_security_guide}.
-
-Die im Online-Handel eingesetzten Zahlungsverfahren lassen sich in
-Kartenverfahren der Geldinstitute, intermediäre Verfahren wie PayPal
-oder Amazon Payments, Verfahren des Online-Bankings wie Giropay und die
-Sofortüberweisung sowie Guthabenkarten gliedern
-\cite{heinemann_online_handel}. Die technische Anbindung dieser
-Verfahren übernimmt in der Regel ein externer Zahlungsdienstleister,
-der sie bündelt und dem Betreiber als einheitliche Schnittstelle
-bereitstellt \cite{heinemann_online_handel}.
+E-Commerce-Plattform. Die im Online-Handel eingesetzten
+Zahlungsverfahren lassen sich in Kartenverfahren der Geldinstitute,
+intermediäre Verfahren wie PayPal oder Amazon Payments, Verfahren des
+Online-Bankings wie die Sofortüberweisung sowie Guthabenkarten
+gliedern \cite{heinemann_online_handel}. Die technische Anbindung
+dieser Verfahren übernimmt in der Regel ein externer
+Zahlungsdienstleister, der sie bündelt und dem Betreiber als
+einheitliche Schnittstelle bereitstellt \cite{heinemann_online_handel}.
 
 Der \acfirst{PCI-DSS} definiert Anforderungen an die sichere
 Verarbeitung, Speicherung und Übertragung von Kartendaten
 \cite{pci_dss_401}. Für das Frontend folgt daraus, dass Kartendaten
-den eigenen Server nicht passieren sollen, da sich der
-Geltungsbereich des Standards dadurch erheblich verringert
+den eigenen Server nicht passieren sollen, da sich der Geltungsbereich
+des Standards dadurch erheblich verringert
 \cite{stripe_security_guide}. Die Dienstleister bieten hierfür zwei
 Einbindungsvarianten an \cite{stripe_elements_docs,
 stripe_checkout_docs}.
 
 Bei der ersten werden die Eingabefelder vom Dienstleister
 bereitgestellt und in die eigene Oberfläche eingebettet; die
-eingegebenen Daten werden unmittelbar an dessen Server übertragen, ohne
-den Betreiber zu berühren \cite{stripe_elements_docs}. Bei der zweiten
-wird der Nutzer auf eine vom Dienstleister gehostete Zahlungsseite
-weitergeleitet und nach Abschluss auf eine Erfolgs- oder Abbruchseite
-zurückgeführt; die Anwendung verarbeitet lediglich diese Rückleitung
-\cite{stripe_checkout_docs}.
+eingegebenen Daten werden unmittelbar an dessen Server übertragen,
+ohne den Betreiber zu berühren \cite{stripe_elements_docs}. Bei der
+zweiten wird der Nutzer auf eine vom Dienstleister gehostete
+Zahlungsseite weitergeleitet und nach Abschluss auf eine Erfolgs- oder
+Abbruchseite zurückgeführt; die Anwendung verarbeitet lediglich diese
+Rückleitung \cite{stripe_checkout_docs}.
 
-In beiden Fällen werden sensible Zahlungsdaten ausschließlich beim
-Dienstleister verarbeitet, wodurch sich der \acs{PCI-DSS}-Scope des
-Betreibers erheblich reduziert \cite{stripe_security_guide}. Die
-Varianten unterscheiden sich im Aufwand und in der Gestaltungsfreiheit:
-Eingebettete Felder fügen sich in das Erscheinungsbild der Anwendung
-ein und halten den Nutzer im gewohnten Ablauf, erfordern jedoch eine
-umfangreichere Einbindung; die Weiterleitung ist mit geringem Aufwand
-umzusetzen, unterbricht den Ablauf jedoch sichtbar und überlässt die
-Gestaltung dem Dienstleister.
+In beiden Fällen bleiben sensible Zahlungsdaten außerhalb der eigenen
+Anwendung. Die Varianten unterscheiden sich im Aufwand und in der
+Gestaltungsfreiheit: Eingebettete Felder fügen sich in das
+Erscheinungsbild der Anwendung ein und halten den Nutzer im gewohnten
+Ablauf, erfordern jedoch eine umfangreichere Einbindung; die
+Weiterleitung ist mit geringem Aufwand umzusetzen, unterbricht den
+Ablauf jedoch sichtbar und überlässt die Gestaltung dem Dienstleister.
 
 
 \subsection{Wettbewerbsanalyse bestehender Marktplatzplattformen}
@@ -111,7 +109,7 @@ Gestaltung dem Dienstleister.
 
 Im deutschen E-Commerce-Markt dominieren große, international tätige
 Plattformen. Marktführer wie Amazon verbinden Käufer, Verkäufer,
-Logistikpartner und Administratoren in einem Multi-Sided-Modell
+Logistikpartner und Administratoren in einem mehrseitigen Modell
 \cite{parker_platform_revolution}. Dass auch vertikale Marktplätze
 mit Fokus auf Dienstleistungsbuchungen erhebliche Umsätze erzielen,
 zeigt Booking.com: Der Mutterkonzern Booking Holdings wies für das
@@ -124,12 +122,14 @@ anhand der vier Merkmale, die den Funktionsumfang von
 Anforderungen in Abschnitt~\ref{subsec:funktionale-anforderungen}
 ergeben: das Angebot von Produkten, das Angebot von
 Dienstleistungen, die Unterstützung mehrerer Nutzerrollen sowie ein
-integriertes Buchungssystem. Die ersten drei Merkmale knüpfen an die
-Unterscheidung horizontaler und vertikaler Marktplätze sowie an das
-Konzept mehrseitiger Plattformen an
-\cite{taeuscher_platform_models, parker_platform_revolution}; die
-Einordnung der einzelnen Plattformen beruht auf deren öffentlich
-einsehbarem Funktionsumfang und stellt eine eigene Bewertung dar.
+integriertes Buchungssystem, verstanden als die Auswahl eines
+konkreten Zeitfensters beim Anbieter innerhalb derselben Anwendung.
+Die ersten drei Merkmale knüpfen an die Unterscheidung horizontaler
+und vertikaler Marktplätze sowie an das Konzept mehrseitiger
+Plattformen an \cite{taeuscher_platform_models,
+parker_platform_revolution}; die Einordnung der einzelnen Plattformen
+beruht auf deren öffentlich einsehbarem Funktionsumfang und stellt
+eine eigene Bewertung dar.
 
 \begin{table}[htbp]
 \centering
@@ -148,13 +148,15 @@ Etsy & \checkmark & \texttimes & eingeschränkt & \texttimes \\
 Booking.com & \texttimes & \checkmark & eingeschränkt &
 \checkmark \\
 \hline
-Fiverr & \texttimes & \checkmark & eingeschränkt & \checkmark \\
+Fiverr & \texttimes & \checkmark & eingeschränkt &
+eingeschränkt \\
 \hline
 \textit{Bazario} & \checkmark & \checkmark & \checkmark &
 \checkmark \\
 \hline
 \end{tabular}
 \end{table}
+
 Die Einstufung \enquote{eingeschränkt} bezeichnet dabei jeweils eine
 teilweise Erfüllung des Merkmals. Bei Amazon werden Dienstleistungen
 nicht als eigenständig buchbare Kategorie angeboten, sondern
@@ -165,7 +167,13 @@ sich die Einschränkung auf die Nutzerrollen: Alle drei kennen
 lediglich zwei Rollen, nämlich Nachfrager und Anbieter. Bei
 Booking.com kommt hinzu, dass die Anbieterseite über ein getrenntes
 Partnerportal bedient wird und nicht Bestandteil derselben Anwendung
-ist.
+ist. Bei Fiverr betrifft eine zweite Einschränkung das
+Buchungssystem: Eine Leistung wird dort mit einer Lieferfrist
+beauftragt, ein Zeitfenster beim Anbieter wird dagegen nicht gewählt.
+
+Unter den betrachteten Plattformen vereint damit keine das Angebot
+von Produkten und Dienstleistungen mit mehr als zwei Nutzerrollen und
+einer terminbezogenen Buchung in einer einzigen Anwendung.
 
 
 % =====================================================================
@@ -176,7 +184,7 @@ ist.
 \label{subsec:spa-mpa}
 
 Webbasierte Anwendungen lassen sich zwei Architekturansätzen
-zuordnen: Multi-Page Applications (\acfirst{MPA}) und Single-Page 
+zuordnen: Multi-Page Applications (\acfirst{MPA}) und Single-Page
 Applications (\acfirst{SPA}). Bei \acs{MPA}s lädt der Server für
 jede Nutzerinteraktion eine vollständige \acfirst{HTML}-Seite, die
 der Browser neu rendert, was bei komplexen Anwendungen zu spürbaren
@@ -188,15 +196,16 @@ anschließend nur die betroffenen Teile der Oberfläche. Die
 Navigation erfolgt clientseitig über JavaScript, wodurch eine
 flüssige, appähnliche Nutzererfahrung entsteht
 \cite{jonathan_react_spa}.
-\begin{table}[htbp]
+
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_spa_mpa.png}
 \caption{Ablauf der Kommunikation bei einer Multi-Page und einer
 Single-Page Application (eigene Darstellung nach
 \cite{bhalla_spa_architecture})}
 \label{fig:spa_mpa}
-\end{table}
- 
+\end{figure}
+
 Abbildung~\ref{fig:spa_mpa} zeigt den Unterschied im Ablauf: Während
 eine \acs{MPA} auf jede Interaktion mit einer vollständigen Seite
 antwortet, überträgt eine \acs{SPA} nach dem ersten Aufruf nur noch
@@ -216,26 +225,26 @@ leeres Grundgerüst, das eine Suchmaschine nicht auswerten kann.
 Anwendungen, die über Suchmaschinen gefunden werden sollen, benötigen
 daher serverseitiges Rendering (\acfirst{SSR}), bei dem der Server
 die fertige Seite ausliefert und der Browser sie anschließend um die
-clientseitige Interaktivität ergänzt. Für Inhalte, die ohnehin nur
-angemeldeten Nutzern zugänglich sind, entfällt der Nachteil
-weitgehend \cite{bhalla_spa_architecture}.
+clientseitige Interaktivität ergänzt \cite{bhalla_spa_architecture}.
+
 Tabelle~\ref{tab:spa-mpa} stellt beide Ansätze gegenüber.
 
 \begin{table}[htbp]
 \centering
-\caption{Vergleich SPA und MPA}
+\caption{Gegenüberstellung von \acs{SPA} und \acs{MPA}}
 \label{tab:spa-mpa}
 \begin{tabular}{|p{3.5cm}|p{4.5cm}|p{4.5cm}|}
 \hline
-\textbf{Kriterium} & \textbf{SPA} & \textbf{MPA} \\
+\textbf{Kriterium} & \textbf{\acs{SPA}} & \textbf{\acs{MPA}} \\
 \hline
 Seitennavigation & Clientseitig, ohne Neuladen &
 Serverseitig, vollständiges Neuladen \\
 \hline
-Performance & Schnelle Interaktion nach initialem Laden &
-Höhere Ladezeiten bei jedem Seitenwechsel \\
+Übertragung & Einmalig umfangreich, danach nur Daten &
+Bei jedem Seitenwechsel eine vollständige Seite \\
 \hline
-SEO & Eingeschränkt ohne SSR & Gut geeignet \\
+\acs{SEO} & Eingeschränkt ohne \acs{SSR} & Ohne Zusatzaufwand
+gegeben \\
 \hline
 Komplexität & Höher im Frontend & Höher im Backend \\
 \hline
@@ -245,12 +254,15 @@ auffindbar sein müssen \\
 \hline
 \end{tabular}
 \end{table}
+
 Der Umfang der Inhalte allein ist dabei kein hinreichendes
 Kriterium: Auch ein Marktplatz mit umfangreichem Produktkatalog ist
 inhaltsreich. Maßgeblich ist vielmehr, ob diese Inhalte über
 Suchmaschinen aufgefunden werden müssen oder ob die Nutzung
 überwiegend aus Interaktion innerhalb der bereits geladenen
-Anwendung besteht.
+Anwendung besteht. Für \textit{Bazario} sind Suchmaschinenoptimierung
+und serverseitiges Rendering nach Abschnitt~\ref{sec:abgrenzung}
+nicht Gegenstand dieser Arbeit.
 
 
 \subsection{Komponentenbasierte Entwicklung und Trennung der
@@ -265,14 +277,20 @@ voneinander entwickelt, getestet und ausgetauscht werden können,
 fördert dies Wartbarkeit und Wiederverwendbarkeit
 \cite{ijlrp_react_components}.
 
-In der Praxis unterscheidet man Presentational Components, die
-ausschließlich darstellen, von Container Components, die
-Geschäftslogik und Datenzugriff kapseln
-\cite{abramov_presentational_container}. Diese Trennung hält
-Komponenten überschaubar und erleichtert das Testen einzelner
-Einheiten. Bleibt sie aus, entstehen sogenannte Code Smells wie zu
-große Komponenten oder starke Kopplungen, die Lesbarkeit und
-Wartbarkeit beeinträchtigen \cite{ferreira_react_smells}.
+In der Praxis wurde diese Trennung zunächst über zwei Arten von
+Komponenten umgesetzt: Presentational Components, die ausschließlich
+darstellen, und Container Components, die Geschäftslogik und
+Datenzugriff kapseln \cite{abramov_presentational_container}. Der
+Urheber dieser Unterscheidung hat sie später ausdrücklich
+zurückgenommen; seit der Einführung von Hooks lässt sich derselbe
+Zweck ohne eine eigene Komponentenebene erreichen, indem Zustand und
+Datenzugriff in einem Hook gekapselt werden
+\cite{abramov_presentational_container}. Erhalten bleibt das
+zugrunde liegende Anliegen, Darstellung und Datenbeschaffung zu
+trennen; verändert hat sich allein das Mittel. Bleibt die Trennung
+aus, entstehen sogenannte Code Smells wie zu große Komponenten oder
+starke Kopplungen, die Lesbarkeit und Wartbarkeit beeinträchtigen
+\cite{ferreira_react_smells}.
 
 Dem liegt das allgemeinere Prinzip der Separation of Concerns
 zugrunde, das auf Dijkstra zurückgeht: Verschiedene Aspekte eines
@@ -309,7 +327,7 @@ Sicherheitsmaßnahme: Da der Anwendungscode im Browser des Nutzers
 ausgeführt wird, lässt sich die Prüfung umgehen. Sie dient der
 Benutzerführung; die verbindliche Durchsetzung der Zugriffsrechte
 muss serverseitig an der Schnittstelle erfolgen
-\cite{ferraiolo_rbac_arxiv}.
+
 
 \subsection{Authentifizierung und Sitzungsverwaltung}
 \label{subsec:authentifizierung}
@@ -359,9 +377,8 @@ einen zweiten, getrennten Kanal erfolgen. Verbreitet ist hierfür ein
 E-Mail-Adresse des Nutzers. Wer es vorweisen kann, weist damit den
 Zugriff auf diesen zweiten Kanal nach. Das Kennwort ist nur einmal
 und nur für einen begrenzten Zeitraum gültig
-\cite{nist_digital_identity}. Für das Frontend ergeben sich daraus
-zwei Ansichten: eine zum Anfordern des Kennworts und eine zur Eingabe
-des Kennworts zusammen mit dem neuen Passwort.
+\cite{nist_digital_identity}. Für das Frontend ergibt sich daraus ein mehrstufiger Ablauf: das +-Anfordern des Kennworts, sein Vorweisen und das Setzen des neuen
+Passworts.
 
 % =====================================================================
 \section{Frameworks und Kommunikationsansätze im Frontend}
@@ -411,10 +428,11 @@ bestand.
 
 React ist eine von Meta entwickelte JavaScript-Bibliothek für
 komponentenbasierte Benutzeroberflächen. Über das Konzept des
-Virtual \acs{DOM} aktualisiert sie Änderungen im Browser gezielt,
-ohne die gesamte Seite neu zu laden, und hat sich als eines der
-meistgenutzten Frontend-Frameworks etabliert
-\cite{comparative_spa_frameworks}.
+Virtual \acs{DOM} ermittelt sie bei einer Zustandsänderung, welche
+Knoten sich tatsächlich geändert haben, und aktualisiert nur diese,
+statt den betroffenen Bereich vollständig neu aufzubauen. Sie hat
+sich als eine der meistgenutzten Lösungen im Frontend-Bereich
+etabliert \cite{comparative_spa_frameworks}.
 
 Angular verfolgt demgegenüber einen stark vorgebenden Ansatz mit
 strikten Konventionen und liefert Routing, Formularverarbeitung und
@@ -429,11 +447,11 @@ Eine systematische Gegenüberstellung anhand einer Nutzwertanalyse
 über neun Kriterien, darunter die Stabilität der Schnittstellen,
 Community-Unterstützung, Leistung und Testbarkeit, bewertet React
 mit 75,15 Prozent am höchsten, gefolgt von Vue.js mit 60,14 und
-Angular mit 57,30 Prozent. Die Untersuchung zielt dabei auf die
-Eignung für Legacy-Projekte anhand von Kriterien der
-Abwärtskompatibilität; die zugrunde liegenden Einzelkriterien sind
-jedoch auch für Neuentwicklungen aussagekräftig
-\cite{repolust_frontend_frameworks}.
+Angular mit 57,30 Prozent; die Gewichtung der Kriterien stammt dabei
+aus der genannten Untersuchung. Diese zielt auf die Eignung für
+Legacy-Projekte anhand von Kriterien der Abwärtskompatibilität; die
+zugrunde liegenden Einzelkriterien sind jedoch auch für
+Neuentwicklungen aussagekräftig \cite{repolust_frontend_frameworks}.
 
 Abzugrenzen sind Meta-Frameworks wie Next.js, die React um
 serverseitiges Rendering und eine vorgegebene Projektstruktur
@@ -509,7 +527,7 @@ Für den clientseitigen Zustand bietet React mit der Context
 mehrere Komponentenebenen verfügbar macht. Sie eignet sich für
 selten wechselnde Werte wie Sprache oder Farbschema, führt bei
 häufigen Aktualisierungen jedoch zu unnötigen Neu-Renderings aller
-eingebundenen Komponenten \cite{le_state_management}.
+eingebundenen Komponenten \cite{react_docs, le_state_management}.
 
 Redux verfolgt einen zentralisierten Ansatz mit unidirektionalem
 Datenfluss: Zustandsänderungen werden ausschließlich über Aktionen
@@ -518,7 +536,7 @@ nachvollziehbar bleibt. Erkauft wird dies mit einem hohen Anteil an
 wiederkehrendem Strukturcode und der Einbindung der Anwendung in
 einen Provider \cite{redux_docs, le_state_management}.
 
-Zustand verfolgt einen hook-basierten Ansatz: Ein Store wird
+\textit{Zustand} verfolgt einen hook-basierten Ansatz: Ein Store wird
 unmittelbar als Hook definiert und ohne Provider-Wrapper verwendet,
 und Komponenten werden nur dann neu gerendert, wenn sich der von
 ihnen gelesene Teil des Zustands ändert \cite{zustand_docs}.
@@ -549,7 +567,7 @@ Management}
 \begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
 \hline
 \textbf{Kriterium} & \textbf{Context \acs{API}} &
-\textbf{Redux} & \textbf{Zustand} \\
+\textbf{Redux} & \textbf{\textit{Zustand}} \\
 \hline
 Herkunft & In React enthalten & Externe Bibliothek &
 Externe Bibliothek \\
@@ -574,21 +592,20 @@ Komplexe, nachvollziehbare Zustandsflüsse &
 
 Da \acs{SPA}s keine serverseitigen Seitennavigationen durchführen,
 stellt clientseitiges Routing die Ansichten der Anwendung anhand der
-\acfirst{URL} dar. Die \acs{URL} bleibt damit die maßgebliche
-Beschreibung des Anwendungszustands: Derselbe Aufruf führt zu
-derselben Ansicht, und einzelne Ansichten bleiben verlinkbar, obwohl
-kein Seitenwechsel im herkömmlichen Sinne stattfindet
-\cite{bhalla_spa_architecture}. Wie in
+\acfirst{URL} dar. Die \acs{URL} bleibt damit die maßgebliche Beschreibung der
+dargestellten Ansicht: Derselbe Aufruf führt zu derselben Ansicht,
+und einzelne Ansichten bleiben verlinkbar, obwohl kein Seitenwechsel
+im herkömmlichen Sinne stattfindet \cite{bhalla_spa_architecture}. Wie in
 Abschnitt~\ref{subsec:framework-funktionen} dargestellt, übernimmt
-diese Aufgabe in React nicht das Framework selbst, sondern eine
-ergänzende Bibliothek.
+diese Aufgabe nicht React selbst, sondern eine ergänzende
+Bibliothek.
 
-React Router ist die im React-Ökosystem etablierte Lösung hierfür.
-Routen werden deklarativ als Zuordnung zwischen \acs{URL}-Mustern und
-darzustellenden Komponenten definiert und lassen sich hierarchisch
-verschachteln, sodass gemeinsame Bestandteile wie ein
-Anwendungsrahmen nur einmal festgelegt werden müssen
-\cite{reactrouter_docs}.
+React Router ist eine im React-Ökosystem weit verbreitete Lösung
+hierfür. Routen werden deklarativ als Zuordnung zwischen
+\acs{URL}-Mustern und darzustellenden Komponenten definiert und
+lassen sich hierarchisch verschachteln, sodass gemeinsame
+Bestandteile wie ein Anwendungsrahmen nur einmal festgelegt werden
+müssen \cite{reactrouter_docs}.
 
 Alternativen bestehen zum einen in neueren Bibliotheken wie TanStack
 Router, die den Schwerpunkt auf typsichere Routen legen und
@@ -601,11 +618,11 @@ Verhalten der Vor- und Zurück-Schaltflächen wären dann jedoch
 vollständig zu entwickeln.
 
 Der in Abschnitt~\ref{subsec:rbac} beschriebene rollenbasierte
-Zugriffsschutz wird dabei nicht von der Bibliothek übernommen, sondern
-als Wrapper-Komponente umgesetzt: Eine vorgeschaltete Komponente prüft
-Authentifizierungsstatus und Rolle des Nutzers, bevor die eigentliche
-Ansicht gerendert wird, und leitet andernfalls auf eine zulässige
-Route um \cite{wieruch_protected_routes}.
+Zugriffsschutz wird von der Bibliothek nicht übernommen. Er lässt
+sich als vorgeschaltete Wrapper-Komponente umsetzen, die
+Authentifizierungsstatus und Rolle des Nutzers prüft, bevor die
+eigentliche Ansicht gerendert wird, und andernfalls auf eine
+zulässige Route umleitet \cite{wieruch_protected_routes}.
 
 
 \subsection{Kommunikationsansätze zwischen Frontend und Backend}
