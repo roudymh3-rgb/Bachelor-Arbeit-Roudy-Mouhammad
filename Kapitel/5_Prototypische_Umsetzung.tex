@@ -382,11 +382,12 @@ Text an das Backend gelangt. Bei den Pflichtfeldern unterbleibt
 diese Aufbereitung, und es genügt \texttt{trim}: Dort ist eine leere
 Eingabe gerade der Fehlerfall und darf nicht in einen fehlenden Wert
 umgedeutet werden, weil die zugehörige Regel sonst nicht mehr
-greifen könnte.
+greifen könnte. Abbildung~\ref{fig:registrierung_fehler} zeigt beide Arten der
+Prüfung nebeneinander.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.55\textwidth]{Bilder/screenshot_registrierung_fehler.png}
+\includegraphics[width=0.40\textwidth]{Bilder/screenshot_registrierung_fehler.png}
 \caption{Registrierungsformular mit einem Formatfehler im
 E-Mail-Feld und einer feldübergreifenden Abweichung zwischen Passwort
 und Bestätigung}
@@ -399,11 +400,11 @@ korrigiert ist; die übrigen Eingaben bleiben erhalten, sodass ein
 fehlgeschlagener Versuch nicht zum erneuten Ausfüllen des gesamten
 Formulars zwingt.
 
-Ob eine E-Mail-Adresse bereits vergeben ist oder ein Passwort dem
+Ob eine E-Mail-Adresse bereits vergeben ist oder ob ein Passwort dem
 hinterlegten entspricht, kann nur das Backend beantworten; die von
 dort gemeldeten Fehler werden in derselben Form dargestellt wie
-clientseitige, nicht zuordenbare erscheinen als allgemeine Meldung
-über dem Formular.
+clientseitige, nicht zuordenbare Fehler, die als allgemeine Meldung
+über dem Formular erscheinen.
 
 Verläuft die Anfrage erfolgreich, wird die Sitzung im
 Authentifizierungszustand gespeichert; beim Login schließt sich der
@@ -452,6 +453,63 @@ Antwort vor, wird zunächst die lokal gespeicherte Session verwendet,
 damit die Oberfläche sofort angezeigt werden kann. Das dreistufige
 Vorgehen aus Abschnitt~\ref{subsec:auth-onboarding} ist damit in der
 geschützten Routenkomponente umgesetzt.
+
+\subsection{Zurücksetzen des Passworts}
+\label{subsec:passwort_zuruecksetzen}
+ 
+Die drei Schritte aus Abschnitt~\ref{subsec:auth-onboarding} sind als
+drei Routen umgesetzt, jede aus einer Seitenkomponente für den Rahmen
+und einer Formularkomponente für den Schritt. Alle drei verwenden
+dieselbe Karte mit Titel und erläuterndem Text, sodass allein der Text
+sagt, was gerade verlangt wird.
+ 
+Zwischen den Schritten bleiben zwei Angaben erhalten: die
+E-Mail-Adresse aus dem ersten Schritt und der Nachweis, den das
+Backend nach der Prüfung des Kennworts zurückgibt. Beide liegen im
+Sitzungsspeicher des Browsers, weil der Nutzer die Anwendung
+zwischendurch verlässt, um in sein Postfach zu sehen; ein Zustand
+allein im Arbeitsspeicher wäre nach dem Neuladen verloren. Beim
+Schließen des Reiters verfallen die Angaben von selbst.
+ 
+Jede der beiden hinteren Seiten prüft beim Aufbau, ob ihre
+Voraussetzung vorliegt, und leitet andernfalls ersetzend auf den
+ersten Schritt zurück. Die Reihenfolge ist damit nicht nur nahegelegt,
+sondern erzwungen: Die dritte Seite lässt sich über ihre Adresse nicht
+sinnvoll aufrufen.
+ 
+Das Kennwort hat sechs Stellen und ist auf sechs einzelne Felder
+verteilt. Sie nehmen nur Ziffern an, rücken selbsttätig weiter und
+verteilen eine als Ganzes eingefügte Folge auf die Felder. Nach außen
+verhält sich die Komponente wie ein einzelnes Feld, sodass die Prüfung
+keine sechs Felder sieht, sondern eine Zeichenkette aus sechs Ziffern.
+ 
+Ist das neue Passwort gesetzt, werden Adresse und Nachweis entfernt
+und der Anmeldedialog öffnet sich auf der Startseite. Der Vorgang
+endet damit dort, wo er begonnen hat, und hinterlässt nichts im
+Browser.
+ 
+% ---------------------------------------------------------------
+% ABBILDUNG: deine vier Bildschirmfotos, 2x2.
+% Dateinamen an deine Ablage anpassen.
+%
+% Der Hinweis auf den festen Wert gehoert in die Bildunterschrift,
+% sonst fragt der Pruefer, ob das Kennwort immer 111111 lautet.
+% ---------------------------------------------------------------
+ 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.48\textwidth]{Bilder/pwforgot.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{Bilder/pw_2_otp_leer.png}\\[1ex]
+\includegraphics[width=0.48\textwidth]{Bilder/pw_3_otp_gefuellt.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{Bilder/pw_4_neues_passwort.png}
+\caption{Zurücksetzen des Passworts: Anfordern des Einmalkennworts,
+Eingabe im leeren und im ausgefüllten Zustand, Setzen des neuen
+Passworts. Das Kennwort ist im Backend zu Testzwecken auf einen festen
+Wert gesetzt.}
+\label{fig:passwort_zuruecksetzen}
+\end{figure}
 
 \subsection{Rollen-Upgrade-Antrag}
 \label{subsec:impl_rollen_upgrade}
@@ -538,7 +596,7 @@ Abbildung~\ref{fig:buchung_auswahl} zeigt sie nach Wahl von Tag und
 Zeitfenster.
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.50\textwidth]{Bilder/screenshot_buchung_auswahl.png}
+\includegraphics[width=0.45\textwidth]{Bilder/screenshot_buchung_auswahl.png}
 \caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
 \label{fig:buchung_auswahl}
 \end{figure}
@@ -808,7 +866,7 @@ Buchung trägt keine Schaltfläche mehr.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_provider_bookings.png}
+\includegraphics[width=0.65\textwidth]{Bilder/screenshot_provider_bookings.png}
 \caption{Eingegangene Buchungen mit der jeweils zustandsabhängigen
 Aktion}
 \label{fig:provider_bookings}
@@ -944,7 +1002,7 @@ Unterhaltung angegeben, wird auf die zuletzt aktive umgeleitet.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_chat.png}
+\includegraphics[width=0.65\textwidth]{Bilder/screenshot_chat.png}
 \caption{Nachrichtenbereich mit Liste der Unterhaltungen und
 Verlauf}
 \label{fig:chat_seite}

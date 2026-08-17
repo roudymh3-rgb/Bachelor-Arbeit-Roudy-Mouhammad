@@ -10,94 +10,71 @@
 \subsection{Komponentenarchitektur und Ordnerstruktur}
 \label{subsec:komponentenarchitektur}
  
-Das Frontend von \textit{Bazario} folgt einer
-feature-basierten Ordnerstruktur, bei der
-zusammengehörige Dateien nach fachlichen
-Funktionsbereichen gruppiert werden. Dieses
-Prinzip fördert die Wartbarkeit und
-Skalierbarkeit des Projekts, da neue
-Funktionsbereiche unabhängig voneinander
-entwickelt und erweitert werden können
-\cite{ijlrp_react_components}.
+Das Frontend von \textit{Bazario} folgt einer feature-basierten
+Ordnerstruktur, bei der zusammengehörige Dateien nach fachlichen
+Funktionsbereichen gruppiert werden. Dieses Prinzip fördert die
+Wartbarkeit und Skalierbarkeit des Projekts, da neue
+Funktionsbereiche unabhängig voneinander entwickelt und erweitert
+werden können \cite{ijlrp_react_components}.
  
 Innerhalb dieser Struktur spiegelt sich das in
-Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte
-Prinzip der Trennung von Presentational und Container
-Components wider: Komponenten im Verzeichnis
-\texttt{components/} eines Funktionsbereichs übernehmen
-ausschließlich die Darstellung, während Datenzugriff und
-Geschäftslogik in den zugehörigen Ordnern \texttt{api/} und
-\texttt{hooks/} gekapselt sind.
+Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte Prinzip der
+Trennung von Presentational und Container Components wider:
+Komponenten im Verzeichnis \texttt{components/} eines
+Funktionsbereichs übernehmen ausschließlich die Darstellung, während
+Datenzugriff und Geschäftslogik in den zugehörigen Ordnern
+\texttt{api/} und \texttt{hooks/} gekapselt sind.
  
-Das Projekt wird mit Vite als Build-Tool
-initialisiert, das eine schnelle
-Entwicklungsumgebung und optimierte
-Produktions-Builds für React-Anwendungen
-bereitstellt \cite{vite_docs}. Die Wurzel
-des Projekts enthält Konfigurationsdateien
-wie \texttt{vite.config.ts},
-\texttt{tsconfig.json},
-\texttt{tsconfig.app.json},
-\texttt{tsconfig.node.json} sowie
-\texttt{package.json} mit allen
+Das Projekt wird mit Vite als Build-Tool initialisiert, das eine
+schnelle Entwicklungsumgebung und optimierte Produktions-Builds für
+React-Anwendungen bereitstellt \cite{vite_docs}. Die Wurzel des
+Projekts enthält Konfigurationsdateien wie \texttt{vite.config.ts},
+\texttt{tsconfig.json}, \texttt{tsconfig.app.json},
+\texttt{tsconfig.node.json} sowie \texttt{package.json} mit allen
 Abhängigkeiten des Projekts. Ergänzend sind
-\texttt{eslint.config.js} für die statische
-Codeanalyse und \texttt{components.json}
-für die shadcn/ui-Konfiguration vorhanden.
+\texttt{eslint.config.js} für die statische Codeanalyse und
+\texttt{components.json} für die shadcn/ui-Konfiguration vorhanden.
  
-Der Quellcode befindet sich vollständig im
-Verzeichnis \texttt{src/}, das in folgende
-Hauptbereiche unterteilt ist. Das Verzeichnis
-\texttt{app/} enthält zwei Unterordner: In
-\texttt{app/router/} liegt die zentrale
-Routing-Konfiguration in \texttt{index.tsx},
-in \texttt{app/providers/} werden die
-projektweiten Provider-Komponenten
-zusammengeführt, über die zentrale Werte
-und Instanzen für die gesamte Anwendung
-bereitgestellt werden. Unter
-\texttt{layouts/} befindet sich die
-Layout-Komponente \texttt{main-layout.tsx},
-die als Wrapper für alle Seiten dient und
-gemeinsame Elemente wie den Anwendungs-Header
-einbindet. Das Verzeichnis \texttt{features/}
-bildet den Kern der Anwendung, in dem jeder
-Funktionsbereich einen eigenen Unterordner
-mit zugehörigen Komponenten, Hooks, Schemas,
-Typdefinitionen und \acs{API}-Funktionen erhält.
-Unter \texttt{components/ui/} befinden sich
-die wiederverwendbaren \acs{UI}-Basiskomponenten aus
-shadcn/ui (vgl. Abschnitt~\ref{subsec:ui-bibliotheken}),
-während \texttt{components/shared/}
-projektübergreifend genutzte Komponenten wie
-den Anwendungs-Header enthält. Das Verzeichnis
-\texttt{assets/} enthält statische
-Ressourcen, während \texttt{lib/} die
-technische Infrastruktur bereitstellt,
-darunter die Anbindung an das Backend, die
-Validierung der Authentifizierung und die
-Sprachressourcen der Oberfläche. Im
-Verzeichnis \texttt{stores/} sind die
-globalen Zustand-Stores gebündelt (vgl.
-Abschnitt~\ref{subsec:state-management-konzept}).
-Die globale
-\acs{CSS}-Konfiguration in \texttt{index.css} bindet
-die Tailwind-Direktiven sowie die
-Design-Tokens des Designsystems ein
+Der Quellcode befindet sich vollständig im Verzeichnis
+\texttt{src/}. Das Verzeichnis \texttt{app/} enthält zwei
+Unterordner: In \texttt{app/router/} liegt die zentrale
+Routing-Konfiguration, in \texttt{app/providers/} werden die
+projektweiten Provider-Komponenten zusammengeführt, über die
+zentrale Werte und Instanzen für die gesamte Anwendung
+bereitgestellt werden. Unter \texttt{layouts/} befindet sich die
+Layout-Komponente \texttt{main-layout.tsx}, die als Wrapper für alle
+Seiten dient und gemeinsame Elemente wie den Anwendungs-Header
+einbindet.
+ 
+Das Verzeichnis \texttt{features/} bildet den Kern der Anwendung, in
+dem jeder Funktionsbereich einen eigenen Unterordner mit zugehörigen
+Komponenten, Hooks, Schemas, Typdefinitionen und
+\acs{API}-Funktionen erhält. Unter \texttt{components/ui/} befinden
+sich die wiederverwendbaren \acs{UI}-Basiskomponenten aus shadcn/ui
+(vgl. Abschnitt~\ref{subsec:ui-bibliotheken}), während
+\texttt{components/shared/} projektübergreifend genutzte Komponenten
+wie den Anwendungs-Header enthält.
+ 
+Das Verzeichnis \texttt{lib/} stellt die technische Infrastruktur
+bereit, darunter die Anbindung an das Backend, die Validierung der
+Authentifizierung und die Sprachressourcen der Oberfläche. Im
+Verzeichnis \texttt{stores/} sind die globalen Zustand-Stores
+gebündelt (vgl.
+Abschnitt~\ref{subsec:state-management-konzept}). Unter
+\texttt{test/} liegt nicht die Sammlung der Tests, sondern deren
+gemeinsame Grundlage; die Tests selbst stehen jeweils neben der
+geprüften Datei (vgl. Kapitel~\ref{chap:testen}). Die globale
+\acs{CSS}-Konfiguration in \texttt{index.css} bindet die
+Tailwind-Direktiven sowie die Design-Tokens des Designsystems ein
 \cite{tailwindcss_docs}.
  
-Abbildung~\ref{fig:ordnerstruktur} zeigt die
-Ordnerstruktur des Projekts. Jeder Funktionsbereich
-unter \texttt{features/} folgt intern
-einer einheitlichen Grundstruktur, die je
-nach Bedarf die Ordner
-\texttt{api/}, \texttt{components/},
-\texttt{hooks/}, \texttt{pages/},
-\texttt{schemas/} und \texttt{types/}
-umfasst; diese
-wird in Kapitel~\ref{chap:umsetzung} am
-Beispiel einzelner Funktionsbereiche im
-Detail gezeigt.
+Abbildung~\ref{fig:ordnerstruktur} zeigt die Ordnerstruktur des
+Projekts. Jeder Funktionsbereich unter \texttt{features/} folgt
+intern einer einheitlichen Grundstruktur, die je nach Bedarf die
+Ordner \texttt{api/}, \texttt{components/}, \texttt{hooks/},
+\texttt{pages/}, \texttt{schemas/} und \texttt{types/} umfasst; diese
+wird in Kapitel~\ref{chap:umsetzung} am Beispiel einzelner
+Funktionsbereiche im Detail gezeigt.
  
 \begin{figure}[H]
 \centering \small
@@ -108,12 +85,12 @@ BAZARIO/
 |   |-- app/
 |   |   |-- providers/
 |   |   `-- router/
-|   |-- assets/
 |   |-- components/
 |   |   |-- shared/
 |   |   `-- ui/
 |   |-- features/
 |   |   |-- account/
+|   |   |-- ads/
 |   |   |-- auth/
 |   |   |-- cart/
 |   |   |-- categories/
@@ -121,6 +98,7 @@ BAZARIO/
 |   |   |-- connect/
 |   |   |-- earnings/
 |   |   |-- home/
+|   |   |-- listings/
 |   |   |-- orders/
 |   |   |-- products/
 |   |   |-- provider-availability/
@@ -133,6 +111,7 @@ BAZARIO/
 |   |   |-- auth/
 |   |   `-- i18n/
 |   |-- stores/
+|   |-- test/
 |   |-- App.tsx
 |   |-- index.css
 |   `-- main.tsx
@@ -142,101 +121,28 @@ BAZARIO/
 \label{fig:ordnerstruktur}
 \end{figure}
  
-Das Verzeichnis \texttt{features/} enthält
-die Funktionsbereiche \texttt{auth/},
-\texttt{account/}, \texttt{categories/},
-\texttt{home/}, \texttt{products/},
-\texttt{provider-availability/},
-\texttt{sellers/}, \texttt{service-providers/}
-und \texttt{services/}, die Authentifizierung,
-Kontoverwaltung, Produkt- und
-Dienstleistungskategorien, die Startseite,
-den Produkt- und Dienstleistungskatalog
-inklusive der öffentlichen Verkäufer- und
-Dienstleister-Profile sowie die Verwaltung von
-Arbeitszeiten und Abwesenheiten der
-Dienstleister abbilden. Hinzu kommen die Funktionsbereiche \texttt{cart/} für den
-Warenkorb, \texttt{orders/} für die Bestellabwicklung,
-\texttt{connect/} für das Stripe-Connect-Onboarding der Anbieter,
-\texttt{earnings/} für deren Einnahmenübersicht sowie
-\texttt{chat/} für den Nachrichtenbereich (vgl.
-Abschnitt~\ref{subsec:messaging_konzept}). Für Werbeanzeigen ist
-ein weiterer Funktionsbereich vorgesehen.
-
-\subsection{Routing-Konzept und
-rollenbasierter Seitenschutz}
-\label{subsec:routing-konzept}
+Das Verzeichnis \texttt{features/} enthält die Funktionsbereiche
+\texttt{auth/}, \texttt{account/}, \texttt{categories/},
+\texttt{home/}, \texttt{products/}, \texttt{provider-availability/},
+\texttt{sellers/}, \texttt{service-providers/} und
+\texttt{services/}, die Authentifizierung, Kontoverwaltung, Produkt-
+und Dienstleistungskategorien, die Startseite, den Produkt- und
+Dienstleistungskatalog inklusive der öffentlichen Verkäufer- und
+Dienstleister-Profile sowie die Verwaltung von Arbeitszeiten und
+Abwesenheiten der Dienstleister abbilden. Hinzu kommen die
+Funktionsbereiche \texttt{cart/} für den Warenkorb,
+\texttt{orders/} für die Bestellabwicklung, \texttt{connect/} für das
+Stripe-Connect-Onboarding der Anbieter, \texttt{earnings/} für deren
+Einnahmenübersicht sowie \texttt{chat/} für den Nachrichtenbereich
+(vgl. Abschnitt~\ref{subsec:messaging_konzept}).
  
-Das Routing von \textit{Bazario} basiert
-auf React Router DOM und folgt einem
-hierarchischen Konzept, bei dem alle Routen
-als Kindrouten unter einem gemeinsamen
-Layout-Wrapper organisiert sind
-\cite{reactrouter_docs}. Die zentrale
-Routing-Konfiguration wird in
-\texttt{app/router/index.tsx} definiert
-und über einen \texttt{RouterProvider}
-in der Hauptkomponente \texttt{App.tsx}
-eingebunden. Als oberste Ebene der
-Routenhierarchie dient die Komponente
-\texttt{MainLayout}, die gemeinsame
-Elemente wie den Anwendungs-Header für
-alle Unterseiten bereitstellt. Alle
-seitenspezifischen Komponenten werden
-als \texttt{children} innerhalb dieses
-Layouts gerendert, sodass das gemeinsame
-Layout nur einmal definiert werden muss
-\cite{reactrouter_docs}.
- 
-Für den rollenbasierten Seitenschutz
-werden geschützte Routen als
-Wrapper-Komponenten implementiert, die
-vor dem Rendern einer Seite den
-Authentifizierungsstatus sowie die Rolle
-des Nutzers prüfen
-\cite{reactrouter_docs,
-wieruch_protected_routes}. Ist der Nutzer
-nicht authentifiziert, wird er auf die
-Startseite umgeleitet, von der aus die
-Anmeldung über einen Dialog im
-Anwendungs-Header erfolgen kann; besitzt
-er zwar eine gültige Sitzung, aber nicht
-die für die jeweilige Seite erforderliche
-Rolle, erfolgt die Weiterleitung auf die
-Kontoübersicht. Dieses Konzept folgt
-dem in Abschnitt~\ref{subsec:rbac}
-vorgestellten Prinzip der
-rollenbasierten Zugriffskontrolle.
- 
-Öffentlich zugängliche Routen wie
-\texttt{/products} oder
-\texttt{/services} stehen allen
-Nutzern offen, während geschützte
-Routen wie \texttt{/account} eine
-gültige Sitzung voraussetzen und
-Routen wie
-\texttt{/account\allowbreak/upgrade\allowbreak/seller}
-zusätzlich an die Rolle \textit{Customer}
-gebunden sind.
-Mit der Zahl der Routen wächst der Umfang des Programmcodes, den eine
-\acs{SPA} beim ersten Aufruf überträgt. Da die Routenkonfiguration
-festlegt, welche Komponente zu welcher Adresse gehört, ist sie
-zugleich die Stelle, an der sich dieser Code aufteilen lässt: Jede
-Ansicht wird als eigener Abschnitt geführt und erst beim Aufruf ihrer
-Route nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}).
- 
-Ausgenommen bleiben der Anwendungsrahmen, die Wrapper-Komponente des
-Seitenschutzes und die Startseite. Die ersten beiden sind an jeder
-Route beteiligt, die Startseite ist der häufigste Einstiegspunkt --
-ein Nachladen würde den ersten Aufruf in allen drei Fällen
-verlangsamen statt ihn zu beschleunigen.
- 
-Da eine nachgeladene Ansicht nicht sofort verfügbar ist, muss für die
-Dauer des Ladens ein Platzhalter dargestellt werden. Dessen Grenze
-wird bewusst um den Inhaltsbereich gelegt und nicht um die gesamte
-Anwendung, damit Kopfzeile und Navigation während des Wechsels
-sichtbar bleiben. Die Anforderung an die Sichtbarkeit des
-Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
+Die bezahlten Platzierungen belegen zwei Verzeichnisse:
+\texttt{ads/} für die Werbung und \texttt{listings/} für die
+Ankündigungen. Die Trennung folgt der Unterscheidung, die
+Abschnitt~\ref{subsec:werbung_konzept} begründet, denn beide
+unterscheiden sich darin, wer sie anlegen darf, was sie erfassen und
+wohin ein Klick auf sie führt. Ein gemeinsames Verzeichnis müsste
+diese Unterschiede innerhalb jeder einzelnen Datei führen.
 gilt damit auch für den Wechsel zwischen Ansichten.
 
 \subsection{Globales State Management}
@@ -369,8 +275,8 @@ Aus diesem Ansatz folgen vier Vorgaben, die den in den nächsten
 Abschnitten beschriebenen Entscheidungen zugrunde liegen:
  
 \begin{itemize}
-\item Wiederkehrende Muster -- Karten, Schaltflächen, Dialoge,
-      Zustandsmarkierungen, Formularabschnitte -- folgen denselben
+\item Wiederkehrende Muster wie Karten, Schaltflächen, Dialoge,
+      Zustandsmarkierungen und Formularabschnitte folgen denselben
       Regeln, statt je Ansicht neu festgelegt zu werden.
 \item Der jeweils nächste sinnvolle Schritt einer Seite ist
       hervorgehoben; ergänzende Angaben treten zurück.
@@ -383,7 +289,8 @@ Die letzte Vorgabe wiegt schwerer, als sie zunächst wirkt: Sie
 betrifft die Fristen für Stornierung und Verlegung ebenso wie nicht
 belegbare Tage in der Terminauswahl und ist an beiden Stellen
 unabhängig voneinander angewandt worden (vgl.
-Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} und
+Abschnitt~\ref{subsec:buchung_konzept}).
  
 Ergänzend gilt ein Grundsatz der Beschränkung: Bestandteile, die
 lediglich vorhandene Wege wiederholen, entfallen. Eine Fußzeile
@@ -392,9 +299,11 @@ Netzwerke und Schnellzugriffe auf. Diese Inhalte sind entweder bereits
 in der Kopfzeile erreichbar oder spielen für den Funktionsumfang der
 Plattform keine Rolle. Verzichtet wird damit nicht auf
 Gestaltung, sondern auf Doppelung.
-
+ 
+ 
 \subsection{Designsystem und Farbschema}
 \label{subsec:designsystem}
+ 
 Das Designsystem von \textit{Bazario} setzt das in
 Abschnitt~\ref{subsec:designsysteme} beschriebene Prinzip um, die
 visuellen Grundelemente einer Anwendung nicht in den Komponenten zu
@@ -415,11 +324,19 @@ verloren geht. Ergänzt wird das Schema um Tokens für Rahmen,
 Eingabefelder und Fokusringe sowie um einen eigenen Wert
 \texttt{destructive} für zerstörende Aktionen und Fehlerzustände.
  
-% ---------------------------------------------------------------
-% TODO (Roudy): Der folgende Absatz beschreibt, WAS im Code steht.
-% WARUM du dich fuer dieses Schema entschieden hast, fehlt und muss
-% von dir kommen -- etwa aus dem Gespraech mit dem Mentor.
-% ---------------------------------------------------------------
+Die Wahl fiel auf eine abgestimmte Zusammenstellung statt auf einzeln
+gesuchte Werte, damit die Farben untereinander harmonieren, ohne dass
+jedes Verhältnis eigens geprüft werden muss. Maßgeblich war dabei der
+Gegenstand der Plattform: Ein Marktplatz, auf dem Anbieter um
+Aufmerksamkeit werben, verträgt ein kräftigeres Schema als eine reine
+Verwaltungsanwendung. Die Kopfzeile ist dunkel gehalten und hebt sich
+vom hellen Inhaltsbereich ab, sodass der Rahmen der Anwendung als
+eigene Ebene erkennbar bleibt (vgl.
+Abschnitt~\ref{subsec:seitenstruktur}). Sie ist damit die einzige
+Fläche, die dem hellen Grundton widerspricht, und erhält deshalb ein
+eigenes Wertepaar \texttt{header} und \texttt{header-foreground}. Der
+Umkehrung der Helligkeit folgt so eine eigene Benennung, statt die
+Kopfzeile als Ausnahme innerhalb der übrigen Werte zu führen.
  
 Die Palette ruht auf drei Werten derselben Farbfamilie: einem dunklen
 Blau für Text und Schrift, einem gedeckten Petrolton für vorrangige
@@ -430,12 +347,12 @@ auf. Die Palette ist damit einfarbig angelegt; allein
 diesem Schema also nicht zwischen Bereichen, sondern zwischen Rängen
 von Handlungen.
  
-Die Werte sind hexadezimal notiert; allein \texttt{destructive} ist
-in \acs{OKLCH} angegeben, einem Farbraum, dessen
-Helligkeitskomponente näherungsweise der wahrgenommenen Helligkeit
-entspricht \cite{css_color_4}. Abstufungen desselben Farbtons lassen
-sich darin gleichmäßig ableiten, was für einen Warnwert nützlich ist,
-der in mehreren Sättigungen erscheinen kann.
+Sämtliche Werte sind hexadezimal notiert. Für die Darstellung im
+Browser stehen mehrere gleichwertige Schreibweisen zur Verfügung, die
+dieselbe Farbe bezeichnen und sich in ihrer Wirkung nicht
+unterscheiden; die Beschränkung auf eine einzige ist deshalb keine
+inhaltliche Festlegung, sondern dient allein der Einheitlichkeit der
+Stildatei.
  
 Karten heben sich von der Seite ab, auf der sie liegen: Der
 Seitenhintergrund trägt den aufgehellten Farbton, die Karte selbst
@@ -482,7 +399,7 @@ Die Komponentenbasis entstammt shadcn/ui \cite{shadcn_docs} und wurde
 genannten Anforderungen an Konsistenz bereits erfüllt; eine eigene
 Umsetzung der Grundelemente war für den Funktionsumfang dieser Arbeit
 nicht erforderlich. Ersetzt wurde allein deren neutrale
-Standardpalette durch die oben beschriebenen Werte -- die Struktur des
+Standardpalette durch die oben beschriebenen Werte. Die Struktur des
 Token-Systems blieb dabei unverändert, ausgetauscht wurden nur die
 Farben, auf die es verweist.
  
@@ -496,10 +413,11 @@ Zustandsanzeigen gilt mit Kriterium 1.4.11 ein eigener Schwellenwert
 von 3:1; der Fokusring erreicht 3,6:1 gegenüber einer Karte und
 3,2:1 gegenüber dem Seitenhintergrund. Die Prüfung der übrigen
 Bedienelemente erfolgt in Kapitel~\ref{chap:testen}.
-
-
+ 
+ 
 \subsection{Seitenstruktur und Navigationsprinzip}
 \label{subsec:seitenstruktur}
+ 
 Sämtliche Ansichten der Anwendung sind in einen gemeinsamen Rahmen
 eingefasst, der aus der in Abschnitt~\ref{subsec:routing-konzept}
 beschriebenen Routenhierarchie folgt: Die Layout-Komponente bildet
@@ -510,10 +428,9 @@ Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
  
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.90\textwidth]{Bilder/abb_rahmen.pdf}
-\caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen;
-gestrichelt hervorgehoben ist der einzige Bereich, der sich zwischen
-ihnen unterscheidet (Strukturskizze, eigene Darstellung)}
+\includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.pdf}
+\caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
+(Strukturskizze, eigene Darstellung)}
 \label{fig:rahmen}
 \end{figure}
  
@@ -545,34 +462,16 @@ Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{Bilder/abb_startseite.pdf}
-\caption{Struktur der Startseite und Aufbau einer Vorschaukarte;
-getönt dargestellt sind die vier Bereiche für Ankündigungen und
-Werbung, der angeschnittene Block am rechten Rand deutet den nächsten
-Eintrag der Schleife an (Strukturskizze, eigene Darstellung)}
+\caption{Struktur der Startseite und Aufbau einer Vorschaukarte
+(Strukturskizze, eigene Darstellung)}
 \label{fig:startseite}
 \end{figure}
  
-Die Startseite gliedert sich in bis zu sechs aufeinanderfolgende
-Abschnitte. Einen eigenen Seitentitel trägt sie nicht: Sie ist der
-Einstiegspunkt der Anwendung, und die Überschrift jedes Abschnitts
-benennt bereits, was in ihm zu finden ist.
- 
-Den Anfang bilden die Ankündigungen des Marktplatzes, darauf folgen
-die drei Werbebereiche in absteigender Sponsorenstufe und erst danach
-der Katalog. Reihenfolge und Größe der Platzierungen ergeben sich
-dabei aus dem Werbemodell und sind in
-Abschnitt~\ref{subsec:werbung_konzept} beschrieben. Für die
-Seitenstruktur ist zweierlei maßgeblich: Ein Bereich ohne Einträge
-wird nicht dargestellt, sodass die Startseite ohne Werbung unmittelbar
-mit dem Katalog beginnt; und die vier oberen Bereiche sind als
-Schleife ausgeführt, in der die Einträge in festem Takt von rechts
-nach links wandern, statt untereinander zu stehen. Beides hält die
-Seite unabhängig davon kurz, wie viele Platzierungen gebucht sind.
- 
-Den Abschluss bilden zwei gleichartig aufgebaute Abschnitte, einer für
-die zuletzt eingestellten Produkte und einer für die zuletzt
-eingestellten Dienstleistungen. Beide bestehen aus einer Überschrift
-und einem Raster aus Vorschaukarten.
+Auf den Seitentitel mit einem einleitenden Satz folgen zwei
+gleichartig aufgebaute Abschnitte, einer für die zuletzt
+eingestellten Produkte und einer für die zuletzt eingestellten
+Dienstleistungen. Beide bestehen aus einer Überschrift und einem
+Raster aus Vorschaukarten.
  
 Die Karte ist dabei das durchgehende Gestaltungselement des
 Katalogbereichs. Sie führt von oben nach unten die Bildfläche, den
@@ -611,7 +510,12 @@ Zeitfensterliste, Zeitzone und Zusammenfassung müssen auch auf
 geringer Breite zusammenhängend erkennbar bleiben, da eine
 unvollständig erfasste Auswahl unmittelbar zu einer falschen Buchung
 führen würde.
-
+ 
+Am Fuß der Seite ist ein Bereich für Werbung und Ankündigungen
+vorgesehen; er ist in Abbildung~\ref{fig:startseite} gestrichelt
+dargestellt.
+ 
+ 
 \subsection{Barrierefreiheit im Entwurf}
 \label{subsec:barrierefreiheit_konzept}
  
@@ -627,17 +531,17 @@ Navigation als Verweis, eine auslösende Handlung als Schaltfläche,
 eine Rückfrage als Dialogkomponente und nicht als browsereigene
 Abfrage. Damit ist die Bedeutung eines Elements nicht nur visuell,
 sondern auch im Dokument hinterlegt und für assistive Technologien
-zugänglich. Handlungen mit nicht umkehrbarer Wirkung -- das Löschen
-einer Dienstleistung, eines Produkts oder des eigenen Kontos --
+zugänglich. Handlungen mit nicht umkehrbarer Wirkung, also das
+Löschen einer Dienstleistung, eines Produkts oder des eigenen Kontos,
 werden zusätzlich über einen Bestätigungsdialog geführt, sodass der
 Nutzer die Kontrolle über den Ablauf behält (vgl.
 Abschnitt~\ref{subsec:gestaltungsprinzipien}).
  
 Zweitens erhält jedes bedienbare Element einen sichtbaren
 Fokuszustand. In Abläufen mit mehreren aufeinanderfolgenden
-Bedienschritten -- Anmeldung, Terminauswahl, Kontoverwaltung -- muss
-ohne Zeigegerät erkennbar bleiben, welches Element gerade angesteuert
-ist.
+Bedienschritten, etwa Anmeldung, Terminauswahl und Kontoverwaltung,
+muss ohne Zeigegerät erkennbar bleiben, welches Element gerade
+angesteuert ist.
  
 Drittens tragen Eingabefelder eine eigene Beschriftung statt
 lediglich eines Platzhaltertextes, und Fehlermeldungen erscheinen an
@@ -652,6 +556,8 @@ Abschnitt~\ref{subsec:gestaltungsansatz} genannte Vorgabe hat hier
 eine zweite Begründung: Ein Bedienelement, das erst nach dem Auslösen
 fehlschlägt, teilt den Systemzustand später mit als eines, das seinen
 Zustand von vornherein anzeigt.
+ 
+ 
 \subsection{Mehrsprachigkeit und Sprachwahl}
 \label{subsec:mehrsprachigkeit_konzept}
  
@@ -659,7 +565,11 @@ Zustand von vornherein anzeigt.
 Abschnitt~\ref{subsec:mehrsprachigkeit} beschriebenen Zweiteilung:
 Die Oberflächentexte werden im Frontend übersetzt, die Angaben zu
 Produkten, Dienstleistungen und Anbietern liefert das Backend bereits
-in der angeforderten Sprache. Diese Aufteilung folgt aus der Herkunft der Daten, nicht aus einer Entwurfsentscheidung: Ein Anbieter erfasst Titel und Beschreibung mehrsprachig (vgl. Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}), weshalb nur das Backend beide Fassungen kennt.
+in der angeforderten Sprache. Diese Aufteilung folgt aus der Herkunft
+der Daten, nicht aus einer Entwurfsentscheidung: Ein Anbieter erfasst
+Titel und Beschreibung mehrsprachig (vgl.
+Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}), weshalb nur das
+Backend beide Fassungen kennt.
  
 Die Sprachwahl ist im Anwendungsrahmen angeordnet und damit von jeder
 Seite aus erreichbar. Sie wirkt ohne erneutes Laden, da ein Neuladen
@@ -672,54 +582,85 @@ wiederhergestellt.
 Angeboten werden Deutsch und Englisch, für die Oberflächentexte
 vollständig umgesetzt. Bei den Inhalten reicht die Wahl gegenwärtig
 nicht so weit: Die Erfassungsformulare sehen Englisch und Arabisch
-vor, sodass eine deutsche Fassung nicht entsteht. Anforderung und Verfügbarkeit einer Sprache sind damit zwei getrennte Fragen: Das Frontend kann jede Sprache anfordern, geliefert wird nur, was zuvor erfasst wurde.
+vor, sodass eine deutsche Fassung nicht entsteht. Anforderung und
+Verfügbarkeit einer Sprache sind damit zwei getrennte Fragen: Das
+Frontend kann jede Sprache anfordern, geliefert wird nur, was zuvor
+erfasst wurde.
 
 
 \section{Konzept der einzelnen Funktionsbereiche}
 \subsection{Authentifizierung und Onboarding}
 \label{subsec:auth-onboarding}
 
-Der Login erfolgt über einen Dialog, der von
-jeder Stelle der Anwendung aus aufgerufen werden
-kann, ohne die aktuelle Seite zu verlassen,
-sodass ein Nutzer etwa während des Checkouts
-nicht unterbrochen wird. Die Registrierung
-erfolgt dagegen über eine eigene Seite, da sie
-mehr Eingabefelder benötigt und eine
-eigenständige Handlung darstellt. Beide
-Formulare validieren ihre Eingaben clientseitig,
-bevor eine Anfrage gestellt wird; serverseitige
-Fehler werden gezielt dem betroffenen Feld
-zugeordnet, und der Absende-Button wird während
-der Bearbeitung deaktiviert.
-
-Verläuft Anmeldung oder Registrierung
-erfolgreich, bildet die Anwendung aus der
-Backend-Antwort eine Sitzung mit
-Zugriffstoken, Nutzerdaten und Rollen. Diese wird
-im localStorage gespeichert, um den Anmeldestatus
-über Neuladen und erneute Besuche hinweg zu
-erhalten, und reaktiv über Zustand
-bereitgestellt (vgl.
-Abschnitt~\ref{subsec:state-management-konzept}).
-Der Zugriff auf geschützte Bereiche wird über ein
-dreistufiges Konzept sichergestellt: Zunächst
-wird geprüft, ob der Anmeldestatus bereits
-bestimmt ist (Ladezustand), dann ob der Nutzer
-angemeldet ist (sonst Weiterleitung), und erst
-danach wird der geschützte Inhalt angezeigt.
-
-Der gespeicherte Token wird automatisch über
-einen zentralen, wiederverwendbaren Mechanismus
-an jede Anfrage angehängt und zusätzlich aktiv
-beim Backend validiert, sodass ein abgelaufener
-oder ungültiger Token erkannt und der Nutzer
-korrekt abgemeldet wird. Für das Onboarding
-verfolgt die Plattform ein zweistufiges
-Rollenmodell: Jeder Nutzer erhält zunächst die
-Rolle \textit{Customer}, ein Wechsel zu \textit{Seller} oder
-\textit{ServiceProvider} erfolgt über einen von einem
-Administrator geprüften Antragsprozess.
+Der Login erfolgt über einen Dialog, der von jeder Stelle der
+Anwendung aus aufgerufen werden kann, ohne die aktuelle Seite zu
+verlassen, sodass ein Nutzer etwa während des Checkouts nicht
+unterbrochen wird. Die Registrierung erfolgt dagegen über eine eigene
+Seite, da sie mehr Eingabefelder benötigt und eine eigenständige
+Handlung darstellt. Beide Formulare validieren ihre Eingaben
+clientseitig, bevor eine Anfrage gestellt wird; serverseitige Fehler
+werden gezielt dem betroffenen Feld zugeordnet, und der
+Absende-Button wird während der Bearbeitung deaktiviert.
+ 
+Verläuft Anmeldung oder Registrierung erfolgreich, bildet die
+Anwendung aus der Backend-Antwort eine Sitzung mit Zugriffstoken,
+Nutzerdaten und Rollen. Diese wird im localStorage gespeichert, um den
+Anmeldestatus über Neuladen und erneute Besuche hinweg zu erhalten,
+und reaktiv über Zustand bereitgestellt (vgl.
+Abschnitt~\ref{subsec:state-management-konzept}). Der Zugriff auf
+geschützte Bereiche wird über ein dreistufiges Konzept sichergestellt:
+Zunächst wird geprüft, ob der Anmeldestatus bereits bestimmt ist
+(Ladezustand), dann ob der Nutzer angemeldet ist (sonst
+Weiterleitung), und erst danach wird der geschützte Inhalt angezeigt.
+ 
+Der gespeicherte Token wird automatisch über einen zentralen,
+wiederverwendbaren Mechanismus an jede Anfrage angehängt und
+zusätzlich aktiv beim Backend validiert, sodass ein abgelaufener oder
+ungültiger Token erkannt und der Nutzer korrekt abgemeldet wird.
+ 
+Eine Ausnahme von diesem Aufbau bildet das vergessene Passwort. Jede
+andere Änderung an einem Konto setzt voraus, dass der Nutzer
+angemeldet ist: Seine Anfrage trägt dann den Zugriffstoken, und das
+Backend erkennt daran, von wem sie stammt. Genau diese Voraussetzung
+fehlt hier. Wer eine E-Mail-Adresse in ein Formular schreibt,
+behauptet lediglich, sie zu besitzen.
+ 
+Das Verfahren muss diese Behauptung deshalb prüfen, bevor es ein neues
+Passwort entgegennimmt, und es tut das über das Postfach selbst: An
+die angegebene Adresse geht ein Einmalkennwort, das nur dort ankommt.
+Wer es zurücksenden kann, hat Zugriff auf dieses Postfach. Das
+Kennwort gilt einmal und nur für eine begrenzte Zeit, sodass ein
+liegen gebliebener Wert nicht dauerhaft verwendbar bleibt.
+ 
+Daraus folgt ein Ablauf aus drei Schritten mit je eigener Aufgabe: Im
+ersten nennt der Nutzer seine Adresse, im zweiten weist er sich mit
+dem empfangenen Kennwort aus, erst im dritten setzt er das neue
+Passwort. Die Trennung ist die Bedingung des Verfahrens, denn der
+dritte Schritt darf nur erreichbar sein, wenn der zweite bestanden
+wurde. Anders als die Anmeldung ist das Zurücksetzen deshalb auch
+kein Dialog, sondern ein eigener Seitenbereich: Ein Vorgang, der
+zwischendurch auf eine E-Mail wartet, muss nach dem Wechsel in das
+Postfach wieder aufgenommen werden können.
+ 
+Auf demselben Grund beruht die Absicherung des letzten Schrittes. Die
+Seite, auf der ein neues Passwort gesetzt wird, ist die wirksamste des
+gesamten Zugangs, denn wer sie erreicht, kann ein Konto übernehmen.
+Sie darf deshalb nicht allein davon abhängen, welche Adresse in der
+Anfrage steht, da diese Angabe aus dem Browser kommt und dort
+veränderbar ist. Das Backend gibt aus diesem Grund nach der
+erfolgreichen Prüfung des Kennworts einen Nachweis zurück, der an
+genau diese Adresse gebunden ist, und verlangt ihn im letzten Schritt.
+Erzeugung und Prüfung dieses Nachweises liegen vollständig im Backend
+und sind in der begleitenden Arbeit zum Backend beschrieben. Für das
+Frontend folgt daraus allein die Anforderung, die drei Schritte in der
+vorgesehenen Reihenfolge zu führen und den Nachweis zwischen ihnen zu
+übergeben.
+ 
+Für das Onboarding verfolgt die Plattform ein zweistufiges
+Rollenmodell: Jeder Nutzer erhält zunächst die Rolle
+\textit{Customer}, ein Wechsel zu \textit{Seller} oder
+\textit{ServiceProvider} erfolgt über einen von einem Administrator
+geprüften Antragsprozess.
  
  
  
@@ -1083,8 +1024,143 @@ Nachweise erhalten bleiben.
 
 \subsection{Werbung und Ankündigungen}
 \label{subsec:werbung_konzept}
-% TODO: Ankündigungen je Rolle, produktspezifische Werbung,
-% Genehmigungsprozesse.
+\textit{Bazario} sieht zwei Arten bezahlter Platzierungen vor, die
+sich in ihrem Zweck unterscheiden. Eine \emph{Ankündigung} teilt
+etwas mit; eine \emph{Werbung} verweist auf ein Angebot der
+Plattform. Aus diesem Unterschied folgt alles Weitere: wer sie
+anlegen darf, wo sie erscheinen und was ein Klick auf sie bewirkt.
+ 
+Ankündigungen stehen sämtlichen Rollen offen. Für einen Kunden ohne
+zusätzliche Rolle sind sie die einzige Möglichkeit, etwas auf der
+Startseite zu platzieren, etwa die Suche nach einer Wohnung, nach
+einem Fahrzeug oder nach einer Stelle. Dass sie auch Verkäufern und
+Dienstleistern offenstehen, folgt aus dem Rollenmodell: Eine
+zusätzliche Rolle erweitert die Möglichkeiten eines Kontos, sie
+ersetzt die des Kunden nicht (vgl.
+Abschnitt~\ref{subsec:auth-onboarding}). Ein Verkäufer, der einen
+Auslieferungsfahrer sucht, gibt keine bezahlte Anzeige für sein
+Geschäft auf, sondern eine Ankündigung.
+ 
+Sie sind bewusst nicht anklickbar: Eine Ankündigung verweist auf
+nichts innerhalb der Plattform, sie ist reine Mitteilung. Werbung
+dagegen ist Verkäufern und Dienstleistern vorbehalten und führt stets
+auf ein Ziel. Entsprechend unterscheidet sich auch, was erfasst wird:
+Eine Ankündigung trägt Titel, Beschreibung und Bild, eine Werbung
+darüber hinaus die Stufe, das Ziel und die Laufzeit.
+ 
+Werbeplätze sind in drei Stufen gegliedert: Gold, Silber und
+Standard. Sie unterscheiden sich in zwei Größen, die beide
+unmittelbar sichtbar sind: in der Position auf der Startseite und in
+der Fläche einer einzelnen Platzierung. Die Werbebereiche erscheinen
+in absteigender Stufe und stehen vor den Katalogabschnitten, sodass
+eine Goldplatzierung als erste ins Blickfeld gerät; zugleich nimmt
+die Fläche mit jeder Stufe ab. Gold füllt die verfügbare Breite
+nahezu allein, Silber steht zu zweit, Standard zu dritt nebeneinander
+(vgl. Abschnitt~\ref{subsec:seitenstruktur}). Sichtbarkeit ist in
+diesem Modell die Gegenleistung für den Preis. Die Rangfolge der
+Stufen bildet damit ab, was auf einem Marktplatz ohnehin gilt: Die
+Aufmerksamkeit, die ein Anbieter erhält, richtet sich nach dem
+Aufwand, den er dafür betreibt.
+ 
+Beim Anlegen wählt der Anbieter, worauf die Anzeige führt. Zur
+Auswahl steht das gesamte Profil oder ein einzelner Eintrag. Im
+ersten Fall gelangt ein Kunde auf die Seite mit sämtlichen Angeboten
+dieses Anbieters, im zweiten unmittelbar auf die beworbene
+Dienstleistung oder das beworbene Produkt. Die Unterscheidung ist
+keine technische Feinheit, sondern folgt aus dem Zweck der Anzeige:
+Wer für sein gesamtes Geschäft wirbt, will den Kunden im Laden haben;
+wer ein einzelnes Angebot bewirbt, will ihn genau dort haben.
+Maßgeblich ist dabei, dass der Klick nicht auf die Startseite
+zurückführt, sondern in den Bereich, den die Anzeige angekündigt hat.
+Andernfalls stünde der Kunde nach dem Klick wieder am Ausgangspunkt
+und müsste selbst suchen, was ihm gerade gezeigt worden ist.
+ 
+Die Preisbildung folgt zwei verschiedenen Modellen, und der
+Unterschied entspricht dem zwischen Werbung und Ankündigung. Eine
+Werbung wird nach Tagen abgerechnet: Jede Stufe besitzt einen eigenen
+Tagessatz, die Anzahl der Tage wählt der Anbieter beim Anlegen aus
+einem bis sieben, und der zu zahlende Betrag ist das Produkt aus
+beidem. Eine Ankündigung kostet dagegen einen festen Betrag und läuft
+einen Tag; sie kennt weder Stufen noch eine wählbare Laufzeit.
+ 
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lll}
+\hline
+\textbf{Art} & \textbf{Preis} & \textbf{Laufzeit} \\
+\hline
+Gold        & 50\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
+Silber      & 40\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
+Standard    & 30\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
+Ankündigung & 20\,\euro{}        & 1 Tag, fest \\
+\hline
+\end{tabular}
+\caption{Preise und Laufzeiten der vier Platzierungsarten}
+\label{tab:werbung_preise}
+\end{table}
+ 
+Der Tagessatz einer Werbung hat denselben Ursprung wie ihre Stufe.
+Eine Werbefläche im öffentlichen Raum kostet mehr, je größer sie ist
+und je länger sie belegt bleibt; dasselbe Verhältnis liegt hier
+zugrunde. Ein einheitlicher Preis je Anzeige wäre die einfachere Regel
+gewesen, hätte aber die Dauer unberücksichtigt gelassen: Eine einmal
+bezahlte Platzierung bliebe dann unbegrenzt stehen und verdrängte
+nachfolgende. Die Obergrenze von sieben Tagen begrenzt zusätzlich, wie
+lange ein einzelner Anbieter eine Fläche halten kann.
+ 
+Bei der Ankündigung entfällt beides, weil es nichts zu bemessen gibt:
+Sie belegt keine hervorgehobene Fläche, sie verweist auf nichts, und
+sie steht in keiner Rangfolge. Eine wählbare Laufzeit brächte damit
+eine Entscheidung, die den Nutzer nichts gewinnen ließe. Der feste
+Betrag hält den Vorgang für den Kunden ohne zusätzliche Rolle so
+einfach wie möglich: Titel, Beschreibung, Bild, ein Preis.
+ 
+Die genannten Beträge sind nicht im Frontend hinterlegt, sondern
+werden im Verwaltungsbereich festgelegt. Sie gehören zur
+Geschäftslogik der Plattform und lassen sich ändern, ohne dass die
+Oberfläche davon berührt wäre.
+ 
+Jede Platzierung wird nach der Zahlung geprüft und erst nach
+ausdrücklicher Freigabe durch einen Administrator angezeigt. Der
+Grund ist rechtlicher Natur: Auf der Startseite soll keine Anzeige
+erscheinen, deren Inhalt gegen geltende Bestimmungen verstößt. Aus
+demselben Grund ist ein Bild verbindlich, obwohl es technisch
+entbehrlich wäre: Der Administrator kann eine Platzierung nur dann auf
+ihre Zulässigkeit prüfen, wenn ihm auch das Bildmaterial vorliegt. Der
+Anbieter sieht in seinem Kontobereich deshalb zwei Angaben
+nebeneinander: den Zustand der Platzierung, also Zahlung ausstehend,
+in Prüfung, freigegeben oder abgelehnt, und den Zustand der Zahlung.
+Beide werden getrennt geführt, weil sie sich unabhängig voneinander
+ändern. Eine Platzierung kann bezahlt und dennoch abgelehnt sein.
+ 
+Löschen lässt sich eine Platzierung, solange sie nicht bezahlt ist;
+nach ausgelöster Zahlung entfällt diese Möglichkeit. Der Entwurf
+folgt damit derselben Regel wie der Warenkorb, in dem eine Position
+bis zum Auslösen des Checkouts entfernt werden kann und danach Teil
+eines Auftrags ist (vgl. Abschnitt~\ref{subsec:warenkorb_konzept}).
+ 
+Ob ein bereits gezahlter Betrag erstattet wird, hängt davon ab, wer
+den Vorgang beendet. Lehnt der Administrator die Platzierung ab, wird
+erstattet; der Zustand der Zahlung wechselt dann von
+\textit{Bezahlt} auf \textit{Erstattet}. Zieht der Anbieter seine
+Platzierung dagegen nach der Zahlung selbst zurück, erfolgt keine
+Erstattung, denn die Prüfung hat dann bereits stattgefunden und ist
+die erbrachte Leistung. Die Unterscheidung folgt daraus, wer die
+Ursache setzt: Im ersten Fall verweigert die Plattform die
+vereinbarte Leistung und hat keinen Anspruch auf das Entgelt; im
+zweiten hat der Anbieter sie in Anspruch genommen und danach auf ihr
+Ergebnis verzichtet. Dass die Zahlungsangabe dabei mitwechselt, ist
+kein Randdetail. Bliebe sie auf \textit{Bezahlt} stehen, führte die
+Ansicht zwei Angaben nebeneinander, von denen eine nicht mehr gilt,
+und der Anbieter müsste aus der Ablehnung selbst schließen, was mit
+seinem Geld geschehen ist.
+ 
+Jede Platzierung trägt schließlich ein Ablaufdatum. Ihre
+Durchsetzung, also das regelmäßige Prüfen der Daten und das Entfernen
+abgelaufener Einträge, ist im Rahmen dieser Arbeit nicht umgesetzt
+worden und in Kapitel~\ref{chap:fazit} als offener Punkt
+aufgeführt. Die Preisbildung nach Tagen setzt sie voraus; ohne sie
+bleibt die Dauer eine Angabe ohne Wirkung.
 
 \subsection{Messaging}
 \label{subsec:messaging_konzept}
@@ -1127,13 +1203,13 @@ unmittelbar an den Kanal, sondern an das Backend. Dieses speichert
 sie und veröffentlicht sie anschließend auf dem Kanal. Der Umweg ist
 erforderlich, weil der Echtzeitdienst nichts speichert: Er stellt
 zu, was in dem Augenblick zugestellt werden kann, in dem gesendet
-wird. Wer zu diesem Zeitpunkt nicht verbunden ist, erhielte die
+wird. Wer zu diesem Zeitpunkt nicht verbunden ist, erhält die
 Nachricht sonst nie. Der Verlauf einer Unterhaltung stammt deshalb
 stets aus der Datenbank und wird beim Öffnen der Seite abgerufen; der
 Kanal ergänzt lediglich, was währenddessen hinzukommt.
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{Bilder/abb_messaging.png}
+\includegraphics[width=0.82\textwidth]{Bilder/abb_messaging.png}
 \caption{Weg einer Nachricht zwischen Absender und Empfänger
 (eigene Darstellung)}
 \label{fig:messaging_ablauf}
@@ -1145,8 +1221,7 @@ Kopfzeile angezeigt und muss sich auch dann aktualisieren, wenn der
 Nutzer sich an einer beliebigen anderen Stelle der Anwendung
 befindet. Da die Kanäle der Unterhaltungen dort nicht abonniert
 sind, erhält jeder Nutzer zusätzlich einen auf ihn bezogenen Kanal,
-über den ausschließlich dieser Zählerstand übermittelt wird.
- 
+über den ausschließlich dieser Zählerstand übermittelt wird. 
 Schließlich sieht der Entwurf drei Zustände je Nachricht vor:
 gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob der Empfänger sie gelesen hat -- ein Fall der Sichtbarkeit des
 Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).
