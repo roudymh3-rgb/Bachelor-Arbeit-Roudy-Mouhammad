@@ -1,14 +1,3 @@
-% #####################################################################
-%
-%   Kapitel/5_Prototypische_Umsetzung.tex
-%   VOLLSTAENDIG ERSETZEN
-%
-%   Enthaelt: die doppelte Ueberschrift entfernt, alle neun
-%   Doppelungen zu Kapitel 4 gestrichen und durch Verweise ersetzt.
-%   Kein Listing, keine Abbildung, kein technisches Detail entfaellt.
-%
-% #####################################################################
-
 \chapter{Prototypische Umsetzung}
 \label{chap:umsetzung}
 
@@ -20,100 +9,61 @@ nicht erschließt. Die eingesetzten Werkzeuge sind in
 Abschnitt~\ref{sec:technologieauswahl} beschrieben, die Ordnerstruktur
 in Abschnitt~\ref{subsec:komponentenarchitektur}.
 
-
 \section{Nachladen der Ansichten}
 \label{sec:impl_lazyloading}
-
+ 
 Eine \acs{SPA} wird einmalig geladen (vgl.
 Abschnitt~\ref{subsec:spa-mpa}). Ohne weitere Maßnahme enthält das
 ausgelieferte Paket damit den Code sämtlicher Ansichten, auch
-derjenigen, die eine Nutzerin nie aufruft. Eine Messung ohne diese
-Maßnahme belegt das: Der Übersetzungsvorgang erzeugt eine einzige
-JavaScript-Datei von 899,80~kB, komprimiert 255,28~kB. Das
-Build-Werkzeug weist in seiner Ausgabe zugleich darauf hin, dass
-Pakete oberhalb von 500~kB durch dynamische Importe aufgeteilt werden
-sollten.
-
-Umgesetzt wird die Aufteilung in der Routenkonfiguration. Statt die
-Seitenkomponenten am Dateikopf statisch zu importieren, werden sie in
-\lstinline|lazy()| eingeschlossen:
-
-\begin{lstlisting}[language=TypeScript,caption={Nachladen einer Seitenkomponente (router/index.tsx)},label={lst:lazy_route}]
-const AccountPage = lazy(() =>
-  import('@/features/account/pages/account-page')
-    .then((m) => ({ default: m.AccountPage })),
-)
+derjenigen, die ein Nutzer nie aufruft.
+ 
+Umgesetzt wird die Aufteilung in der Routenkonfiguration. Statt einer
+fest eingebundenen Komponente erhält eine Route die Eigenschaft
+\texttt{lazy}, die der Router erst auswertet, wenn die Route zum
+ersten Mal getroffen wird. Da sich das für jede Route wiederholt, ist
+es in einer Hilfsfunktion gekapselt.
+ 
+\begin{lstlisting}[language=TypeScript,caption={Hilfsfunktion für das Nachladen einer Seitenkomponente (routes-lazy.tsx)},label={lst:lazy_route}]
+function lazyPage(
+  importer: () => Promise<PageModule>,
+  exportName: string,
+): Pick<RouteObject, 'lazy'> {
+  return {
+    lazy: async () => {
+      const module = await importer()
+ 
+      return {
+        Component: module[exportName],
+      }
+    },
+  }
+}
 \end{lstlisting}
-
-Die in Abschnitt~\ref{subsec:routing-konzept} beschriebenen
-Routendefinitionen bleiben davon unberührt. Der Aufruf
-\lstinline|.then()| ist erforderlich, weil \lstinline|lazy()| einen
-Standardexport erwartet, die Seitenkomponenten der Anwendung jedoch
-benannte Exporte sind. Die dort genannten drei Ausnahmen --
-Anwendungsrahmen, Seitenschutz und Startseite -- bleiben statisch
-importiert.
-
-Während eine Ansicht nachlädt, wird ein Platzhalter dargestellt. Die
-dafür vorgesehene Grenze liegt im Anwendungsrahmen um den
-Inhaltsbereich:
-
-\begin{lstlisting}[language=TypeScript,caption={Ladegrenze im Anwendungsrahmen (main-layout.tsx)},label={lst:suspense_boundary}]
-<main>
-  <Suspense fallback={<PageFallback />}>
-    <Outlet />
-  </Suspense>
-</main>
-\end{lstlisting}
-
-Der Platzhalter ist ein Gerüst aus Flächen in der Farbe
-\lstinline|muted| -- ein Balken für die Überschrift und vier Kacheln
-für ein Kartenraster -- und verwendet damit ausschließlich die in
-Abschnitt~\ref{subsec:designsystem} festgelegten Tokens. Er
-verzichtet auf Text, sodass keine Übersetzung erforderlich ist, und
-trägt \lstinline|aria-busy|, um den Ladevorgang assistiven
-Technologien mitzuteilen (vgl.
-Abschnitt~\ref{subsec:barrierefreiheit_konzept}).
-
-Der Effekt ist messbar. Der Übersetzungsvorgang erzeugt statt einer
-Datei rund 56 Dateien. Das beim Start geladene Paket sinkt von
-899,80~kB auf 532,68~kB, komprimiert von 255,28~kB auf 164,86~kB --
-eine Verringerung um 40,8~\% beziehungsweise 35,4~\%. Die Summe aller
-erzeugten Dateien steigt dabei geringfügig auf etwa 922~kB, da jede
-Datei einen eigenen Rahmen benötigt. Dieser Zuwachs von rund 2,5~\%
-fällt nur an, wenn eine Nutzerin tatsächlich alle Ansichten aufruft.
-
-Neben den Ansichten trennt das Build-Werkzeug auch gemeinsam genutzte
-Bausteine ab, etwa Schaltflächen, Bestätigungsdialoge oder einzelne
-Abfragen. Diese werden einmal geladen und von mehreren Ansichten
-verwendet.
-
-Beim Wechsel auf die Produktseite lädt der Browser fünf zuvor nicht
-übertragene Dateien von zusammen etwa 5~kB nach.
-
-%\begin{table}[htbp]
-%  \centering
-%  \includegraphics[width=0.95\textwidth]{Bilder/abb_lazy_network.png}
-%  \caption{Nachgeladene Dateien beim Wechsel auf die Produktseite}
-%  \label{abb:lazy_network}
-%\end{figure}
-
-Der verbleibende Umfang des Startpakets entfällt im Wesentlichen auf
-Bibliotheken, die jede Ansicht benötigt: React, der Router, die
-Verwaltung des Server-State, die Internationalisierung und die
-Oberflächenbausteine. Eine weitere Aufteilung dieser Bibliotheken
-wäre möglich, ist im Rahmen dieser Arbeit jedoch nicht umgesetzt
-worden.
-
+ 
+Der Parameter \texttt{exportName} ist erforderlich, weil die
+Seitenkomponenten der Anwendung benannte Exporte sind, der Router
+jedoch ein Objekt mit dem Feld \texttt{Component} erwartet. Eine
+zweite Hilfsfunktion schließt die nachgeladene Komponente zusätzlich
+in die Seitenschutz-Komponente ein. Statisch importiert bleiben der
+Anwendungsrahmen, der Seitenschutz und die Startseite, da sie bei
+jedem Aufruf benötigt werden.
+ 
+Sichtbar wird die Aufteilung an der Ausgabe des
+Übersetzungsvorgangs. Ohne sie umfasst die größte erzeugte Datei
+534,70~kB, und das Build-Werkzeug weist darauf hin, dass Pakete
+oberhalb von 500~kB durch dynamische Importe aufgeteilt werden
+sollten. Mit ihr liegt die größte erzeugte Datei bei 181,48~kB und
+der Hinweis entfällt.
 
 \section{Netzwerkkommunikation und Server-State}
 \label{sec:impl_netzwerk}
 
 Dieser Abschnitt beschreibt die konkrete Umsetzung des in
 Abschnitt~\ref{subsec:netzwerk_konzept} vorgestellten
-Drei-Schichten-Modells: einer zentralen \acs{HTTP}-Infrastruktur auf
-Basis von Axios, einer feature-spezifischen \acs{API}-Schicht sowie
-Query-Hooks auf Basis von TanStack Query, die den Verbindungszustand
-für die aufrufenden Komponenten bereitstellen.
+Drei-Schichten-Modells aus einer zentralen \acs{HTTP}-Infrastruktur
+auf Basis von Axios, einer feature-spezifischen \acs{API}-Schicht
+sowie Query-Hooks auf Basis von TanStack Query, die den
+Verbindungszustand für die aufrufenden Komponenten bereitstellen.
 
 \subsection{HTTP-Client als Infrastruktur}
 \label{subsec:impl_httpclient}
@@ -121,41 +71,41 @@ für die aufrufenden Komponenten bereitstellen.
 Die technische Infrastruktur der Netzwerkkommunikation wird durch
 eine einzige, projektweit wiederverwendete Axios-Instanz
 bereitgestellt \cite{axios_docs}. Listing~\ref{lst:http-client-infra}
-zeigt deren vollständige Konfiguration. Die Instanz wird mit einer
-festen Basis-Adresse sowie einheitlichen Standard-Headern
-initialisiert; die Basis-Adresse lässt sich über eine
-Umgebungsvariable überschreiben, sodass zwischen verschiedenen
-Backend-Umgebungen gewechselt werden kann, ohne den Quellcode
-anzupassen.
+zeigt deren Konfiguration. Die Instanz wird mit einer festen
+Basis-Adresse sowie einheitlichen Standard-Headern initialisiert; die
+Basis-Adresse lässt sich über eine Umgebungsvariable überschreiben,
+sodass zwischen verschiedenen Backend-Umgebungen gewechselt werden
+kann, ohne den Quellcode anzupassen.
 
-\begin{lstlisting}[caption={Zentrale Axios-Instanz mit
-Request-Interceptor (http-client.ts)},
-label={lst:http-client-infra}]
+\begin{lstlisting}[language=TypeScript,caption={Zentrale Axios-Instanz mit Request-Interceptor (http-client.ts)},label={lst:http-client-infra}]
 export const httpClient = axios.create({
   baseURL: resolveApiBaseUrl(),
   headers: {
     Accept: 'application/json',
-    'Accept-Language': 'en',
     'Content-Type': 'application/json',
   },
 })
 
 httpClient.interceptors.request.use((config) => {
   const token = getAuthToken()
+  const language = getAppLanguage(i18n.resolvedLanguage ?? i18n.language)
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
 
+  config.headers['Accept-Language'] = language
+
   return config
 })
 \end{lstlisting}
 
-Über den Request-Interceptor wird der Authentifizierungstoken
-automatisch an jede ausgehende Anfrage angehängt, sofern eine
-gültige Sitzung vorliegt. Dadurch muss sich keine der
-nachfolgend beschriebenen Feature-API-Funktionen selbst um die
-Token-Übermittlung kümmern.
+Der Request-Interceptor setzt zwei Werte an jeder ausgehenden
+Anfrage. Der Authentifizierungstoken wird angehängt, sofern eine
+gültige Sitzung vorliegt; dadurch muss sich keine der nachfolgend
+beschriebenen Feature-API-Funktionen selbst um die Token-Übermittlung
+kümmern. Der zweite Wert ist die gewählte Oberflächensprache, deren
+Übertragung in Abschnitt~\ref{sec:impl_i18n} behandelt wird.
 
 \subsection{Feature-API-Schicht}
 \label{subsec:impl_featureapi}
@@ -171,8 +121,7 @@ Account-Feature, die um optionale Parameter für die Einbindung einer
 Zusammenfassung sowie eine Begrenzung der zurückgegebenen
 Einträge ergänzt ist.
 
-\begin{lstlisting}[caption={Feature-API-Funktion getMe
-(account-api.ts)}, label={lst:feature-api-getme}]
+\begin{lstlisting}[language=TypeScript,caption={Feature-API-Funktion getMe (account-api.ts)},label={lst:feature-api-getme}]
 export async function getMe(includeSummary = false, limit?: number) {
   const params = new URLSearchParams()
 
@@ -199,7 +148,8 @@ Die Funktion baut die Query-Parameter abhängig von den übergebenen
 Argumenten zusammen und gibt ausschließlich die Nutzdaten der
 Antwort zurück. Sie enthält selbst keine Logik zur Behandlung von
 Lade- oder Fehlerzuständen; diese Aufgabe übernimmt die in
-Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene Query-Hook-Schicht.
+Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene
+Query-Hook-Schicht.
 
 \subsection{Server-State mit TanStack Query}
 \label{subsec:impl_tanstackquery}
@@ -207,12 +157,10 @@ Abschnitt~\ref{subsec:impl_tanstackquery} beschriebene Query-Hook-Schicht.
 Die oberste Schicht bilden Query-Hooks, die eine Feature-API-Funktion
 mithilfe von TanStack Query kapseln und den aufrufenden Komponenten
 den Zustand der Verbindung bereitstellen \cite{tanstack_query_docs}.
-Listing~\ref{lst:use-me-query} zeigt den Hook
-\texttt{useMeQuery}, der die zuvor beschriebene Funktion
-\texttt{getMe()} verwendet.
+Listing~\ref{lst:use-me-query} zeigt den Hook \texttt{useMeQuery},
+der die zuvor beschriebene Funktion \texttt{getMe()} verwendet.
 
-\begin{lstlisting}[caption={Query-Hook useMeQuery
-(use-me-query.ts)}, label={lst:use-me-query}]
+\begin{lstlisting}[language=TypeScript,caption={Query-Hook useMeQuery (use-me-query.ts)},label={lst:use-me-query}]
 export function useMeQuery(includeSummary = false, limit?: number, enabled = true) {
   return useQuery({
     queryKey: ['me', { includeSummary, limit }],
@@ -225,10 +173,10 @@ export function useMeQuery(includeSummary = false, limit?: number, enabled = tru
 Der \texttt{queryKey} setzt sich, wie in
 Abschnitt~\ref{subsec:netzwerk_konzept} beschrieben, aus einer
 festen Bezeichnung und den übergebenen Parametern zusammen und
-identifiziert die Anfrage eindeutig im projektweiten Cache. Der
-\texttt{enabled}-Parameter erlaubt es zusätzlich, die Ausführung
-der Anfrage an eine Bedingung zu knüpfen, etwa das Vorhandensein
-einer gültigen Sitzung.
+identifiziert die Anfrage eindeutig im projektweiten
+Zwischenspeicher. Der \texttt{enabled}-Parameter erlaubt es
+zusätzlich, die Ausführung der Anfrage an eine Bedingung zu knüpfen,
+etwa das Vorhandensein einer gültigen Sitzung.
 
 Der Rückgabewert des Hooks stellt der aufrufenden Komponente die
 Felder \texttt{data}, \texttt{isLoading} und \texttt{isError} zur
@@ -236,21 +184,20 @@ Verfügung, über die sich Ladeindikatoren und Fehlermeldungen
 umsetzen lassen. In der Kontoübersicht wird dieses Muster
 vereinfacht eingesetzt: Anstelle einer expliziten Auswertung von
 \texttt{isLoading} und \texttt{isError} greift die Komponente auf
-einen Fallback auf die bereits im Client gespeicherte Sitzung
-zurück, sodass dem Nutzer zumindest der Benutzername angezeigt
-werden kann, selbst wenn die Anfrage an das Backend noch nicht
-abgeschlossen ist oder fehlschlägt. Für Ansichten ohne einen
-solchen Fallback ist hingegen eine explizite Behandlung der von
-TanStack Query bereitgestellten Zustände erforderlich.
+die bereits im Client gespeicherte Sitzung zurück, sodass dem Nutzer
+zumindest der Benutzername angezeigt werden kann, selbst wenn die
+Anfrage an das Backend noch nicht abgeschlossen ist oder
+fehlschlägt. Für Ansichten ohne einen solchen Rückfallwert ist
+hingegen eine explizite Behandlung der von TanStack Query
+bereitgestellten Zustände erforderlich.
 
 Die Query-Hooks greifen dabei auf einen einmalig erzeugten,
-zentralen Cache zurück, der über die gesamte Anwendung hinweg
-geteilt wird und beim Anwendungsstart über einen Provider
-bereitgestellt wird. Dieses Muster aus Query Key, Cache und
-einheitlichen Verbindungszuständen kommt bei sämtlichen weiteren
+zentralen Zwischenspeicher zurück, der über die gesamte Anwendung
+hinweg geteilt und beim Anwendungsstart über einen Provider
+bereitgestellt wird. Dieses Muster aus Query Key, Zwischenspeicher
+und einheitlichen Verbindungszuständen kommt bei sämtlichen weiteren
 Datenabrufen der Anwendung in gleicher Form zum Einsatz und wird in
 den folgenden Abschnitten jeweils nur noch kurz referenziert.
-
 
 \section{Mehrsprachigkeit der Oberfläche}
 \label{sec:impl_i18n}
@@ -262,13 +209,12 @@ Konzepts stützt sich auf \textit{i18next} mit der React-Anbindung
 liegen in zwei Modulen, je eines für Deutsch und Englisch; beide
 enthalten dieselben Schlüssel und unterscheiden sich allein in den
 Werten. Die Schlüssel sind nicht alphabetisch, sondern nach ihrem
-Verwendungsbereich gruppiert -- etwa \texttt{header},
-\texttt{cart} oder \texttt{checkout} --, wobei ein Bereich
-\texttt{common} die mehrfach verwendeten Texte aufnimmt. Dieselbe
-Bezeichnung kann dadurch in verschiedenen Bereichen einen eigenen
-Wert tragen.
+Verwendungsbereich gruppiert, etwa \texttt{header}, \texttt{cart}
+oder \texttt{checkout}, wobei ein Bereich \texttt{common} die
+mehrfach verwendeten Texte aufnimmt. Dieselbe Bezeichnung kann
+dadurch in verschiedenen Bereichen einen eigenen Wert tragen.
 
-\begin{lstlisting}[caption={Auszug aus der deutschen Ressourcendatei (de.ts)}, label={lst:i18n-messages}]
+\begin{lstlisting}[language=TypeScript,caption={Auszug aus der deutschen Ressourcendatei (de.ts)},label={lst:i18n-messages}]
 const de = {
   common: {
     cart: 'Warenkorb',
@@ -279,13 +225,16 @@ const de = {
   },
   checkout: {
     successTitle: 'Checkout erfolgreich',
-    paymentConfirmed: 'Zahlung bestaetigt',
+    paymentConfirmed: 'Zahlung bestätigt',
   },
 }
 \end{lstlisting}
 
 Der Eintrag \texttt{bySeller} zeigt die Behandlung veränderlicher
-Bestandteile: Der Platzhalter wird beim Anzeigen ersetzt, sodass der Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext zusammengesetzt wird, was nötig ist, da die Stellung eines eingesetzten Wortes von Sprache zu Sprache verschieden ist.
+Bestandteile. Der Platzhalter wird erst beim Anzeigen ersetzt, sodass
+der Satzbau in der Ressourcendatei verbleibt und nicht im Quelltext
+zusammengesetzt wird. Das ist notwendig, weil die Stellung eines
+eingesetzten Wortes von Sprache zu Sprache verschieden ist.
 
 Die Konfiguration erfolgt an einer Stelle und wird beim Start noch
 vor der ersten Darstellung ausgeführt. Sie legt die Ressourcen, die
@@ -310,7 +259,6 @@ umgesetzt, wirkt sich auf die Inhalte jedoch erst aus, sobald das
 Datenmodell eine deutsche Fassung vorsieht (vgl.
 Abschnitt~\ref{subsec:mehrsprachigkeit_konzept}).
 
-
 \section{Authentifizierung und Onboarding}
 \label{sec:impl_auth}
 
@@ -327,7 +275,7 @@ Abschnitt~\ref{sec:technologieauswahl}). Das Schema der
 Registrierung prüft dabei nicht nur einzelne Felder, sondern auch
 deren Verhältnis zueinander.
 
-\begin{lstlisting}[caption={Validierungsschema der Registrierung (register-schema.ts)}, label={lst:register-schema}]
+\begin{lstlisting}[language=TypeScript,caption={Validierungsschema der Registrierung (register-schema.ts)},label={lst:register-schema}]
 export const registerSchema = z
   .object({
     name: z
@@ -382,8 +330,8 @@ Text an das Backend gelangt. Bei den Pflichtfeldern unterbleibt
 diese Aufbereitung, und es genügt \texttt{trim}: Dort ist eine leere
 Eingabe gerade der Fehlerfall und darf nicht in einen fehlenden Wert
 umgedeutet werden, weil die zugehörige Regel sonst nicht mehr
-greifen könnte. Abbildung~\ref{fig:registrierung_fehler} zeigt beide Arten der
-Prüfung nebeneinander.
+greifen könnte. Abbildung~\ref{fig:registrierung_fehler} zeigt beide
+Arten der Prüfung nebeneinander.
 
 \begin{figure}[H]
 \centering
@@ -411,10 +359,10 @@ Authentifizierungszustand gespeichert; beim Login schließt sich der
 Dialog, bei der Registrierung erfolgt eine Weiterleitung auf die
 Startseite.
 
-\subsection{Token-Verwaltung und Session-Handling}
+\subsection{Token-Verwaltung und Sitzungsverwaltung}
 \label{subsec:impl_token_session}
 
-Die Session der Anwendung ist als eigenes Modell definiert, das
+Die Sitzung der Anwendung ist als eigenes Modell definiert, das
 Zugriffstoken, Nutzerdaten und die zugewiesenen Rollen als Liste
 enthält, da ein Nutzer mehrere Rollen gleichzeitig besitzen kann. Sie
 wird über einen zentralen Zustand-Store reaktiv bereitgestellt und im
@@ -423,15 +371,15 @@ Listing~\ref{lst:auth-store-state} zeigt die Struktur dieses Stores
 sowie dessen Erzeugung über die \texttt{create}-Funktion der
 Bibliothek Zustand.
 
-\begin{lstlisting}[caption={Struktur und Erzeugung des Auth-Stores (auth-store.ts)}, label={lst:auth-store-state}]
+\begin{lstlisting}[language=TypeScript,caption={Struktur und Erzeugung des Auth-Stores (auth-store.ts)},label={lst:auth-store-state}]
 import { create } from 'zustand'
 
 interface AuthStoreState {
   session: AuthSession | null
   isAuthenticated: boolean
   isBootstrapping: boolean
-  setSession: (session: AuthSession) => void
   setBootstrapping: (isBootstrapping: boolean) => void
+  setSession: (session: AuthSession) => void
   syncVerifiedUser: (user: User) => void
   clearSession: () => void
 }
@@ -445,49 +393,50 @@ Ein gespeicherter Token wird nicht ungeprüft als gültig angenommen:
 Eine Bootstrap-Komponente validiert ihn aktiv beim Backend über
 \texttt{useMeQuery} (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Liefert diese Anfrage
-einen Fehler, gilt der Token als ungültig und die Session wird über
+einen Fehler, gilt der Token als ungültig und die Sitzung wird über
 den Store verworfen; liefert sie hingegen aktualisierte Nutzerdaten,
 werden diese im Store synchronisiert, sodass lokal gespeicherte und
 serverseitig bestätigte Daten konsistent bleiben. Liegt noch keine
-Antwort vor, wird zunächst die lokal gespeicherte Session verwendet,
+Antwort vor, wird zunächst die lokal gespeicherte Sitzung verwendet,
 damit die Oberfläche sofort angezeigt werden kann. Das dreistufige
 Vorgehen aus Abschnitt~\ref{subsec:auth-onboarding} ist damit in der
 geschützten Routenkomponente umgesetzt.
 
 \subsection{Zurücksetzen des Passworts}
 \label{subsec:passwort_zuruecksetzen}
- 
+
 Die drei Schritte aus Abschnitt~\ref{subsec:auth-onboarding} sind als
 drei Routen umgesetzt, jede aus einer Seitenkomponente für den Rahmen
 und einer Formularkomponente für den Schritt. Alle drei verwenden
 dieselbe Karte mit Titel und erläuterndem Text, sodass allein der Text
 sagt, was gerade verlangt wird.
- 
+
 Zwischen den Schritten bleiben zwei Angaben erhalten: die
 E-Mail-Adresse aus dem ersten Schritt und der Nachweis, den das
-Backend nach der Prüfung des Kennworts zurückgibt. Beide liegen im
-Sitzungsspeicher des Browsers, weil der Nutzer die Anwendung
+Backend nach der Prüfung des Einmalkennworts zurückgibt. Beide liegen
+im Sitzungsspeicher des Browsers, weil der Nutzer die Anwendung
 zwischendurch verlässt, um in sein Postfach zu sehen; ein Zustand
 allein im Arbeitsspeicher wäre nach dem Neuladen verloren. Beim
 Schließen des Reiters verfallen die Angaben von selbst.
- 
+
 Jede der beiden hinteren Seiten prüft beim Aufbau, ob ihre
 Voraussetzung vorliegt, und leitet andernfalls ersetzend auf den
 ersten Schritt zurück. Die Reihenfolge ist damit nicht nur nahegelegt,
 sondern erzwungen: Die dritte Seite lässt sich über ihre Adresse nicht
 sinnvoll aufrufen.
- 
-Das Kennwort hat sechs Stellen und ist auf sechs einzelne Felder
-verteilt. Sie nehmen nur Ziffern an, rücken selbsttätig weiter und
-verteilen eine als Ganzes eingefügte Folge auf die Felder. Nach außen
-verhält sich die Komponente wie ein einzelnes Feld, sodass die Prüfung
-keine sechs Felder sieht, sondern eine Zeichenkette aus sechs Ziffern.
- 
+
+Das Einmalkennwort hat sechs Stellen und ist auf sechs einzelne
+Felder verteilt. Sie nehmen nur Ziffern an, rücken selbsttätig weiter
+und verteilen eine als Ganzes eingefügte Folge auf die Felder. Nach
+außen verhält sich die Komponente wie ein einzelnes Feld, sodass die
+Prüfung keine sechs Felder sieht, sondern eine Zeichenkette aus sechs
+Ziffern.
+
 Ist das neue Passwort gesetzt, werden Adresse und Nachweis entfernt
 und der Anmeldedialog öffnet sich auf der Startseite. Der Vorgang
 endet damit dort, wo er begonnen hat, und hinterlässt nichts im
 Browser.
- 
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.48\textwidth]{Bilder/pwforgot.png}
@@ -508,19 +457,18 @@ Wert gesetzt.}
 
 Der in Abschnitt~\ref{subsec:auth-onboarding} beschriebene Antrag ist
 als Formular im Kontobereich umgesetzt. Neben den Basisdaten erfasst
-es projektspezifische Angaben -- Name und Kontaktdaten des Geschäfts
-sowie ein Nachweisdokument --, anhand derer ein Administrator
+es projektspezifische Angaben, nämlich Name und Kontaktdaten des
+Geschäfts sowie ein Nachweisdokument, anhand derer ein Administrator
 entscheidet.
 
 % TODO (Roudy): Hier Screenshot der Kontouebersicht vor und nach
 % der Genehmigung nebeneinander einfuegen (vgl. Meeting vom
 % 12.07.2026), kein Code, kein Diagramm.
 
-
 \section{Katalog und Produktseiten}
 \label{sec:impl_katalog}
 
-\subsection{Produktlisting: Karten, Paginierung}
+\subsection{Startseite und Katalogseiten}
 \label{subsec:impl_produktlisting}
 
 Dieser Abschnitt beschreibt die Umsetzung der in
@@ -534,8 +482,8 @@ demselben Prinzip, das bereits in
 Abschnitt~\ref{sec:impl_netzwerk} eingeführt wurde. Während des
 Ladens wird ein Platzhalter-Raster angezeigt, im Fehlerfall eine
 Fehlermeldung; im Unterschied zur Kontoübersicht (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}) steht hier keine
-lokal gespeicherte Alternative zur Verfügung, sodass diese
+Abschnitt~\ref{subsec:impl_tanstackquery}) steht hier kein
+lokal gespeicherter Rückfallwert zur Verfügung, sodass diese
 Zustände explizit behandelt werden.
 
 Sämtliche Abschnitte der Startseite folgen einem einheitlichen
@@ -547,10 +495,23 @@ gleichermaßen gilt. Die Umsetzung der Werbeplatzierungen und
 Ankündigungen selbst wird in
 Abschnitt~\ref{sec:impl_werbung} beschrieben.
 
+% TODO (Roudy): Dieser Abschnitt hiess vorher "Produktlisting:
+% Karten, Paginierung", beschreibt aber nur die Startseite. Es
+% fehlt ein Absatz zur Katalogseite selbst: Vorschau-Karten,
+% Kategoriefilter und Paginierung, und dabei besonders, dass Seite
+% und Kategorie in der Adresse stehen und Teil des Query Keys sind.
+% Das ist nicht bloss Vollstaendigkeit: Abschnitt
+% \ref{subsec:impl_dienstleistungsverwaltung} verweist mit
+% "wie beim Produktlisting beschrieben" genau auf diesen fehlenden
+% Absatz. Solange er fehlt, laeuft der Verweis ins Leere.
+% Ueberschrift ist vorlaeufig auf "Startseite und Katalogseiten"
+% geaendert, damit Titel und Inhalt zusammenpassen; nach Ergaenzen
+% des Absatzes gern wieder anpassen.
+
 \subsection{Detailseiten für Produkte und Dienstleistungen}
 \label{subsec:impl_produktdetail}
 
-Der Aufruf einer Vorschau-Karte führt, wie in
+Der Aufruf einer Vorschaukarte führt, wie in
 Abschnitt~\ref{subsec:katalog_konzept} beschrieben, auf die
 zugehörige Detailseite. Produkte und Dienstleistungen folgen
 dabei derselben Umsetzung: Die jeweilige ID wird als
@@ -562,11 +523,10 @@ bei der Anfrage sowie den Fall, dass zu der angefragten ID
 kein Eintrag existiert. Liegen die Daten vor, werden sie in
 einer Bildergalerie sowie einer Übersicht mit Preis, Kategorie
 und Angaben zum Anbieter dargestellt.
+
 Die Detailseite einer Dienstleistung enthält darüber hinaus die
 Auswahl eines Buchungstermins, deren Umsetzung in
-Abschnitt~\ref{subsec:impl_terminauswahl} beschrieben
-wird.
-
+Abschnitt~\ref{subsec:impl_terminauswahl} beschrieben wird.
 
 % TODO (Roudy): Screenshot der Startseite mit den
 % Vorschau-Karten (Produkte und Dienstleistungen,
@@ -574,7 +534,6 @@ wird.
 % TODO (Roudy): Screenshot der Produkt-Katalogseite mit
 % Kategoriefilter und Paginierung (Seite/Kategorie in der URL
 % sichtbar, z. B. /products?page=2&category=3).
-
 
 \subsection{Terminauswahl auf der Dienstleistungsseite}
 \label{subsec:impl_terminauswahl}
@@ -586,14 +545,13 @@ wird später für die Umbuchung eingesetzt (vgl.
 Abschnitt~\ref{subsec:impl_buchungen}).
 Abbildung~\ref{fig:buchung_auswahl} zeigt sie nach Wahl von Tag und
 Zeitfenster.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.45\textwidth]{Bilder/screenshot_buchung_auswahl.png}
 \caption{Terminauswahl nach Wahl von Tag und Zeitfenster}
 \label{fig:buchung_auswahl}
 \end{figure}
-
-
 
 \section{Warenkorb, Checkout und Zahlung}
 \label{sec:impl_checkout}
@@ -622,9 +580,9 @@ Dienstleistung, Beginn, Ende, Zeitzone, die Art des Ortes und dessen
 nähere Bestimmung. Dieselbe Dienstleistung zu einem anderen Termin
 ist damit eine eigene Position.
 
-Ein dritter Punkt ergibt sich daraus, dass der Warenkorb im Browser
-verbleibt und nicht am Konto hängt. Er führt deshalb mit, wem er
-gehört, und gleicht diese Zuordnung bei jeder Änderung des
+Ein dritter Gesichtspunkt ergibt sich daraus, dass der Warenkorb im
+Browser verbleibt und nicht am Konto hängt. Er führt deshalb mit,
+wem er gehört, und gleicht diese Zuordnung bei jeder Änderung des
 Anmeldestatus ab: Meldet sich ein zuvor nicht angemeldeter Nutzer an,
 bleiben seine Positionen erhalten und werden ihm zugeordnet. Wechselt
 dagegen der angemeldete Nutzer, wird der Warenkorb geleert.
@@ -678,13 +636,13 @@ Die Nebenwirkungen der Erfolgsseite sind in einem Effekt
 gekapselt. Er prüft zunächst, ob die Zahlung tatsächlich erfolgt
 ist, und bricht andernfalls ab. Erst danach wird der Warenkorb
 geleert, nicht schon beim Auslösen des Checkouts, da die Zahlung
-bis zuletzt abgebrochen werden kann. Eine Referenz sichert zusätzlich ab,
-dass der Effekt nur einmal ausgeführt wird; ohne diese Sperre
+bis zuletzt abgebrochen werden kann. Eine Referenz sichert zusätzlich
+ab, dass der Effekt nur einmal ausgeführt wird; ohne diese Sperre
 könnte ein erneutes Rendern den Warenkorb ein zweites Mal leeren.
 Eine Referenz eignet sich dafür, weil ihre Änderung im Gegensatz
 zu einem Zustandswert kein erneutes Rendern auslöst.
 
-\begin{lstlisting}[caption={Nebenwirkungen nach erfolgreicher Zahlung (checkout-success-page.tsx)}, label={lst:checkout-success}]
+\begin{lstlisting}[language=TypeScript,caption={Nebenwirkungen nach erfolgreicher Zahlung (checkout-success-page.tsx)},label={lst:checkout-success}]
 useEffect(() => {
   if (!checkoutResultQuery.data?.is_paid || hasHandledSuccessRef.current) {
     return
@@ -712,7 +670,6 @@ sämtliche Ablehnungen bereits auf der Seite des Zahlungsdienstes
 abgefangen werden und dort zur Eingabe eines anderen
 Zahlungsmittels führen. Die Abbruchseite wird folglich nur
 erreicht, wenn der Nutzer den Vorgang selbst abbricht.
-
 
 \section{Kontobereich und rollenspezifische Funktionen}
 \label{sec:impl_seller}
@@ -771,11 +728,16 @@ wird.
 \label{subsec:impl_dienstleistungsverwaltung}
 \label{subsec:impl_produktverwaltung}
 
-Dieser Abschnitt beschreibt die Verwaltung einzelner Dienstleistungsangebote, die Verwaltung der Verfügbarkeit sowie die Produktverwaltung, die demselben Muster folgt. Die Verfügbarkeit ist als eigener Funktionsbereich \texttt{provider-availability/} umgesetzt, der derselben internen Struktur folgt wie die übrigen (vgl. Abschnitt~\ref{subsec:komponentenarchitektur}).
+Dieser Abschnitt beschreibt die Verwaltung einzelner
+Dienstleistungsangebote, die Verwaltung der Verfügbarkeit sowie die
+Produktverwaltung, die demselben Muster folgt. Die Verfügbarkeit ist
+als eigener Funktionsbereich \texttt{provider-availability/}
+umgesetzt, der derselben internen Struktur folgt wie die übrigen
+(vgl. Abschnitt~\ref{subsec:komponentenarchitektur}).
 
 Die eigenen Dienstleistungen werden über \texttt{useMyServicesQuery}
 abgerufen und seitenweise dargestellt; Seite und Ergebnisse pro Seite
-sind, wie beim Produktlisting beschrieben (vgl.
+sind, wie bei den Katalogseiten beschrieben (vgl.
 Abschnitt~\ref{subsec:impl_produktlisting}), Teil des Query Keys.
 Gegenüber der öffentlichen Katalogansicht ergänzt die
 Verwaltungskarte die Aktionen zum Ansehen, Bearbeiten und Löschen.
@@ -785,22 +747,34 @@ Erfolgsseite (vgl. Listing~\ref{lst:checkout-success}), betrifft
 jedoch vier Zwischenspeicher zugleich: die eigene Übersicht, den
 öffentlichen Dienstleistungskatalog, die zugehörige Detailseite und
 die Startseite. Aus allen vieren muss der Eintrag zugleich
-verschwinden, weshalb sie gezielt invalidiert werden, anstatt sich
-auf ein automatisches Ablaufen zu verlassen (vgl.
+verschwinden, weshalb sie gezielt invalidiert werden (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
 davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
 eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
+
 Die Produktverwaltung ist strukturgleich, aber einfacher, da Produkte
 keine Buchungsregeln benötigen: Die eigenen Produkte werden über
-\texttt{useMyProductsQuery} abgerufen und nach demselben Kartenprinzip
-dargestellt. Beim Löschen sind drei Zwischenspeicher betroffen statt
-vier, da für Produkte keine eigene Detailseite zwischengespeichert
-wird.
+\texttt{useMyProductsQuery} abgerufen und nach demselben
+Kartenprinzip dargestellt. Beim Löschen werden drei Zwischenspeicher
+invalidiert: die eigene Übersicht, der öffentliche Produktkatalog und
+die Produktliste des jeweiligen Verkäufers.
+
+Dass die Startseite hier nicht darunter ist, wirkt sich nicht aus.
+Der zentrale Zwischenspeicher wird ohne eine eigene Haltedauer
+angelegt, sodass jeder Eintrag sofort als veraltet gilt und jede
+Ansicht ihre Daten beim nächsten Aufbau erneut abfragt. Ein gelöschtes
+Produkt verschwindet deshalb auch von der Startseite, sobald diese
+wieder aufgerufen wird. Das gezielte Invalidieren wirkt damit vor
+allem auf Ansichten, die im Augenblick der Änderung bereits
+dargestellt werden; für die übrigen ist es Vorsorge für den Fall,
+dass später eine Haltedauer gesetzt wird.
+
 Die festen Arbeitszeiten werden je Wochentag über die
-wiederverwendbare Komponente \texttt{\small WorkingHoursEditor} dargestellt,
+wiederverwendbare Komponente \texttt{WorkingHoursEditor} dargestellt,
 die beliebig viele Zeitintervalle mit Start- und Endzeit
 entgegennimmt und es erlaubt, einzelne Intervalle hinzuzufügen oder
 zu entfernen. Ein Wochentag ohne Intervall gilt als nicht verfügbar.
+
 Das Formular \texttt{TimeOffForm} für einzelne Abwesenheitszeiträume
 ist als eigene Komponente ausgelagert, da es an mehreren Stellen des
 Funktionsbereichs wiederverwendet wird. Seine Eingaben werden über
@@ -812,9 +786,9 @@ Prüfung denselben Regeln unterliegt.
 
 Der Abruf erfolgt über \texttt{useProviderAvailabilityQuery}, das
 Hinzufügen eines Abwesenheitszeitraums über eine Mutation, die den
-zugehörigen Cache-Eintrag im Erfolgsfall invalidiert. Die
-eingetragenen Zeiträume werden nach ihrem Beginn sortiert und anhand
-der beim Anbieter hinterlegten Zeitzone formatiert (vgl.
+zugehörigen Eintrag im Zwischenspeicher im Erfolgsfall invalidiert.
+Die eingetragenen Zeiträume werden nach ihrem Beginn sortiert und
+anhand der beim Anbieter hinterlegten Zeitzone formatiert (vgl.
 Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}).
 
 \subsection{Übersichten für Bestellungen und Buchungen}
@@ -887,7 +861,6 @@ zweites Mal umgesetzt werden musste; neben der Auswahl zeigt sie den
 bisherigen Termin. Eine Stornierung löst dagegen eine Rückerstattung
 über das Backend aus, deren Stand an der Buchung geführt wird.
 
-
 \section{Werbung und Ankündigungen}
 \label{sec:impl_werbung}
 
@@ -897,7 +870,7 @@ internen Struktur folgen wie die übrigen (vgl.
 Abschnitt~\ref{subsec:komponentenarchitektur}). Der Schnitt zwischen
 ihnen folgt der Unterscheidung aus
 Abschnitt~\ref{subsec:werbung_konzept}.
- 
+
 Der Zahlungsweg entspricht dem des Warenkorbs: Die Platzierung wird
 zunächst angelegt, danach eine Checkout-Sitzung erzeugt, auf den
 Zahlungsdienst weitergeleitet und das Ergebnis auf einer eigenen
@@ -908,7 +881,7 @@ eine einzelne Platzierung bezieht und nicht auf einen Auftrag mit
 mehreren Positionen. Weil eine Platzierung ein Bild führt, wird sie
 als \texttt{multipart/form-data} übertragen, wie auch das Anlegen
 eines Produkts oder einer Dienstleistung.
- 
+
 Die drei Stufen erscheinen im Formular als Auswahl, das Backend
 erwartet jedoch die Kennung eines Werbeplatzes. Das Frontend hält
 diese Kennungen nicht vor, sondern ruft die verfügbaren Plätze ab und
@@ -916,21 +889,21 @@ schlägt die zur gewählten Stufe gehörende darin nach. Preise und
 Kennungen bleiben damit dort, wo sie gepflegt werden, und eine
 Änderung im Verwaltungsbereich wirkt ohne Eingriff in das Frontend
 (vgl. Abschnitt~\ref{subsec:werbung_konzept}).
- 
+
 Auch die Auswahl des Ziels wird aus dem Bestand gebildet: Zur Auswahl
 steht nur, was der angemeldete Nutzer tatsächlich besitzt, also sein
 Profil sowie seine Produkte oder Dienstleistungen. Bewirbt er sein
 Profil, wird keine Kennung mitgesendet, da das Ziel bereits aus der
 Rolle folgt; bewirbt er einen einzelnen Eintrag, ist sie
 erforderlich und wird geprüft, bevor die Anfrage gestellt wird.
- 
+
 Das Backend bezeichnet das beworbene Ziel über den Namen seiner
 Modellklasse. Eine Zuordnungstabelle übersetzt diesen Namen in einen
 eigenen Typ des Frontends, aus dem sich zugleich die Zieladresse des
 Verweises ergibt. Die Komponenten arbeiten dadurch nicht mit
 Klassennamen des Backends, und eine Umbenennung dort betrifft eine
 einzige Stelle.
- 
+
 Zustand und Zahlung werden, wie in
 Abschnitt~\ref{subsec:werbung_konzept} begründet, getrennt geführt.
 Der Zustand kommt unverändert aus dem Backend; die Zahlungsangabe
@@ -939,14 +912,13 @@ kennt drei Ausprägungen: ausstehend, bezahlt und erstattet. Die
 Ableitung liegt in der Aufbereitung und nicht in der Darstellung,
 sodass die Übersichten der Anbieter dieselbe Angabe zeigen, ohne die
 Regel je einzeln zu wiederholen.
- 
+
 Auf der Startseite verwenden alle drei Stufen dieselbe Karte in drei
 Größen: Gold über die volle Breite, Silber zu zweit, Standard zu
 dritt. Die Abstufung ist damit eine Eigenschaft der Komponente und
 nicht drei getrennte Umsetzungen. Ein Abschnitt wird nur dargestellt,
 wenn für seine Stufe eine freigegebene Platzierung vorliegt; die
 Ankündigungen stehen darüber in einem eigenen Laufband.
-
 
 \section{Messaging}
 \label{sec:impl_messaging}
@@ -965,14 +937,15 @@ Funktionsbereiche. Der zweite Teil ist Gegenstand dieses Abschnitts.
 
 Die Verbindung wird in einem eigenen Modul gekapselt, das als
 einzige Stelle der Anwendung die Bibliothek \texttt{pusher-js}
-kennt (vgl. Abschnitt~\ref{sec:technologieauswahl}). Es hält die Verbindung in einer Modulvariablen und gibt eine
-bereits bestehende Verbindung zurück, statt eine zweite aufzubauen.
-Diese Festlegung ist notwendig, weil mehrere Stellen der Anwendung
-unabhängig voneinander Kanäle abonnieren: die Chatseite für jede
-Unterhaltung und die Kopfzeile für den Zählerstand. Ohne diese zentrale Verwaltung würde jeder Aufruf eine eigene Verbindung herstellen.
+kennt (vgl. Abschnitt~\ref{sec:technologieauswahl}). Es hält die
+Verbindung in einer Modulvariablen und gibt eine bereits bestehende
+Verbindung zurück, statt eine zweite aufzubauen. Diese Festlegung ist
+notwendig, weil mehrere Stellen der Anwendung unabhängig voneinander
+Kanäle abonnieren: die Chatseite für jede Unterhaltung und die
+Kopfzeile für den Zählerstand. Ohne diese zentrale Verwaltung würde
+jeder Aufruf eine eigene Verbindung herstellen.
 
-\begin{lstlisting}[language=TypeScript,caption={Aufbau der Verbindung
-zum Echtzeitdienst},label={lst:pusher-client}]
+\begin{lstlisting}[language=TypeScript,caption={Aufbau der Verbindung zum Echtzeitdienst (pusher-client.ts)},label={lst:pusher-client}]
 let client: Pusher | null = null
 
 export function getPusherClient() {
@@ -1000,7 +973,7 @@ export function getPusherClient() {
 \end{lstlisting}
 
 Drei Angaben bestimmen die Verbindung. Der Schlüssel identifiziert
-das Projekt beim Dienstanbieter. Der \emph{Cluster} benennt die
+das Projekt beim Dienstanbieter. Der \textit{Cluster} benennt die
 Region, in der die Kanäle betrieben werden, und ist damit für die
 Laufzeit einer Nachricht maßgeblich. Der dritte Wert ist die Adresse
 für die in Abschnitt~\ref{subsec:messaging_konzept} beschriebene
@@ -1023,9 +996,9 @@ Unterhaltungen mit Name des Gegenübers, Zeitpunkt und Anfang der
 letzten Nachricht, rechts der Verlauf der ausgewählten Unterhaltung.
 Die gewählte Unterhaltung steht als Bestandteil der Adresse
 (\texttt{/chat/:conversationId}), sodass eine einzelne Unterhaltung
-verlinkbar bleibt -- dieselbe Entscheidung wie bei den Detailseiten
-(vgl. Abschnitt~\ref{subsec:impl_produktdetail}). Ist keine
-Unterhaltung angegeben, wird auf die zuletzt aktive umgeleitet.
+verlinkbar bleibt. Das ist dieselbe Entscheidung wie bei den
+Detailseiten (vgl. Abschnitt~\ref{subsec:impl_produktdetail}). Ist
+keine Unterhaltung angegeben, wird auf die zuletzt aktive umgeleitet.
 
 \begin{figure}[H]
 \centering
@@ -1036,7 +1009,11 @@ Verlauf}
 \end{figure}
 
 Eigene und empfangene Nachrichten unterscheiden sich in Ausrichtung
-und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern über den Vergleich der Absender-ID mit der ID des angemeldeten Nutzers: Eine Nachricht, die über den Kanal eintrifft, trägt dieselbe Struktur wie eine aus der Datenbank geladene und wird deshalb gleich behandelt.
+und Farbe. Die Zuordnung erfolgt nicht über die Reihenfolge, sondern
+über den Vergleich der Absender-ID mit der ID des angemeldeten
+Nutzers. Eine Nachricht, die über den Kanal eintrifft, trägt dieselbe
+Struktur wie eine aus der Datenbank geladene und wird deshalb gleich
+behandelt.
 
 Die Unterhaltungen werden nach dem Zeitpunkt der letzten Nachricht
 sortiert. Da diese Sortierung sowohl beim Laden als auch beim
@@ -1061,9 +1038,7 @@ erneute Anfrage wäre überflüssig, da die Nachricht bereits vollständig
 vorliegt; sie würde die Ersparnis, die die dauerhafte Verbindung
 gerade bewirkt, wieder aufheben.
 
-\begin{lstlisting}[language=TypeScript,caption={Eintragen einer über
-den Kanal empfangenen Nachricht in den Zwischenspeicher},
-label={lst:chat-cache}]
+\begin{lstlisting}[language=TypeScript,caption={Eintragen einer über den Kanal empfangenen Nachricht in den Zwischenspeicher},label={lst:chat-cache}]
 queryClient.setQueryData<ChatMessagesResponse | undefined>(
   ['chat', 'messages', conversationId],
   (currentData) => {
@@ -1103,6 +1078,7 @@ deren ungelesene Nachrichten als gelesen und setzt den Zähler lokal
 auf null.
 
 Die Anmeldung erfolgt in einem Effekt, dessen Aufräumfunktion die
-Kanäle wieder abmeldet -- andernfalls stiege die Zahl der Abonnements
-mit jedem Aufruf der Seite. Aus demselben Grund wird die Liste der
-Unterhaltungen mit \texttt{useMemo} gehalten.
+Kanäle wieder abmeldet. Andernfalls stiege die Zahl der Abonnements
+mit jedem Aufruf der Seite. Damit der Effekt nicht bei jedem Rendern
+erneut ausgeführt wird, wird die Liste der Unterhaltungen zusätzlich
+mit \texttt{useMemo} stabil gehalten.
