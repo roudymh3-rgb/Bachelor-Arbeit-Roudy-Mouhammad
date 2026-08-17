@@ -145,6 +145,82 @@ wohin ein Klick auf sie führt. Ein gemeinsames Verzeichnis müsste
 diese Unterschiede innerhalb jeder einzelnen Datei führen.
 gilt damit auch für den Wechsel zwischen Ansichten.
 
+\subsection{Routing-Konzept und
+rollenbasierter Seitenschutz}
+\label{subsec:routing-konzept}
+ 
+Das Routing von \textit{Bazario} basiert
+auf React Router DOM und folgt einem
+hierarchischen Konzept, bei dem alle Routen
+als Kindrouten unter einem gemeinsamen
+Layout-Wrapper organisiert sind
+\cite{reactrouter_docs}. Die zentrale
+Routing-Konfiguration wird in
+\texttt{app/router/index.tsx} definiert
+und über einen \texttt{RouterProvider}
+in der Hauptkomponente \texttt{App.tsx}
+eingebunden. Als oberste Ebene der
+Routenhierarchie dient die Komponente
+\texttt{MainLayout}, die gemeinsame
+Elemente wie den Anwendungs-Header für
+alle Unterseiten bereitstellt. Alle
+seitenspezifischen Komponenten werden
+als \texttt{children} innerhalb dieses
+Layouts gerendert, sodass das gemeinsame
+Layout nur einmal definiert werden muss
+\cite{reactrouter_docs}.
+ 
+Für den rollenbasierten Seitenschutz
+werden geschützte Routen als
+Wrapper-Komponenten implementiert, die
+vor dem Rendern einer Seite den
+Authentifizierungsstatus sowie die Rolle
+des Nutzers prüfen
+\cite{reactrouter_docs,
+wieruch_protected_routes}. Ist der Nutzer
+nicht authentifiziert, wird er auf die
+Startseite umgeleitet, von der aus die
+Anmeldung über einen Dialog im
+Anwendungs-Header erfolgen kann; besitzt
+er zwar eine gültige Sitzung, aber nicht
+die für die jeweilige Seite erforderliche
+Rolle, erfolgt die Weiterleitung auf die
+Kontoübersicht. Dieses Konzept folgt
+dem in Abschnitt~\ref{subsec:rbac}
+vorgestellten Prinzip der
+rollenbasierten Zugriffskontrolle.
+ 
+Öffentlich zugängliche Routen wie
+\texttt{/products} oder
+\texttt{/services} stehen allen
+Nutzern offen, während geschützte
+Routen wie \texttt{/account} eine
+gültige Sitzung voraussetzen und
+Routen wie
+\texttt{/account\allowbreak/upgrade\allowbreak/seller}
+zusätzlich an die Rolle \textit{Customer}
+gebunden sind.
+Mit der Zahl der Routen wächst der Umfang des Programmcodes, den eine
+\acs{SPA} beim ersten Aufruf überträgt. Da die Routenkonfiguration
+festlegt, welche Komponente zu welcher Adresse gehört, ist sie
+zugleich die Stelle, an der sich dieser Code aufteilen lässt: Jede
+Ansicht wird als eigener Abschnitt geführt und erst beim Aufruf ihrer
+Route nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}).
+ 
+Ausgenommen bleiben der Anwendungsrahmen, die Wrapper-Komponente des
+Seitenschutzes und die Startseite. Die ersten beiden sind an jeder
+Route beteiligt, die Startseite ist der häufigste Einstiegspunkt;
+ein Nachladen würde den ersten Aufruf in allen drei Fällen
+verlangsamen statt ihn zu beschleunigen.
+ 
+Da eine nachgeladene Ansicht nicht sofort verfügbar ist, muss für die
+Dauer des Ladens ein Platzhalter dargestellt werden. Dessen Grenze
+wird bewusst um den Inhaltsbereich gelegt und nicht um die gesamte
+Anwendung, damit Kopfzeile und Navigation während des Wechsels
+sichtbar bleiben. Die Anforderung an die Sichtbarkeit des
+Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
+gilt damit auch für den Wechsel zwischen Ansichten.
+
 \subsection{Globales State Management}
 \label{subsec:state-management-konzept}
 
@@ -589,6 +665,7 @@ erfasst wurde.
 
 
 \section{Konzept der einzelnen Funktionsbereiche}
+\label{sec:funktionsbereiche_konzept}
 \subsection{Authentifizierung und Onboarding}
 \label{subsec:auth-onboarding}
 
@@ -1089,10 +1166,10 @@ einen Tag; sie kennt weder Stufen noch eine wählbare Laufzeit.
 \hline
 \textbf{Art} & \textbf{Preis} & \textbf{Laufzeit} \\
 \hline
-Gold        & 50\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
-Silber      & 40\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
-Standard    & 30\,\euro{} je Tag & 1 bis 7 Tage, wählbar \\
-Ankündigung & 20\,\euro{}        & 1 Tag, fest \\
+Gold        & 50 Euro je Tag & 1 bis 7 Tage, wählbar \\
+Silber      & 40 Euro je Tag & 1 bis 7 Tage, wählbar \\
+Standard    & 30 Euro je Tag & 1 bis 7 Tage, wählbar \\
+Ankündigung & 20 Euro        & 1 Tag, fest \\
 \hline
 \end{tabular}
 \caption{Preise und Laufzeiten der vier Platzierungsarten}
