@@ -488,14 +488,6 @@ und der Anmeldedialog öffnet sich auf der Startseite. Der Vorgang
 endet damit dort, wo er begonnen hat, und hinterlässt nichts im
 Browser.
  
-% ---------------------------------------------------------------
-% ABBILDUNG: deine vier Bildschirmfotos, 2x2.
-% Dateinamen an deine Ablage anpassen.
-%
-% Der Hinweis auf den festen Wert gehoert in die Bildunterschrift,
-% sonst fragt der Pruefer, ob das Kennwort immer 111111 lautet.
-% ---------------------------------------------------------------
- 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.48\textwidth]{Bilder/pwforgot.png}
@@ -798,32 +790,14 @@ auf ein automatisches Ablaufen zu verlassen (vgl.
 Abschnitt~\ref{subsec:impl_tanstackquery}). Auf dem Bildschirm ist
 davon nichts zu erkennen; sichtbar würde erst das Gegenteil, nämlich
 eine Liste, in der ein bereits gelöschter Eintrag noch erscheint.
-
-%\begin{figure}[H]
-%%%%%%%%%%%%%\centering
-%%%%%%%%%%%%\includegraphics[width=0.50\textwidth]{Bilder/screenshot_edit_service.png}
-%%%%%%%%%%%\caption{Formular zum Bearbeiten einer Dienstleistung mit
-%%%%%%%%%%zweisprachigen Inhaltsfeldern und Buchungsregeln}
-%%%%%%%%%\label{fig:edit_service}
-%%%%%%%%\end{figure}
-
 Die Produktverwaltung ist strukturgleich, aber einfacher, da Produkte
 keine Buchungsregeln benötigen: Die eigenen Produkte werden über
 \texttt{useMyProductsQuery} abgerufen und nach demselben Kartenprinzip
 dargestellt. Beim Löschen sind drei Zwischenspeicher betroffen statt
 vier, da für Produkte keine eigene Detailseite zwischengespeichert
 wird.
-
-%%%%%%%\begin{figure}[H]
-%%%%%%\centering
-%%%%%\includegraphics[width=0.50\textwidth]{Bilder/screenshot_availability.png}
-%%%%\caption{Verfügbarkeitsverwaltung mit Wochenschema und einzelnen
-%%%Abwesenheitszeiträumen}
-%%\label{fig:availability}
-%\end{figure}
-
 Die festen Arbeitszeiten werden je Wochentag über die
-wiederverwendbare Komponente \texttt {\small WorkingHoursEditor} dargestellt,
+wiederverwendbare Komponente \texttt{\small WorkingHoursEditor} dargestellt,
 die beliebig viele Zeitintervalle mit Start- und Endzeit
 entgegennimmt und es erlaubt, einzelne Intervalle hinzuzufügen oder
 zu entfernen. Ein Wochentag ohne Intervall gilt als nicht verfügbar.
@@ -1121,7 +1095,7 @@ Abbildung~\ref{fig:messaging_ablauf}). Ohne diese Prüfung erschiene
 sie doppelt.
 
 Dieselben Ereignisse schreiben zugleich die Liste der Unterhaltungen
-fort, deren Aufbau Abbildung~\ref{fig:chat_seite}  zeigt: Vorschautext,
+fort, deren Aufbau Abbildung~\ref{fig:chat_seite} zeigt: Vorschautext,
 Zeitpunkt, Reihenfolge und der Zähler ungelesener Nachrichten. Der
 Zähler steigt nur bei fremden Nachrichten in nicht geöffneten
 Unterhaltungen; wird eine Unterhaltung geöffnet, meldet die Seite
