@@ -917,8 +917,61 @@ bisherigen Termin. Eine Stornierung löst dagegen eine Rückerstattung
 \section{Werbung und Ankündigungen}
 \label{sec:impl_werbung}
 
-% TODO: Implementierung der Ankündigungen und Werbemodule je Rolle,
-% Genehmigungsprozess.
+Werbung und Ankündigungen sind als zwei Funktionsbereiche
+\texttt{ads/} und \texttt{listings/} umgesetzt, die derselben
+internen Struktur folgen wie die übrigen (vgl.
+Abschnitt~\ref{subsec:komponentenarchitektur}). Der Schnitt zwischen
+ihnen folgt der Unterscheidung aus
+Abschnitt~\ref{subsec:werbung_konzept}.
+ 
+Der Zahlungsweg entspricht dem des Warenkorbs: Die Platzierung wird
+zunächst angelegt, danach eine Checkout-Sitzung erzeugt, auf den
+Zahlungsdienst weitergeleitet und das Ergebnis auf einer eigenen
+Rückleitungsseite abgeglichen (vgl.
+Abschnitt~\ref{subsec:impl_stripe}). Beide Bereiche bringen dafür
+eine eigene Erfolgs- und Abbruchseite mit, da sich der Vorgang auf
+eine einzelne Platzierung bezieht und nicht auf einen Auftrag mit
+mehreren Positionen. Weil eine Platzierung ein Bild führt, wird sie
+als \texttt{multipart/form-data} übertragen, wie auch das Anlegen
+eines Produkts oder einer Dienstleistung.
+ 
+Die drei Stufen erscheinen im Formular als Auswahl, das Backend
+erwartet jedoch die Kennung eines Werbeplatzes. Das Frontend hält
+diese Kennungen nicht vor, sondern ruft die verfügbaren Plätze ab und
+schlägt die zur gewählten Stufe gehörende darin nach. Preise und
+Kennungen bleiben damit dort, wo sie gepflegt werden, und eine
+Änderung im Verwaltungsbereich wirkt ohne Eingriff in das Frontend
+(vgl. Abschnitt~\ref{subsec:werbung_konzept}).
+ 
+Auch die Auswahl des Ziels wird aus dem Bestand gebildet: Zur Auswahl
+steht nur, was der angemeldete Nutzer tatsächlich besitzt, also sein
+Profil sowie seine Produkte oder Dienstleistungen. Bewirbt er sein
+Profil, wird keine Kennung mitgesendet, da das Ziel bereits aus der
+Rolle folgt; bewirbt er einen einzelnen Eintrag, ist sie
+erforderlich und wird geprüft, bevor die Anfrage gestellt wird.
+ 
+Das Backend bezeichnet das beworbene Ziel über den Namen seiner
+Modellklasse. Eine Zuordnungstabelle übersetzt diesen Namen in einen
+eigenen Typ des Frontends, aus dem sich zugleich die Zieladresse des
+Verweises ergibt. Die Komponenten arbeiten dadurch nicht mit
+Klassennamen des Backends, und eine Umbenennung dort betrifft eine
+einzige Stelle.
+ 
+Zustand und Zahlung werden, wie in
+Abschnitt~\ref{subsec:werbung_konzept} begründet, getrennt geführt.
+Der Zustand kommt unverändert aus dem Backend; die Zahlungsangabe
+wird beim Aufbereiten der Daten aus mehreren Feldern abgeleitet und
+kennt drei Ausprägungen: ausstehend, bezahlt und erstattet. Die
+Ableitung liegt in der Aufbereitung und nicht in der Darstellung,
+sodass die Übersichten der Anbieter dieselbe Angabe zeigen, ohne die
+Regel je einzeln zu wiederholen.
+ 
+Auf der Startseite verwenden alle drei Stufen dieselbe Karte in drei
+Größen: Gold über die volle Breite, Silber zu zweit, Standard zu
+dritt. Die Abstufung ist damit eine Eigenschaft der Komponente und
+nicht drei getrennte Umsetzungen. Ein Abschnitt wird nur dargestellt,
+wenn für seine Stufe eine freigegebene Platzierung vorliegt; die
+Ankündigungen stehen darüber in einem eigenen Laufband.
 
 
 \section{Messaging}
