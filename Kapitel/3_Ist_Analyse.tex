@@ -274,10 +274,11 @@ Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
 Abschnitt~\ref{subsec:framework-funktionen}), waren alle übrigen
 Aufgabenbereiche einzeln zu entscheiden; die Gegenüberstellung der
 jeweils betrachteten Alternativen erfolgt in
-Abschnitt~\ref{sec:technologiestack}. Eine
-Ausnahme bildet Axios, für das kein einzelner Grund ausschlaggebend
-war, da nennenswerte Alternativen kaum vorhanden sind
-\cite{axios_docs}. Tabelle~\ref{tab:technologiestack} fasst die
+Abschnitt~\ref{sec:technologiestack}. Bei Axios stand mit der im Browser eingebauten Fetch-\acs{API} eine
+Alternative zur Verfügung (vgl. Abschnitt~\ref{subsec:rest-api});
+den Ausschlag gab die zentrale Instanz mit Interceptors, über die
+sich der Authentifizierungstoken an einer Stelle anfügen lässt statt
+in jeder Anfrage einzeln \cite{axios_docs}. Tabelle~\ref{tab:technologiestack} fasst die
 getroffene Auswahl zusammen.
 
 \begin{table}[htbp]
@@ -289,6 +290,10 @@ getroffene Auswahl zusammen.
 \hline
 \textbf{Technologie} & \textbf{Einsatzbereich} &
 \textbf{Betrachtete Alternative} & \textbf{Begründung} \\
+\hline
+TypeScript & Programmier\-sprache & JavaScript &
+Statische Typprüfung vor der Übersetzung, Ableitung von Typen aus
+Validierungsschemata \\
 \hline
 React & \acs{UI}-Framework & Angular, Vue.js &
 Komponentenbasiert, großes Ökosystem, hohe Flexibilität bei der
@@ -323,6 +328,10 @@ Utility-first, konsistentes Erscheinungsbild ohne separates
 shadcn/ui & \acs{UI}-Kom\-po\-nen\-ten & klassische
 Komponenten\-bibliothek &
 Barrierefrei, vollständig anpassbar, kein Paket-Lock-in \\
+\hline
+i18next & Mehr\-sprachig\-keit & react-intl &
+Schlüsselbasierte Ressourcen, Platzhalter, unmittelbare
+Neudarstellung beim Sprachwechsel \cite{i18next_docs} \\
 \hline
 Vite & Build-Tool & Webpack &
 Schnelle Entwicklungsumgebung, optimierte

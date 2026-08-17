@@ -418,9 +418,10 @@ Kommunikation mit dem Backend, Gestaltung der Oberfläche,
 Formularverarbeitung, Mehrsprachigkeit und Build-Werkzeuge.
 Für einige dieser Bereiche stehen mehrere konkurrierende Ansätze zur
 Verfügung, für andere hat sich im React-Ökosystem eine Lösung als
-De-facto-Standard etabliert; die folgenden Abschnitte stellen daher
-nur dort Alternativen gegenüber, wo eine tatsächliche Auswahl
-bestand.
+De-facto-Standard etabliert. Die folgenden Abschnitte stellen die
+jeweils gebräuchlichen Ansätze einander gegenüber; welcher davon für
+\textit{Bazario} zum Einsatz kommt und aus welchen Gründen, wird in
+Abschnitt~\ref{sec:technologieauswahl} entschieden.
 
 
 \subsection{React, Angular und Vue.js im Vergleich}
@@ -641,15 +642,24 @@ der Felder, werden dennoch alle übertragen.
 GraphQL verlagert die Bestimmung der Antwortstruktur auf den
 Client. Über einen einzelnen Endpunkt formuliert dieser eine
 Abfrage, die genau die benötigten Felder benennt, auch über mehrere
-zusammenhängende Ressourcen hinweg. Messungen zeigen, dass sich das
-übertragene Datenvolumen dadurch erheblich reduzieren lässt. Eine
-Untersuchung von neun Datenbank-Endpunkten misst für eine
-GraphQL-Implementierung 25 bis 67 Prozent geringere Antwortzeiten als
-für eine vergleichbare \acs{REST}-Schnittstelle, mit den größten
-Vorteilen bei Abfragen über mehrere verknüpfte Ressourcen. Unter
-hoher Nebenläufigkeit kehrt sich das Verhältnis um: Dort liefert
-\acs{REST} 65 bis 72 Prozent geringere Antwortzeiten und skaliert
-stabiler \cite{lawi_graphql_rest, lloyd_graphql_rest}.
+zusammenhängende Ressourcen hinweg.
+
+Welcher Ansatz schneller antwortet, hängt vom Aufbau und von der
+Last ab; die vorliegenden Messungen kommen zu unterschiedlichen
+Ergebnissen. Eine Untersuchung über neun Datenbank-Endpunkte misst
+für eine GraphQL-Implementierung 25 bis 67 Prozent geringere
+mittlere Antwortzeiten als für eine vergleichbare
+\acs{REST}-Schnittstelle, mit den größten Vorteilen bei Abfragen
+über mehrere verknüpfte Ressourcen. Ab etwa achtzig gleichzeitigen
+Anfragen kehrt sich das Verhältnis um: Dort liefert \acs{REST} 65
+bis 72 Prozent geringere Antwortzeiten und hält diese über alle
+Laststufen hinweg stabil \cite{lloyd_graphql_rest}. Eine zweite
+Untersuchung an einem laufenden Informationssystem kommt dagegen
+insgesamt zu einem Vorteil für \acs{REST}, mit 51 Prozent
+geringerer Antwortzeit und 37 Prozent höherem Durchsatz, während
+GraphQL bei den Betriebsmitteln vorn liegt, mit 37 Prozent
+geringerer Prozessorlast und 40 Prozent geringerem Speicherbedarf
+\cite{lawi_graphql_rest}.
 
 Beiden Ansätzen gemeinsam ist, dass die Kommunikation vom Client
 ausgeht. Muss der Server seinerseits Daten übermitteln, ohne dass
@@ -735,7 +745,7 @@ verwendbar sind, deren Anpassung an ein eigenes Erscheinungsbild
 jedoch Aufwand erfordert. Bei \acs{CSS}-in-JS werden Stile im
 JavaScript-Code einer Komponente definiert, wodurch Stil und Logik
 zusammenliegen, zur Laufzeit jedoch zusätzlicher
-Verarbeitungsaufwand entsteht.
+Verarbeitungsaufwand entsteht \cite{utility_first_comparison}.
 
 Utility-first-Frameworks wie Tailwind CSS definieren keine fertigen
 Komponenten, sondern atomare Stilklassen für Abstände, Farben und
@@ -748,12 +758,13 @@ längere Klassenangaben im Markup hin
 \cite{utility_first_comparison}.
 
 Ergänzend existieren Komponentensammlungen wie shadcn/ui, die
-zugängliche, anpassbare React-Komponenten auf Basis von Radix
-UI-Primitives bereitstellen und mit Tailwind CSS gestaltet sind. Im
-Unterschied zu klassischen Komponentenbibliotheken wird shadcn/ui
-nicht als Paketabhängigkeit installiert; die Quellcodes werden
-direkt in das Projekt kopiert, wodurch die Kontrolle über den Code
-beim Projekt verbleibt \cite{shadcn_docs}.
+barrierefreie, anpassbare React-Komponenten auf Basis von Radix
+UI-Primitives bereitstellen und mit Tailwind CSS gestaltet sind
+(vgl. Abschnitt~\ref{subsec:barrierefreiheit}). Im Unterschied zu
+klassischen Komponentenbibliotheken wird shadcn/ui nicht als
+Paketabhängigkeit installiert; die Quellcodes werden direkt in das
+Projekt kopiert, wodurch die Kontrolle über den Code beim Projekt
+verbleibt \cite{shadcn_docs}.
 
 
 \subsection{Formularverarbeitung und Validierung}
@@ -773,9 +784,10 @@ Von der Verwaltung zu unterscheiden ist die Prüfung der Eingaben. Zod
 ist eine TypeScript-orientierte Bibliothek zur Schema-Validierung, mit
 der Datenstrukturen deklarativ definiert und zur Laufzeit geprüft
 werden; aus den Schemata leiten sich zugleich statische Typen ab
-\cite{zod_docs}. Ältere Bibliotheken wie Yup folgen demselben Prinzip,
-sind jedoch nicht auf TypeScript ausgerichtet, sodass die Typen nicht
-aus dem Schema hervorgehen, sondern getrennt zu pflegen sind
+\cite{zod_docs}. Ältere Bibliotheken wie Yup folgen demselben Prinzip
+und erlauben ebenfalls, Typen aus dem Schema abzuleiten; sie waren
+jedoch nicht von Beginn an auf TypeScript ausgerichtet, sodass diese
+Ableitung nachträglich ergänzt wurde und nicht in allen Fällen greift
 \cite{yup_docs}. Verwaltung und Prüfung lassen sich über einen
 sogenannten Resolver koppeln, sodass Eingaben clientseitig gegen ein
 Schema validiert werden, bevor eine Anfrage an das Backend gestellt
@@ -789,17 +801,17 @@ Arten von Texten zu unterscheiden. Beschriftungen, Hinweise und
 Meldungen stehen im Anwendungscode; ihre Übersetzung ist Aufgabe des
 Frontends. Die dargestellten Inhalte stammen dagegen aus einer
 Datenquelle, weshalb die Übersetzung dort liegt und das Frontend
-lediglich mitteilt, in welcher Sprache es die Antwort erwartet --
+lediglich mitteilt, in welcher Sprache es die Antwort erwartet,
 üblicherweise über den \acs{HTTP}-Header \texttt{Accept-Language}
-\cite{fielding_rest}.
- 
+\cite{rfc9110}.
+
 Für die erste Art werden Texte nicht unmittelbar in die Komponenten
 geschrieben, sondern über einen Schlüssel referenziert, zu dem je
 Sprache ein Wert in einer Ressourcendatei vorliegt; eine Änderung
 erfolgt damit an einer Stelle und wirkt überall. Hinzu kommen
 Platzhalter für veränderliche Bestandteile wie Namen oder Anzahlen
 sowie eine Rückfallsprache für den Fall, dass ein Schlüssel fehlt. Im
-JavaScript-Umfeld ist \textit{i18next} die verbreitetste Lösung
+JavaScript-Umfeld ist \textit{i18next} eine verbreitete Lösung
 hierfür; die React-Anbindung \textit{react-i18next} stellt die
 betroffenen Komponenten bei einem Sprachwechsel unmittelbar neu dar,
 ohne die Seite neu zu laden \cite{i18next_docs}. Alternativen wie
@@ -819,17 +831,16 @@ verkleinert werden. Diese Aufgaben übernimmt ein Build-Werkzeug, das
 zugleich einen Entwicklungsserver bereitstellt, der Änderungen am
 Quelltext ohne vollständiges Neuladen in den Browser überträgt.
 
-Webpack ist die über lange Zeit etablierte Lösung. Es fasst den
+Webpack ist ein über lange Zeit verbreitetes Werkzeug. Es fasst den
 gesamten Quelltext auch während der Entwicklung zu einem Paket
 zusammen und ist über eine umfangreiche Konfiguration an nahezu jede
 Projektstruktur anpassbar \cite{webpack_docs}. Vite verfolgt einen
-anderen Ansatz: Während der Entwicklung liefert es die Dateien einzeln
-als native ES-Module aus und verzichtet auf das vorherige
+anderen Ansatz: Während der Entwicklung liefert es die Dateien
+einzeln als native ES-Module aus und verzichtet auf das vorherige
 Zusammenfassen; erst für die Auslieferung wird ein Paket erzeugt
 \cite{vite_docs}. Der Aufwand für die Einrichtung fällt dadurch
 geringer aus, die Anpassbarkeit ist dafür stärker an die Vorgaben des
-Werkzeugs gebunden. Daneben existieren Lösungen wie Parcel, die
-gänzlich ohne Konfiguration auskommen.
+Werkzeugs gebunden.
 
 Vom Build-Werkzeug hängt auch ab, wie der Programmcode für das in
 Abschnitt~\ref{subsec:spa-mpa} beschriebene Nachladen aufgeteilt wird:
@@ -850,11 +861,10 @@ Der bekannteste davon geht auf Nielsen und Molich zurück, die 1990
 ein Verfahren vorstellten, bei dem Gutachter eine Oberfläche anhand
 einer überschaubaren Zahl allgemeiner Regeln auf Schwachstellen
 untersuchen \cite{nielsen_molich_heuristic}. Nielsen überarbeitete diese Regeln 1994 auf Grundlage von 249
-dokumentierten Usability-Problemen aus elf Projekten. Eine
-Faktorenanalyse ergab sieben wiederkehrende Faktoren; ergänzt um
-zwei weitere Prinzipien mit hoher Erklärungsabdeckung --
-ästhetisches Design sowie die Unterstützung beim Beheben von
-Fehlern -- entstand daraus ein Satz von neun Heuristiken
+dokumentierten Usability-Problemen aus elf Projekten. Eine Faktorenanalyse ergab sieben wiederkehrende Faktoren; ergänzt um
+zwei weitere Prinzipien mit hoher Erklärungsabdeckung, nämlich
+ästhetisches Design sowie die Unterstützung beim Beheben von Fehlern,
+entstand daraus ein Satz von neun Heuristiken
 \cite{nielsen_explanatory_power}. Tabelle~\ref{tab:heuristiken} führt die neun Heuristiken auf. Sie
 bilden zugleich das Ordnungsraster für die Evaluation in
 Kapitel~\ref{chap:testen}.
@@ -875,7 +885,7 @@ darüber auf dem Laufenden, was gerade geschieht \\
 folgen der Vorstellungswelt des Nutzers, nicht der internen
 Umsetzung \\
 \hline
-Nutzerkontrolle-und Handlungs\-freiheit & Begonnene Vorgänge
+Nutzerkontrolle und Handlungs\-freiheit & Begonnene Vorgänge
 lassen sich abbrechen und rückgängig machen \\
 \hline
 Konsistenz und Standards & Gleichartige Situationen sehen gleich
@@ -931,15 +941,19 @@ Ansichten unabhängig voneinander entstehen, weichen Farbwerte,
 Abstände und Schriftgrößen auseinander, ohne dass dies bei der
 Entwicklung einer einzelnen Ansicht auffiele.
  
-Ein Designsystem verankert Konsistenz deshalb technisch. Es
-definiert die visuellen Grundelemente einer Anwendung, also
-Farbpalette, Typografie, Abstandsraster, Eckenradien und
-Zustandsdarstellungen, als benannte, an einer Stelle gepflegte
-Werte. Diese sogenannten Design Tokens werden in den Komponenten
-nicht als feste Zahlenwerte hinterlegt, sondern über ihren Namen
-referenziert. Eine Änderung an zentraler Stelle wirkt sich dadurch
-auf alle Ansichten zugleich aus, und abweichende Einzelwerte
-entstehen gar nicht erst \cite{shah_design_system_2023}.
+Ein Designsystem verankert Konsistenz deshalb technisch. Es dient
+Entwurf und Umsetzung als gemeinsame und einzige Bezugsquelle und
+stellt dafür eine Sammlung wiederverwendbarer Komponenten und Muster
+bereit; sein Zweck ist ausdrücklich die Sicherung visueller und
+funktionaler Konsistenz \cite{shah_design_system_2023}. Es definiert die visuellen
+Grundelemente einer Anwendung, also Farbpalette, Typografie,
+Abstandsraster, Eckenradien und Zustandsdarstellungen, als benannte,
+an einer Stelle gepflegte Werte. Diese sogenannten Design Tokens
+werden in den Komponenten nicht als feste Zahlenwerte hinterlegt,
+sondern über ihren Namen referenziert. Eine Änderung an zentraler
+Stelle wirkt sich dadurch auf alle Ansichten zugleich aus, und
+abweichende Einzelwerte entstehen gar nicht erst
+\cite{dtcg_format_2025}.
  
 Von den Grundelementen zu unterscheiden sind die darauf
 aufbauenden Komponenten. Erst deren einheitliche Verwendung
@@ -1094,12 +1108,14 @@ User Experience umfasst über die Gebrauchstauglichkeit hinaus auch
 emotionale und wahrnehmungsbezogene Aspekte der Nutzung. Die für
 E-Commerce-Websites erarbeiteten \acs{UX}-Heuristiken berücksichtigen
 entsprechend Vertrauen, Orientierung und visuelle Konsistenz
-\cite{bonastre_ux_heuristics}. Als Ordnungsraster für die Evaluation
-in Kapitel~\ref{chap:testen} dienen die neun Heuristiken aus
-Tabelle~\ref{tab:heuristiken}. Ausschlaggebend dafür ist, dass sich die berichtete Erkennungsrate
-eines einzelnen Gutachters \cite{nielsen_molich_heuristic} auf eben
-dieses Verfahren bezieht; Methode
-und Einschätzung ihrer Aussagekraft bleiben damit aneinander
-gebunden. Die genannten E-Commerce-Kataloge ergänzen die Bewertung
-einzelner Befunde um marktplatzspezifische Gesichtspunkte, bilden
-jedoch nicht das Ordnungsraster.
+\cite{bonastre_ux_heuristics}. Als Ordnungsraster für die Evaluation in Kapitel~\ref{chap:testen}
+dienen die neun Heuristiken aus Tabelle~\ref{tab:heuristiken}.
+Ausschlaggebend dafür ist, dass die Aussagekraft des Verfahrens aus
+derselben Quelle stammt: Nielsen und Molich berichten, dass einzelne
+Gutachter in vier Experimenten nur zwischen 20 und 51 Prozent der
+vorhandenen Usability-Probleme fanden
+\cite{nielsen_molich_heuristic}. Verfahren und bekannte Grenze
+bleiben damit aneinander gebunden. Die genannten
+E-Commerce-Kataloge ergänzen die Bewertung einzelner Befunde um
+marktplatzspezifische Gesichtspunkte, bilden jedoch nicht das
+Ordnungsraster.
