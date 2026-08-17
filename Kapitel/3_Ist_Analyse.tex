@@ -9,7 +9,7 @@ Multi-Rollen-Marktplatz. Das Gesamtsystem folgt einer
 klaren Trennung zwischen Präsentationsschicht, Geschäftslogik
 und Datenhaltung. Die Kommunikation zwischen Frontend und
 Backend erfolgt über \acs{REST}-basierte \acs{HTTP}-Schnittstellen,
-die Echtzeitkommunikation des Chat-Systems über eine
+die Echtzeitkommunikation des Nachrichtenbereichs über eine
 WebSocket-Verbindung auf Basis von Pusher.
 
 Das Backend wurde im Rahmen einer begleitenden Bachelorarbeit
@@ -35,7 +35,7 @@ Single-Page Application darstellt.
 Die funktionalen Anforderungen an das Frontend wurden in
 enger Abstimmung mit den im Backend definierten
 Geschäftsprozessen erarbeitet und gliedern sich nach den
-vier Nutzerrollen der Plattform.
+vier Nutzerrollen der Plattform sowie den rollenübergreifenden Anforderungen.
 
 Alle Nutzer müssen sich registrieren, anmelden und abmelden
 können. Die Registrierung erfolgt mit der Standardrolle
@@ -43,8 +43,7 @@ können. Die Registrierung erfolgt mit der Standardrolle
 \textit{Seller} oder \textit{ServiceProvider} stellen, indem sie ein Formular
 ausfüllen und notwendige Dokumente hochladen. Der
 Antragsstatus ist für den Nutzer jederzeit einsehbar.
-Zusätzlich unterstützt die Plattform eine
-Passwort-Zurücksetzen-Funktion auf Basis eines
+Zusätzlich unterstützt die Plattform eine Funktion zum Zurücksetzen des Passworts auf Basis eines
 \acs{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
 
 Käufer müssen Produkte und Dienstleistungen nach Kategorie
@@ -72,9 +71,9 @@ Rollenwechselanträgen, die Freigabe oder Ablehnung von
 Werbeanzeigen, die Konfiguration der Plattformgebühren sowie
 das Auslösen von Auszahlungen, werden über das vom Backend
 bereitgestellte \textit{Admin}-Dashboard abgedeckt und stellen daher
-keine Anforderungen an das hier entwickelte Frontend. Alle Nutzer können Konversationen
-starten und in Echtzeit Nachrichten austauschen. Die Inbox
-zeigt alle aktiven Konversationen mit Ungelesen-Zähler an.
+keine Anforderungen an das hier entwickelte Frontend. Alle Nutzer können Unterhaltungen beginnen und in Echtzeit Nachrichten
+austauschen. Der Nachrichtenbereich zeigt alle aktiven Unterhaltungen
+mit der Zahl der ungelesenen Nachrichten an.
 
 Tabelle~\ref{tab:funktionale-anforderungen} fasst die
 funktionalen Anforderungen je Rolle zusammen.
