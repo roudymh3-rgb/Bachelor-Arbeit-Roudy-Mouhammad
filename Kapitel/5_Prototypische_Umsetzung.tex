@@ -225,7 +225,7 @@ const de = {
   },
   checkout: {
     successTitle: 'Checkout erfolgreich',
-    paymentConfirmed: 'Zahlung bestätigt',
+    paymentConfirmed: 'Zahlung bestaetigt',
   },
 }
 \end{lstlisting}
@@ -461,10 +461,6 @@ es projektspezifische Angaben, nämlich Name und Kontaktdaten des
 Geschäfts sowie ein Nachweisdokument, anhand derer ein Administrator
 entscheidet.
 
-% TODO (Roudy): Hier Screenshot der Kontouebersicht vor und nach
-% der Genehmigung nebeneinander einfuegen (vgl. Meeting vom
-% 12.07.2026), kein Code, kein Diagramm.
-
 \section{Katalog und Produktseiten}
 \label{sec:impl_katalog}
 
@@ -495,19 +491,6 @@ gleichermaßen gilt. Die Umsetzung der Werbeplatzierungen und
 Ankündigungen selbst wird in
 Abschnitt~\ref{sec:impl_werbung} beschrieben.
 
-% TODO (Roudy): Dieser Abschnitt hiess vorher "Produktlisting:
-% Karten, Paginierung", beschreibt aber nur die Startseite. Es
-% fehlt ein Absatz zur Katalogseite selbst: Vorschau-Karten,
-% Kategoriefilter und Paginierung, und dabei besonders, dass Seite
-% und Kategorie in der Adresse stehen und Teil des Query Keys sind.
-% Das ist nicht bloss Vollstaendigkeit: Abschnitt
-% \ref{subsec:impl_dienstleistungsverwaltung} verweist mit
-% "wie beim Produktlisting beschrieben" genau auf diesen fehlenden
-% Absatz. Solange er fehlt, laeuft der Verweis ins Leere.
-% Ueberschrift ist vorlaeufig auf "Startseite und Katalogseiten"
-% geaendert, damit Titel und Inhalt zusammenpassen; nach Ergaenzen
-% des Absatzes gern wieder anpassen.
-
 \subsection{Detailseiten für Produkte und Dienstleistungen}
 \label{subsec:impl_produktdetail}
 
@@ -527,13 +510,6 @@ und Angaben zum Anbieter dargestellt.
 Die Detailseite einer Dienstleistung enthält darüber hinaus die
 Auswahl eines Buchungstermins, deren Umsetzung in
 Abschnitt~\ref{subsec:impl_terminauswahl} beschrieben wird.
-
-% TODO (Roudy): Screenshot der Startseite mit den
-% Vorschau-Karten (Produkte und Dienstleistungen,
-% inkl. "New"-Kennzeichnung).
-% TODO (Roudy): Screenshot der Produkt-Katalogseite mit
-% Kategoriefilter und Paginierung (Seite/Kategorie in der URL
-% sichtbar, z. B. /products?page=2&category=3).
 
 \subsection{Terminauswahl auf der Dienstleistungsseite}
 \label{subsec:impl_terminauswahl}

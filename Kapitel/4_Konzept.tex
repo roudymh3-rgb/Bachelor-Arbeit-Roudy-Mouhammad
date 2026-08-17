@@ -1,14 +1,3 @@
-% #####################################################################
-%
-%   Kapitel 4 -- Frontend-Konzept
-%   SPRACHLICH BEREINIGTE FASSUNG, Stand 18. August 2026
-%
-%   Geaendert wurde nur, was fehlerhaft, doppelt oder unpraezise war.
-%   Deine Formulierungen bleiben stehen, wo sie tragen.
-%   Die Aenderungen sind in der Antwort im Chat einzeln aufgefuehrt.
-%
-% #####################################################################
-
 \chapter{Frontend-Konzept}
 \label{chap:konzept}
 
@@ -205,12 +194,7 @@ Seitenschutzes und die Startseite. Die ersten beiden sind an jeder
 Route beteiligt, die Startseite ist der häufigste Einstiegspunkt;
 ein Nachladen würde den ersten Aufruf in allen drei Fällen
 verlangsamen statt ihn zu beschleunigen.
-
-Da eine nachgeladene Ansicht nicht sofort verfügbar ist, muss für die
-Dauer des Ladens ein Platzhalter dargestellt werden. Dessen Grenze
-wird bewusst um den Inhaltsbereich gelegt und nicht um die gesamte
-Anwendung, damit Kopfzeile und Navigation während des Wechsels
-sichtbar bleiben. Die Anforderung an die Sichtbarkeit des
+Die Anforderung an die Sichtbarkeit des
 Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
 gilt damit auch für den Wechsel zwischen Ansichten.
 
