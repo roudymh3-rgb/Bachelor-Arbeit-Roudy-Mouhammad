@@ -1,3 +1,4 @@
+
 \chapter{Prototypische Umsetzung}
 \label{chap:umsetzung}
 
@@ -205,9 +206,8 @@ den folgenden Abschnitten jeweils nur noch kurz referenziert.
 Die Umsetzung des in
 Abschnitt~\ref{subsec:mehrsprachigkeit_konzept} beschriebenen
 Konzepts stützt sich auf \textit{i18next} mit der React-Anbindung
-\textit{react-i18next} \cite{i18next_docs}. Die Oberflächentexte
-liegen in zwei Modulen, je eines für Deutsch und Englisch; beide
-enthalten dieselben Schlüssel und unterscheiden sich allein in den
+\textit{react-i18next} \cite{i18next_docs}. Die Oberflächentexte liegen in drei Modulen, je eines für Deutsch,
+Englisch und Arabisch; alle drei enthalten dieselben Schlüssel und unterscheiden sich allein in den
 Werten. Die Schlüssel sind nicht alphabetisch, sondern nach ihrem
 Verwendungsbereich gruppiert, etwa \texttt{header}, \texttt{cart}
 oder \texttt{checkout}, wobei ein Bereich \texttt{common} die
@@ -225,7 +225,7 @@ const de = {
   },
   checkout: {
     successTitle: 'Checkout erfolgreich',
-    paymentConfirmed: 'Zahlung bestaetigt',
+    paymentConfirmed: 'Zahlung bestatigt',
   },
 }
 \end{lstlisting}
@@ -245,6 +245,18 @@ Spracheinstellung des Browsers. Die Wahl wird im
 (vgl. Abschnitt~\ref{subsec:impl_token_session}), und ist in einem
 eigenen Hook gekapselt; der Umschalter greift ausschließlich darauf
 zu und kennt weder die Bibliothek noch die Art der Speicherung.
+Arabisch erfordert über die Textfassung hinaus eine Umkehr der
+Schreibrichtung. Sie wird nicht in den Komponenten behandelt, sondern
+einmal zentral: Bei jedem Sprachwechsel setzt eine Funktion die
+Sprachkennung und die Schreibrichtung am Wurzelelement des Dokuments
+und schaltet zugleich auf eine Schrift mit arabischem Zeichensatz um.
+Die Anordnung folgt daraus von selbst, da die eingesetzten
+Utility-Klassen richtungsabhängig ausgewertet werden. Ausgenommen
+bleiben Felder, deren Inhalt keiner Sprache folgt, etwa
+E-Mail-Adressen; sie werden über eine eigene Regel auf die Richtung
+von links nach rechts festgelegt. Zusätzlich werden beim Sprachwechsel
+alle laufenden Abfragen verworfen, damit die Inhalte aus dem Backend
+in der neu gewählten Sprache erneut angefordert werden.
 
 Die Inhalte aus dem Backend werden dagegen nicht übersetzt, sondern
 angefordert: Der in Abschnitt~\ref{subsec:impl_httpclient}
