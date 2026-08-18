@@ -173,11 +173,13 @@ eine globale Regel mit halber Deckkraft dargestellt und unterschreitet
 dadurch den geforderten Wert. Die Korrektur betrifft eine einzige
 Regel und keine einzelne Ansicht.
 
-Für die Performance liegt eine messbare Größe vor: Der
-Übersetzungsvorgang erzeugt rund 1027~kB JavaScript, komprimiert
-288~kB. Die größte Datei überschreitet damit die vom Build-Werkzeug
-genannte Schwelle von 500~kB. Die geforderten Ladezustände sind
-vorhanden; konkrete Antwortzeiten wurden jedoch nicht gemessen.
+Für die Performance liegt eine messbare Größe vor: Der ausgelieferte
+Programmcode ist in 102 Dateien aufgeteilt, von denen beim ersten
+Aufruf nur ein Teil übertragen wird; die größte bleibt mit 230~kB
+unter der Schwelle von 500~kB, auf die das Build-Werkzeug hinweist
+(vgl. Abschnitt~\ref{sec:impl_lazyloading}). Die geforderten
+Ladezustände sind vorhanden; konkrete Antwortzeiten wurden jedoch
+nicht gemessen.
 
 Die heuristische Evaluation zeigt außerdem, dass das
 Mehrsprachigkeitskonzept grundsätzlich funktioniert, die deutsche
