@@ -9,35 +9,38 @@ Verstoß betrifft den Kontrast des Fokusrings.
 \section{Automatisierte Tests}
 \label{sec:automatisierte_tests}
 
-Die Anwendung enthält 36 Testdateien mit insgesamt 132 automatisierten
-Tests. Diese wurden mit \textit{Vitest} und der \textit{Testing Library}
-ausgeführt (vgl. Abschnitt~\ref{sec:technologieauswahl}). Die Tests
-prüfen sowohl einzelne Funktionen als auch das Verhalten ausgewählter
-Komponenten. Alle 132 Tests wurden erfolgreich abgeschlossen, wie
-Abbildung~\ref{fig:vitest_tests} zeigt.
+\section{Automatisierte Tests}
+\label{sec:automatisierte_tests}
+
+Die Prüfung erfolgt auf zwei Ebenen (vgl.
+Abschnitt~\ref{sec:technologieauswahl}). Auf der ersten liegen 36
+Testdateien mit insgesamt 134 Testfällen, die mit \textit{Vitest} und
+der \textit{Testing Library} in einer Browsernachbildung ausgeführt
+werden. Geprüft werden sowohl reine Funktionen, etwa die
+Warenkorbsumme und die Datumsaufbereitung, als auch Komponenten wie
+Anmelde- und Registrierungsformulare. Ein besonders relevanter Befund
+betraf eine fehlerhafte Datumsformatierung, für die ein Test ergänzt
+wurde.
+
+Auf der zweiten Ebene prüfen vier Tests mit \textit{Playwright} in
+einem echten Browser vollständige Nutzerabläufe. Sie decken die beiden
+Abläufe ab, deren Ausfall am schwersten wiegt: das Zurücksetzen des
+Passworts über seine drei Schritte einschließlich der Umleitung bei
+fehlendem Nachweis (vgl. Abschnitt~\ref{subsec:auth-onboarding}) sowie
+den Weg von der Produktseite in den Warenkorb bis zur Zusammenfassung.
+
+Beide Läufe sind fehlerfrei. Abbildung~\ref{fig:testlaeufe} zeigt ihre
+Zusammenfassungen.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.75\textwidth]{Bilder/screenshot_vitest_tests.png}
-\caption{Erfolgreiche Ausführung der automatisierten Tests mit Vitest}
-\label{fig:vitest_tests}
-\end{figure}
-
-End-to-End-Tests mit \textit{Playwright} ergänzen die Modultests durch
-die Prüfung vollständiger Nutzerabläufe. Vier Tests überprüfen das
-Zurücksetzen des Passworts einschließlich der erforderlichen
-Weiterleitungen und des erneuten Versands des Bestätigungscodes sowie
-den Ablauf vom Öffnen eines Produkts über das Hinzufügen zum Warenkorb
-bis zur Kontrolle von Menge, Preis und Gesamtsumme. Die Tests wurden
-automatisiert mit Chromium ausgeführt. Wie
-Abbildung~\ref{fig:playwright_tests} zeigt, wurden alle vier Tests
-erfolgreich abgeschlossen; die Gesamtlaufzeit betrug 10,9 Sekunden.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{Bilder/screenshot_playwright_tests.png}
-\caption{Erfolgreiche Ausführung der End-to-End-Tests mit Playwright}
-\label{fig:playwright_tests}
+\includegraphics[width=0.48\textwidth]{Bilder/screenshot_vitest.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{Bilder/screenshot_playwright.png}
+\caption{Ergebnis der beiden Testläufe, links \textit{Vitest} mit den
+Modul- und Komponententests, rechts \textit{Playwright} mit den
+End-to-End-Tests}
+\label{fig:testlaeufe}
 \end{figure}
 
 \section{Heuristische Evaluation}
