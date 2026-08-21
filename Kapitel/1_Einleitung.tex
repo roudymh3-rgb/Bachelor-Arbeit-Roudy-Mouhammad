@@ -50,7 +50,9 @@ Die technische Umsetzung einer solchen Plattform stellt hohe
 Anforderungen an das Frontend. Es muss drei Nutzerrollen mit jeweils
 eigenen Funktionsbereichen und Zugriffsrechten bedienen, nämlich
 Käufer, Verkäufer und Dienstleister; die vierte Rolle, der
-Administrator, greift über die Schnittstellen des Backends auf die Plattform zu. Im weiteren Verlauf der Arbeit werden für diese
+Administrator, nutzt für seine Aufgaben eine vom Backend
+bereitgestellte administrative Demooberfläche. Im weiteren Verlauf
+der Arbeit werden für diese
 Rollen die plattforminternen Bezeichnungen \textit{Customer},
 \textit{Seller}, \textit{ServiceProvider} und \textit{Admin}
 verwendet. Gleichzeitig soll die Oberfläche konsistent, intuitiv und
@@ -115,11 +117,12 @@ Sprachfassungen eines Inhalts entstehen, ist damit eine Frage des
 Datenmodells und nicht der Sprachwahl in der Oberfläche.
 
 Die administrativen Funktionen der Plattform, etwa die Prüfung von
-Rollenwechselanträgen und die Freigabe von Werbeanzeigen, werden vom
-Backend als eigene Schnittstellen bereitgestellt und über eine dort
-mitgelieferte Demonstrationsoberfläche ausgeführt
-\cite{alaatki_backend}. Eine administrative Oberfläche ist nicht
-Gegenstand des in dieser Arbeit entwickelten Frontends.
+Rollenwechselanträgen und die Freigabe von Werbeanzeigen, werden über
+eine vom Backend bereitgestellte administrative Demooberfläche
+ausgeführt \cite{alaatki_backend}. Diese im Folgenden als
+\emph{Backend-Demooberfläche} bezeichnete Oberfläche wurde nicht im
+Rahmen dieser Arbeit entwickelt und ist daher nicht Bestandteil des
+untersuchten Frontends.
 
 \section{Aufbau der Arbeit}
 \label{sec:aufbau}
@@ -145,3 +148,4 @@ Ergebnisse anhand funktionaler und nicht-funktionaler Kriterien.
 Abschließend fasst Kapitel~\ref{chap:fazit} die wichtigsten
 Erkenntnisse zusammen und gibt einen Ausblick auf mögliche
 Erweiterungen und technische Weiterentwicklungen der Plattform.
+
