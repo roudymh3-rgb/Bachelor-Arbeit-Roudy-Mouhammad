@@ -23,7 +23,14 @@ nicht abgeschlossen.
 
 \section{Heuristische Evaluation}
 \label{sec:heuristische_evaluation}
-
+Die Wahl der heuristischen Evaluation folgt aus den Rahmenbedingungen
+der Arbeit. Ein Nutzertest hätte Teilnehmer und eine eigene Auswertung
+erfordert und war zeitlich nicht leistbar; die im Unternehmen
+vorgesehene Oberflächenprüfung findet erst an einer Vorabfassung und
+durch eine andere Person statt. Erforderlich war deshalb ein
+Verfahren, das sich von einer Person am eigenen Entwicklungsstand
+anwenden lässt und mit den neun Heuristiken zugleich ein Raster über
+die gesamte Oberfläche legt (vgl. Tabelle~\ref{tab:heuristiken}).
 Die Evaluation folgt dem Verfahren von Nielsen und Molich
 \cite{nielsen_molich_heuristic, nielsen_explanatory_power}. Es wurden
 nur Befunde mit Ursache im Frontend berücksichtigt. 15 Befunde wurden
@@ -167,23 +174,42 @@ abgeleitet werden kann.
 \section{Bewertung der Ergebnisse}
 \label{sec:bewertung}
 
-Die Prüfung zeigt, dass responsive Darstellung und Tastaturbedienung
-erfüllt sind. Nicht erfüllt ist allein Kriterium~1.4.11: Der Fokusring wird über
-eine globale Regel mit halber Deckkraft dargestellt und unterschreitet
-dadurch den geforderten Wert. Die Korrektur betrifft eine einzige
-Regel und keine einzelne Ansicht.
+Die Ergebnisse werden den nicht-funktionalen Anforderungen aus
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} gegenübergestellt.
 
-Für die Performance liegt eine messbare Größe vor: Der ausgelieferte
-Programmcode ist in 102 Dateien aufgeteilt, von denen beim ersten
-Aufruf nur ein Teil übertragen wird; die größte bleibt mit 230~kB
-unter der Schwelle von 500~kB, auf die das Build-Werkzeug hinweist
-(vgl. Abschnitt~\ref{sec:impl_lazyloading}). Die geforderten
-Ladezustände sind vorhanden; konkrete Antwortzeiten wurden jedoch
-nicht gemessen.
+Responsivität und Barrierefreiheit wurden anhand der relevanten
+\acs{WCAG}-Kriterien geprüft. Die Kriterien~1.4.10 (Responsivität),
+2.1.1 (Tastaturbedienung) und 1.4.3 (Textkontrast) sind erfüllt.
+Nicht erfüllt ist Kriterium~1.4.11, da eine globale Regel den
+Fokusring mit halber Deckkraft darstellt und er dadurch den
+geforderten Wert unterschreitet. Die Korrektur betrifft lediglich
+eine globale Regel.
 
-Die heuristische Evaluation zeigt außerdem, dass das
-Mehrsprachigkeitskonzept grundsätzlich funktioniert, die deutsche
-Oberfläche jedoch weniger konsequent geprüft wurde als die englische.
-Bei einer erneuten Umsetzung sollten daher beide Sprachen bereits
-während der Entwicklung regelmäßig geprüft und die Kontrastwerte des
-Designsystems frühzeitig automatisiert getestet werden.
+Für die Performance ist der Programmcode auf 102 Dateien aufgeteilt,
+von denen beim ersten Aufruf nur ein Teil übertragen wird. Die größte
+Datei umfasst 230~kB und bleibt damit unter der vom Build-Werkzeug
+genannten Schwelle von 500~kB.
+Die Antwortzeiten wurden am gebauten Stand gemessen, jeweils vom Klick
+bis zum nächsten Bildaufbau. Die Formularvalidierung, die ohne Anfrage
+an das Backend auskommt, lag über vier Durchläufe zwischen 14 und
+33~Millisekunden und damit unterhalb der geforderten 0,1~Sekunden. Der
+Wechsel von der Produktliste auf eine Produktseite einschließlich des
+Nachladens des zugehörigen Codestücks lag bei 10~Millisekunden und
+damit unterhalb der geforderten Sekunde. Vorgänge mit Anfrage an das
+Backend reagierten innerhalb von 17 bis 19~Millisekunden mit einem
+Ladezustand; ihre Gesamtdauer hängt von der Antwortzeit der
+Schnittstelle ab und ist nach Abschnitt~\ref{sec:abgrenzung} nicht
+Gegenstand dieser Arbeit.
+
+Die Sicherheit wurde nicht eigenständig geprüft. Die heuristische
+Evaluation zeigte jedoch einen Befund (B1) beim rollenbasierten
+Seitenschutz. Da die eigentliche Zugriffskontrolle serverseitig
+erfolgt, dient der Frontend-Schutz hauptsächlich der Benutzerführung.
+
+Die Wartbarkeit wurde anhand der Projektstruktur bewertet. Die
+16 Funktionsbereiche unter \texttt{features/} folgen demselben Schema
+aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und Typen,
+jeweils beschränkt auf die benötigten Bestandteile (vgl.
+Abschnitt~\ref{subsec:komponentenarchitektur}). Damit wurde die
+geplante Architektur im gesamten Quellstand umgesetzt. Aussagen über
+den zukünftigen Änderungsaufwand sind daraus jedoch nicht ableitbar.

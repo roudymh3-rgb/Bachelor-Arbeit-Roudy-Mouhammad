@@ -4,7 +4,13 @@
 Dieses Kapitel beschreibt das Frontend-Konzept auf Basis der
 Anforderungen aus Kapitel~\ref{chap:ist_analyse}. Es begründet die
 getroffenen Entwurfsentscheidungen; ihre Umsetzung dokumentiert
-Kapitel~\ref{chap:umsetzung}.
+Kapitel~\ref{chap:umsetzung}. Die nicht-funktionalen Anforderungen aus
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} werden dabei jeweils
+dort aufgegriffen, wo der Entwurf sie einlöst: die Wartbarkeit im
+Architekturkonzept, die Sicherheit beim Seitenschutz, die
+Responsivität in der Seitenstruktur und die Barrierefreiheit in
+Abschnitt~\ref{subsec:barrierefreiheit_konzept}. Ihre Prüfung erfolgt
+in Kapitel~\ref{chap:testen}.
 
 
 \section{Architekturkonzept}
@@ -18,7 +24,10 @@ Ordnerstruktur, bei der zusammengehörige Dateien nach fachlichen
 Funktionsbereichen gruppiert werden. Dieses Prinzip fördert die
 Wartbarkeit und Skalierbarkeit des Projekts, da neue
 Funktionsbereiche unabhängig voneinander entwickelt und erweitert
-werden können \cite{ijlrp_react_components}.
+werden können \cite{ijlrp_react_components}. Damit ist die Anforderung
+an die Wartbarkeit aus
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} auf eine
+Strukturentscheidung zurückgeführt.
 
 Innerhalb dieser Struktur spiegelt sich das in
 Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte Prinzip der
@@ -197,6 +206,9 @@ verlangsamen statt ihn zu beschleunigen.
 Die Anforderung an die Sichtbarkeit des
 Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
 gilt damit auch für den Wechsel zwischen Ansichten.
+Der Seitenschutz löst damit die Anforderung an die Sicherheit aus
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} auf Ebene der
+Benutzerführung ein; die Durchsetzung selbst bleibt serverseitig.
 
 
 \subsection{Globales State Management}
@@ -563,13 +575,14 @@ vorgesehen; er ist in Abbildung~\ref{fig:startseite} gestrichelt
 dargestellt.
 
 
-\subsection{Barrierefreiheit im Entwurf}
+\subsection{Barrierefreiheit}
 \label{subsec:barrierefreiheit_konzept}
 
-Barrierefreiheit ist im Entwurf als Qualitätsanforderung behandelt,
-nicht als Nachweisziel. Maßgeblich sind die vier in
-Abschnitt~\ref{subsec:barrierefreiheit} genannten Erfolgskriterien;
-ihre Prüfung erfolgt in Kapitel~\ref{chap:testen}.
+Barrierefreiheit ist als Qualitätsanforderung behandelt,
+nicht als Nachweisziel. Maßgeblich sind die vier Erfolgskriterien, die
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} als Anforderung
+festhält und Abschnitt~\ref{subsec:barrierefreiheit} inhaltlich
+erläutert; ihre Prüfung erfolgt in Kapitel~\ref{chap:testen}.
 
 Vier Festlegungen ergeben sich daraus für den Entwurf.
 
@@ -587,8 +600,8 @@ Abschnitt~\ref{subsec:gestaltungsprinzipien}).
 Zweitens erhält jedes bedienbare Element einen sichtbaren
 Fokuszustand. In Abläufen mit mehreren aufeinanderfolgenden
 Bedienschritten, etwa Anmeldung, Terminauswahl und Kontoverwaltung,
-muss ohne Zeigegerät erkennbar bleiben, welches Element gerade
-angesteuert ist.
+muss auch bei Bedienung über die Tastatur erkennbar bleiben, welches
+Element gerade angesteuert ist.
 
 Drittens tragen Eingabefelder eine eigene Beschriftung statt
 lediglich eines Platzhaltertextes, und Fehlermeldungen erscheinen an
@@ -702,11 +715,19 @@ Adresse in der Anfrage steht, da diese Angabe aus dem Browser kommt
 und dort veränderbar ist. Das Backend gibt aus diesem Grund nach der
 erfolgreichen Prüfung des Kennworts einen Nachweis zurück, der an
 genau diese Adresse gebunden ist, und verlangt ihn im letzten
-Schritt. Erzeugung und Prüfung dieses Nachweises liegen vollständig
-im Backend und sind in der begleitenden Arbeit zum Backend
-beschrieben. Für das Frontend folgt daraus allein die Anforderung,
+Schritt. Erzeugung und Prüfung dieses Nachweises liegen vollständig im Backend und sind in der Bachelorarbeit zum
+Backend beschrieben \cite{alaatki_backend}. Für das Frontend folgt daraus allein die Anforderung,
 die drei Schritte in der vorgesehenen Reihenfolge zu führen und den
 Nachweis zwischen ihnen zu übergeben.
+Abbildung~\ref{fig:ablauf_reset} zeigt den Ablauf mit den beiden
+Übergabepunkten zwischen den Schritten.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{Bilder/ablauf_passwort_zuruecksetzen.pdf}
+\caption{Ablauf des Zurücksetzens eines Passworts über drei Schritte}
+\label{fig:ablauf_reset}
+\end{figure}
 
 Für das Onboarding verfolgt die Plattform ein zweistufiges
 Rollenmodell: Jeder Nutzer erhält zunächst die Rolle
@@ -737,6 +758,14 @@ Dienstleistungen dieses einen Anbieters einsehen können. Diese
 öffentlichen Profilseiten sind von der internen Verwaltungsseite des
 jeweiligen Verkäufers oder Dienstleisters zu unterscheiden, die in
 Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} beschrieben wird.
+Abbildung~\ref{fig:wf_katalog} zeigt den Aufbau einer Katalogseite.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_katalogseite.pdf}
+\caption{Entwurf der Katalogseite mit Kategoriefilter und Kartenraster}
+\label{fig:wf_katalog}
+\end{figure}
 
 Der Aufruf eines einzelnen Produkts oder einer einzelnen
 Dienstleistung, etwa über eine Vorschaukarte, führt jeweils auf eine
@@ -745,6 +774,16 @@ und Katalogseiten wird ein wiederverwendbares Kartenprinzip verfolgt,
 das für Produkte und Dienstleistungen gleichermaßen zum Einsatz
 kommt; liegen für einen Bereich keine Einträge vor, wird dem Nutzer
 anstelle einer leeren Fläche ein entsprechender Hinweis angezeigt.
+
+Abbildung~\ref{fig:wf_detail} zeigt den Aufbau einer Detailseite.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_detailseite.pdf}
+\caption{Entwurf der Detailseite eines Angebots}
+\label{fig:wf_detail}
+\end{figure}
+
 
 
 \subsection{Dienstleistungsbuchung}
@@ -903,6 +942,16 @@ Sitzung um den Überblick über laufende Vorgänge und den Zugang zu den
 rollenspezifischen Funktionen. Dafür gliedert sie sich in zwei
 Spalten: links der Stand der eigenen Vorgänge, rechts die verfügbaren
 Werkzeuge.
+Abbildung~\ref{fig:wf_konto} zeigt diese Gliederung.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_kontobereich.pdf}
+\caption{Entwurf des Kontobereichs mit Vorgängen links und
+rollenspezifischen Werkzeugen rechts}
+\label{fig:wf_konto}
+\end{figure}
+
 
 Die rechte Spalte ist dabei nach Rollen gegliedert, nicht nach
 Funktionen. Jede zugewiesene Rolle erhält einen eigenen
@@ -1132,23 +1181,6 @@ Tagessatz, die Anzahl der Tage wählt der Anbieter beim Anlegen aus
 einem bis sieben, und der zu zahlende Betrag ist das Produkt aus
 beidem. Eine Ankündigung kostet dagegen einen festen Betrag und läuft
 einen Tag; sie kennt weder Stufen noch eine wählbare Laufzeit.
-
-\begin{table}[htbp]
-\centering
-\begin{tabular}{lll}
-\hline
-\textbf{Art} & \textbf{Preis} & \textbf{Laufzeit} \\
-\hline
-Gold        & 50 Euro je Tag & 1 bis 7 Tage, wählbar \\
-Silber      & 40 Euro je Tag & 1 bis 7 Tage, wählbar \\
-Standard    & 30 Euro je Tag & 1 bis 7 Tage, wählbar \\
-Ankündigung & 20 Euro        & 1 Tag, fest \\
-\hline
-\end{tabular}
-\caption{Preise und Laufzeiten der vier Platzierungsarten}
-\label{tab:werbung_preise}
-\end{table}
-
 Der Tagessatz einer Werbung hat denselben Ursprung wie ihre Stufe.
 Eine Werbefläche im öffentlichen Raum kostet mehr, je größer sie ist
 und je länger sie belegt bleibt; dasselbe Verhältnis liegt hier
@@ -1189,7 +1221,33 @@ nach ausgelöster Zahlung entfällt diese Möglichkeit. Der Entwurf
 folgt damit derselben Regel wie der Warenkorb, in dem eine Position
 bis zum Auslösen des Checkouts entfernt werden kann und danach Teil
 eines Auftrags ist (vgl. Abschnitt~\ref{subsec:warenkorb_konzept}).
+Tabelle~\ref{tab:werbung_ablauf} fasst zusammen, welcher Zustand sich
+aus welchem Ereignis ergibt.
 
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{|p{3.4cm}|p{2.2cm}|p{3.0cm}|p{3.0cm}|}
+\hline
+\textbf{Ereignis} & \textbf{Auslöser} & \textbf{Platzierung} &
+\textbf{Zahlung} \\
+\hline
+Platzierung angelegt & Anbieter & Zahlung ausstehend & offen \\
+\hline
+Zahlung ausgelöst & Anbieter & in Prüfung & bezahlt \\
+\hline
+Freigabe & Administrator & freigegeben & bezahlt \\
+\hline
+Ablehnung & Administrator & abgelehnt & erstattet \\
+\hline
+Rückzug nach Zahlung & Anbieter & zurückgezogen & bezahlt \\
+\hline
+Löschen vor Zahlung & Anbieter & entfällt & entfällt \\
+\hline
+\end{tabular}
+\caption{Zustände einer Platzierung und der zugehörigen Zahlung}
+\label{tab:werbung_ablauf}
+\end{table}
 Ob ein bereits gezahlter Betrag erstattet wird, hängt davon ab, wer
 den Vorgang beendet. Lehnt der Administrator die Platzierung ab, wird
 erstattet; der Zustand der Zahlung wechselt dann von \textit{Bezahlt}
