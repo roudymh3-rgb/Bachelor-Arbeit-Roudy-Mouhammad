@@ -9,17 +9,36 @@ Verstoß betrifft den Kontrast des Fokusrings.
 \section{Automatisierte Tests}
 \label{sec:automatisierte_tests}
 
-Die Anwendung enthält 36 Testdateien, die mit \textit{Vitest} und der
-\textit{Testing Library} ausgeführt werden und fehlerfrei durchlaufen
-(vgl. Abschnitt~\ref{sec:technologieauswahl}). Geprüft werden sowohl
-reine Funktionen, etwa die Warenkorbsumme und Datumsaufbereitung, als
-auch Komponenten wie Anmelde- und Registrierungsformulare. Ein
-besonders relevanter Befund betraf eine fehlerhafte
-Datumsformatierung, für die ein Test ergänzt wurde.
+Die Anwendung enthält 36 Testdateien mit insgesamt 132 automatisierten
+Tests. Diese wurden mit \textit{Vitest} und der \textit{Testing Library}
+ausgeführt (vgl. Abschnitt~\ref{sec:technologieauswahl}). Die Tests
+prüfen sowohl einzelne Funktionen als auch das Verhalten ausgewählter
+Komponenten. Alle 132 Tests wurden erfolgreich abgeschlossen, wie
+Abbildung~\ref{fig:vitest_tests} zeigt.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{Bilder/screenshot_vitest_tests.png}
+\caption{Erfolgreiche Ausführung der automatisierten Tests mit Vitest}
+\label{fig:vitest_tests}
+\end{figure}
 
 End-to-End-Tests mit \textit{Playwright} ergänzen die Modultests durch
-die Prüfung vollständiger Nutzerabläufe. Ihre Einrichtung ist noch
-nicht abgeschlossen.
+die Prüfung vollständiger Nutzerabläufe. Vier Tests überprüfen das
+Zurücksetzen des Passworts einschließlich der erforderlichen
+Weiterleitungen und des erneuten Versands des Bestätigungscodes sowie
+den Ablauf vom Öffnen eines Produkts über das Hinzufügen zum Warenkorb
+bis zur Kontrolle von Menge, Preis und Gesamtsumme. Die Tests wurden
+automatisiert mit Chromium ausgeführt. Wie
+Abbildung~\ref{fig:playwright_tests} zeigt, wurden alle vier Tests
+erfolgreich abgeschlossen; die Gesamtlaufzeit betrug 10,9 Sekunden.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Bilder/screenshot_playwright_tests.png}
+\caption{Erfolgreiche Ausführung der End-to-End-Tests mit Playwright}
+\label{fig:playwright_tests}
+\end{figure}
 
 \section{Heuristische Evaluation}
 \label{sec:heuristische_evaluation}
@@ -40,60 +59,60 @@ nach Prüfung des Quellcodes ausgeschlossen.
 
 \begin{table}[H]
 \centering
-\caption{Befunde der Evaluation}
+\caption{Befunde der heuristischen Evaluation}
 \label{tab:befunde}
 \small
-\begin{tabular}{|l|p{4.6cm}|p{3.1cm}|c|l|}
+\begin{tabular}{|l|p{4.8cm}|p{3.1cm}|c|l|}
 \hline
-\textbf{Nr} & \textbf{Befund} & \textbf{Heuristik} & \textbf{Grad} & \textbf{Status} \\
+\textbf{Nr.} & \textbf{Befund} & \textbf{Heuristik} & \textbf{Grad} & \textbf{Status} \\
 \hline
-B1 & Anbieterbereich bei laufendem Antrag & Systemstatus & 3 & behoben \\
+B1 & Fehlender Systemstatus bei einem laufenden Rollenänderungsantrag
+& Systemstatus & 3 & behoben \\
 \hline
-B2 & Hinterlegte Meldung wird nicht erreicht & Fehlerbehebung & 2 & behoben \\
+B2 & Vorgesehene Validierungsmeldung wird nicht angezeigt
+& Fehlerbehebung & 2 & behoben \\
 \hline
-B3 & Meldung benennt andere Regel & Fehlerbehebung & 2 & behoben \\
+B3 & Validierungsmeldung benennt nicht die tatsächlich verletzte Regel
+& Fehlerbehebung & 2 & behoben \\
 \hline
-B4 & Storno nach Fristablauf & Fehlervermeidung & 3 & behoben \\
+B4 & Stornierung nach Ablauf der festgelegten Frist möglich
+& Fehlervermeidung & 3 & behoben \\
 \hline
-B5 & Überlappende Buchungszeiten & Fehlervermeidung & 2 & behoben \\
+B5 & Auswahl überlappender Buchungszeiten möglich
+& Fehlervermeidung & 2 & behoben \\
 \hline
-B6 & Rollenbereiche ohne Übersetzung & Reale Welt & 3 & behoben \\
+B6 & Fehlende Übersetzungen in den rollenbezogenen Bereichen
+& Reale Welt & 3 & behoben \\
 \hline
-B7 & Telefonfeld nicht als optional erkennbar & Wiedererkennung & 1 & geklärt \\
+B7 & Telefonfeld nicht als optional gekennzeichnet
+& Wiedererkennung & 1 & behoben \\
 \hline
-B8 & Erfolgsseite bietet beide Übersichten & Minimalismus & 2 & behoben \\
+B8 & Erfolgsseite zeigt zwei nicht kontextsensitive Übersichtslinks
+& Minimalismus & 2 & behoben \\
 \hline
-B9 & Interner Bezeichner in der Oberfläche & Reale Welt & 2 & behoben \\
+B9 & Interner Bezeichner wird unverändert in der Oberfläche dargestellt
+& Reale Welt & 2 & behoben \\
 \hline
-B10 & Sprachwahl nicht ans Backend übertragen & Reale Welt & 3 & behoben \\
+B10 & Ausgewählte Sprache wird nicht an das Backend übertragen
+& Reale Welt & 3 & behoben \\
 \hline
-B11 & Positionsstatus widerspricht der Buchung & Systemstatus & 2 & behoben \\
+B11 & Status einer Bestellposition widerspricht dem zugehörigen Buchungsstatus
+& Systemstatus & 2 & behoben \\
 \hline
-B12 & Zwei gleichrangige Rückwege & Konsistenz & 2 & behoben \\
+B12 & Oberfläche bietet zwei gleichrangige Rückwege
+& Konsistenz & 2 & behoben \\
 \hline
-B13 & Englische Abkürzung in der Oberfläche & Reale Welt & 1 & behoben \\
+B13 & Englische Abkürzung in der deutschsprachigen Oberfläche
+& Reale Welt & 1 & behoben \\
 \hline
-B14 & Umbuchen auf Deutsch unbenutzbar & Fehlervermeidung & \textbf{4} & behoben \\
+B14 & Umbuchung aufgrund sprachabhängiger Datumsformatierung nicht nutzbar
+& Fehlervermeidung & \textbf{4} & behoben \\
 \hline
-B15 & Eigenes Angebot buch- und kaufbar & Fehlervermeidung & 3 & behoben \\
+B15 & Eigenes Produkt beziehungsweise eigene Dienstleistung kann gekauft oder gebucht werden
+& Fehlervermeidung & 3 & behoben \\
 \hline
 \end{tabular}
 \end{table}
-
-Zusätzlich wurden drei technische Beobachtungen ohne
-Usability-Schweregrad festgestellt: die nicht getrennte
-Echtzeitverbindung beim Abmelden, wachsende Kanalabonnements und feste
-Rückfallwerte im Quelltext. Die ersten beiden werden in
-Kapitel~\ref{chap:fazit} aufgegriffen.
-
-Auffällig ist die Häufung sprachbezogener Befunde. Vier der 15
-Befunde betreffen die Übereinstimmung mit der realen Welt; zusammen
-mit B14 betrifft damit etwa ein Drittel der Befunde die
-Mehrsprachigkeit. B14 zeigt dies besonders deutlich: Ein Datum wurde
-auf Deutsch für die Oberfläche formatiert und anschließend in diesem
-Format an die Schnittstelle übergeben. Auf Englisch funktionierte dies
-zufällig. Das Mehrsprachigkeitskonzept ist damit grundsätzlich
-geeignet, wurde jedoch nicht in allen Bereichen konsequent geprüft.
 
 \section{Normbezogene Prüfung}
 \label{sec:normbezogene_pruefung}
@@ -138,38 +157,23 @@ Kriterium~2.1.1 wurde mit \texttt{Tab}, \texttt{Umschalt+Tab},
 \texttt{Enter}, \texttt{Leertaste} und \texttt{Esc} geprüft. Die
 untersuchten Bereiche waren vollständig bedienbar. Beim Schließen des
 Anmeldedialogs kehrt der Fokus jedoch nicht zur auslösenden
-Schaltfläche zurück; dies betrifft Kriterium~2.4.3 und wurde nicht
+Schaltfläche zurück. Dies betrifft Kriterium~2.4.3 und wurde nicht
 bewertet.
 
-Die Farbwerte des Designsystems sind paarweise definiert, sodass sich
-jedes Verhältnis unmittelbar bestimmen lässt (vgl.
-Abschnitt~\ref{subsec:designsystem}). Der Fließtext erreicht auf einer
-Karte 16,5:1 und auf dem Seitenhintergrund 14,8:1, der gedämpfte Text
-5,3:1 auf der Karte und 4,7:1 auf dem Seitenhintergrund. Sämtliche
-Textpaarungen erfüllen damit Kriterium~1.4.3.
+Die untersuchten Textpaarungen erreichen Kontrastverhältnisse zwischen
+4,7:1 und 16,5:1 und erfüllen damit Kriterium~1.4.3.
 
-Beim Fokusring fallen Entwurf und Darstellung auseinander. Der
-hinterlegte Wert ergäbe gegenüber einer Karte 3,6:1 und damit mehr als
-die geforderten 3:1. Tatsächlich wird der Ring jedoch über eine
-globale Regel mit halber Deckkraft gegen den Untergrund gemischt,
-sodass nur 1,8:1 verbleiben. Er ist damit vorhanden und
-sichtbar, aber nicht normkonform, und Kriterium~1.4.11 ist nicht
-erfüllt. Diese Unterscheidung ist der eigentliche Ertrag der Messung:
-Ob eine Anzeige wahrnehmbar ist, lässt sich betrachten; ob sie einen
-Schwellenwert erreicht, nicht, und ein Blick auf die Farbwerte allein
-genügt dafür ebenfalls nicht.
+Der hinterlegte Wert des Fokusrings erreicht gegenüber einer Karte
+3,6:1. Durch eine globale Regel mit halber Deckkraft verbleiben in der
+Darstellung jedoch nur 1,8:1. Damit ist der Fokusring sichtbar, aber
+nicht normkonform, weshalb Kriterium~1.4.11 nicht erfüllt ist.
 
 \section{Grenzen des Verfahrens}
-\label{sec:grenzen_verfahren}
 
-Die Evaluation wurde von einem einzelnen Evaluator durchgeführt und
-stellt daher keine vollständige Erhebung dar
-\cite{nielsen_molich_heuristic}. Da Evaluator und Entwickler dieselbe
-Person sind, besteht zudem ein Risiko für eine unbewusste Orientierung
-am vorgesehenen Nutzungspfad. Die heuristische Evaluation ersetzt
-keinen Nutzertest. Außerdem wurden nur vier Erfolgskriterien der
-Stufe~AA geprüft, weshalb keine vollständige WCAG-Konformität
-abgeleitet werden kann.
+Die Evaluation wurde durch den Entwickler selbst durchgeführt und
+ersetzt daher keinen unabhängigen Nutzertest. Zudem wurden nur vier
+Erfolgskriterien der WCAG~2.1 geprüft, sodass aus den Ergebnissen keine
+vollständige WCAG-Konformität abgeleitet werden kann.
 
 \section{Bewertung der Ergebnisse}
 \label{sec:bewertung}
@@ -177,39 +181,28 @@ abgeleitet werden kann.
 Die Ergebnisse werden den nicht-funktionalen Anforderungen aus
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} gegenübergestellt.
 
-Responsivität und Barrierefreiheit wurden anhand der relevanten
-\acs{WCAG}-Kriterien geprüft. Die Kriterien~1.4.10 (Responsivität),
-2.1.1 (Tastaturbedienung) und 1.4.3 (Textkontrast) sind erfüllt.
-Nicht erfüllt ist Kriterium~1.4.11, da eine globale Regel den
-Fokusring mit halber Deckkraft darstellt und er dadurch den
-geforderten Wert unterschreitet. Die Korrektur betrifft lediglich
-eine globale Regel.
+Die Kriterien~1.4.10 (Responsivität), 2.1.1
+(Tastaturbedienung) und 1.4.3 (Textkontrast) sind erfüllt. Nicht
+erfüllt ist Kriterium~1.4.11, da eine globale Regel den Fokusring mit
+halber Deckkraft darstellt und er dadurch den geforderten Kontrast
+unterschreitet.
 
-Für die Performance ist der Programmcode auf 102 Dateien aufgeteilt,
-von denen beim ersten Aufruf nur ein Teil übertragen wird. Die größte
-Datei umfasst 230~kB und bleibt damit unter der vom Build-Werkzeug
-genannten Schwelle von 500~kB.
-Die Antwortzeiten wurden am gebauten Stand gemessen, jeweils vom Klick
-bis zum nächsten Bildaufbau. Die Formularvalidierung, die ohne Anfrage
-an das Backend auskommt, lag über vier Durchläufe zwischen 14 und
-33~Millisekunden und damit unterhalb der geforderten 0,1~Sekunden. Der
-Wechsel von der Produktliste auf eine Produktseite einschließlich des
-Nachladens des zugehörigen Codestücks lag bei 10~Millisekunden und
-damit unterhalb der geforderten Sekunde. Vorgänge mit Anfrage an das
-Backend reagierten innerhalb von 17 bis 19~Millisekunden mit einem
-Ladezustand; ihre Gesamtdauer hängt von der Antwortzeit der
-Schnittstelle ab und ist nach Abschnitt~\ref{sec:abgrenzung} nicht
-Gegenstand dieser Arbeit.
+Für die Performance wird beim ersten Aufruf nur ein Teil des
+Programmcodes übertragen. Die größte Datei umfasst 230~kB und bleibt
+unter der Schwelle von 500~kB. Die Formularvalidierung benötigte
+zwischen 14 und 33~Millisekunden. Der Wechsel von der Produktliste auf
+eine Produktseite lag bei 10~Millisekunden. Vorgänge mit einer Anfrage
+an das Backend zeigten innerhalb von 17 bis 19~Millisekunden einen
+Ladezustand; ihre Gesamtdauer ist nach
+Abschnitt~\ref{sec:abgrenzung} nicht Gegenstand dieser Arbeit.
 
 Die Sicherheit wurde nicht eigenständig geprüft. Die heuristische
-Evaluation zeigte jedoch einen Befund (B1) beim rollenbasierten
+Evaluation zeigte mit B1 jedoch einen Befund beim rollenbasierten
 Seitenschutz. Da die eigentliche Zugriffskontrolle serverseitig
 erfolgt, dient der Frontend-Schutz hauptsächlich der Benutzerführung.
 
-Die Wartbarkeit wurde anhand der Projektstruktur bewertet. Die
-16 Funktionsbereiche unter \texttt{features/} folgen demselben Schema
-aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und Typen,
-jeweils beschränkt auf die benötigten Bestandteile (vgl.
-Abschnitt~\ref{subsec:komponentenarchitektur}). Damit wurde die
-geplante Architektur im gesamten Quellstand umgesetzt. Aussagen über
-den zukünftigen Änderungsaufwand sind daraus jedoch nicht ableitbar.
+Die 16 Funktionsbereiche unter \texttt{features/} folgen demselben
+Schema aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und
+Typen. Damit wurde die geplante Architektur im gesamten Quellstand
+umgesetzt. Aussagen über den zukünftigen Änderungsaufwand sind daraus
+jedoch nicht ableitbar.
