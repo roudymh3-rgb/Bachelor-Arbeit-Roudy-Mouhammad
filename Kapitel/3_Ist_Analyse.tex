@@ -114,11 +114,12 @@ Neben den funktionalen Anforderungen wurden folgende
 nicht-funktionale Anforderungen an das Frontend definiert.
 
 Die Anwendung soll flüssig bedienbar sein. Seitenwechsel erfolgen
-ohne vollständigen Seitenneuladen. Als Maßstab für die Antwortzeiten
-dienen die von Nielsen beschriebenen Schwellenwerte: Unterhalb von
-bis etwa einer Sekunde bleibt der Gedankenfluss des Nutzers
-erhalten, ab etwa zehn Sekunden ist seine Aufmerksamkeit nicht mehr
-auf die Aufgabe gerichtet \cite{nielsen_response_times}.
+ohne vollständigen Seitenneuladen. Als Maßstab für die Antwortzeiten dienen die von Nielsen beschriebenen
+Schwellenwerte: Unterhalb von etwa 0,1 Sekunden wird eine Reaktion als
+unmittelbar wahrgenommen, bis etwa einer Sekunde bleibt der
+Gedankenfluss des Nutzers erhalten, ab etwa zehn Sekunden ist seine
+Aufmerksamkeit nicht mehr auf die Aufgabe gerichtet
+\cite{nielsen_response_times}.
  
 Daraus ergeben sich zwei Klassen von Vorgängen. Interaktionen, die ohne Anfrage an das Backend auskommen, sollen innerhalb dieser Schwellen bleiben: das Filtern einer bereits geladenen Liste oder die Prüfung einer Formulareingabe unterhalb der ersten, der Wechsel zwischen Ansichten unterhalb der zweiten. Hierfür wird der Programmcode der Anwendung in Abschnitte
 zerlegt und erst bei Aufruf der zugehörigen Ansicht nachgeladen
