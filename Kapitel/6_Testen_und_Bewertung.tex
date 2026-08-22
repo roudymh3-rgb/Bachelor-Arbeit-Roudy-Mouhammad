@@ -54,7 +54,7 @@ die gesamte Oberfläche legt (vgl. Tabelle~\ref{tab:heuristiken}).
 
 Die Evaluation folgt dem Verfahren von Nielsen und Molich
 \cite{nielsen_molich_heuristic, nielsen_explanatory_power}. Es wurden
-nur Befunde mit Ursache im Frontend berücksichtigt. Zehn Befunde
+nur Befunde mit Ursache im Frontend berücksichtigt. Zwölf Befunde
 wurden nach Nielsens Schweregradskala von null bis vier bewertet
 \cite{nielsen_explanatory_power}.
 Die Spalte \textit{Heuristik} nennt die Kurzform der jeweiligen
@@ -96,17 +96,19 @@ B12 & Schwebezustand ohne sichtbare Wirkung & Systemstatus & 2 & behoben \\
 \end{tabular}
 \end{table}
 
-Zwei Befunde zeigen dabei dasselbe Muster. Sowohl bei B1 als auch bei
-B10 war die maßgebliche Regel im Quellcode bereits vorhanden, wurde
-jedoch nicht an allen Stellen angewandt: Im ersten Fall leitete die
-Oberfläche die Rolle aus dem Zustand eines laufenden Antrags ab statt
-aus der vom Backend gelieferten Rollenliste, im zweiten war die
-Prüfung auf das eigene Angebot vorhanden, wurde aber nur an eine der
-beiden möglichen Handlungen weitergereicht. Die häufigere Ursache ist
-damit nicht das Fehlen einer Regel, sondern ihre uneinheitliche
-Anwendung. Gerade diese Art von Befund fällt beim Durchgehen der
-Oberfläche eher auf als beim Lesen des Quellcodes, denn dort ist die
-Regel ja sichtbar vorhanden.
+Drei Befunde zeigen dabei dasselbe Muster: Die maßgebliche Regel war
+im Quellcode bereits vorhanden, blieb jedoch ohne Wirkung. Bei B1
+leitete die Oberfläche die Rolle aus dem Zustand eines laufenden
+Antrags ab statt aus der vom Backend gelieferten Rollenliste. Bei B10 war die Prüfung, ob der angemeldete Nutzer das Angebot selbst
+eingestellt hat, bereits vorhanden und wurde auf die Schaltfläche zur
+Kontaktaufnahme angewandt, nicht jedoch auf das Kaufen und Buchen. Und bei B12 war
+der Schwebezustand der Schaltflächen angelegt, verwies jedoch auf
+einen Farbwert des Designsystems, der mit dem Ausgangswert
+übereinstimmt, sodass sich beim Überfahren nichts änderte. Die
+häufigere Ursache ist damit nicht das Fehlen einer Regel, sondern ihre
+unvollständige oder wirkungslose Anwendung. Gerade diese Art von
+Befund fällt beim Durchgehen der Oberfläche eher auf als beim Lesen
+des Quellcodes, denn dort ist die Regel ja sichtbar vorhanden.
 
 \section{Normbezogene Prüfung}
 \label{sec:normbezogene_pruefung}
