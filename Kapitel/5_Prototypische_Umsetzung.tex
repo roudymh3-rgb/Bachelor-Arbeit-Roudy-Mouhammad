@@ -347,12 +347,25 @@ Arten der Prüfung nebeneinander.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.40\textwidth]{Bilder/screenshot_registrierung_fehler.png}
-\caption{Registrierungsformular mit einem Formatfehler im
-E-Mail-Feld und einer feldübergreifenden Abweichung zwischen Passwort
-und Bestätigung}
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_registrierung_fehler.png}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{Bilder/screenshot_registrierung_fehler_ar.png}
+\end{minipage}
+\caption{Registrierungsformular mit einem Formatfehler im E-Mail-Feld
+und einer feldübergreifenden Abweichung zwischen Passwort und
+Bestätigung, links in deutscher, rechts in arabischer Fassung mit
+umgekehrter Schreibrichtung}
 \label{fig:registrierung_fehler}
 \end{figure}
+Die arabische Fassung zeigt zugleich die Wirkung der zentral
+gesetzten Schreibrichtung (vgl. Abschnitt~\ref{sec:impl_i18n}):
+Beschriftungen, Meldungen und die Anordnung der Felder folgen der
+Richtung von rechts nach links, während die E-Mail-Adresse als
+richtungsunabhängiger Wert von links nach rechts stehen bleibt.
 
 Die Meldungen stehen unmittelbar unter dem betroffenen Feld,
 benennen die verletzte Regel und bleiben stehen, bis die Eingabe
