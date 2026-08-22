@@ -1,18 +1,53 @@
 \chapter{Fazit und Ausblick}
 \label{chap:fazit}
-Dieses Kapitel ist in Bearbeitung.
 
 \section{Zusammenfassung der Ergebnisse}
 \label{sec:zusammenfassung}
 
-% TODO: Kurze Rekapitulation der wichtigsten Erkenntnisse und
-% umgesetzten Funktionen. Bezug auf die Zielsetzung aus
-% Kapitel~\ref{chap:einleitung}.
+Diese Bachelorarbeit beschäftigt sich mit dem Entwurf und der
+prototypischen Entwicklung des Frontends der Webanwendung
+\textit{Bazario}. Ziel war eine rollenbasierte Single-Page
+Application, über die sich Produkte kaufen und Dienstleistungen buchen
+lassen, ohne dass der Nutzer zwischen zwei Anwendungen wechseln muss.
 
+Am Anfang wurden die Motivation und die Anforderungen an das Frontend
+behandelt und der Technologiestack darauf aufbauend begründet. Danach
+folgten das Konzept mit Komponentenarchitektur, rollenbasiertem
+Seitenschutz und \acs{UI}-Gestaltung sowie die Umsetzung ausgewählter
+Funktionsbereiche mit React und TypeScript. Die entwickelte Oberfläche
+deckt die Funktionsbereiche der drei im Frontend abgebildeten Rollen
+ab, vom Katalog über den gemeinsamen Warenkorb für Produkte und
+Buchungen bis zum Kontobereich, zum Nachrichtenbereich und zur
+Verwaltung von Werbung; sie liegt in Deutsch, Englisch und Arabisch
+vor.
+
+Die Bewertung in Kapitel~\ref{chap:testen} erfolgte auf drei Wegen.
+Die automatisierten Tests umfassen 36 Testdateien mit 134 Testfällen
+sowie vier End-to-End-Tests und laufen fehlerfrei durch. Die
+heuristische Evaluation ergab zehn Befunde, von denen neun behoben und
+einer geklärt wurden. Von den vier geprüften Erfolgskriterien der
+\acs{WCAG}~2.1 sind drei erfüllt; nicht erfüllt ist allein der
+Kontrast des Fokusrings.
 
 \section{Mögliche Erweiterungen und Ausblick}
 \label{sec:ausblick}
 
-% TODO: Welche Features wären für eine produktionsreife Version
-% sinnvoll? Technische Weiterentwicklungen (z.\,B. SSR, PWA,
-% Internationalisierung, Barrierefreiheit).
+Für die Weiterentwicklung des Frontends gibt es mehrere Ideen.
+
+\begin{itemize}
+  \item Eine eigene Administrationsoberfläche für Rollenwechselanträge,
+    Freigaben, Gebühren und Auszahlungen. Die tragenden Bestandteile
+    liegen mit der zentralen \acs{HTTP}-Infrastruktur, dem
+    Seitenschutz und der Formularverarbeitung bereits vor.
+  \item Eine Erweiterung der Suche um Filter nach Preis, Ort und
+    Verfügbarkeit; derzeit ist nur die Kategorie filterbar.
+  \item Eine Ausweitung der End-to-End-Tests auf Terminbuchung und
+    Bezahlvorgang, also auf die Abläufe mit dem größten
+    Zustandsumfang.
+  \item Eine automatisierte Prüfung der Kontrastwerte im
+    Übersetzungsvorgang. Ein solcher Test hätte die Abweichung beim
+    Fokusring gefunden, die sich einer Betrachtung entzieht.
+\end{itemize}
+
+Zusammenfassend stellt das entwickelte Frontend eine tragfähige und
+erweiterbare Oberfläche für eine hybride E-Commerce-Plattform dar.

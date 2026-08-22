@@ -3,11 +3,9 @@
 
 Die Umsetzung wurde durch automatisierte Tests, eine heuristische
 Evaluation der Oberfläche und die Prüfung ausgewählter
-Erfolgskriterien der \acs{WCAG}~2.1 bewertet. Von den vier geprüften Kriterien sind drei erfüllt; der einzige
-Verstoß betrifft den Kontrast des Fokusrings.
-
-\section{Automatisierte Tests}
-\label{sec:automatisierte_tests}
+Erfolgskriterien der \acs{WCAG}~2.1 bewertet. Von den vier geprüften
+Kriterien sind drei erfüllt; der einzige Verstoß betrifft den Kontrast
+des Fokusrings.
 
 \section{Automatisierte Tests}
 \label{sec:automatisierte_tests}
@@ -17,17 +15,16 @@ Abschnitt~\ref{sec:technologieauswahl}). Auf der ersten liegen 36
 Testdateien mit insgesamt 134 Testfällen, die mit \textit{Vitest} und
 der \textit{Testing Library} in einer Browsernachbildung ausgeführt
 werden. Geprüft werden sowohl reine Funktionen, etwa die
-Warenkorbsumme und die Datumsaufbereitung, als auch Komponenten wie
-Anmelde- und Registrierungsformulare. Ein besonders relevanter Befund
-betraf eine fehlerhafte Datumsformatierung, für die ein Test ergänzt
-wurde.
+Warenkorbsumme und die Aufbereitung einer Warenkorbposition, als auch
+Komponenten wie Anmelde- und Registrierungsformulare.
 
 Auf der zweiten Ebene prüfen vier Tests mit \textit{Playwright} in
 einem echten Browser vollständige Nutzerabläufe. Sie decken die beiden
 Abläufe ab, deren Ausfall am schwersten wiegt: das Zurücksetzen des
 Passworts über seine drei Schritte einschließlich der Umleitung bei
 fehlendem Nachweis (vgl. Abschnitt~\ref{subsec:auth-onboarding}) sowie
-den Weg von der Produktseite in den Warenkorb bis zur Zusammenfassung.
+den Weg von der Produktseite in den Warenkorb bis zur
+Zusammenfassung.
 
 Beide Läufe sind fehlerfrei. Abbildung~\ref{fig:testlaeufe} zeigt ihre
 Zusammenfassungen.
@@ -45,6 +42,7 @@ End-to-End-Tests}
 
 \section{Heuristische Evaluation}
 \label{sec:heuristische_evaluation}
+
 Die Wahl der heuristischen Evaluation folgt aus den Rahmenbedingungen
 der Arbeit. Ein Nutzertest hätte Teilnehmer und eine eigene Auswertung
 erfordert und war zeitlich nicht leistbar; die im Unternehmen
@@ -53,69 +51,63 @@ durch eine andere Person statt. Erforderlich war deshalb ein
 Verfahren, das sich von einer Person am eigenen Entwicklungsstand
 anwenden lässt und mit den neun Heuristiken zugleich ein Raster über
 die gesamte Oberfläche legt (vgl. Tabelle~\ref{tab:heuristiken}).
+
 Die Evaluation folgt dem Verfahren von Nielsen und Molich
 \cite{nielsen_molich_heuristic, nielsen_explanatory_power}. Es wurden
-nur Befunde mit Ursache im Frontend berücksichtigt. 15 Befunde wurden
-nach Nielsens Schweregradskala von null bis vier bewertet
+nur Befunde mit Ursache im Frontend berücksichtigt. Zehn Befunde
+wurden nach Nielsens Schweregradskala von null bis vier bewertet
 \cite{nielsen_explanatory_power}; sechs weitere Beobachtungen wurden
 nach Prüfung des Quellcodes ausgeschlossen.
 
 \begin{table}[H]
 \centering
-\caption{Befunde der heuristischen Evaluation}
+\caption{Befunde der Evaluation}
 \label{tab:befunde}
 \small
-\begin{tabular}{|l|p{4.8cm}|p{3.1cm}|c|l|}
+\begin{tabular}{|l|p{4.6cm}|p{3.1cm}|c|l|}
 \hline
-\textbf{Nr.} & \textbf{Befund} & \textbf{Heuristik} & \textbf{Grad} & \textbf{Status} \\
+\textbf{Nr} & \textbf{Befund} & \textbf{Heuristik} & \textbf{Grad} & \textbf{Status} \\
 \hline
-B1 & Fehlender Systemstatus bei einem laufenden Rollenänderungsantrag
-& Systemstatus & 3 & behoben \\
+B1 & Anbieterbereich bei laufendem Antrag & Systemstatus & 3 & behoben \\
 \hline
-B2 & Vorgesehene Validierungsmeldung wird nicht angezeigt
-& Fehlerbehebung & 2 & behoben \\
+B2 & Hinterlegte Meldung wird nicht erreicht & Fehlerbehebung & 2 & behoben \\
 \hline
-B3 & Validierungsmeldung benennt nicht die tatsächlich verletzte Regel
-& Fehlerbehebung & 2 & behoben \\
+B3 & Meldung benennt andere Regel & Fehlerbehebung & 2 & behoben \\
 \hline
-B4 & Stornierung nach Ablauf der festgelegten Frist möglich
-& Fehlervermeidung & 3 & behoben \\
+B4 & Storno nach Fristablauf & Fehlervermeidung & 3 & behoben \\
 \hline
-B5 & Auswahl überlappender Buchungszeiten möglich
-& Fehlervermeidung & 2 & behoben \\
+B5 & Überlappende Buchungszeiten & Fehlervermeidung & 2 & behoben \\
 \hline
-B6 & Fehlende Übersetzungen in den rollenbezogenen Bereichen
-& Reale Welt & 3 & behoben \\
+B6 & Telefonfeld nicht als optional erkennbar & Wiedererkennung & 1 & geklärt \\
 \hline
-B7 & Telefonfeld nicht als optional gekennzeichnet
-& Wiedererkennung & 1 & behoben \\
+B7 & Erfolgsseite bietet beide Übersichten & Minimalismus & 2 & behoben \\
 \hline
-B8 & Erfolgsseite zeigt zwei nicht kontextsensitive Übersichtslinks
-& Minimalismus & 2 & behoben \\
+B8 & Positionsstatus widerspricht der Buchung & Systemstatus & 2 & behoben \\
 \hline
-B9 & Interner Bezeichner wird unverändert in der Oberfläche dargestellt
-& Reale Welt & 2 & behoben \\
+B9 & Zwei gleichrangige Rückwege & Konsistenz & 2 & behoben \\
 \hline
-B10 & Ausgewählte Sprache wird nicht an das Backend übertragen
-& Reale Welt & 3 & behoben \\
-\hline
-B11 & Status einer Bestellposition widerspricht dem zugehörigen Buchungsstatus
-& Systemstatus & 2 & behoben \\
-\hline
-B12 & Oberfläche bietet zwei gleichrangige Rückwege
-& Konsistenz & 2 & behoben \\
-\hline
-B13 & Englische Abkürzung in der deutschsprachigen Oberfläche
-& Reale Welt & 1 & behoben \\
-\hline
-B14 & Umbuchung aufgrund sprachabhängiger Datumsformatierung nicht nutzbar
-& Fehlervermeidung & \textbf{4} & behoben \\
-\hline
-B15 & Eigenes Produkt beziehungsweise eigene Dienstleistung kann gekauft oder gebucht werden
-& Fehlervermeidung & 3 & behoben \\
+B10 & Eigenes Angebot buch- und kaufbar & Fehlervermeidung & 3 & behoben \\
 \hline
 \end{tabular}
 \end{table}
+
+Zusätzlich wurden drei technische Beobachtungen ohne
+Usability-Schweregrad festgestellt: die nicht getrennte
+Echtzeitverbindung beim Abmelden, wachsende Kanalabonnements und feste
+Rückfallwerte im Quelltext. Die ersten beiden werden in
+Kapitel~\ref{chap:fazit} aufgegriffen.
+
+Zwei Befunde zeigen dabei dasselbe Muster. Sowohl bei B1 als auch bei
+B10 war die maßgebliche Regel im Quelltext bereits vorhanden, wurde
+jedoch nicht an allen Stellen angewandt: Im ersten Fall leitete die
+Oberfläche die Rolle aus dem Zustand eines laufenden Antrags ab statt
+aus der vom Backend gelieferten Rollenliste, im zweiten war die
+Prüfung auf das eigene Angebot vorhanden, wurde aber nur an eine der
+beiden möglichen Handlungen weitergereicht. Die häufigere Ursache ist
+damit nicht das Fehlen einer Regel, sondern ihre uneinheitliche
+Anwendung. Gerade diese Art von Befund fällt beim Durchgehen der
+Oberfläche eher auf als beim Lesen des Quelltextes, denn dort ist die
+Regel ja sichtbar vorhanden.
 
 \section{Normbezogene Prüfung}
 \label{sec:normbezogene_pruefung}
@@ -151,7 +143,7 @@ Ansicht mit Kalender, Zeitzone und Zeitfenstern.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.25\textwidth]{Bilder/screenshot_reflow_320.png}
+\includegraphics[width=0.40\textwidth]{Bilder/screenshot_reflow_320.png}
 \caption{Terminauswahl bei einer Anzeigebreite von 320~px}
 \label{fig:reflow_320}
 \end{figure}
@@ -160,23 +152,37 @@ Kriterium~2.1.1 wurde mit \texttt{Tab}, \texttt{Umschalt+Tab},
 \texttt{Enter}, \texttt{Leertaste} und \texttt{Esc} geprüft. Die
 untersuchten Bereiche waren vollständig bedienbar. Beim Schließen des
 Anmeldedialogs kehrt der Fokus jedoch nicht zur auslösenden
-Schaltfläche zurück. Dies betrifft Kriterium~2.4.3 und wurde nicht
+Schaltfläche zurück; dies betrifft Kriterium~2.4.3 und wurde nicht
 bewertet.
 
-Die untersuchten Textpaarungen erreichen Kontrastverhältnisse zwischen
-4,7:1 und 16,5:1 und erfüllen damit Kriterium~1.4.3.
+Die Farbwerte des Designsystems sind paarweise definiert, sodass sich
+jedes Verhältnis unmittelbar bestimmen lässt (vgl.
+Abschnitt~\ref{subsec:designsystem}). Der Fließtext erreicht auf einer
+Karte 16,5:1 und auf dem Seitenhintergrund 14,8:1, der gedämpfte Text
+5,3:1 auf der Karte und 4,7:1 auf dem Seitenhintergrund. Sämtliche
+Textpaarungen erfüllen damit Kriterium~1.4.3.
 
-Der hinterlegte Wert des Fokusrings erreicht gegenüber einer Karte
-3,6:1. Durch eine globale Regel mit halber Deckkraft verbleiben in der
-Darstellung jedoch nur 1,8:1. Damit ist der Fokusring sichtbar, aber
-nicht normkonform, weshalb Kriterium~1.4.11 nicht erfüllt ist.
+Beim Fokusring fallen Entwurf und Darstellung auseinander. Der
+hinterlegte Wert ergäbe gegenüber einer Karte 3,6:1 und damit mehr als
+die geforderten 3:1. Tatsächlich wird der Ring jedoch über eine
+globale Regel mit halber Deckkraft gegen den Untergrund gemischt,
+sodass nur 1,8:1 verbleiben. Er ist damit vorhanden und sichtbar, aber
+nicht normkonform, und Kriterium~1.4.11 ist nicht erfüllt. Diese
+Unterscheidung ist der eigentliche Ertrag der Messung: Ob eine Anzeige
+wahrnehmbar ist, lässt sich betrachten; ob sie einen Schwellenwert
+erreicht, nicht, und ein Blick auf die Farbwerte allein genügt dafür
+ebenfalls nicht.
 
 \section{Grenzen des Verfahrens}
+\label{sec:grenzen_verfahren}
 
-Die Evaluation wurde durch den Entwickler selbst durchgeführt und
-ersetzt daher keinen unabhängigen Nutzertest. Zudem wurden nur vier
-Erfolgskriterien der WCAG~2.1 geprüft, sodass aus den Ergebnissen keine
-vollständige WCAG-Konformität abgeleitet werden kann.
+Die Evaluation wurde von einem einzelnen Evaluator durchgeführt, der
+zugleich der Entwickler ist; sie stellt daher keine vollständige
+Erhebung dar und ersetzt keinen Nutzertest
+\cite{nielsen_molich_heuristic}. Geprüft wurden zudem nur vier
+Erfolgskriterien der Stufe~AA, sodass sich daraus keine vollständige
+WCAG-Konformität ableiten lässt, und die Antwortzeiten wurden lokal
+auf einem einzelnen Rechner erhoben.
 
 \section{Bewertung der Ergebnisse}
 \label{sec:bewertung}
@@ -184,28 +190,39 @@ vollständige WCAG-Konformität abgeleitet werden kann.
 Die Ergebnisse werden den nicht-funktionalen Anforderungen aus
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} gegenübergestellt.
 
-Die Kriterien~1.4.10 (Responsivität), 2.1.1
-(Tastaturbedienung) und 1.4.3 (Textkontrast) sind erfüllt. Nicht
+Responsivität und Barrierefreiheit wurden anhand der relevanten
+\acs{WCAG}-Kriterien geprüft. Die Kriterien~1.4.10 (Responsivität),
+2.1.1 (Tastaturbedienung) und 1.4.3 (Textkontrast) sind erfüllt. Nicht
 erfüllt ist Kriterium~1.4.11, da eine globale Regel den Fokusring mit
-halber Deckkraft darstellt und er dadurch den geforderten Kontrast
-unterschreitet.
+halber Deckkraft darstellt und er dadurch den geforderten Wert
+unterschreitet. Die Korrektur betrifft lediglich eine globale Regel.
 
-Für die Performance wird beim ersten Aufruf nur ein Teil des
-Programmcodes übertragen. Die größte Datei umfasst 230~kB und bleibt
-unter der Schwelle von 500~kB. Die Formularvalidierung benötigte
-zwischen 14 und 33~Millisekunden. Der Wechsel von der Produktliste auf
-eine Produktseite lag bei 10~Millisekunden. Vorgänge mit einer Anfrage
-an das Backend zeigten innerhalb von 17 bis 19~Millisekunden einen
-Ladezustand; ihre Gesamtdauer ist nach
+Für die Performance ist der Programmcode auf 102 Dateien aufgeteilt,
+von denen beim ersten Aufruf nur ein Teil übertragen wird; die größte
+umfasst 230~kB und bleibt damit unter der vom Build-Werkzeug genannten
+Schwelle von 500~kB (vgl. Abschnitt~\ref{sec:impl_lazyloading}). Die
+Antwortzeiten wurden am gebauten Stand unter Chrome gemessen, jeweils
+vom Klick bis zum nächsten Bildaufbau. Die Formularvalidierung, die
+ohne Anfrage an das Backend auskommt, lag über vier Durchläufe
+zwischen 14 und 33~Millisekunden und damit unterhalb der geforderten
+0,1~Sekunden. Der Wechsel von der Produktliste auf eine Produktseite
+einschließlich des Nachladens des zugehörigen Codestücks lag bei
+10~Millisekunden und damit unterhalb der geforderten Sekunde. Vorgänge
+mit Anfrage an das Backend reagierten innerhalb von 17 bis
+19~Millisekunden mit einem Ladezustand; ihre Gesamtdauer hängt von der
+Antwortzeit der Schnittstelle ab und ist nach
 Abschnitt~\ref{sec:abgrenzung} nicht Gegenstand dieser Arbeit.
 
 Die Sicherheit wurde nicht eigenständig geprüft. Die heuristische
-Evaluation zeigte mit B1 jedoch einen Befund beim rollenbasierten
+Evaluation zeigte jedoch einen Befund (B1) beim rollenbasierten
 Seitenschutz. Da die eigentliche Zugriffskontrolle serverseitig
-erfolgt, dient der Frontend-Schutz hauptsächlich der Benutzerführung.
+erfolgt, dient der Schutz im Frontend hauptsächlich der
+Benutzerführung.
 
-Die 16 Funktionsbereiche unter \texttt{features/} folgen demselben
-Schema aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und
-Typen. Damit wurde die geplante Architektur im gesamten Quellstand
-umgesetzt. Aussagen über den zukünftigen Änderungsaufwand sind daraus
-jedoch nicht ableitbar.
+Die Wartbarkeit wurde anhand der Projektstruktur bewertet. Die
+16 Funktionsbereiche unter \texttt{features/} folgen demselben Schema
+aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und Typen,
+jeweils beschränkt auf die benötigten Bestandteile (vgl.
+Abschnitt~\ref{subsec:komponentenarchitektur}). Damit wurde die
+geplante Architektur im gesamten Quellstand umgesetzt. Aussagen über
+den zukünftigen Änderungsaufwand sind daraus jedoch nicht ableitbar.

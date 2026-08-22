@@ -557,7 +557,9 @@ Sprachwahl, den Zugang zu Nachrichten und Warenkorb sowie den
 Kontobereich; auf geringer Breite würde diese Reihe umbrechen und die
 Bedienung erschweren. Sie wird deshalb unterhalb eines Umbruchpunkts
 zu einem aufklappbaren Menü zusammengefasst, sodass die obere Leiste
-kompakt bleibt.
+kompakt bleibt. Maßgeblich ist dabei die in
+Tabelle~\ref{tab:nichtfunktionale-anforderungen} genannte Grenze von
+320~\acs{CSS}-Pixeln.
 
 Ebenso ändert sich die Reihenfolge innerhalb der Karten. Eine
 Anordnung, die auf breiter Fläche übersichtlich wirkt, führt auf
@@ -760,7 +762,7 @@ jeweiligen Verkäufers oder Dienstleisters zu unterscheiden, die in
 Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept} beschrieben wird.
 Abbildung~\ref{fig:wf_katalog} zeigt den Aufbau einer Katalogseite.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.92\textwidth]{Bilder/wireframe_katalogseite.pdf}
 \caption{Entwurf der Katalogseite mit Kategoriefilter und Kartenraster}
@@ -777,9 +779,9 @@ anstelle einer leeren Fläche ein entsprechender Hinweis angezeigt.
 
 Abbildung~\ref{fig:wf_detail} zeigt den Aufbau einer Detailseite.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{Bilder/wireframe_detailseite.pdf}
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_detailseite.png}
 \caption{Entwurf der Detailseite eines Angebots}
 \label{fig:wf_detail}
 \end{figure}
@@ -944,7 +946,7 @@ Spalten: links der Stand der eigenen Vorgänge, rechts die verfügbaren
 Werkzeuge.
 Abbildung~\ref{fig:wf_konto} zeigt diese Gliederung.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.92\textwidth]{Bilder/wireframe_kontobereich.pdf}
 \caption{Entwurf des Kontobereichs mit Vorgängen links und
@@ -1197,7 +1199,7 @@ eine Entscheidung, die den Nutzer nichts gewinnen ließe. Der feste
 Betrag hält den Vorgang für den Kunden ohne zusätzliche Rolle so
 einfach wie möglich: Titel, Beschreibung, Bild, ein Preis.
 
-Die genannten Beträge sind nicht im Frontend hinterlegt, sondern
+Die Beträge selbst sind nicht im Frontend hinterlegt, sondern
 werden über die Demonstrationsoberfläche festgelegt. Sie gehören
 zur Geschäftslogik der Plattform und lassen sich ändern, ohne dass
 die Oberfläche davon berührt wäre.
@@ -1264,12 +1266,9 @@ nebeneinander, von denen eine nicht mehr gilt, und der Anbieter
 müsste aus der Ablehnung selbst schließen, was mit seinem Geld
 geschehen ist.
 
-Jede Platzierung trägt schließlich ein Ablaufdatum. Ihre Durchsetzung,
-also das regelmäßige Prüfen der Daten und das Entfernen abgelaufener
-Einträge, ist im Rahmen dieser Arbeit nicht umgesetzt worden und in
-Kapitel~\ref{chap:fazit} als offener Punkt aufgeführt. Die
-Preisbildung nach Tagen setzt sie voraus; ohne sie bleibt die Dauer
-eine Angabe ohne Wirkung.
+Jede Platzierung trägt schließlich ein Ablaufdatum. Ihre Durchsetzung, also das regelmäßige Prüfen der Daten und das
+Entfernen abgelaufener Einträge, wäre serverseitig umzusetzen und ist
+nach Abschnitt~\ref{sec:abgrenzung} nicht Gegenstand dieser Arbeit.
 
 
 \subsection{Messaging}
