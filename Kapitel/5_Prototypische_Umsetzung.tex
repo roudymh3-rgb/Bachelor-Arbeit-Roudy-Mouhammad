@@ -632,7 +632,22 @@ beschränkt bleibt.
 \caption{Bestätigungsseite nach erfolgreicher Zahlung}
 \label{fig:checkout_success}
 \end{figure}
+Die Erfolgsseite bietet genau einen Weg weiter wie auf die in Abbildung~\ref{fig:checkout_success} angezeigt. Besteht der Auftrag
+ausschließlich aus Buchungen, führt sie zur Buchungsübersicht, sonst
+zur Bestellübersicht. Ein gemischter Auftrag fällt damit auf die
+Bestellübersicht, weil diese sämtliche Positionen führt und die
+enthaltenen Buchungen von dort erreichbar sind (vgl.
+Abschnitt~\ref{subsec:impl_buchungen}). Die Entscheidung liegt in
+einer eigenen Funktion, sodass sie an einer Stelle steht.
 
+\begin{lstlisting}[language=TypeScript,caption={Wahl der Zielansicht nach der Zahlung (order-format.ts)},label={lst:success-destination}]
+export function getCheckoutSuccessDestination(order?: Pick<OrderRecord, 'items'> | null) {
+  const containsOnlyBookings =
+    Boolean(order?.items.length) && order?.items.every((item) => Boolean(item.service_booking))
+
+  return containsOnlyBookings ? '/account/bookings' : '/account/orders'
+}
+\end{lstlisting}
 Die Nebenwirkungen der Erfolgsseite sind in einem Effekt
 gekapselt. Er prüft zunächst, ob die Zahlung tatsächlich erfolgt
 ist, und bricht andernfalls ab. Erst danach wird der Warenkorb
