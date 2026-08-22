@@ -56,8 +56,7 @@ Die Evaluation folgt dem Verfahren von Nielsen und Molich
 \cite{nielsen_molich_heuristic, nielsen_explanatory_power}. Es wurden
 nur Befunde mit Ursache im Frontend berücksichtigt. Zehn Befunde
 wurden nach Nielsens Schweregradskala von null bis vier bewertet
-\cite{nielsen_explanatory_power}; sechs weitere Beobachtungen wurden
-nach Prüfung des Quellcodes ausgeschlossen.
+\cite{nielsen_explanatory_power}.
 
 \begin{table}[H]
 \centering
@@ -78,7 +77,7 @@ B4 & Storno nach Fristablauf & Fehlervermeidung & 3 & behoben \\
 \hline
 B5 & Überlappende Buchungszeiten & Fehlervermeidung & 2 & behoben \\
 \hline
-B6 & Telefonfeld nicht als optional erkennbar & Wiedererkennung & 1 & geklärt \\
+B6 & Telefonfeld nicht als optional erkennbar & Wiedererkennung & 1 & behoben \\
 \hline
 B7 & Erfolgsseite bietet beide Übersichten & Minimalismus & 2 & behoben \\
 \hline
@@ -92,7 +91,7 @@ B10 & Eigenes Angebot buch- und kaufbar & Fehlervermeidung & 3 & behoben \\
 \end{table}
 
 Zwei Befunde zeigen dabei dasselbe Muster. Sowohl bei B1 als auch bei
-B10 war die maßgebliche Regel im Quelltext bereits vorhanden, wurde
+B10 war die maßgebliche Regel im Quellcode bereits vorhanden, wurde
 jedoch nicht an allen Stellen angewandt: Im ersten Fall leitete die
 Oberfläche die Rolle aus dem Zustand eines laufenden Antrags ab statt
 aus der vom Backend gelieferten Rollenliste, im zweiten war die
@@ -100,7 +99,7 @@ Prüfung auf das eigene Angebot vorhanden, wurde aber nur an eine der
 beiden möglichen Handlungen weitergereicht. Die häufigere Ursache ist
 damit nicht das Fehlen einer Regel, sondern ihre uneinheitliche
 Anwendung. Gerade diese Art von Befund fällt beim Durchgehen der
-Oberfläche eher auf als beim Lesen des Quelltextes, denn dort ist die
+Oberfläche eher auf als beim Lesen des Quellcodees, denn dort ist die
 Regel ja sichtbar vorhanden.
 
 \section{Normbezogene Prüfung}
@@ -218,5 +217,4 @@ Die Wartbarkeit wurde anhand der Projektstruktur bewertet. Die
 aus Datenzugriff, Komponenten, Hooks, Seiten, Schemata und Typen,
 jeweils beschränkt auf die benötigten Bestandteile (vgl.
 Abschnitt~\ref{subsec:komponentenarchitektur}). Damit wurde die
-geplante Architektur im gesamten Quellstand umgesetzt. Aussagen über
-den zukünftigen Änderungsaufwand sind daraus jedoch nicht ableitbar.
+geplante Architektur im gesamten Quellstand umgesetzt.
