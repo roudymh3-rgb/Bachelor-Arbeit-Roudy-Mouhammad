@@ -46,7 +46,7 @@ Antragsstatus ist für den Nutzer jederzeit einsehbar.
 Zusätzlich unterstützt die Plattform eine Funktion zum Zurücksetzen des Passworts auf Basis eines
 \acs{OTP}-Verfahrens, das vom Backend bereitgestellt wird.
 
-Käufer müssen Produkte und Dienstleistungen nach Kategorie
+Kunden müssen Produkte und Dienstleistungen nach Kategorie
 filtern und in einer Detailansicht einsehen können. Produkte
 und Dienstleistungen können in einen gemeinsamen Warenkorb
 gelegt werden. Der Checkout-Prozess umfasst die
@@ -120,9 +120,13 @@ Gedankenfluss des Nutzers erhalten, ab etwa zehn Sekunden ist seine
 Aufmerksamkeit nicht mehr auf die Aufgabe gerichtet
 \cite{nielsen_response_times}.
  
-Daraus ergeben sich zwei Klassen von Vorgängen. Interaktionen, die ohne Anfrage an das Backend auskommen, sollen innerhalb dieser Schwellen bleiben: das Filtern einer bereits geladenen Liste oder die Prüfung einer Formulareingabe unterhalb der ersten, der Wechsel zwischen Ansichten unterhalb der zweiten. Hierfür wird der Programmcode der Anwendung in Abschnitte
-zerlegt und erst bei Aufruf der zugehörigen Ansicht nachgeladen
-(vgl. Abschnitt~\ref{subsec:spa-mpa}). Bei Vorgängen mit Anfrage an
+Daraus ergeben sich zwei Klassen von Vorgängen. Interaktionen ohne Anfrage an das Backend sollen innerhalb dieser
+Schwellenwerte bleiben. Das Filtern einer bereits geladenen Liste oder
+die Prüfung einer Formulareingabe soll innerhalb von etwa
+0,1~Sekunden reagieren, ein Wechsel zwischen Ansichten innerhalb von
+etwa einer Sekunde. Hierfür wird der Programmcode der Anwendung in
+Abschnitte zerlegt und erst bei Aufruf der zugehörigen Ansicht
+nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}). Bei Vorgängen mit Anfrage an
 das Backend hängt die Dauer zusätzlich von der Antwortzeit der
 Schnittstelle ab, die nach Abschnitt~\ref{sec:abgrenzung} nicht
 Gegenstand dieser Arbeit ist; für sie wird gefordert, dass ab etwa
@@ -296,7 +300,7 @@ Komponentenbasiert, großes Ökosystem, hohe Flexibilität bei der
 Strukturierung \\
 \hline
 Zustand & Client-State & Redux, Context \acs{API} &
-Schlanker hook-basierter Store, kein Boilerplate, kein Provider
+Schlanker hook-basierter Store, geringer Boilerplate-Aufwand, kein Provider erforderlich
 erforderlich \\
 \hline
 TanStack Query & Server-State & manuelle Cache-Verwaltung &
