@@ -24,7 +24,7 @@ vor.
 Die Bewertung in Kapitel~\ref{chap:testen} erfolgte auf drei Wegen.
 Die automatisierten Tests umfassen 36 Testdateien mit 134 Testfällen
 sowie vier End-to-End-Tests und laufen fehlerfrei durch. Die
-heuristische Evaluation ergab Zwölf Befunde, die sämtlich behoben
+heuristische Evaluation ergab zwölf Befunde, die sämtlich behoben
 wurden. Von den vier geprüften Erfolgskriterien der
 \acs{WCAG}~2.1 sind drei erfüllt; nicht erfüllt ist allein der
 Kontrast des Fokusrings.
@@ -32,22 +32,25 @@ Kontrast des Fokusrings.
 \section{Mögliche Erweiterungen und Ausblick}
 \label{sec:ausblick}
 
-Für die Weiterentwicklung des Frontends gibt es mehrere Ideen.
+Für die Weiterentwicklung des Frontends bieten sich mehrere
+Erweiterungen an:
 
 \begin{itemize}
   \item Eine eigene Administrationsoberfläche für Rollenwechselanträge,
-    Freigaben, Gebühren und Auszahlungen. Die tragenden Bestandteile
-    liegen mit der zentralen \acs{HTTP}-Infrastruktur, dem
-    Seitenschutz und der Formularverarbeitung bereits vor.
-  \item Eine Erweiterung der Suche um Filter nach Preis, Ort und
-    Verfügbarkeit; derzeit ist nur die Kategorie filterbar.
-  \item Eine Ausweitung der End-to-End-Tests auf Terminbuchung und
-    Bezahlvorgang, also auf die Abläufe mit dem größten
-    Zustandsumfang.
-  \item Eine automatisierte Prüfung der Kontrastwerte im
-    Übersetzungsvorgang. Ein solcher Test hätte die Abweichung beim
-    Fokusring gefunden, die sich einer Betrachtung entzieht.
+  Freigaben, Gebühren und Auszahlungen.
+  \item Erweiterte Suchfilter nach Preis, Ort und Verfügbarkeit.
+  \item Die Korrektur des Fokusrings sowie eine automatisierte Prüfung
+  der Kontrastwerte.
+  \item Die Anzeige des Lagerbestands mit einer Warnung im Warenkorb,
+  wenn die gewählte Menge den Bestand übersteigt.
+  \item Die Ergänzung von Lieferanschrift, Versandkosten und
+  Sendungsstatus im Bestellprozess.
+  \item Der Ausbau zur progressiven Web-App mit Benachrichtigungen zu
+  Bestellungen, Buchungen und Nachrichten.
 \end{itemize}
+
+Die letzten drei Erweiterungen setzen entsprechende Schnittstellen im
+Backend voraus \cite{alaatki_backend}.
 
 Zusammenfassend stellt das entwickelte Frontend eine tragfähige und
 erweiterbare Oberfläche für eine hybride E-Commerce-Plattform dar.

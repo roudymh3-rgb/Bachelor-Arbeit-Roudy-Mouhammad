@@ -56,8 +56,7 @@ Buchungsübersicht müssen einsehbar und stornierbar sein.
 Für Dienstleistungen müssen verfügbare Zeitfenster des
 jeweiligen Anbieters angezeigt und buchbar sein.
 
-Verkäufer benötigen ein Dashboard zur Verwaltung ihrer
-Produkte einschließlich Bildupload sowie eine Übersicht
+Verkäufer benötigen einen Verwaltungsbereich für ihre Produkte einschließlich Bildupload sowie eine Übersicht
 über eingegangene Bestellungen und deren Statusverwaltung.
 Dienstleister müssen ihre Dienstleistungen, Arbeitszeiten
 und Abwesenheiten verwalten sowie Buchungsanfragen
@@ -130,16 +129,15 @@ Gegenstand dieser Arbeit ist; für sie wird gefordert, dass ab etwa
 einer Sekunde Wartezeit ein Ladezustand und im Fehlerfall eine
 verständliche Meldung dargestellt wird.
 
-Die Sicherheit wird serverseitig durch tokenbasierte
-Authentifizierung über Laravel Sanctum sowie die Weiterleitung auf
-eine \acs{PCI-DSS}-konforme Stripe-Zahlungsseite gewährleistet. Der
-rollenbasierte Seitenschutz über geschützte Routen im Frontend
-ergänzt dies auf Ebene der Benutzerführung, ersetzt die
+Die Authentifizierung wird serverseitig über Laravel Sanctum
+umgesetzt. Die Zahlungsabwicklung erfolgt über eine
+\acs{PCI-DSS}-konforme, von Stripe gehostete Zahlungsseite;
+Zahlungsdaten werden zu keiner Zeit im Frontend gespeichert oder
+verarbeitet. Der rollenbasierte Seitenschutz über geschützte Routen im
+Frontend ergänzt dies auf Ebene der Benutzerführung, ersetzt die
 serverseitige Prüfung jedoch nicht (vgl.
-Abschnitt~\ref{subsec:rbac}). Sensible Daten werden zu keiner Zeit
-im Frontend gespeichert oder verarbeitet. Abgelaufene Tokens werden
-automatisch erkannt und der Nutzer wird zur erneuten Anmeldung
-weitergeleitet.
+Abschnitt~\ref{subsec:rbac}). Abgelaufene Tokens werden automatisch
+erkannt und der Nutzer wird zur erneuten Anmeldung weitergeleitet.
 
 Die Anwendung muss responsiv sein und auf gängigen Desktop- und
 Mobilbrowsern korrekt dargestellt werden (vgl.
@@ -168,8 +166,8 @@ unter 1~s; Ladezustand ab etwa 1~s Wartezeit &
 Nachladen der Ansichten bei Bedarf, zwischengespeicherte
 Abfragen, einheitliche Ladezustände \\
 \hline
-Sicherheit & Kein Zugriff auf Bereiche, für die keine Rolle
-vorliegt; keine Speicherung sensibler Daten im Browser &
+Sicherheit & Kein Zugriff auf Bereiche, für die keine Rolle vorliegt; keine
+Speicherung von Zahlungsdaten im Browser &
 Geschützte Routen als Benutzerführung, Weiterleitung bei
 abgelaufener Sitzung, keine Verarbeitung von Zahlungsdaten im
 Frontend \\
@@ -194,9 +192,10 @@ Komponentenarchitektur, feature-basierte Ordnerstruktur \\
 \section{Rollenmodell}
 \label{sec:rollenmodell}
 
-Die Plattform \textit{Bazario} implementiert ein
-rollenbasiertes Zugriffskontrollmodell mit vier
-Nutzerrollen. Jeder registrierte Nutzer erhält zunächst
+Die Plattform \textit{Bazario} implementiert ein rollenbasiertes
+Zugriffskontrollmodell mit vier Nutzerrollen, von denen drei durch das
+in dieser Arbeit entwickelte Frontend abgebildet werden (vgl.
+Abschnitt~\ref{sec:abgrenzung}). Jeder registrierte Nutzer erhält zunächst
 die Rolle \textit{Customer}. Ein Wechsel zu \textit{Seller} oder
 \textit{ServiceProvider} ist durch einen Rollenwechselantrag
 möglich, der durch einen Administrator genehmigt werden
@@ -258,15 +257,15 @@ Anhand dieser Kriterien lassen sich die eingesetzten Technologien
 in zwei Gruppen einteilen. Laravel Sanctum, Pusher und Stripe sind
 durch das Backend vorgegeben; hier bestand keine eigenständige
 Auswahlentscheidung, da das Frontend lediglich die clientseitige
-Anbindung übernimmt. Im Fall von Stripe erfolgt die Zahlungsabwicklung vollständig
-serverseitig. Von den in Abschnitt~\ref{subsec:online-zahlung}
-dargestellten Einbindungsvarianten kommt daher die Weiterleitung auf
-eine vom Dienstleister gehostete Zahlungsseite zum Einsatz; eigene
-Eingabefelder sind für den aktuellen Funktionsumfang nicht erforderlich
-\cite{stripe_security_guide}. Da das Frontend lediglich die vom Backend
-übermittelte Weiterleitungsadresse aufruft, wäre ein Wechsel des
-Zahlungsdienstleisters ohne Änderung am Frontend möglich; die Auswahl
-des Anbieters ist damit keine Entscheidung der vorliegenden Arbeit.
+Anbindung übernimmt. Im Fall von Stripe übernehmen das Backend und die von Stripe gehostete
+Zahlungsseite die Zahlungsabwicklung. Von den in
+Abschnitt~\ref{subsec:online-zahlung} dargestellten
+Einbindungsvarianten kommt daher die Weiterleitung zum Einsatz; eigene
+Eingabefelder sind für den aktuellen Funktionsumfang nicht
+erforderlich \cite{stripe_security_guide}. Da das Frontend lediglich
+die vom Backend übermittelte Weiterleitungsadresse aufruft, ist es nur
+gering an den konkreten Zahlungsdienstleister gekoppelt; die Auswahl
+des Anbieters ist keine Entscheidung der vorliegenden Arbeit.
 Da React als Bibliothek nur die Darstellungsschicht abdeckt (vgl.
 Abschnitt~\ref{subsec:framework-funktionen}), waren alle übrigen
 Aufgabenbereiche einzeln zu entscheiden; die Gegenüberstellung der
@@ -292,7 +291,7 @@ TypeScript & Programmier\-sprache & JavaScript &
 Statische Typprüfung vor der Übersetzung, Ableitung von Typen aus
 Validierungsschemata \\
 \hline
-React & \acs{UI}-Framework & Angular, Vue.js &
+React & \acs{UI}-Bibliothek & Angular, Vue.js &
 Komponentenbasiert, großes Ökosystem, hohe Flexibilität bei der
 Strukturierung \\
 \hline
@@ -316,7 +315,7 @@ Hook-basiert, geringe Neu-Renderings, koppelbar mit
 Schema-Validierung \\
 \hline
 Zod & Validierung & Yup &
-Deklarative Schemata, konsistent mit Backend- Validierungsregeln \\
+Deklarative Schemata, konsistent mit Backend-Validierungsregeln \\
 \hline
 Tailwind CSS & Styling & Bootstrap, CSS-in-JS &
 Utility-first, konsistentes Erscheinungsbild ohne separates
@@ -344,7 +343,7 @@ Automatisierte Nutzerflows in mehreren Browsern
 \hline
 Laravel Sanctum & Authenti\-fizierung &
 \multicolumn{2}{p{7.6cm}|}{Durch das Backend vorgegeben;
-Frontend verwaltet Bearer Tokens und erkennt abgelaufene
+Frontend verwaltet Bearer-Tokens und erkennt abgelaufene
 Sitzungen \cite{laravel_sanctum_docs}} \\
 \hline
 pusher-js & Echtzeit\-kommunikation &
