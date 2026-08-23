@@ -124,9 +124,9 @@ Daraus ergeben sich zwei Klassen von Vorgängen. Interaktionen ohne Anfrage an d
 Schwellenwerte bleiben. Das Filtern einer bereits geladenen Liste oder
 die Prüfung einer Formulareingabe soll innerhalb von etwa
 0,1~Sekunden reagieren, ein Wechsel zwischen Ansichten innerhalb von
-etwa einer Sekunde. Hierfür wird der Programmcode der Anwendung in
-Abschnitte zerlegt und erst bei Aufruf der zugehörigen Ansicht
-nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}). Bei Vorgängen mit Anfrage an
+etwa einer Sekunde. Hierfür werden die Seitenkomponenten routenweise aufgeteilt und erst
+beim Aufruf der jeweiligen Route nachgeladen (vgl.
+Abschnitt~\ref{subsec:spa-mpa}). Bei Vorgängen mit Anfrage an
 das Backend hängt die Dauer zusätzlich von der Antwortzeit der
 Schnittstelle ab, die nach Abschnitt~\ref{sec:abgrenzung} nicht
 Gegenstand dieser Arbeit ist; für sie wird gefordert, dass ab etwa

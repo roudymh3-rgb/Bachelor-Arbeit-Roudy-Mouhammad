@@ -24,57 +24,60 @@ Ordnerstruktur, bei der zusammengehörige Dateien nach fachlichen
 Funktionsbereichen gruppiert werden. Dieses Prinzip fördert die
 Wartbarkeit und Skalierbarkeit des Projekts, da neue
 Funktionsbereiche unabhängig voneinander entwickelt und erweitert
-werden können \cite{ijlrp_react_components}. Damit ist die Anforderung
-an die Wartbarkeit aus
-Tabelle~\ref{tab:nichtfunktionale-anforderungen} auf eine
-Strukturentscheidung zurückgeführt.
+werden können \cite{ijlrp_react_components}. Damit beantwortet die
+Struktur die Anforderung an die Wartbarkeit aus
+Tabelle~\ref{tab:nichtfunktionale-anforderungen}.
 
 Innerhalb dieser Struktur spiegelt sich das in
 Abschnitt~\ref{subsec:komponentenbasiert} vorgestellte Prinzip der
 Trennung von Darstellung und Datenbeschaffung wider: Komponenten im
 Verzeichnis \texttt{components/} eines Funktionsbereichs übernehmen
-ausschließlich die Darstellung, während Datenzugriff und
-Geschäftslogik in den zugehörigen Ordnern \texttt{api/} und
-\texttt{hooks/} gekapselt sind.
+ausschließlich die Darstellung, während Datenzugriff und Aufbereitung
+in den zugehörigen Ordnern \texttt{api/}, \texttt{hooks/} und
+\texttt{lib/} gekapselt sind.
 
-Das Projekt wird mit Vite als Build-Tool initialisiert (vgl.
+Als Build-Tool wird Vite eingesetzt (vgl.
 Abschnitt~\ref{sec:technologieauswahl}). Die Wurzel des Projekts
 enthält Konfigurationsdateien wie \texttt{vite.config.ts},
 \texttt{tsconfig.json}, \texttt{tsconfig.app.json},
 \texttt{tsconfig.node.json} sowie \texttt{package.json} mit allen
-Abhängigkeiten des Projekts. Ergänzend sind
-\texttt{eslint.config.js} für die statische Codeanalyse und
-\texttt{components.json} für die shadcn/ui-Konfiguration vorhanden.
+Abhängigkeiten des Projekts. Ergänzend sind \texttt{eslint.config.js}
+für die statische Codeanalyse, \texttt{components.json} für die
+shadcn/ui-Konfiguration und \texttt{playwright.config.ts} für die
+End-to-End-Tests vorhanden.
 
 Der Quellcode befindet sich vollständig im Verzeichnis
 \texttt{src/}. Das Verzeichnis \texttt{app/} enthält zwei
 Unterordner: In \texttt{app/router/} liegt die zentrale
 Routing-Konfiguration, in \texttt{app/providers/} werden die
 projektweiten Provider-Komponenten zusammengeführt, über die
-zentrale Werte und Instanzen für die gesamte Anwendung
-bereitgestellt werden. Unter \texttt{layouts/} befindet sich die
-Layout-Komponente \texttt{main-layout.tsx}, die als Wrapper für alle
-Seiten dient und gemeinsame Elemente wie den Anwendungs-Header
-einbindet.
+anwendungsweit benötigte Kontexte bereitstehen, darunter der zentrale
+Zwischenspeicher der Datenabfragen. Unter \texttt{layouts/} befindet
+sich die Layout-Komponente \texttt{main-layout.tsx}, die als Wrapper
+für alle Seiten dient und gemeinsame Elemente wie den
+Anwendungs-Header einbindet.
 
 Das Verzeichnis \texttt{features/} bildet den Kern der Anwendung, in
 dem jeder Funktionsbereich einen eigenen Unterordner mit zugehörigen
-Komponenten, Hooks, Schemas, Typdefinitionen und
+Komponenten, Hooks, Hilfsfunktionen, Schemas, Typdefinitionen und
 \acs{API}-Funktionen erhält. Unter \texttt{components/ui/} befinden
 sich die wiederverwendbaren \acs{UI}-Basiskomponenten aus shadcn/ui
 (vgl. Abschnitt~\ref{subsec:ui-bibliotheken}), während
 \texttt{components/shared/} projektübergreifend genutzte Komponenten
 wie den Anwendungs-Header enthält.
 
-Das Verzeichnis \texttt{lib/} stellt die technische Infrastruktur
-bereit, darunter die Anbindung an das Backend, die Validierung der
-Authentifizierung und die Sprachressourcen der Oberfläche. Im
-Verzeichnis \texttt{stores/} sind die globalen
+Das Verzeichnis \texttt{src/lib/} stellt die technische Infrastruktur
+bereit, darunter die Anbindung an das Backend, die Verwaltung der
+Sitzung samt Prüfung des gespeicherten Tokens und die Sprachressourcen
+der Oberfläche. Im Verzeichnis \texttt{stores/} sind die globalen
 \textit{Zustand}-Stores gebündelt (vgl.
 Abschnitt~\ref{subsec:state-management-konzept}). Unter
 \texttt{test/} liegt nicht die Sammlung der Tests, sondern deren
-gemeinsame Grundlage; die Tests selbst stehen jeweils neben der
-geprüften Datei (vgl. Kapitel~\ref{chap:testen}). Die globale
+gemeinsame Grundlage; die Modul- und Komponententests selbst stehen
+jeweils neben der geprüften Datei. Die End-to-End-Tests liegen dagegen
+außerhalb von \texttt{src/} im Verzeichnis \texttt{tests/e2e/}, da sie
+nicht einzelne Module prüfen, sondern die laufende Anwendung von außen
+(vgl. Kapitel~\ref{chap:testen}). Die globale
 \acs{CSS}-Konfiguration in \texttt{index.css} bindet die
 Tailwind-Direktiven sowie die Design-Tokens des Designsystems ein
 \cite{tailwindcss_docs}.
@@ -83,9 +86,9 @@ Abbildung~\ref{fig:ordnerstruktur} zeigt die Ordnerstruktur des
 Projekts. Jeder Funktionsbereich unter \texttt{features/} folgt
 intern einer einheitlichen Grundstruktur, die je nach Bedarf die
 Ordner \texttt{api/}, \texttt{components/}, \texttt{hooks/},
-\texttt{pages/}, \texttt{schemas/} und \texttt{types/} umfasst; diese
-wird in Kapitel~\ref{chap:umsetzung} am Beispiel einzelner
-Funktionsbereiche im Detail gezeigt.
+\texttt{lib/}, \texttt{pages/}, \texttt{schemas/} und \texttt{types/}
+umfasst; diese wird in Kapitel~\ref{chap:umsetzung} am Beispiel
+einzelner Funktionsbereiche im Detail gezeigt.
 
 \begin{figure}[H]
 \centering \small
@@ -126,6 +129,9 @@ BAZARIO/
 |   |-- App.tsx
 |   |-- index.css
 |   `-- main.tsx
+|-- tests/
+|   `-- e2e/
+|       `-- helpers/
 `-- (Konfigurationsdateien, vgl. Text)
 \end{verbatim}
 \caption{Ordnerstruktur des Frontends von Bazario}
@@ -152,8 +158,9 @@ Die bezahlten Platzierungen belegen zwei Verzeichnisse:
 Ankündigungen. Die Trennung folgt der Unterscheidung, die
 Abschnitt~\ref{subsec:werbung_konzept} begründet, denn beide
 unterscheiden sich darin, wer sie anlegen darf, was sie erfassen und
-wohin ein Klick auf sie führt. Ein gemeinsames Verzeichnis müsste
-diese Unterschiede innerhalb jeder einzelnen Datei führen.
+wohin ein Klick auf sie führt. In einem gemeinsamen Verzeichnis
+müssten diese Unterschiede innerhalb der einzelnen Dateien
+berücksichtigt werden.
 
 
 \subsection{Routing-Konzept und rollenbasierter Seitenschutz}
@@ -194,18 +201,20 @@ die Rolle \textit{Customer} gebunden sind.
 Mit der Zahl der Routen wächst der Umfang des Programmcodes, den eine
 \acs{SPA} beim ersten Aufruf überträgt. Da die Routenkonfiguration
 festlegt, welche Komponente zu welcher Adresse gehört, ist sie
-zugleich die Stelle, an der sich dieser Code aufteilen lässt: Jede
-Ansicht wird als eigener Abschnitt geführt und erst beim Aufruf ihrer
-Route nachgeladen (vgl. Abschnitt~\ref{subsec:spa-mpa}).
-
-Ausgenommen bleiben der Anwendungsrahmen, die Wrapper-Komponente des
-Seitenschutzes und die Startseite. Die ersten beiden sind an jeder
-Route beteiligt, die Startseite ist der häufigste Einstiegspunkt;
-ein Nachladen würde den ersten Aufruf in allen drei Fällen
+zugleich die Stelle, an der sich dieser Code aufteilen lässt: Die
+Seitenkomponenten werden routenweise aufgeteilt und erst beim Aufruf
+der jeweiligen Route nachgeladen (vgl.
+Abschnitt~\ref{subsec:spa-mpa}). Ausgenommen bleiben der
+Anwendungsrahmen, die Wrapper-Komponente des Seitenschutzes und die
+Startseite. Die ersten beiden sind an jeder Route beteiligt, während
+die Startseite als zentraler Einstiegspunkt unmittelbar verfügbar sein
+soll; ein Nachladen würde den ersten Aufruf in allen drei Fällen
 verlangsamen statt ihn zu beschleunigen.
-Die Anforderung an die Sichtbarkeit des
-Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien})
-gilt damit auch für den Wechsel zwischen Ansichten.
+Während eine Ansicht nachgeladen wird, zeigt die Anwendung im
+Anwendungsrahmen einen Ladezustand an. Die Anforderung an die
+Sichtbarkeit des Systemstatus (vgl.
+Abschnitt~\ref{subsec:gestaltungsprinzipien}) gilt damit auch für den
+Wechsel zwischen Ansichten.
 Der Seitenschutz löst damit die Anforderung an die Sicherheit aus
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} auf Ebene der
 Benutzerführung ein; die Durchsetzung selbst bleibt serverseitig.
