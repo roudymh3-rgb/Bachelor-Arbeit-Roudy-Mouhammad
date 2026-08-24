@@ -840,11 +840,9 @@ Produkte in einem gemeinsamen Vorgang bezahlen (vgl.
 Abschnitt~\ref{subsec:warenkorb_konzept}), und eine verbindliche
 Buchung entsteht erst mit der Zahlung. Solange der Vorgang nicht
 abgeschlossen ist, bleibt das Zeitfenster für andere Kunden
-verfügbar. Ob es beim verbindlichen Abschluss noch frei ist, lässt
-sich deshalb nur serverseitig entscheiden; eine Ablehnung wird im
-Warenkorb als Fehlermeldung dargestellt.
-Ob es beim verbindlichen Abschluss noch frei ist, wird serverseitig
-erneut geprüft \cite{alaatki_backend}.
+verfügbar. Ob es beim verbindlichen Abschluss noch frei ist, wird
+serverseitig erneut geprüft \cite{alaatki_backend}; eine Ablehnung
+wird im Warenkorb als Fehlermeldung dargestellt.
 
 
 \subsection{Warenkorb, Checkout und Zahlung}
@@ -1281,8 +1279,8 @@ während er die Seite geöffnet hat, ohne dass er sie neu lädt. Damit
 verlässt dieser Funktionsbereich als einziger das anfragebasierte
 Modell, das allen übrigen Bereichen zugrunde liegt. Wie in
 Abschnitt~\ref{subsec:rest-api} dargestellt, geht bei \acs{REST} jede
-Übertragung vom Client aus; der Server kann eine Nachricht nicht von
-sich aus zustellen. Wiederholtes Nachfragen in kurzen Abständen wäre
+Übertragung vom Client aus; ohne dessen Anfrage erreicht den Nutzer
+keine neue Nachricht. Wiederholtes Nachfragen in kurzen Abständen wäre
 die einfachere Lösung, erzeugt aber dauerhaft Anfragen ohne Ergebnis
 und verzögert die Zustellung dennoch. Der Entwurf setzt deshalb auf
 eine dauerhafte Verbindung.
@@ -1310,7 +1308,8 @@ Daraus ergibt sich der in Abbildung~\ref{fig:messaging_ablauf}
 dargestellte Weg einer Nachricht. Der Absender überträgt sie nicht
 unmittelbar an den Kanal, sondern an das Backend. Dieses speichert
 sie und veröffentlicht sie anschließend auf dem Kanal. Der Umweg ist
-erforderlich, weil der Echtzeitdienst nichts speichert: Er stellt zu,
+erforderlich, weil der Echtzeitdienst nicht als Nachrichtenspeicher dient: Er
+stellt zu,
 was in dem Augenblick zugestellt werden kann, in dem gesendet wird.
 Wer zu diesem Zeitpunkt nicht verbunden ist, erhält die Nachricht
 sonst nie. Der Verlauf einer Unterhaltung stammt deshalb stets aus
