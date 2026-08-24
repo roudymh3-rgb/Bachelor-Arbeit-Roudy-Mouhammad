@@ -193,10 +193,9 @@ rollenbasierten Zugriffskontrolle.
 
 Öffentlich zugängliche Routen wie \texttt{/products} oder
 \texttt{/services} stehen allen Nutzern offen, während geschützte
-Routen wie \texttt{/account} eine gültige Sitzung voraussetzen und
-Routen wie
-\texttt{/account\allowbreak/upgrade\allowbreak/seller} zusätzlich an
-die Rolle \textit{Customer} gebunden sind.
+Routen wie \texttt{/account} eine gültige Sitzung voraussetzenund Routen wie \texttt{/account\allowbreak/upgrade\allowbreak/seller}
+nur für Kunden zugänglich sind, die die angestrebte Rolle noch nicht
+besitzen und für die kein Antrag läuft.
 
 Mit der Zahl der Routen wächst der Umfang des Programmcodes, den eine
 \acs{SPA} beim ersten Aufruf überträgt. Da die Routenkonfiguration
@@ -215,9 +214,10 @@ Anwendungsrahmen einen Ladezustand an. Die Anforderung an die
 Sichtbarkeit des Systemstatus (vgl.
 Abschnitt~\ref{subsec:gestaltungsprinzipien}) gilt damit auch für den
 Wechsel zwischen Ansichten.
-Der Seitenschutz löst damit die Anforderung an die Sicherheit aus
+Der Seitenschutz unterstützt damit die Sicherheitsanforderung aus
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} auf Ebene der
-Benutzerführung ein; die Durchsetzung selbst bleibt serverseitig.
+Benutzerführung; die eigentliche Durchsetzung der Zugriffsrechte
+bleibt serverseitig.
 
 
 \subsection{Globales State Management}
@@ -273,13 +273,12 @@ von Bazario}
 Ein wesentliches Ziel dieses Konzepts ist die einheitliche Kontrolle
 über den Zustand jeder Verbindung. Jede Anfrage wird dabei über einen
 Query Key identifiziert, der sich aus der Bezeichnung der Anfrage
-und ihren Parametern zusammensetzt. Trifft innerhalb eines kurzen
-Zeitraums dieselbe Anfrage mit denselben Parametern erneut ein,
-erkennt TanStack Query, dass die zugehörigen Daten bereits im
-Zwischenspeicher vorliegen, und liefert diese zurück, anstatt den
-Server erneut zu kontaktieren; ändern sich die Parameter, entsteht
-hingegen ein neuer Query Key und damit eine neue Anfrage an den
-Server. Auf dieser Grundlage unterscheidet die Bibliothek zwischen
+und ihren Parametern zusammensetzt. Wird dieselbe Anfrage mit denselben Parametern erneut ausgeführt,
+stellt TanStack Query die unter diesem Query Key zwischengespeicherten
+Daten unmittelbar bereit; ändern sich die Parameter, entsteht ein
+neuer Query Key und damit eine eigene Anfrage. Ob dabei zusätzlich
+erneut beim Server nachgefragt wird, hängt von der für den
+Zwischenspeicher eingestellten Haltedauer ab. Auf dieser Grundlage unterscheidet die Bibliothek zwischen
 lesenden Anfragen, die Daten vom Server abrufen, und schreibenden
 Operationen, die Daten auf dem Server verändern. Darüber hinaus
 bietet sie einen Mechanismus zur gezielten Invalidierung bereits
@@ -325,13 +324,13 @@ Anforderungen gelten dabei durchgehend: Konsistenz über gleichartige
 Situationen hinweg, Erkennbarkeit des Systemzustands, Vermeidung von
 Fehleingaben und Kontrolle des Nutzers über den Ablauf.
 
-Hinzu tritt eine fünfte Leitlinie, die sich aus dem Rollenmodell
-ergibt und in den allgemeinen Prinzipienkatalogen nicht vorkommt:
-Rollensensitivität. Kunde, Verkäufer und Dienstleister rufen dieselbe
-Anwendung aus unterschiedlichen Gründen auf. Einen Kunden
-beschäftigen Katalog, Bestellung und Buchung; einen Verkäufer seine
-Produkte, die eingegangenen Bestellungen und die Einnahmen; einen
-Dienstleister zusätzlich Verfügbarkeit und Terminanfragen. Die
+Hinzu tritt eine fünfte, aus dem Rollenmodell von \textit{Bazario}
+abgeleitete Leitlinie: Rollensensitivität. Kunde, Verkäufer und
+Dienstleister rufen dieselbe Anwendung aus unterschiedlichen Gründen
+auf. Einen Kunden beschäftigen Katalog, Bestellung und Buchung; einen
+Verkäufer seine Produkte, die eingegangenen Bestellungen und die
+Einnahmen; einen Dienstleister seine Dienstleistungen,
+Verfügbarkeiten und Buchungsanfragen. Die
 Oberfläche gewichtet daher je nach zugewiesener Rolle anders, ohne
 das gemeinsame gestalterische System zu verlassen: Es ändert sich,
 was zuerst erscheint, nicht wie es aussieht (vgl.
@@ -361,9 +360,9 @@ Abschnitt~\ref{subsec:buchung_konzept}).
 Ergänzend gilt ein Grundsatz der Beschränkung: Bestandteile, die
 lediglich vorhandene Wege wiederholen, entfallen. Eine Fußzeile etwa
 nähme üblicherweise Angaben zum Betreiber, Verweise auf soziale
-Netzwerke und Schnellzugriffe auf. Diese Inhalte sind entweder
-bereits in der Kopfzeile erreichbar oder spielen für den
-Funktionsumfang der Plattform keine Rolle. Verzichtet wird damit
+Netzwerke und Schnellzugriffe auf. Erforderliche Navigationswege sind bereits über die Kopfzeile
+erreichbar; die übrigen genannten Inhalte sind für den
+Funktionsumfang der Plattform nicht erforderlich. Verzichtet wird damit
 nicht auf Gestaltung, sondern auf Doppelung.
 
 
@@ -383,16 +382,16 @@ Die Farbwerte sind nicht als Einzelfarben benannt, sondern nach ihrer
 Funktion in der Oberfläche. Jede Fläche besitzt einen zugehörigen
 Vordergrundwert, etwa \texttt{background} mit \texttt{foreground},
 \texttt{card} mit \texttt{card-foreground} oder \texttt{primary} mit
-\texttt{primary-foreground}. Diese paarweise Definition stellt
-sicher, dass Text und Hintergrund nicht unabhängig voneinander
-geändert werden können und ein Kontrastverhältnis damit nicht
-versehentlich verloren geht. Ergänzt wird das Schema um Tokens für
+\texttt{primary-foreground}. Diese paarweise Definition führt zusammengehörige Text- und
+Hintergrundfarben an einer Stelle und verringert damit das Risiko,
+dass ein vorgesehenes Kontrastverhältnis bei Änderungen unbeabsichtigt
+verloren geht. Ergänzt wird das Schema um Tokens für
 Rahmen, Eingabefelder und Fokusringe sowie um einen eigenen Wert
 \texttt{destructive} für zerstörende Aktionen und Fehlerzustände.
 
 Die Wahl fiel auf eine abgestimmte Zusammenstellung statt auf einzeln
-gesuchte Werte, damit die Farben untereinander harmonieren, ohne dass
-jedes Verhältnis eigens geprüft werden muss. Maßgeblich war dabei der
+gesuchte Werte, damit die Farben untereinander harmonieren und sich
+konsistent kombinieren lassen. Maßgeblich war dabei der
 Gegenstand der Plattform: Ein Marktplatz, auf dem Anbieter um
 Aufmerksamkeit werben, verträgt ein kräftigeres Schema als eine reine
 Verwaltungsanwendung. Die Kopfzeile ist dunkel gehalten und hebt sich
@@ -405,7 +404,7 @@ Umkehrung der Helligkeit folgt so eine eigene Benennung, statt die
 Kopfzeile als Ausnahme innerhalb der übrigen Werte zu führen.
 
 Die Palette ruht auf drei Werten derselben Farbfamilie: einem dunklen
-Blau für Text und Schrift, einem gedeckten Petrolton für vorrangige
+Blau für Text, einem gedeckten Petrolton für vorrangige
 Handlungen und einem helleren Petrol für nachgeordnete. Der
 Seitenhintergrund nimmt denselben Farbton in stark aufgehellter Form
 auf. Die Palette ist damit einfarbig angelegt; allein
@@ -433,11 +432,12 @@ einer Buchung in den Warenkorb. Handlungen ohne diese Wirkung
 erhalten die zurückhaltendere Darstellung über \texttt{secondary};
 die Abmeldung etwa ist keine vorrangige Handlung und wird deshalb
 anders dargestellt als die Anmeldung an derselben Stelle.
-\texttt{muted} kennzeichnet Elemente ohne gegenwärtige Wirkung, also
-insbesondere deaktivierte Schaltflächen.
+\texttt{muted} kennzeichnet zurückgenommene Flächen und Nebenangaben,
+etwa Metadaten und ergänzende Hinweise.
 
 Die Eckenradien folgen demselben Prinzip. Definiert ist ein einziger
-Basiswert von 0,625\,rem, also zehn Pixel; sämtliche Abstufungen
+Basiswert von 0,625\,rem, bei der üblichen Grundschriftgröße von
+sechzehn Pixeln also zehn Pixel; sämtliche Abstufungen
 leiten sich daraus über feste Faktoren ab und ergeben die Werte
 sechs, acht, zehn, vierzehn, achtzehn, zweiundzwanzig und
 sechsundzwanzig Pixel. Dass überhaupt mehrere Stufen nötig sind,
@@ -476,10 +476,11 @@ Fläche ergibt sich ein Kontrastverhältnis von 16,5:1, für gedämpften
 Text 5,3:1 auf der Karte und 4,7:1 auf dem Seitenhintergrund;
 sämtliche Werte erfüllen Erfolgskriterium 1.4.3 der Stufe AA. Für
 Bedienelemente und Zustandsanzeigen gilt mit Kriterium 1.4.11 ein
-eigener Schwellenwert von 3:1; der Fokusring erreicht 3,6:1
-gegenüber einer Karte und 3,2:1 gegenüber dem Seitenhintergrund. Die
-Prüfung der übrigen Bedienelemente erfolgt in
-Kapitel~\ref{chap:testen}.
+eigener Schwellenwert von 3:1; der im Designsystem hinterlegte Wert
+des Fokusrings ergibt 3,6:1 gegenüber einer Karte und 3,2:1 gegenüber
+dem Seitenhintergrund. Ob dieser Wert auch in der Darstellung erreicht
+wird, prüft Kapitel~\ref{chap:testen}, dort erfolgt auch die Prüfung
+der übrigen Bedienelemente.
 
 
 \subsection{Seitenstruktur und Navigationsprinzip}
@@ -521,8 +522,8 @@ orientieren.
 
 Eine Fußzeile besteht nicht (vgl.
 Abschnitt~\ref{subsec:gestaltungsansatz}); der Inhaltsbereich endet
-mit dem letzten Abschnitt der jeweiligen Seite, sodass sämtliche
-Navigation an einer einzigen Stelle zusammenläuft.
+mit dem letzten Abschnitt der jeweiligen Seite, sodass die globale
+Navigation in der Kopfzeile gebündelt bleibt.
 
 Wie sich eine konkrete Seite in diesen Rahmen einfügt, zeigt
 Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
@@ -535,11 +536,11 @@ Abbildung~\ref{fig:startseite} am Beispiel der Startseite.
 \label{fig:startseite}
 \end{figure}
 
-Auf den Seitentitel mit einem einleitenden Satz folgen zwei
-gleichartig aufgebaute Abschnitte, einer für die zuletzt
-eingestellten Produkte und einer für die zuletzt eingestellten
-Dienstleistungen. Beide bestehen aus einer Überschrift und einem
-Raster aus Vorschaukarten.
+Auf den Seitentitel mit einem einleitenden Satz folgen zunächst die
+Ankündigungen und die Werbeplatzierungen in absteigender Stufe,
+darunter zwei gleichartig aufgebaute Abschnitte, einer für die
+zuletzt eingestellten Produkte und einer für die zuletzt
+eingestellten Dienstleistungen.
 
 Die Karte ist dabei das durchgehende Gestaltungselement des
 Katalogbereichs. Sie führt von oben nach unten die Bildfläche, den
@@ -570,7 +571,8 @@ kompakt bleibt. Maßgeblich ist dabei die in
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} genannte Grenze von
 320~\acs{CSS}-Pixeln.
 
-Ebenso ändert sich die Reihenfolge innerhalb der Karten. Eine
+Bei umfangreicheren Karten und Auswahlbereichen ändert sich zusätzlich
+die Reihenfolge der Inhalte. Eine
 Anordnung, die auf breiter Fläche übersichtlich wirkt, führt auf
 schmaler entweder zu übermäßiger Breite oder zu leeren Bereichen.
 Titel, Preis, Zeitangabe und die zugehörige Handlung bleiben deshalb
@@ -581,21 +583,19 @@ geringer Breite zusammenhängend erkennbar bleiben, da eine
 unvollständig erfasste Auswahl unmittelbar zu einer falschen Buchung
 führen würde.
 
-Am Fuß der Seite ist ein Bereich für Werbung und Ankündigungen
-vorgesehen; er ist in Abbildung~\ref{fig:startseite} gestrichelt
-dargestellt.
 
 
 \subsection{Barrierefreiheit}
 \label{subsec:barrierefreiheit_konzept}
 
-Barrierefreiheit ist als Qualitätsanforderung behandelt,
-nicht als Nachweisziel. Maßgeblich sind die vier Erfolgskriterien, die
+Barrierefreiheit ist als Qualitätsanforderung behandelt; der Nachweis
+vollständiger Konformität ist nicht Ziel dieser Arbeit. Maßgeblich sind die vier Erfolgskriterien, die
 Tabelle~\ref{tab:nichtfunktionale-anforderungen} als Anforderung
 festhält und Abschnitt~\ref{subsec:barrierefreiheit} inhaltlich
 erläutert; ihre Prüfung erfolgt in Kapitel~\ref{chap:testen}.
 
-Vier Festlegungen ergeben sich daraus für den Entwurf.
+Aus diesen Anforderungen und den zuvor beschriebenen
+Gestaltungsprinzipien ergeben sich vier Festlegungen für den Entwurf.
 
 Erstens werden Bedienelemente ihrer Bedeutung entsprechend gewählt:
 Navigation als Verweis, eine auslösende Handlung als Schaltfläche,
@@ -651,7 +651,7 @@ getroffene Wahl wird gespeichert und bei späteren Besuchen
 wiederhergestellt.
 
 Angeboten werden Deutsch, Englisch und Arabisch, für die
-Oberflächentexte jeweils vollständig umgesetzt. Arabisch verlangt
+Oberflächentexte jeweils umgesetzt. Arabisch verlangt
 dabei mehr als eine weitere Textfassung: Die Schreibrichtung des
 gesamten Dokuments kehrt sich um, weshalb sie nicht in den einzelnen
 Ansichten, sondern zentral aus der gewählten Sprache abgeleitet wird. Bei den Inhalten reicht die Wahl gegenwärtig
@@ -719,9 +719,9 @@ zwischendurch auf eine E-Mail wartet, muss nach dem Wechsel in das
 Postfach wieder aufgenommen werden können.
 
 Auf demselben Grund beruht die Absicherung des letzten Schrittes. Die
-Seite, auf der ein neues Passwort gesetzt wird, ist die wirksamste
-des gesamten Zugangs, denn wer sie erreicht, kann ein Konto
-übernehmen. Sie darf deshalb nicht allein davon abhängen, welche
+Seite, auf der ein neues Passwort gesetzt wird, ist die
+sicherheitskritischste des gesamten Zugangs, denn wer sie erreicht,
+kann ein Konto übernehmen. Sie darf deshalb nicht allein davon abhängen, welche
 Adresse in der Anfrage steht, da diese Angabe aus dem Browser kommt
 und dort veränderbar ist. Das Backend gibt aus diesem Grund nach der
 erfolgreichen Prüfung des Kennworts einen Nachweis zurück, der an
@@ -824,8 +824,8 @@ werden dessen Zeitfenster abgerufen und angezeigt.
 
 Zu jedem Zeitfenster wird die verbleibende Kapazität angegeben. Bei
 Dienstleistungen, die mehrere Kunden gleichzeitig annehmen können,
-ist andernfalls nicht erkennbar, ob eine Buchung noch möglich ist
-oder das Fenster lediglich noch nicht ausgebucht wirkt.
+ist andernfalls nicht erkennbar, wie viele Plätze innerhalb des
+Zeitfensters noch verfügbar sind.
 
 Sämtliche Zeitangaben beziehen sich auf die Zeitzone des Anbieters,
 die zusammen mit dem Termin angezeigt wird. Da Anbieter und Kunde in
@@ -840,7 +840,11 @@ Produkte in einem gemeinsamen Vorgang bezahlen (vgl.
 Abschnitt~\ref{subsec:warenkorb_konzept}), und eine verbindliche
 Buchung entsteht erst mit der Zahlung. Solange der Vorgang nicht
 abgeschlossen ist, bleibt das Zeitfenster für andere Kunden
-verfügbar.
+verfügbar. Ob es beim verbindlichen Abschluss noch frei ist, lässt
+sich deshalb nur serverseitig entscheiden; eine Ablehnung wird im
+Warenkorb als Fehlermeldung dargestellt.
+Ob es beim verbindlichen Abschluss noch frei ist, wird serverseitig
+erneut geprüft \cite{alaatki_backend}.
 
 
 \subsection{Warenkorb, Checkout und Zahlung}
@@ -882,20 +886,15 @@ Von den in Abschnitt~\ref{subsec:online-zahlung} beschriebenen
 Einbindungsvarianten nutzt \textit{Bazario} die gehostete
 Zahlungsseite (vgl. Abschnitt~\ref{sec:technologieauswahl}). Das
 Frontend gestaltet damit keine eigenen Zahlungsformulare, und
-sensible Kartendaten erreichen die Plattform zu keinem Zeitpunkt.
-Darin liegt zugleich die Begründung für die eingangs genannte
-Anmeldepflicht: Plattformen, die einen Kauf ohne Anmeldung zulassen,
-wickeln die Zahlung selbst ab und erhalten dabei zwangsläufig die
-Daten des Kunden. Bei \textit{Bazario} gehen diese Daten
-ausschließlich an den Zahlungsdienst; ohne Anmeldung läge der
-Plattform daher keinerlei Information über den Vorgang vor.
+Kartendaten werden weder im Frontend noch im Backend von
+\textit{Bazario} verarbeitet.
 
 Dieser Weg hat eine Konsequenz für den Entwurf: Sobald der Nutzer zur
 Zahlung auf die Seite des Zahlungsdienstes wechselt, verliert die
-Plattform die unmittelbare Sicht auf den Vorgang. Sie erfährt weder,
-ob gezahlt wurde, noch von wem. Genau deshalb wird der Auftrag vorab
-im Backend angelegt und der Zahlungsstatus im Anschluss beim
-Zahlungsdienst abgefragt \cite{stripe_checkout_docs}.
+Plattform die unmittelbare Sicht auf den weiteren Ablauf. Genau
+deshalb wird der Auftrag vorab im Backend angelegt und der
+Zahlungsstatus im Anschluss beim Zahlungsdienst abgefragt und dem
+Auftrag zugeordnet \cite{stripe_checkout_docs}.
 
 Die Kommunikation mit dem Zahlungsdienst erfolgt ausschließlich über
 das Backend, nicht aus dem Browser heraus. Der Grund liegt in der
@@ -917,9 +916,10 @@ Nutzer zugeordnet ist.
 Damit Anbieter Zahlungen empfangen können, nutzt \textit{Bazario} das
 Konzept verbundener Konten. Die Plattform unterhält ein eigenes Konto
 beim Zahlungsdienst; jedem Verkäufer und jedem Dienstleister wird
-darunter ein Unterkonto zugeordnet. Dieses Unterkonto wird aus der
-Anwendung heraus angelegt, sodass der Anbieter kein eigenes Konto
-einrichten und verknüpfen muss. Auf dieser Grundlage lässt sich der
+ein verbundenes Konto zugeordnet. Es wird aus der Anwendung heraus
+angelegt; die für das Onboarding und die Identitätsprüfung
+erforderlichen Angaben ergänzt der Anbieter anschließend beim
+Zahlungsdienst. Auf dieser Grundlage lässt sich der
 Zahlungsbetrag automatisiert aufteilen: Ein Anteil verbleibt als
 Provision bei der Plattform, der übrige Betrag wird dem Anbieter
 gutgeschrieben (vgl. Abschnitt~\ref{subsec:marktplatztypen}). Die
@@ -1019,22 +1019,20 @@ Frist wird die zugehörige Schaltfläche deaktiviert und um eine
 Erläuterung ergänzt, die den Grund und das Datum des Fristablaufs
 benennt. Die Alternative, sie auszublenden, wurde verworfen: Ein
 Nutzer, der eine erwartete Funktion nicht vorfindet, sucht sie
-zunächst und erfährt nicht, warum sie fehlt. Die Frist markiert dabei
-nicht nur das Ende einer Bedienmöglichkeit, sondern den Übergang des
-wirtschaftlichen Risikos: Nach ihrem Ablauf steht der Betrag dem
-Anbieter zu, unabhängig davon, ob der Kunde die Leistung in Anspruch
-nimmt. Der Anbieter kennzeichnet die Buchung in beiden Fällen nach
-dem Termin als abgeschlossen.
+zunächst und erfährt nicht, warum sie fehlt. Nach Ablauf der Frist ist eine
+Stornierung nicht mehr vorgesehen; der bezahlte Betrag bleibt der
+Buchung zugeordnet, auch wenn der Kunde den Termin nicht wahrnimmt.
+Der Anbieter kennzeichnet die Buchung in beiden Fällen als
+abgeschlossen.
 
 Eine Stornierung löst über das Backend eine Rückerstattung aus, deren
 Stand in der Buchung nachvollziehbar bleibt. Eine Verlegung verändert
 dagegen ausschließlich den Termin; der bezahlte Betrag bleibt
 unberührt, weshalb hierfür ein eigener Auswahlschritt vorgesehen ist,
-der die verfügbaren Zeitfenster des Anbieters anzeigt. Diese
-Möglichkeiten bestehen ausschließlich für Dienstleistungen. Eine
-bezahlte Produktbestellung lässt sich nicht mehr rückgängig machen,
-da ihr keine terminierte Leistung zugrunde liegt, deren Absage einen
-Zeitraum wieder freigäbe.
+der die verfügbaren Zeitfenster des Anbieters anzeigt. Stornierung und Verlegung
+bestehen ausschließlich für Dienstleistungsbuchungen. Für bezahlte
+Produktbestellungen ist im Funktionsumfang dieser Arbeit keine
+Stornierung über die Oberfläche vorgesehen.
 
 Besitzt ein Nutzer zusätzlich die Rolle des Dienstleisters, tritt ein
 Anbieterbereich hinzu. Er führt zur Verwaltung von Dienstleistungen
@@ -1147,7 +1145,7 @@ einem Fahrzeug oder nach einer Stelle. Dass sie auch Verkäufern und
 Dienstleistern offenstehen, folgt aus dem Rollenmodell: Eine
 zusätzliche Rolle erweitert die Möglichkeiten eines Kontos, sie
 ersetzt die des Kunden nicht (vgl.
-Abschnitt~\ref{subsec:auth-onboarding}). Ein Verkäufer, der einen
+Abschnitt~\ref{sec:rollenmodell}). Ein Verkäufer, der einen
 Auslieferungsfahrer sucht, gibt keine bezahlte Anzeige für sein
 Geschäft auf, sondern eine Ankündigung.
 
@@ -1214,13 +1212,11 @@ zur Geschäftslogik der Plattform und lassen sich ändern, ohne dass
 die Oberfläche davon berührt wäre.
 
 Jede Platzierung wird nach der Zahlung geprüft und erst nach
-ausdrücklicher Freigabe durch einen Administrator angezeigt. Der
-Grund ist rechtlicher Natur: Auf der Startseite soll keine Anzeige
-erscheinen, deren Inhalt gegen geltende Bestimmungen verstößt. Aus
-demselben Grund ist ein Bild verbindlich, obwohl es technisch
-entbehrlich wäre: Der Administrator kann eine Platzierung nur dann
-auf ihre Zulässigkeit prüfen, wenn ihm auch das Bildmaterial
-vorliegt. Der Anbieter sieht in seinem Kontobereich deshalb zwei
+ausdrücklicher Freigabe durch einen Administrator angezeigt. Die Prüfung soll verhindern, dass unzulässige Inhalte auf der
+öffentlich sichtbaren Startseite erscheinen. Aus demselben Grund ist
+ein Bild verbindlich: Es ist Bestandteil der später öffentlich
+dargestellten Platzierung und muss deshalb ebenfalls vor der Freigabe
+geprüft werden. Der Anbieter sieht in seinem Kontobereich deshalb zwei
 Angaben nebeneinander: den Zustand der Platzierung, also Zahlung
 ausstehend, in Prüfung, freigegeben oder abgelehnt, und den Zustand
 der Zahlung. Beide werden getrennt geführt, weil sie sich unabhängig
@@ -1228,7 +1224,7 @@ voneinander ändern. Eine Platzierung kann bezahlt und dennoch
 abgelehnt sein.
 
 Löschen lässt sich eine Platzierung, solange sie nicht bezahlt ist;
-nach ausgelöster Zahlung entfällt diese Möglichkeit. Der Entwurf
+nach abgeschlossener Zahlung entfällt diese Möglichkeit. Der Entwurf
 folgt damit derselben Regel wie der Warenkorb, in dem eine Position
 bis zum Auslösen des Checkouts entfernt werden kann und danach Teil
 eines Auftrags ist (vgl. Abschnitt~\ref{subsec:warenkorb_konzept}).
@@ -1245,13 +1241,11 @@ aus welchem Ereignis ergibt.
 \hline
 Platzierung angelegt & Anbieter & Zahlung ausstehend & offen \\
 \hline
-Zahlung ausgelöst & Anbieter & in Prüfung & bezahlt \\
+Zahlung abgeschlossen & Anbieter & in Prüfung & bezahlt \\
 \hline
 Freigabe & Administrator & freigegeben & bezahlt \\
 \hline
 Ablehnung & Administrator & abgelehnt & erstattet \\
-\hline
-Rückzug nach Zahlung & Anbieter & zurückgezogen & bezahlt \\
 \hline
 Löschen vor Zahlung & Anbieter & entfällt & entfällt \\
 \hline
@@ -1259,16 +1253,9 @@ Löschen vor Zahlung & Anbieter & entfällt & entfällt \\
 \caption{Zustände einer Platzierung und der zugehörigen Zahlung}
 \label{tab:werbung_ablauf}
 \end{table}
-Ob ein bereits gezahlter Betrag erstattet wird, hängt davon ab, wer
-den Vorgang beendet. Lehnt der Administrator die Platzierung ab, wird
-erstattet; der Zustand der Zahlung wechselt dann von \textit{Bezahlt}
-auf \textit{Erstattet}. Zieht der Anbieter seine Platzierung dagegen
-nach der Zahlung selbst zurück, erfolgt keine Erstattung, denn die
-Prüfung hat dann bereits stattgefunden und ist die erbrachte
-Leistung. Die Unterscheidung folgt daraus, wer die Ursache setzt: Im
-ersten Fall verweigert die Plattform die vereinbarte Leistung und hat
-keinen Anspruch auf das Entgelt; im zweiten hat der Anbieter sie in
-Anspruch genommen und danach auf ihr Ergebnis verzichtet. Dass die
+Lehnt der Administrator eine bereits bezahlte Platzierung ab, sieht
+der Geschäftsprozess eine Erstattung vor; der Zustand der Zahlung
+wechselt dann von \textit{Bezahlt} auf \textit{Erstattet}. Dass die
 Zahlungsangabe dabei mitwechselt, ist kein Randdetail. Bliebe sie auf
 \textit{Bezahlt} stehen, führte die Ansicht zwei Angaben
 nebeneinander, von denen eine nicht mehr gilt, und der Anbieter
@@ -1346,7 +1333,3 @@ befindet. Da die Kanäle der Unterhaltungen dort nicht abonniert sind,
 erhält jeder Nutzer zusätzlich einen auf ihn bezogenen Kanal, über
 den ausschließlich dieser Zählerstand übermittelt wird.
 
-Schließlich sieht der Entwurf drei Zustände je Nachricht vor:
-gesendet, zugestellt und gelesen. Der Absender erkennt daran, ob der
-Empfänger sie gelesen hat, ein Fall der Sichtbarkeit des
-Systemstatus (vgl. Abschnitt~\ref{subsec:gestaltungsprinzipien}).

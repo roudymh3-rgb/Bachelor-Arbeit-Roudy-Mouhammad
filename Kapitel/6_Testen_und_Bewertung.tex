@@ -93,27 +93,28 @@ B11 & Warenkorb ohne Rückfrage leerbar & Nutzerkontrolle & 2 & behoben \\
 B12 & Schwebezustand ohne sichtbare Wirkung & Systemstatus & 2 & behoben \\
 \hline
 B13 & Antrag für bereits vergebene Rolle möglich & Fehlervermeidung & 3 & behoben \\
+B14 & Technische Fehlermeldung in der Oberfläche & Fehlerbehebung & 3 & behoben \\
 \hline
 \end{tabular}
 \end{table}
 
-Vier Befunde zeigen dabei dasselbe Muster: Die maßgebliche Regel war
-im Quellcode bereits vorhanden, blieb jedoch ohne Wirkung. Bei B1
-leitete die Oberfläche die Rolle aus dem Zustand eines laufenden
-Antrags ab statt aus der vom Backend gelieferten Rollenliste. Bei B10
-war die Prüfung, ob der angemeldete Nutzer das Angebot selbst
-eingestellt hat, bereits vorhanden und wurde auf die Schaltfläche zur
-Kontaktaufnahme angewandt, nicht jedoch auf das Kaufen und Buchen. Bei
-B12 war der Schwebezustand der Schaltflächen angelegt, verwies jedoch
-auf einen Farbwert des Designsystems, der mit dem Ausgangswert
-übereinstimmt, sodass sich beim Überfahren nichts änderte. Und bei B13
-blendete die Kontoseite den Weg zum Antrag aus, sobald die Rolle
-vorlag, während die Seite selbst über ihre Adresse weiterhin
-erreichbar blieb. Die häufigere Ursache ist damit nicht das Fehlen
-einer Regel, sondern ihre unvollständige oder wirkungslose Anwendung.
-Gerade diese Art von Befund fällt beim Durchgehen der Oberfläche eher
-auf als beim Lesen des Quellcodes, denn dort ist die Regel ja sichtbar
-vorhanden.
+Fünf der vierzehn Befunde zeigen dasselbe Muster: Die maßgebliche
+Regel war im Quellcode bereits vorhanden, blieb jedoch ohne Wirkung.
+Bei B1 leitete die Oberfläche die Rolle aus dem Zustand eines
+laufenden Antrags ab statt aus der vom Backend gelieferten
+Rollenliste. Bei B10 war die Prüfung, ob der angemeldete Nutzer das
+Angebot selbst eingestellt hat, vorhanden und wurde auf die
+Schaltfläche zur Kontaktaufnahme angewandt, nicht jedoch auf das
+Kaufen und Buchen. Bei B12 verwies der angelegte Schwebezustand auf
+einen Farbwert, der mit dem Ausgangswert übereinstimmt. Bei B13
+blendete die Kontoseite den Weg zum Antrag aus, während die Seite
+über ihre Adresse erreichbar blieb. Und bei B14 lag ein übersetzter
+Rückfalltext bereit, wurde aber von der technischen Meldung der
+HTTP-Bibliothek verdrängt. Die häufigere Ursache ist damit nicht das
+Fehlen einer Regel, sondern ihre unvollständige oder wirkungslose
+Anwendung. Gerade diese Art von Befund fällt beim Durchgehen der
+Oberfläche eher auf als beim Lesen des Quellcodes, denn dort ist die
+Regel ja sichtbar vorhanden.
 
 \section{Normbezogene Prüfung}
 \label{sec:normbezogene_pruefung}
