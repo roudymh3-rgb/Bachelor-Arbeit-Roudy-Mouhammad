@@ -19,14 +19,14 @@ Warenkorbsumme und die Aufbereitung einer Warenkorbposition, als auch
 Komponenten wie Anmelde- und Registrierungsformulare.
 
 Auf der zweiten Ebene prüfen vier Tests mit \textit{Playwright} in
-einem echten Browser vollständige Nutzerabläufe. Sie decken die beiden
-Abläufe ab, deren Ausfall am schwersten wiegt: das Zurücksetzen des
+einem echten Browser zwei vollständige Nutzerabläufe, deren Ausfall am
+schwersten wiegt: das Zurücksetzen des
 Passworts über seine drei Schritte einschließlich der Umleitung bei
 fehlendem Nachweis (vgl. Abschnitt~\ref{subsec:auth-onboarding}) sowie
 den Weg von der Produktseite in den Warenkorb bis zur
 Zusammenfassung.
 
-Beide Läufe sind fehlerfrei. Abbildung~\ref{fig:testlaeufe} zeigt ihre
+Beide Testläufe wurden fehlerfrei abgeschlossen. Abbildung~\ref{fig:testlaeufe} zeigt ihre
 Zusammenfassungen.
 
 \begin{figure}[htbp]
@@ -53,7 +53,7 @@ anwenden lässt und mit den neun Heuristiken zugleich ein Raster über
 die gesamte Oberfläche legt (vgl. Tabelle~\ref{tab:heuristiken}).
 Die Evaluation folgt dem Verfahren von Nielsen und Molich
 \cite{nielsen_molich_heuristic, nielsen_explanatory_power}. Es wurden
-nur Befunde mit Ursache im Frontend berücksichtigt. Zwölf Befunde
+nur Befunde mit Ursache im Frontend berücksichtigt. Vierzehn Befunde
 wurden nach Nielsens Schweregradskala von null bis vier bewertet
 \cite{nielsen_explanatory_power}.
 Die Spalte \textit{Heuristik} nennt die Kurzform der jeweiligen
@@ -93,6 +93,7 @@ B11 & Warenkorb ohne Rückfrage leerbar & Nutzerkontrolle & 2 & behoben \\
 B12 & Schwebezustand ohne sichtbare Wirkung & Systemstatus & 2 & behoben \\
 \hline
 B13 & Antrag für bereits vergebene Rolle möglich & Fehlervermeidung & 3 & behoben \\
+\hline
 B14 & Technische Fehlermeldung in der Oberfläche & Fehlerbehebung & 3 & behoben \\
 \hline
 \end{tabular}
@@ -134,7 +135,7 @@ Erfolgskriterien aus Abschnitt~\ref{subsec:barrierefreiheit}
 \hline
 1.4.3 & Kontrast von Text, 4,5:1 & erfüllt \\
 \hline
-1.4.11 & Kontrast von Bedienelementen, 3:1 & nicht erfüllt \\
+1.4.11 & Nicht-Text-Kontrast von Bedienelementen und Zuständen, 3:1 & nicht erfüllt \\
 \hline
 1.4.10 & Nutzbar bis 320~px ohne waagerechtes Scrollen & erfüllt \\
 \hline

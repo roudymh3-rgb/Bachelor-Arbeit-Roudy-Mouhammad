@@ -23,9 +23,9 @@ vor.
 
 Die Bewertung in Kapitel~\ref{chap:testen} erfolgte auf drei Wegen.
 Die automatisierten Tests umfassen 36 Testdateien mit 134 Testfällen
-sowie vier End-to-End-Tests und laufen fehlerfrei durch. Die heuristische Evaluation ergab dreizehn Befunde, die sämtlich
-behoben wurden.
-wurden. Von den vier geprüften Erfolgskriterien der
+sowie vier End-to-End-Tests und laufen fehlerfrei durch. Die
+heuristische Evaluation ergab vierzehn Befunde, die sämtlich behoben
+wurden. Von den vier geprüften Erfolgskriterien der Von den vier geprüften Erfolgskriterien der
 \acs{WCAG}~2.1 sind drei erfüllt; nicht erfüllt ist allein der
 Kontrast des Fokusrings.
 
@@ -40,7 +40,7 @@ Erweiterungen an:
   Freigaben, Gebühren und Auszahlungen.
   \item Erweiterte Suchfilter nach Preis, Ort und Verfügbarkeit.
   \item Die Korrektur des Fokusrings sowie eine automatisierte Prüfung
-  der Kontrastwerte.
+    der Kontrastwerte im Build-Vorgang.
   \item Die Anzeige des Lagerbestands mit einer Warnung im Warenkorb,
   wenn die gewählte Menge den Bestand übersteigt.
   \item Die Ergänzung von Lieferanschrift, Versandkosten und
@@ -48,9 +48,13 @@ Erweiterungen an:
   \item Der Ausbau zur progressiven Web-App mit Benachrichtigungen zu
   Bestellungen, Buchungen und Nachrichten.
 \end{itemize}
-
-Die letzten drei Erweiterungen setzen entsprechende Schnittstellen im
-Backend voraus \cite{alaatki_backend}.
+Rein im Frontend umsetzbar sind die Korrektur des Fokusrings sowie die
+Administrationsoberfläche, da deren Funktionen bereits über die
+Demonstrationsoberfläche bedient werden. Die übrigen Erweiterungen
+setzen zusätzliche Schnittstellen im Backend voraus
+\cite{alaatki_backend}.
 
 Zusammenfassend stellt das entwickelte Frontend eine tragfähige und
-erweiterbare Oberfläche für eine hybride E-Commerce-Plattform dar.
+erweiterbare Oberfläche für eine Plattform dar, die den Kauf von
+Produkten und die Buchung von Dienstleistungen in einem gemeinsamen
+Vorgang zusammenführt.

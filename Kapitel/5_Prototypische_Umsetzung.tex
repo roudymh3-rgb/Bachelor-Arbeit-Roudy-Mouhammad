@@ -46,11 +46,12 @@ Seitenkomponenten der Anwendung benannte Exporte sind, der Router
 jedoch ein Objekt mit dem Feld \texttt{Component} erwartet. Eine
 zweite Hilfsfunktion schließt die nachgeladene Komponente zusätzlich
 in die Seitenschutz-Komponente ein. Statisch importiert bleiben der
-Anwendungsrahmen, der Seitenschutz und die Startseite, da sie bei
-jedem Aufruf benötigt werden.
+Anwendungsrahmen und der Seitenschutz, da sie an jeder Route
+beteiligt sind, sowie die Startseite als zentraler Einstiegspunkt der
+Anwendung.
  
 Sichtbar wird die Aufteilung an der Ausgabe des
-Übersetzungsvorgangs. Ohne sie umfasst die größte erzeugte Datei
+Build-Vorgangs. Ohne sie umfasst die größte erzeugte Datei
 536,18~kB, und das Build-Werkzeug weist darauf hin, dass Pakete
 oberhalb von 500~kB durch dynamische Importe aufgeteilt werden
 sollten. Mit ihr liegt die größte erzeugte Datei bei 229,66~kB und
@@ -64,7 +65,7 @@ Abschnitt~\ref{subsec:netzwerk_konzept} vorgestellten
 Drei-Schichten-Modells aus einer zentralen \acs{HTTP}-Infrastruktur
 auf Basis von Axios, einer feature-spezifischen \acs{API}-Schicht
 sowie Query-Hooks auf Basis von TanStack Query, die den
-Verbindungszustand für die aufrufenden Komponenten bereitstellen.
+Abfragezustand für die aufrufenden Komponenten bereitstellen.
 
 \subsection{HTTP-Client als Infrastruktur}
 \label{subsec:impl_httpclient}
@@ -157,7 +158,7 @@ Query-Hook-Schicht.
 
 Die oberste Schicht bilden Query-Hooks, die eine Feature-API-Funktion
 mithilfe von TanStack Query kapseln und den aufrufenden Komponenten
-den Zustand der Verbindung bereitstellen \cite{tanstack_query_docs}.
+den Zustand der Abfrage bereitstellen \cite{tanstack_query_docs}.
 Listing~\ref{lst:use-me-query} zeigt den Hook \texttt{useMeQuery},
 der die zuvor beschriebene Funktion \texttt{getMe()} verwendet.
 
@@ -179,9 +180,9 @@ Zwischenspeicher. Der \texttt{enabled}-Parameter erlaubt es
 zusätzlich, die Ausführung der Anfrage an eine Bedingung zu knüpfen,
 etwa das Vorhandensein einer gültigen Sitzung.
 
-Der Rückgabewert des Hooks stellt der aufrufenden Komponente die
-Felder \texttt{data}, \texttt{isLoading} und \texttt{isError} zur
-Verfügung, über die sich Ladeindikatoren und Fehlermeldungen
+Der Rückgabewert des Hooks stellt der aufrufenden Komponente unter
+anderem die Felder \texttt{data}, \texttt{isLoading} und
+\texttt{isError} zur Verfügung, über die sich Ladeindikatoren und Fehlermeldungen
 umsetzen lassen. In der Kontoübersicht wird dieses Muster
 vereinfacht eingesetzt: Anstelle einer expliziten Auswertung von
 \texttt{isLoading} und \texttt{isError} greift die Komponente auf
@@ -196,7 +197,7 @@ Die Query-Hooks greifen dabei auf einen einmalig erzeugten,
 zentralen Zwischenspeicher zurück, der über die gesamte Anwendung
 hinweg geteilt und beim Anwendungsstart über einen Provider
 bereitgestellt wird. Dieses Muster aus Query Key, Zwischenspeicher
-und einheitlichen Verbindungszuständen kommt bei sämtlichen weiteren
+und einheitlichen Abfragezuständen kommt bei sämtlichen weiteren
 Datenabrufen der Anwendung in gleicher Form zum Einsatz und wird in
 den folgenden Abschnitten jeweils nur noch kurz referenziert.
 
@@ -225,7 +226,7 @@ const de = {
   },
   checkout: {
     successTitle: 'Checkout erfolgreich',
-    paymentConfirmed: 'Zahlung bestatigt',
+    paymentConfirmed: 'Zahlung bestätigt',
   },
 }
 \end{lstlisting}
@@ -255,8 +256,9 @@ Utility-Klassen richtungsabhängig ausgewertet werden. Ausgenommen
 bleiben Felder, deren Inhalt keiner Sprache folgt, etwa
 E-Mail-Adressen; sie werden über eine eigene Regel auf die Richtung
 von links nach rechts festgelegt. Zusätzlich werden beim Sprachwechsel
-alle laufenden Abfragen verworfen, damit die Inhalte aus dem Backend
-in der neu gewählten Sprache erneut angefordert werden.
+die zwischengespeicherten Antworten des Backends als veraltet
+markiert, sodass die dargestellten Inhalte in der neu gewählten
+Sprache erneut angefordert werden.
 
 Die Inhalte aus dem Backend werden dagegen nicht übersetzt, sondern
 angefordert: Der in Abschnitt~\ref{subsec:impl_httpclient}
@@ -420,10 +422,11 @@ Eine Bootstrap-Komponente validiert ihn aktiv beim Backend über
 Abschnitt~\ref{subsec:impl_tanstackquery}). Liefert diese Anfrage
 einen Fehler, gilt der Token als ungültig und die Sitzung wird über
 den Store verworfen; liefert sie hingegen aktualisierte Nutzerdaten,
-werden diese im Store synchronisiert, sodass lokal gespeicherte und
-serverseitig bestätigte Daten konsistent bleiben. Liegt noch keine
-Antwort vor, wird zunächst die lokal gespeicherte Sitzung verwendet,
-damit die Oberfläche sofort angezeigt werden kann. Das dreistufige
+werden diese im Store synchronisiert, sodass die lokal gespeicherten Nutzerdaten dem
+serverseitigen Stand entsprechen. Liegt noch keine
+Antwort vor, dient die lokal gespeicherte Sitzung den nicht
+geschützten Teilen der Oberfläche, etwa der Kopfzeile; geschützte
+Ansichten bleiben bis zum Abschluss der Prüfung im Ladezustand. Das dreistufige
 Vorgehen aus Abschnitt~\ref{subsec:auth-onboarding} ist damit in der
 geschützten Routenkomponente umgesetzt.
 
@@ -439,10 +442,10 @@ sagt, was gerade verlangt wird.
 Zwischen den Schritten bleiben zwei Angaben erhalten: die
 E-Mail-Adresse aus dem ersten Schritt und der Nachweis, den das
 Backend nach der Prüfung des Einmalkennworts zurückgibt. Beide liegen
-im Sitzungsspeicher des Browsers, weil der Nutzer die Anwendung
+im \texttt{sessionStorage} des Browsers, weil der Nutzer die Anwendung
 zwischendurch verlässt, um in sein Postfach zu sehen; ein Zustand
-allein im Arbeitsspeicher wäre nach dem Neuladen verloren. Beim
-Schließen des Reiters verfallen die Angaben von selbst.
+allein im Arbeitsspeicher wäre nach dem Neuladen verloren. Mit dem
+Ende der Browser-Sitzung werden die Angaben selbsttätig entfernt.
 
 Jede der beiden hinteren Seiten prüft beim Aufbau, ob ihre
 Voraussetzung vorliegt, und leitet andernfalls ersetzend auf den
@@ -472,8 +475,8 @@ Browser.
 \includegraphics[width=0.48\textwidth]{Bilder/pw_4_neues_passwort.png}
 \caption{Zurücksetzen des Passworts: Anfordern des Einmalkennworts,
 Eingabe im leeren und im ausgefüllten Zustand, Setzen des neuen
-Passworts. Das Kennwort ist im Backend zu Testzwecken auf einen festen
-Wert gesetzt.}
+Passworts. Für die dargestellte Testumgebung gibt das Backend ein festes
+Einmalkennwort vor.}
 \label{fig:passwort_zuruecksetzen}
 \end{figure}
 
@@ -484,9 +487,13 @@ Der in Abschnitt~\ref{subsec:auth-onboarding} beschriebene Antrag ist
 als Formular im Kontobereich umgesetzt. Neben den Basisdaten erfasst
 es projektspezifische Angaben, nämlich Name und Kontaktdaten des
 Geschäfts sowie ein Nachweisdokument, anhand derer ein Administrator
-entscheidet.
+entscheidet. Nach dem Absenden zeigt der Kontobereich den Antrag als
+laufend an, und der Zugang zum Formular entfällt, solange die
+Entscheidung aussteht. Fällt sie aus, werden die geänderten Rollen
+mit dem nächsten Abgleich der Nutzerdaten übernommen (vgl.
+Abschnitt~\ref{subsec:impl_token_session}).
 
-\section{Katalog und Produktseiten}
+\section{Katalog- und Detailseiten}
 \label{sec:impl_katalog}
 
 \subsection{Startseite und Katalogseiten}
@@ -523,7 +530,7 @@ Der Aufruf einer Vorschaukarte führt, wie in
 Abschnitt~\ref{subsec:katalog_konzept} beschrieben, auf die
 zugehörige Detailseite. Produkte und Dienstleistungen folgen
 dabei derselben Umsetzung: Die jeweilige ID wird als
-validierter Routenparameter übergeben (vgl.
+geprüfter Routenparameter übergeben (vgl.
 Abschnitt~\ref{subsec:routing-konzept}) und an den zugehörigen
 Query-Hook weitergereicht. Beide Seiten unterscheiden vier
 Zustände: eine ungültige ID, den Ladezustand, einen Fehler
@@ -543,7 +550,16 @@ Die in Abschnitt~\ref{subsec:buchung_konzept} beschriebene Auswahl
 ist als eigenständige, wiederverwendbare Komponente umgesetzt und
 auf der Dienstleistungs-Detailseite eingebunden; dieselbe Komponente
 wird später für die Umbuchung eingesetzt (vgl.
-Abschnitt~\ref{subsec:impl_buchungen}).
+Abschnitt~\ref{subsec:impl_buchungen}). Die Zeitfenster werden je
+gewähltem Tag angefordert; Dienstleistung, Datum und Zeitzone bilden
+gemeinsam den Query Key, sodass ein erneut aufgerufener Tag aus dem
+Zwischenspeicher stammt (vgl.
+Abschnitt~\ref{subsec:impl_tanstackquery}). Für die Umbuchung nimmt
+die Anfrage zusätzlich die Kennung der laufenden Buchung entgegen,
+damit deren eigenes Zeitfenster nicht als belegt gilt. Die
+zurückgegebenen Zeitfenster werden nach Vormittag, Nachmittag und
+Abend gruppiert dargestellt; warum ein einzelnes nicht wählbar ist,
+gibt die einbindende Seite vor.
 Abbildung~\ref{fig:buchung_auswahl} zeigt sie nach Wahl von Tag und
 Zeitfenster.
 
@@ -566,7 +582,7 @@ Abschnitt~\ref{subsec:state-management-konzept}). Seine Persistenz
 übernimmt die \texttt{persist}-Middleware von Zustand, die den Inhalt
 unter dem Schlüssel \texttt{bazario-cart} im \texttt{localStorage}
 ablegt \cite{zustand_docs}. Gespeichert wird dabei nicht der gesamte
-Store, sondern über \texttt{partialize} nur der übertragbare Teil:
+Store, sondern über \texttt{partialize} nur der zu speichernde Teil:
 die Positionen, die Währung und die Zuordnung zum Besitzer. Die
 abgeleiteten Funktionen für Zwischensumme und Positionszahl bleiben
 ausgeschlossen, da sie sich aus den Positionen jederzeit neu
@@ -582,7 +598,7 @@ nähere Bestimmung. Dieselbe Dienstleistung zu einem anderen Termin
 ist damit eine eigene Position.
 
 Ein dritter Gesichtspunkt ergibt sich daraus, dass der Warenkorb im
-Browser verbleibt und nicht am Konto hängt. Er führt deshalb mit,
+Browser gespeichert und nicht serverseitig an ein Konto gebunden ist. Er führt deshalb mit,
 wem er gehört, und gleicht diese Zuordnung bei jeder Änderung des
 Anmeldestatus ab: Meldet sich ein zuvor nicht angemeldeter Nutzer an,
 bleiben seine Positionen erhalten und werden ihm zugeordnet. Wechselt
@@ -650,12 +666,13 @@ export function getCheckoutSuccessDestination(order?: Pick<OrderRecord, 'items'>
 }
 \end{lstlisting}
 Die Nebenwirkungen der Erfolgsseite sind in einem Effekt
-gekapselt. Er prüft zunächst, ob die Zahlung tatsächlich erfolgt
-ist, und bricht andernfalls ab. Erst danach wird der Warenkorb
+gekapselt. Er prüft anhand des vom Backend gelieferten Ergebnisses, ob die
+Zahlung bestätigt ist, und bricht andernfalls ab. Erst danach wird der Warenkorb
 geleert, nicht schon beim Auslösen des Checkouts, da die Zahlung
-bis zuletzt abgebrochen werden kann. Eine Referenz sichert zusätzlich
-ab, dass der Effekt nur einmal ausgeführt wird; ohne diese Sperre
-könnte ein erneutes Rendern den Warenkorb ein zweites Mal leeren.
+bis zuletzt abgebrochen werden kann.Eine Referenz sichert zusätzlich
+ab, dass diese Schritte nur einmal ausgeführt werden; läuft der
+Effekt erneut, bricht er an dieser Sperre ab, bevor der Warenkorb ein
+zweites Mal geleert wird.
 Eine Referenz eignet sich dafür, weil ihre Änderung im Gegensatz
 zu einem Zustandswert kein erneutes Rendern auslöst.
 
@@ -674,8 +691,10 @@ useEffect(() => {
 }, [checkoutResultQuery.data?.is_paid, clearCart, orderId, queryClient])
 \end{lstlisting}
 
-Die Abbruchseite kommt ohne Nebenwirkungen aus, da weder der
-Warenkorb noch der Datenbestand auf dem Server verändert wurde.
+Die Abbruchseite kommt ohne Nebenwirkungen aus: Der zuvor angelegte
+Auftrag bleibt unbezahlt bestehen und der Warenkorb unverändert,
+sodass sich der Vorgang später fortsetzen lässt (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}).
 Beide Rückleitungsseiten sind als geschützte Routen eingebunden
 (vgl. Abschnitt~\ref{subsec:routing-konzept}).
 
@@ -720,8 +739,10 @@ aufzurufen ist.
 \label{fig:kontoseite_vergleich}
 \end{figure}
 
-Die Anträge auf ein Rollen-Upgrade werden nur gerendert, wenn das
-Backend die jeweilige Rolle als noch verfügbar meldet (vgl.
+Der Zugang zu einem Rollen-Upgrade wird nur gerendert, wenn das
+Backend die jeweilige Rolle als noch verfügbar meldet. Läuft bereits
+ein Antrag, tritt an seine Stelle ein Hinweis auf die ausstehende
+Entscheidung (vgl.
 Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}). Auch die linke
 Spalte wechselt mit der Rolle: Bei einem Nutzer ohne zusätzliche
 Rollen enthält sie die eigene Bestellhistorie, bei anbietenden
@@ -734,8 +755,8 @@ Abschnitt~\ref{subsec:impl_produktlisting}).
 Sämtliche Einträge der rechten Spalte werden über dieselbe
 wiederverwendbare Komponente dargestellt, die Titel, Beschreibung,
 Ziel und optional eine Zustandsmarkierung entgegennimmt. Aufbau und
-Verhalten aller Einträge sind dadurch nicht durch Sorgfalt bei der
-Umsetzung gleich, sondern durch Konstruktion. Die Zustandsmarkierung
+Verhalten aller Einträge stimmen dadurch überein, ohne dass dies bei
+jeder einzelnen Verwendung eigens sicherzustellen wäre. Die Zustandsmarkierung
 wird bislang nur beim Zahlungsdienst verwendet und zeigt dort an, ob
 das verbundene Konto eingerichtet ist; ihre Daten stammen aus einer
 eigenen Anfrage, die ausschließlich für anbietende Nutzer ausgeführt
@@ -777,14 +798,14 @@ invalidiert: die eigene Übersicht, der öffentliche Produktkatalog und
 die Produktliste des jeweiligen Verkäufers.
 
 Dass die Startseite hier nicht darunter ist, wirkt sich nicht aus.
-Der zentrale Zwischenspeicher wird ohne eine eigene Haltedauer
+Der zentrale Zwischenspeicher wird ohne eigene \texttt{staleTime}
 angelegt, sodass jeder Eintrag sofort als veraltet gilt und jede
 Ansicht ihre Daten beim nächsten Aufbau erneut abfragt. Ein gelöschtes
 Produkt verschwindet deshalb auch von der Startseite, sobald diese
 wieder aufgerufen wird. Das gezielte Invalidieren wirkt damit vor
-allem auf Ansichten, die im Augenblick der Änderung bereits
-dargestellt werden; für die übrigen ist es Vorsorge für den Fall,
-dass später eine Haltedauer gesetzt wird.
+allem auf die im Augenblick der Änderung aktiven Abfragen, die
+unmittelbar erneut ausgeführt werden; für die übrigen ist es Vorsorge
+für den Fall, dass später eine \texttt{staleTime} gesetzt wird.
 
 Die festen Arbeitszeiten werden je Wochentag über die
 wiederverwendbare Komponente \texttt{WorkingHoursEditor} dargestellt,
@@ -819,8 +840,8 @@ Zustand und daneben genau die Aktion, die in diesem Zustand möglich
 ist (vgl. Abschnitt~\ref{subsec:verkaeufer_dashboard_konzept}). Jede
 dieser Aktionen ist als Mutation umgesetzt, die den zugehörigen
 Zwischenspeicher im Erfolgsfall invalidiert (vgl.
-Abschnitt~\ref{subsec:impl_tanstackquery}), sodass der neue Zustand
-unmittelbar erscheint. Sie unterscheiden sich damit nicht im
+Abschnitt~\ref{subsec:impl_tanstackquery}), sodass die betroffenen
+Daten erneut abgerufen und im neuen Zustand dargestellt werden. Sie unterscheiden sich damit nicht im
 Mechanismus, sondern in den Zuständen und den daraus folgenden
 Aktionen.
 
@@ -841,8 +862,8 @@ Bei den eigenen Bestellungen führt die Übersicht auf eine
 Detailseite, die den Auftrag in eine Zusammenfassung mit den
 Kopfdaten und die Liste der enthaltenen Positionen gliedert. Bleibt
 ein Auftrag unbezahlt, tritt an die Stelle der Positionsliste ein
-Bereich, der den Zustand benennt und die beiden dort vorgesehenen
-Wege anbietet; bei einem bezahlten Auftrag erscheint die vollständige
+Bereich, der den Zustand benennt und die beiden Wege anbietet, die
+Zahlung nachzuholen oder den Auftrag zu verwerfen; bei einem bezahlten Auftrag erscheint die vollständige
 Liste mit dem Zustand je Position. Dieselben Wege stehen bereits in
 der Übersicht an jedem unbezahlten Eintrag.
 
@@ -876,7 +897,8 @@ auf eine eigene Seite, die dieselbe Terminauswahl verwendet wie die
 Erstbuchung, ohne dass die Ermittlung verfügbarer Zeitfenster ein
 zweites Mal umgesetzt werden musste; neben der Auswahl zeigt sie den
 bisherigen Termin. Eine Stornierung löst dagegen eine Rückerstattung
-über das Backend aus, deren Stand an der Buchung geführt wird.
+über das Backend aus; Stand und Betrag erscheinen an der Buchung
+sowie an der zugehörigen Auftragsposition.
 
 \section{Werbung und Ankündigungen}
 \label{sec:impl_werbung}
@@ -909,10 +931,12 @@ Kennungen bleiben damit dort, wo sie gepflegt werden, und eine
 
 Auch die Auswahl des Ziels wird aus dem Bestand gebildet: Zur Auswahl
 steht nur, was der angemeldete Nutzer tatsächlich besitzt, also sein
-Profil sowie seine Produkte oder Dienstleistungen. Bewirbt er sein
-Profil, wird keine Kennung mitgesendet, da das Ziel bereits aus der
-Rolle folgt; bewirbt er einen einzelnen Eintrag, ist sie
-erforderlich und wird geprüft, bevor die Anfrage gestellt wird.
+Profil sowie seine Produkte oder Dienstleistungen. Die Art des Ziels
+wird stets mitgesendet, bei einem Profil jedoch ohne Kennung, da eine
+Rolle je Nutzer nur einmal vorkommt; Nutzer mit beiden anbietenden
+Rollen wählen deshalb zwischen zwei getrennten Einträgen. Bewirbt er
+einen einzelnen Eintrag, ist die Kennung erforderlich und wird
+geprüft, bevor die Anfrage gestellt wird.
 
 Das Backend bezeichnet das beworbene Ziel über den Namen seiner
 Modellklasse. Eine Zuordnungstabelle übersetzt diesen Namen in einen
@@ -991,8 +1015,8 @@ export function getPusherClient() {
 
 Drei Angaben bestimmen die Verbindung. Der Schlüssel identifiziert
 das Projekt beim Dienstanbieter. Der \textit{Cluster} benennt die
-Region, in der die Kanäle betrieben werden, und ist damit für die
-Laufzeit einer Nachricht maßgeblich. Der dritte Wert ist die Adresse
+Region, in der die Kanäle betrieben werden, und beeinflusst damit die
+Laufzeit einer Nachricht. Der dritte Wert ist die Adresse
 für die in Abschnitt~\ref{subsec:messaging_konzept} beschriebene
 Freigabeprüfung. Da diese Anfrage nicht über die zentrale
 \acs{HTTP}-Instanz aus Abschnitt~\ref{subsec:impl_httpclient} läuft,
