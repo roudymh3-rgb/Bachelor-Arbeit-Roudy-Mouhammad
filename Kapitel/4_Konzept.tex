@@ -496,7 +496,7 @@ Abbildung~\ref{fig:rahmen} zeigt diesen Aufbau.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.pdf}
+\includegraphics[width=0.80\textwidth]{Bilder/abb_rahmen.png}
 \caption{Aufbau des Anwendungsrahmens in beiden Anmeldezuständen
 (Strukturskizze, eigene Darstellung)}
 \label{fig:rahmen}
@@ -559,7 +559,9 @@ Anzeigefläche und verringert sich auf schmalen Bildschirmen, ohne
 dass der Aufbau der einzelnen Karte sich ändert. Das entspricht dem
 in Abschnitt~\ref{subsec:responsive-design} beschriebenen Vorgehen,
 die Anordnung der Elemente an Umbruchpunkten anzupassen, statt eine
-zweite Oberfläche vorzuhalten.
+zweite Oberfläche vorzuhalten. Die Umbruchpunkte sind dabei
+durchgehend als Mindestbreiten festgelegt, sodass jede Regel eine
+Erweiterung der kleinsten Zielgröße beschreibt.
 
 Auf schmalen Anzeigeflächen ändert sich jedoch nicht nur die
 Spaltenzahl. Die Kopfzeile trägt nebeneinander die Navigation, die
@@ -773,7 +775,7 @@ Abbildung~\ref{fig:wf_katalog} zeigt den Aufbau einer Katalogseite.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{Bilder/wireframe_katalogseite.pdf}
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_katalogseite.PDF}
 \caption{Entwurf der Katalogseite mit Kategoriefilter und Kartenraster}
 \label{fig:wf_katalog}
 \end{figure}
@@ -955,7 +957,7 @@ Abbildung~\ref{fig:wf_konto} zeigt diese Gliederung.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth]{Bilder/wireframe_kontobereich.pdf}
+\includegraphics[width=0.92\textwidth]{Bilder/wireframe_kontobereich.png}
 \caption{Entwurf des Kontobereichs mit Vorgängen links und
 rollenspezifischen Werkzeugen rechts}
 \label{fig:wf_konto}
@@ -1034,9 +1036,7 @@ Stornierung über die Oberfläche vorgesehen.
 
 Besitzt ein Nutzer zusätzlich die Rolle des Dienstleisters, tritt ein
 Anbieterbereich hinzu. Er führt zur Verwaltung von Dienstleistungen
-und Verfügbarkeiten, zu den eingegangenen Buchungen sowie zur
-Anbindung an den Zahlungsdienst und zur Einnahmenübersicht (vgl.
-Abschnitt~\ref{subsec:warenkorb_konzept}).
+und Verfügbarkeiten sowie zu den eingegangenen Buchungen.
 
 Die linke Spalte trennt entsprechend die Vorgänge, die andere Nutzer
 beim Anbieter ausgelöst haben, von dessen eigenen Bestellungen;
@@ -1100,8 +1100,8 @@ und Regelungen für die Stornierung und die Änderung einer bereits
 bestätigten Buchung durch den Kunden.
 
 Für die Rolle des Verkäufers gilt dasselbe Prinzip. Auch hier tritt
-ein eigener Arbeitsbereich hinzu, der zur Produktverwaltung sowie zu
-Zahlungsdienst und Einnahmenübersicht führt, und auch hier erscheinen
+ein eigener Arbeitsbereich hinzu, der zur Produktverwaltung führt, und
+auch hier erscheinen
 die eingegangenen Bestellungen getrennt von den eigenen.
 
 Verkäufer verwalten ihre Produkte über eine analoge Kartenübersicht,
@@ -1113,6 +1113,11 @@ Dienstleistungen entfallen dabei jedoch die Buchungsregeln.
 
 Besitzt ein Nutzer beide anbietenden Rollen, erscheinen deren
 Arbeitsbereiche untereinander, jeweils zusätzlich zum Kundenbereich.
+Funktionen, die beiden anbietenden Rollen gleichermaßen offenstehen,
+also die Verwaltung der Werbung sowie Zahlungsdienst und
+Einnahmenübersicht, stehen dagegen einmal unterhalb der
+Arbeitsbereiche und werden nicht je Rolle wiederholt (vgl.
+Abschnitt~\ref{subsec:warenkorb_konzept}).
 Nicht zugewiesene Rollen erzeugen dagegen keinen Arbeitsbereich,
 sodass die Oberfläche ausschließlich die tatsächlich verfügbaren
 Funktionen zeigt. Damit wird die in Abschnitt~\ref{subsec:rbac}

@@ -22,7 +22,7 @@ Anders als der Webshop eines einzelnen Händlers bündelt er das Angebot
 mehrerer Anbieter und stellt die Infrastruktur für deren Interaktion
 bereit \cite{parker_platform_revolution}, darunter Authentifizierung,
 Zahlungsabwicklung, Bewertungssysteme und Zugriffskontrolle
-\cite{tiwana_platform_ecosystems}.
+\cite{tiwana_platform_ecosystems,hein_platform_ecosystems}.
 
 Der in dieser Arbeit verwendete Begriff des Multi-Rollen-Modells baut
 auf dem Konzept mehrseitiger Plattformen auf
@@ -226,12 +226,13 @@ Anwendungen, die über Suchmaschinen gefunden werden sollen, benötigen
 daher serverseitiges Rendering (\acfirst{SSR}), bei dem der Server
 die fertige Seite ausliefert und der Browser sie anschließend um die
 clientseitige Interaktivität ergänzt \cite{bhalla_spa_architecture}.
-
 Tabelle~\ref{tab:spa-mpa} stellt beide Ansätze gegenüber.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
-\caption{Gegenüberstellung von \acs{SPA} und \acs{MPA}}
+\caption{Gegenüberstellung von \acs{SPA} und \acs{MPA} (eigene
+Zusammenstellung nach \cite{bhalla_spa_architecture,
+jonathan_react_spa})}
 \label{tab:spa-mpa}
 \begin{tabular}{|p{3.5cm}|p{4.5cm}|p{4.5cm}|}
 \hline
@@ -377,7 +378,7 @@ einen zweiten, getrennten Kanal erfolgen. Verbreitet ist hierfür ein
 E-Mail-Adresse des Nutzers. Wer es vorweisen kann, weist damit den
 Zugriff auf diesen zweiten Kanal nach. Das Kennwort ist nur einmal
 und nur für einen begrenzten Zeitraum gültig
-\cite{nist_digital_identity}. Für das Frontend ergibt sich daraus ein mehrstufiger Ablauf: das +-Anfordern des Kennworts, sein Vorweisen und das Setzen des neuen
+\cite{nist_digital_identity}. Für das Frontend ergibt sich daraus ein mehrstufiger Ablauf: das Anfordern des Kennworts, sein Vorweisen und das Setzen des neuen
 Passworts.
 
 % =====================================================================
@@ -462,7 +463,7 @@ erhöhen jedoch die Komplexität der Betriebsumgebung
 \cite{pati_react_nextjs_2025}. Tabelle~\ref{tab:frameworks} fasst
 die Gegenüberstellung zusammen.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Gegenüberstellung von React, Angular und Vue.js}
 \label{tab:frameworks}
@@ -559,10 +560,11 @@ bereitgestellt \cite{tanstack_query_docs}.
 Tabelle~\ref{tab:state-management} stellt die Ansätze für den
 clientseitigen Zustand gegenüber.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Gegenüberstellung der Ansätze für clientseitiges State
-Management}
+Management (eigene Zusammenstellung nach \cite{react_docs, redux_docs,
+zustand_docs, le_state_management})}
 \label{tab:state-management}
 \small
 \begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
@@ -707,7 +709,9 @@ Kommunikationsansätze zusammen.
 
 \begin{table}[htbp]
 \centering
-\caption{Gegenüberstellung der Kommunikationsansätze}
+\caption{Gegenüberstellung der Kommunikationsansätze (eigene
+Zusammenstellung nach \cite{fielding_rest, lawi_graphql_rest,
+lloyd_graphql_rest, rfc6455})}
 \label{tab:kommunikation}
 \small
 \begin{tabular}{|p{2.6cm}|p{3.2cm}|p{3.2cm}|p{3.2cm}|}
