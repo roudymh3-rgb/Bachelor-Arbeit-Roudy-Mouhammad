@@ -1,28 +1,33 @@
 \chapter*{Abstract}
 
-This bachelor's thesis presents the design and prototypical 
-development of the frontend for \textit{Bazario}, a 
-multi-role web platform that combines e-commerce and service 
+This bachelor's thesis presents the design and prototypical
+development of the frontend for \textit{Bazario}, a
+multi-role web platform that combines e-commerce and service
 booking within a unified system.
 
 The platform distinguishes four user roles: buyers, sellers, service
 providers, and administrators. The developed frontend covers the
 functional areas of the first three roles; administrative functions
-are outside the scope of this thesis.
-React provides the user interface layer, React Router handles
-client-side routing with role-based route protection, and the
-Zustand library manages global application state for authentication,
-user roles, and the shopping cart. Payment processing is
-implemented via Stripe, and authentication is handled via Laravel Sanctum
-using Bearer-tokens.
+are outside the scope of this thesis. React provides the user
+interface layer, React Router handles client-side routing with
+role-based route protection, and the Zustand library manages global
+application state for authentication, user roles, and the shopping
+cart. Payments are processed through a Stripe-hosted checkout page,
+and authentication is handled via Laravel Sanctum using
+Bearer-tokens.
 
-Beyond standard e-commerce features such as a product catalog, 
-shopping cart, and checkout, \textit{Bazario} includes a 
-service booking system, an integrated messaging module, and 
-an advertising and announcements feature. The interface is available in German, English, and Arabic, including
-right-to-left layout. The quality of the 
-implementation is validated through unit, integration, and 
-end-to-end tests and assessed against usability criteria.
+Beyond standard e-commerce features such as a product catalog,
+shopping cart, and checkout, \textit{Bazario} includes a
+service booking system, an integrated messaging module, and
+an advertising and announcements feature. The interface is available
+in German, English, and Arabic, including right-to-left layout.
+
+The quality of the implementation is validated through unit,
+integration, and end-to-end tests and assessed by a heuristic
+evaluation as well as selected success criteria of WCAG~2.1. All
+automated test runs completed without failures, the fifteen findings
+of the evaluation were resolved, and three of the four criteria
+examined are met.
 
 \textbf{Keywords:} E-Commerce, Marketplace, Multi-Role
 System, React, Single-Page Application, Zustand, Stripe,

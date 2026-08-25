@@ -1,28 +1,34 @@
 \chapter*{Kurzfassung}
 
-Diese Bachelorarbeit beschreibt den Entwurf und die prototypische 
-Entwicklung des Frontends der Webanwendung \textit{Bazario}, 
-einer Multi-Rollen-Plattform, die E-Commerce und 
+Diese Bachelorarbeit beschreibt den Entwurf und die prototypische
+Entwicklung des Frontends der Webanwendung \textit{Bazario},
+einer Multi-Rollen-Plattform, die E-Commerce und
 Dienstleistungsbuchungen in einem einheitlichen System vereint.
 
 Die Plattform unterscheidet vier Nutzerrollen: Käufer, Verkäufer,
 Dienstleister und Administratoren. Das entwickelte Frontend deckt die
 Funktionsbereiche der ersten drei Rollen ab; die administrativen
-Funktionen sind nicht Bestandteil dieser Arbeit. React bildet die Grundlage der Oberfläche, React Router übernimmt das
-clientseitige Routing mit rollenbasiertem Seitenschutz und
-die Bibliothek Zustand verwaltet den globalen Anwendungszustand
-für Authentifizierung, Nutzerrolle und Warenkorb. Die Zahlungsabwicklung erfolgt
-über Stripe, die Authentifizierung erfolgt tokenbasiert über
-Laravel Sanctum mit Bearer-Tokens.
+Funktionen sind nicht Bestandteil dieser Arbeit. React bildet die
+Grundlage der Oberfläche, React Router übernimmt das clientseitige
+Routing mit rollenbasiertem Seitenschutz und die Bibliothek Zustand
+verwaltet den globalen Anwendungszustand für Authentifizierung,
+Rollen und Warenkorb. Die Zahlungsabwicklung läuft über eine von
+Stripe gehostete Zahlungsseite, die Authentifizierung erfolgt
+tokenbasiert über Laravel Sanctum mit Bearer-Tokens.
 
-Neben klassischen E-Commerce-Funktionen wie Produktkatalog, 
-Warenkorb und Checkout umfasst \textit{Bazario} ein 
-Buchungssystem für Dienstleistungen, ein integriertes 
-Messaging-System sowie ein Werbe- und Ankündigungsmodul. Die Oberfläche liegt in Deutsch, Englisch und Arabisch vor,
+Neben klassischen E-Commerce-Funktionen wie Produktkatalog,
+Warenkorb und Checkout umfasst \textit{Bazario} ein
+Buchungssystem für Dienstleistungen, ein integriertes
+Messaging-System sowie ein Werbe- und Ankündigungsmodul. Die
+Oberfläche liegt in Deutsch, Englisch und Arabisch vor,
 einschließlich der Umkehr der Schreibrichtung.
-Die Qualität der Umsetzung wird durch Unit-, Integrations- 
-und End-to-End-Tests abgesichert und anhand von 
-Usability-Kriterien bewertet.
+
+Die Qualität der Umsetzung wird durch Unit-, Integrations- und
+End-to-End-Tests abgesichert und anhand einer heuristischen
+Evaluation sowie ausgewählter Erfolgskriterien der WCAG~2.1
+bewertet. Die automatisierten Testläufe wurden fehlerfrei
+abgeschlossen, die fünfzehn Befunde der Evaluation sämtlich behoben,
+und von den vier geprüften Erfolgskriterien sind drei erfüllt.
 
 \textbf{Schlüsselwörter:} E-Commerce, Marktplatz,
 Multi-Rollen-System, React, Single-Page Application,
